@@ -7,7 +7,6 @@ import { LecturesPage } from "@/components/lectures-page"
 import { TrainingPage } from "@/components/training-page"
 import { ReportsPage } from "@/components/reports-page"
 import { RanksPage } from "@/components/ranks-page"
-import { PositionsPage } from "@/components/positions-page"
 import { CommandsPage } from "@/components/commands-page"
 import { GuvdPositionsPage } from "@/components/guvd-positions-page"
 import { GuvdVehiclesPage } from "@/components/guvd-vehicles-page"
@@ -21,12 +20,16 @@ import { TermsPage } from "@/components/terms-page"
 import { ResourcesPage } from "@/components/resources-page"
 import { PenaltyCalculator } from "@/components/penalty-calculator"
 import { GlobalSearch } from "@/components/global-search"
+import { VersionsPage } from "@/components/versions-page"
+import { PositionsPage } from "@/components/positions-page" // Import PositionsPage
+import { TestsPage } from "@/components/tests-page" // Import TestsPage
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState<
     | "contents"
     | "lectures"
     | "training"
+    | "tests" // Added type for tests
     | "reports"
     | "ranks"
     | "commands"
@@ -42,6 +45,7 @@ export default function Home() {
     | "terms"
     | "resources"
     | "penalty-calculator"
+    | "versions"
   >("contents")
 
   const [isGlobalSearchOpen, setIsGlobalSearchOpen] = useState(false)
@@ -52,6 +56,8 @@ export default function Home() {
         return <LecturesPage />
       case "training":
         return <TrainingPage />
+      case "tests": // Added case for tests
+        return <TestsPage />
       case "reports":
         return <ReportsPage />
       case "ranks":
@@ -82,6 +88,8 @@ export default function Home() {
         return <ResourcesPage />
       case "penalty-calculator":
         return <PenaltyCalculator />
+      case "versions":
+        return <VersionsPage />
       default:
         return <MainContent />
     }

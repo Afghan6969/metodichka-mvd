@@ -12,6 +12,8 @@ import {
   Book,
   ExternalLink,
   Calculator,
+  GitBranch,
+  ClipboardCheck,
 } from "lucide-react"
 
 export function MainContent() {
@@ -145,6 +147,36 @@ export function MainContent() {
                 </div>
               </Card>
 
+              <Card className="p-5 hover:shadow-md transition-shadow border-l-4 border-l-green-500 bg-card">
+                <div className="flex items-start gap-4">
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <ClipboardCheck className="h-5 w-5 text-green-600" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="font-semibold text-card-foreground">Тесты</h3>
+                      <Badge variant="secondary" className="text-xs">
+                        УК + КоАП
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Интерактивные тесты на знание Уголовного кодекса и КоАП
+                    </p>
+                    <div className="flex flex-wrap gap-1">
+                      <Badge variant="outline" className="text-xs">
+                        Уголовный кодекс
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        КоАП
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        Экзамен
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+
               <Card className="p-5 hover:shadow-md transition-shadow border-l-4 border-l-primary bg-card">
                 <div className="flex items-start gap-4">
                   <div className="p-2 bg-primary/10 rounded-lg">
@@ -235,7 +267,7 @@ export function MainContent() {
               Справочные материалы
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Card className="p-5 hover:shadow-md transition-shadow border-l-4 border-l-primary bg-card">
                 <div className="flex items-start gap-4">
                   <div className="p-2 bg-primary/10 rounded-lg">
@@ -259,6 +291,23 @@ export function MainContent() {
                   </div>
                 </div>
               </Card>
+
+              <Card className="p-5 hover:shadow-md transition-shadow border-l-4 border-l-accent bg-card">
+                <div className="flex items-start gap-4">
+                  <div className="p-2 bg-accent/10 rounded-lg">
+                    <GitBranch className="h-5 w-5 text-accent" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="font-semibold text-card-foreground">Версии</h3>
+                      <Badge variant="default" className="text-xs bg-green-500 hover:bg-green-600">
+                        v2.1
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">История изменений и обновлений методички</p>
+                  </div>
+                </div>
+              </Card>
             </div>
           </div>
 
@@ -274,10 +323,25 @@ export function MainContent() {
                   <p>• Навигация слева организована по принципу частоты использования</p>
                   <p>• Все материалы актуализированы для Республики Провинция</p>
                   <p>• Доклады в рацию теперь без функции копирования для упрощения интерфейса</p>
+                  <p>• Бинды теперь вынесены в отдельные разделы с кнопками копирования</p>
                 </div>
               </div>
             </div>
           </Card>
+
+          <div className="mt-16 pt-8 border-t border-border">
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground mb-2">Разработано для МВД Республики Провинция (РП)</p>
+              <a
+                href="https://vk.com/id503251431"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
+              >
+                Разработчик: Poseidon_Wagner
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>

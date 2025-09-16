@@ -1,13 +1,15 @@
 "use client"
 
 import { useState } from "react"
-import { Copy, Check, Keyboard } from "lucide-react"
+import { Copy, Check, Keyboard, Search, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
 
 export function GibddBindsPage() {
   const [copiedBind, setCopiedBind] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState("")
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -20,12 +22,12 @@ export function GibddBindsPage() {
   }
 
   const BindItem = ({ bind, description }: { bind: string; description?: string }) => (
-    <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border">
+    <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border animate-fade-in">
       <div className="flex-1">
         <code className="text-sm font-mono text-foreground">{bind}</code>
         {description && <p className="text-xs text-muted-foreground mt-1">{description}</p>}
       </div>
-      <Button variant="ghost" size="sm" onClick={() => copyToClipboard(bind)} className="ml-2 h-8 w-8 p-0">
+      <Button variant="ghost" size="sm" onClick={() => copyToClipboard(bind)} className="ml-2 h-8 w-8 p-0 btn-hover">
         {copiedBind === bind ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
       </Button>
     </div>
@@ -41,6 +43,194 @@ export function GibddBindsPage() {
     </div>
   )
 
+  const bindSections = [
+    {
+      title: "Приветствие коллег",
+      binds: [{ bind: 'bind [клавиша] say Звание, ГИБДД по городу "Город", "Фамилия Имя.' }],
+    },
+    {
+      title: "Предъявление служебного удостоверения",
+      binds: [{ bind: "bind [клавиша] say Гражданин, предоставьте документ удостоверяющий вашу личность." }],
+    },
+    {
+      title: "Изучение документов",
+      binds: [
+        { bind: "bind [клавиша] me изучает документы" },
+        { bind: "bind [клавиша] do Личность гражданина установлена." },
+      ],
+    },
+    {
+      title: "Проверка через фото и КПК",
+      binds: [
+        { bind: "bind [клавиша] do Мини-фотоаппарат и КПК в кармане." },
+        { bind: "bind [клавиша] me достав фотоаппарат и КПК, сфотографировал человека" },
+        { bind: "bind [клавиша] up me открыл базу граждан на КПК, сверил сделанную фотографию с данными базы" },
+      ],
+    },
+    {
+      title: "Задержание и наручники гражданина в машине с открытой дверью",
+      binds: [
+        { bind: "bind [клавиша] me отстегнув ремень безопасности, высадил задержанного и надел на него наручники" },
+        { bind: "bind [клавиша] chatbox cuff" },
+      ],
+    },
+    {
+      title: "Протокол задержания",
+      binds: [
+        { bind: "bind [клавиша] do В руке сотрудника папка с протоколами и ручкой." },
+        { bind: "bind [клавиша] me вытащил из папки бланк с рулеткой и оформил протокол задержания" },
+        { bind: "bind [клавиша] me протянул протокол и ручку задержанному" },
+        { bind: "bind [клавиша] say подпись поставьте" },
+        { bind: "bind [клавиша] n /me поставил подпись" },
+        { bind: "bind [клавиша] me оторвал копию протокола и передал её гражданину" },
+        { bind: "bind [клавиша] do Конвоир взял протокол задержания и увел задержанного в КПЗ." },
+        { bind: "bind [клавиша] chatbox arrest" },
+      ],
+    },
+    {
+      title: "Лишение водительского удостоверения",
+      binds: [
+        { bind: "bind [клавиша] do На поясе закреплён тактический планшет." },
+        { bind: "bind [клавиша] me сняв тактический планшет с пояса, аннулировал водительское удостоверение" },
+        { bind: "bind [клавиша] chatbox takecarlic" },
+      ],
+    },
+    {
+      title: "Проверка транспортных номеров",
+      binds: [
+        { bind: "bind [клавиша] do На поясе закреплён тактический планшет." },
+        { bind: "bind [клавиша] me сняв тактический планшет с пояса, проверил номера по базе данных" },
+        { bind: "bind [клавиша] chatbox findcar" },
+      ],
+    },
+    {
+      title: "Список граждан в розыске",
+      binds: [
+        { bind: "bind [клавиша] do На поясе закреплён тактический планшет." },
+        { bind: "bind [клавиша] me сняв тактический планшет с пояса, открыл базу данных федерального розыска" },
+        { bind: "bind [клавиша] wanted" },
+      ],
+    },
+    {
+      title: "Список автомобилей в розыске",
+      binds: [
+        { bind: "bind [клавиша] do На поясе закреплён тактический планшет." },
+        { bind: "bind [клавиша] me сняв тактический планшет с пояса, открыл базу данных автомобилей в розыске" },
+        { bind: "bind [клавиша] wcar" },
+      ],
+    },
+    {
+      title: "Мегафон: требование остановиться",
+      binds: [
+        { bind: "bind [клавиша] do Мегафон закреплён на поясе." },
+        { bind: "bind [клавиша] me сняв мегафон с пояса, крикнул в него" },
+        { bind: "bind [клавиша] m Останавливаемся! В противном случае будут применены силовые меры!" },
+      ],
+    },
+    {
+      title: "Проверка тонировки",
+      binds: [
+        { bind: "bind [клавиша] do Тауметр в кармане." },
+        { bind: "bind [клавиша] me достав тауметр из кармана, сделал замер светопропускаемости стекла" },
+        {
+          bind: "bind [клавиша] do Прибор показал, что уровень тонировки выше допустимого по ГОСТу.",
+          description: "Если тонировка более 31%",
+        },
+        { bind: "bind [клавиша] do Прибор показал, что светопропускаемость в норме." },
+      ],
+    },
+    {
+      title: "Передача данных по нарушителю",
+      binds: [
+        { bind: "bind [клавиша] do Рация закреплена на нагрудном кармане." },
+        { bind: "bind [клавиша] me сняв рацию с нагрудного кармана, продиктовал диспетчеру приметы правонарушителя" },
+        { bind: "bind [клавиша] chatbox su" },
+      ],
+    },
+    {
+      title: "Причина остановки граждан",
+      binds: [
+        { bind: "bind [клавиша] say Остановлены за нарушение законодательства." },
+        { bind: "bind [клавиша] say Остановлены по подозрению на нарушение законодательства." },
+      ],
+    },
+    {
+      title: "Посадка задержанного в служебный автомобиль",
+      binds: [
+        { bind: "bind [клавиша] me посадив задержанного в служебный автомобиль, пристегнул ремнём безопасности" },
+      ],
+    },
+    {
+      title: "Штраф",
+      binds: [
+        { bind: "bind [клавиша] do КПК находится в кармане." },
+        { bind: "bind [клавиша] me достав КПК из кармана, включил его и открыл базу данных" },
+        { bind: 'bind [клавиша] up me введя данные гражданина, нажал на кнопку "Выписать штраф"' },
+        { bind: 'bind [клавиша] do На экране надпись "Штраф успешно выписан".' },
+        { bind: "bind [клавиша] chatbox tsu" },
+        { bind: "bind [клавиша] me выслал СМС на номер телефона гражданина, копию протокола с подробной информацией" },
+      ],
+    },
+    {
+      title: "Разбитие стекла и доставание гражданина",
+      binds: [
+        { bind: "bind [клавиша] do Дубинка на поясе." },
+        { bind: "bind [клавиша] me сняв дубинку с пояса ударил ею по стеклу и разбил его" },
+        { bind: "bind [клавиша] up do Окно разбито." },
+        { bind: "bind [клавиша] me просунув руку в салон открыл центральный замок автомобиля" },
+        {
+          bind: "bind [клавиша] me отстегнул ремень безопасности и вытащил преступника из автомобиля надев на него наручники",
+        },
+        { bind: "bind [клавиша] chatbox cuff" },
+      ],
+    },
+    {
+      title: "Оформление ДТП",
+      binds: [
+        { bind: "bind [клавиша] do На торпеде находится бланк с рулеткой." },
+        { bind: "bind [клавиша] me взяв бланк осмотра места ДТП и зарисовал схему ДТП" },
+        { bind: "bind [клавиша] up do Бланк осмотра места ДТП с зафиксированной схемой ДТП в руках." },
+        { bind: "bind [клавиша] me сделал на схеме пометки и положил бланк на торпеду" },
+        { bind: "bind [клавиша] me взяв на торпеде рулетку и сделал замеры" },
+        { bind: "bind [клавиша] me нанес на схему значения, измеренные рулеткой, сделал выводы" },
+        { bind: "bind [клавиша] me закончив заполнять схему ДТП, положил её на торпеду" },
+      ],
+    },
+  ]
+
+  const filteredSections = bindSections
+    .filter((section) => {
+      if (!searchQuery.trim()) return true
+
+      const query = searchQuery.toLowerCase()
+      const titleMatch = section.title.toLowerCase().includes(query)
+      const bindMatch = section.binds.some(
+        (item) =>
+          item.bind.toLowerCase().includes(query) ||
+          (item.description && item.description.toLowerCase().includes(query)),
+      )
+
+      return titleMatch || bindMatch
+    })
+    .map((section) => ({
+      ...section,
+      binds: section.binds.filter((item) => {
+        if (!searchQuery.trim()) return true
+
+        const query = searchQuery.toLowerCase()
+        return (
+          item.bind.toLowerCase().includes(query) ||
+          (item.description && item.description.toLowerCase().includes(query)) ||
+          section.title.toLowerCase().includes(query)
+        )
+      }),
+    }))
+    .filter((section) => section.binds.length > 0)
+
+  const clearSearch = () => {
+    setSearchQuery("")
+  }
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       <div className="text-center space-y-4">
@@ -54,6 +244,33 @@ export function GibddBindsPage() {
           </div>
         </div>
       </div>
+
+      <div className="flex justify-center">
+        <div className="relative w-full max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Поиск по биндам..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 pr-10 h-10 border-border focus:border-primary focus:ring-primary"
+          />
+          {searchQuery && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearSearch}
+              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-muted"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {searchQuery && (
+        <div className="text-center text-sm text-muted-foreground">Найдено разделов: {filteredSections.length}</div>
+      )}
 
       <Card className="border-yellow-200 bg-yellow-50">
         <CardHeader>
@@ -85,259 +302,60 @@ export function GibddBindsPage() {
       </Card>
 
       <div className="grid gap-6">
-        {/* Приветствие коллег */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Приветствие коллег</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <BindItem bind='bind [клавиша] say Звание, ГИБДД по городу "Город", "Фамилия Имя.' />
-          </CardContent>
-        </Card>
-
-        {/* Предъявление служебного удостоверения */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Предъявление служебного удостоверения</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <BindItem bind="bind [клавиша] say Гражданин, предоставьте документ удостоверяющий вашу личность." />
-          </CardContent>
-        </Card>
-
-        {/* Изучение документов */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Изучение документов</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <BindItem bind="bind [клавиша] me изучает документы" />
-            <BindItem bind="bind [клавиша] do Личность гражданина установлена." />
-          </CardContent>
-        </Card>
-
-        {/* Проверка через фото и КПК */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Проверка через фото и КПК</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <BindItem bind="bind [клавиша] do Мини-фотоаппарат и КПК в кармане." />
-            <BindItem bind="bind [клавиша] me достав фотоаппарат и КПК, сфотографировал человека" />
-            <BindItem bind="bind [клавиша] up me открыл базу граждан на КПК, сверил сделанную фотографию с данными базы" />
-          </CardContent>
-        </Card>
-
-        {/* Задержание и наручники */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">
-              Задержание и наручники гражданина в машине с открытой дверью
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <BindItem bind="bind [клавиша] me отстегнув ремень безопасности, высадил задержанного и надел на него наручники" />
-            <BindItem bind="bind [клавиша] chatbox cuff" />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Протокол задержания</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <SectionDivider title="Часть 1" />
-            <BindItem bind="bind [клавиша] do В руке сотрудника папка с протоколами и ручкой." />
-            <BindItem bind="bind [клавиша] me вытащил из папки бланк с рулеткой и оформил протокол задержания" />
-            <BindItem bind="bind [клавиша] me протянул протокол и ручку задержанному" />
-
-            <SectionDivider title="Часть 2" />
-            <BindItem bind="bind [клавиша] say подпись поставьте" />
-            <BindItem bind="bind [клавиша] n /me поставил подпись" />
-            <BindItem bind="bind [клавиша] me оторвал копию протокола и передал её гражданину" />
-
-            <SectionDivider title="Часть 3" />
-            <BindItem bind="bind [клавиша] do Конвоир взял протокол задержания и увел задержанного в КПЗ." />
-            <BindItem bind="bind [клавиша] chatbox arrest" />
-          </CardContent>
-        </Card>
-
-        {/* Лишение водительского удостоверения */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Лишение водительского удостоверения</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <BindItem bind="bind [клавиша] do На поясе закреплён тактический планшет." />
-            <BindItem bind="bind [клавиша] me сняв тактический планшет с пояса, аннулировал водительское удостоверение" />
-            <BindItem bind="bind [клавиша] chatbox takecarlic" />
-          </CardContent>
-        </Card>
-
-        {/* Проверка транспортных номеров */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Проверка транспортных номеров</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <BindItem bind="bind [клавиша] do На поясе закреплён тактический планшет." />
-            <BindItem bind="bind [клавиша] me сняв тактический планшет с пояса, проверил номера по базе данных" />
-            <BindItem bind="bind [клавиша] chatbox findcar" />
-          </CardContent>
-        </Card>
-
-        {/* Список граждан в розыске */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Список граждан в розыске</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <BindItem bind="bind [клавиша] do На поясе закреплён тактический планшет." />
-            <BindItem bind="bind [клавиша] me сняв тактический планшет с пояса, открыл базу данных федерального розыска" />
-            <BindItem bind="bind [клавиша] wanted" />
-          </CardContent>
-        </Card>
-
-        {/* Список автомобилей в розыске */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Список автомобилей в розыске</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <BindItem bind="bind [клавиша] do На поясе закреплён тактический планшет." />
-            <BindItem bind="bind [клавиша] me сняв тактический планшет с пояса, открыл базу данных автомобилей в розыске" />
-            <BindItem bind="bind [клавиша] wcar" />
-          </CardContent>
-        </Card>
-
-        {/* Мегафон */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Мегафон: требование остановиться</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <BindItem bind="bind [клавиша] do Мегафон закреплён на поясе." />
-            <BindItem bind="bind [клавиша] me сняв мегафон с пояса, крикнул в него" />
-            <BindItem bind="bind [клавиша] m Останавливаемся! В противном случае будут применены силовые меры!" />
-            <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <p className="text-sm text-yellow-800">
-                Перед применением меры наказания сотрудник должен быть уверен, что выдвинутое требование было верно
-                воспринято именно тем лицом, к которому оно адресовывалось.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Проверка тонировки */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Проверка тонировки</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <BindItem bind="bind [клавиша] do Тауметр в кармане." />
-            <BindItem bind="bind [клавиша] me достав тауметр из кармана, сделал замер светопропускаемости стекла" />
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800">Проверка уровня тонировки через "TAB"</p>
-            </div>
-            <BindItem
-              bind="bind [клавиша] do Прибор показал, что уровень тонировки выше допустимого по ГОСТу."
-              description="Если тонировка более 31%"
-            />
-            <BindItem bind="bind [клавиша] do Прибор показал, что светопропускаемость в норме." />
-          </CardContent>
-        </Card>
-
-        {/* Передача данных по нарушителю */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Передача данных по нарушителю</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <BindItem bind="bind [клавиша] do Рация закреплена на нагрудном кармане." />
-            <BindItem bind="bind [клавиша] me сняв рацию с нагрудного кармана, продиктовал диспетчеру приметы правонарушителя" />
-            <BindItem bind="bind [клавиша] chatbox su" />
-          </CardContent>
-        </Card>
-
-        {/* Причина остановки граждан */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Причина остановки граждан</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <BindItem bind="bind [клавиша] say Остановлены за нарушение законодательства." />
-            <BindItem bind="bind [клавиша] say Остановлены по подозрению на нарушение законодательства." />
-          </CardContent>
-        </Card>
-
-        {/* Посадка задержанного */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Посадка задержанного в служебный автомобиль</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <BindItem bind="bind [клавиша] me посадив задержанного в служебный автомобиль, пристегнул ремнём безопасности" />
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800">
-                При активном конвоировании (/arr), либо же после отыгровки сесть в автомобиль и прописать /putpl id
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Штраф</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <SectionDivider title="Часть 1" />
-            <BindItem bind="bind [клавиша] do КПК находится в кармане." />
-            <BindItem bind="bind [клавиша] me достав КПК из кармана, включил его и открыл базу данных" />
-            <BindItem bind='bind [клавиша] up me введя данные гражданина, нажал на кнопку "Выписать штраф"' />
-
-            <SectionDivider title="Часть 2" />
-            <BindItem bind='bind [клавиша] do На экране надпись "Штраф успешно выписан".' />
-            <BindItem bind="bind [клавиша] chatbox tsu" />
-            <BindItem bind="bind [клавиша] me выслал СМС на номер телефона гражданина, копию протокола с подробной информацией" />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Разбитие стекла и доставание гражданина</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <SectionDivider title="Часть 1" />
-            <BindItem bind="bind [клавиша] do Дубинка на поясе." />
-            <BindItem bind="bind [клавиша] me сняв дубинку с пояса ударил ею по стеклу и разбил его" />
-            <BindItem bind="bind [клавиша] up do Окно разбито." />
-
-            <SectionDivider title="Часть 2" />
-            <BindItem bind="bind [клавиша] me просунув руку в салон открыл центральный замок автомобиля" />
-            <BindItem bind="bind [клавиша] me отстегнул ремень безопасности и вытащил преступника из автомобиля надев на него наручники" />
-            <BindItem bind="bind [клавиша] chatbox cuff" />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg text-primary">Оформление ДТП</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <SectionDivider title="Часть 1" />
-            <BindItem bind="bind [клавиша] do На торпеде находится бланк с рулеткой." />
-            <BindItem bind="bind [клавиша] me взяв бланк осмотра места ДТП и зарисовал схему ДТП" />
-            <BindItem bind="bind [клавиша] up do Бланк осмотра места ДТП с зафиксированной схемой ДТП в руках." />
-
-            <SectionDivider title="Часть 2" />
-            <BindItem bind="bind [клавиша] me сделал на схеме пометки и положил бланк на торпеду" />
-            <BindItem bind="bind [клавиша] me взяв на торпеде рулетку и сделал замеры" />
-
-            <SectionDivider title="Часть 3" />
-            <BindItem bind="bind [клавиша] me нанес на схему значения, измеренные рулеткой, сделал выводы" />
-            <BindItem bind="bind [клавиша] me закончив заполнять схему ДТП, положил её на торпеду" />
-          </CardContent>
-        </Card>
+        {filteredSections.length > 0 ? (
+          filteredSections.map((section, sectionIndex) => (
+            <Card key={sectionIndex} className="content-card">
+              <CardHeader>
+                <CardTitle className="text-lg text-primary">{section.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {section.binds.map((item, index) => (
+                  <div key={index}>
+                    <BindItem bind={item.bind} description={item.description} />
+                    {section.title === "Протокол задержания" && (index === 2 || index === 5) && (
+                      <SectionDivider title={index === 2 ? "Часть 2" : "Часть 3"} />
+                    )}
+                    {section.title === "Штраф" && index === 2 && <SectionDivider title="Часть 2" />}
+                    {section.title === "Разбитие стекла и доставание гражданина" && index === 2 && (
+                      <SectionDivider title="Часть 2" />
+                    )}
+                    {section.title === "Оформление ДТП" && (index === 2 || index === 4) && (
+                      <SectionDivider title={index === 2 ? "Часть 2" : "Часть 3"} />
+                    )}
+                    {section.title === "Проверка тонировки" && index === 1 && (
+                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p className="text-sm text-blue-800">Проверка уровня тонировки через "TAB"</p>
+                      </div>
+                    )}
+                    {section.title === "Мегафон: требование остановиться" && index === 2 && (
+                      <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <p className="text-sm text-yellow-800">
+                          Перед применением меры наказания сотрудник должен быть уверен, что выдвинутое требование было
+                          верно воспринято именно тем лицом, к которому оно адресовывалось.
+                        </p>
+                      </div>
+                    )}
+                    {section.title === "Посадка задержанного в служебный автомобиль" && index === 0 && (
+                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p className="text-sm text-blue-800">
+                          При активном конвоировании (/arr), либо же после отыгровки сесть в автомобиль и прописать
+                          /putpl id
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <Card className="content-card">
+            <CardContent className="text-center py-8">
+              <p className="text-muted-foreground">Ничего не найдено по запросу "{searchQuery}"</p>
+              <p className="text-sm text-muted-foreground mt-2">Попробуйте изменить поисковый запрос</p>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       <footer className="mt-16 pt-8 border-t border-border">
