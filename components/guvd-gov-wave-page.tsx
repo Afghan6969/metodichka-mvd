@@ -1,0 +1,336 @@
+"use client"
+
+import { useState } from "react"
+import { Card } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { CopyButton } from "./copy-button"
+import { Shield, AlertCircle, ExternalLink } from "lucide-react"
+
+const timeSlots = [
+  "00:00-01:00",
+  "01:30-02:30",
+  "03:00-04:00",
+  "04:30-05:30",
+  "06:00-07:00",
+  "07:30-08:30",
+  "09:00-10:00",
+  "10:30-11:30",
+  "12:00-13:00",
+  "13:30-14:30",
+  "15:00-16:00",
+  "16:30-17:30",
+  "18:00-19:00",
+  "19:30-20:30",
+  "21:00-22:00",
+  "22:30-23:30",
+]
+
+const cities = [
+  { name: "Приволжск", tag: "П" },
+  { name: "Мирный", tag: "М" },
+  { name: "Невский", tag: "Н" },
+]
+
+export function GuvdGovWavePage() {
+  const [selectedTime, setSelectedTime] = useState("")
+  const [selectedCity, setSelectedCity] = useState("")
+  const [password, setPassword] = useState("")
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [error, setError] = useState("")
+
+  const handlePasswordSubmit = () => {
+    if (password === "guvd2024") {
+      setIsAuthenticated(true)
+      setError("")
+    } else {
+      setError("Пароль неверный, обратитесь к руководству для получения доступа")
+    }
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex-1 p-8 overflow-auto">
+        <div className="max-w-md mx-auto mt-20">
+          <Card className="p-8 shadow-lg border-2 border-blue-200">
+            <div className="text-center mb-6">
+              <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                <Shield className="h-8 w-8 text-blue-600" />
+              </div>
+              <h1 className="text-2xl font-bold text-blue-600 mb-2">Доступ к Гос волне ПА</h1>
+              <p className="text-sm text-gray-600">Введите пароль для доступа к системе</p>
+            </div>
+
+            <div className="space-y-4">
+              {error && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium mb-2 text-gray-700">Пароль доступа</label>
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value)
+                    setError("")
+                  }}
+                  placeholder="Введите пароль"
+                  onKeyPress={(e) => e.key === "Enter" && handlePasswordSubmit()}
+                  className="h-12"
+                />
+              </div>
+              <Button onClick={handlePasswordSubmit} className="w-full h-12 bg-blue-600 hover:bg-blue-700">
+                Войти в систему
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
+  const generateMessages = (time: string, city: string) => {
+    const [startTime, endTime] = time.split("-")
+    const [startHour, startMinute] = startTime.split(":")
+
+    let interviewHour = Number.parseInt(startHour)
+    if (startMinute === "30") {
+      interviewHour = (interviewHour + 1) % 24
+    }
+    const interviewTime = `${interviewHour.toString().padStart(2, "0")}:00`
+
+    const cityData = cities.find((c) => c.name === city)
+    const tag = cityData ? `ГУВД-${cityData.tag}` : "ГУВД-Н"
+
+    return {
+      announcement: `gov Сегодня в ${interviewTime} состоится собеседование в Полицейскую Академию ${tag}. Место: участок г. ${city}. Ждём всех желающих!\ngov Требования: опрятность, юр. образование, медкарта, военный билет, полный пакет документов, прописка от 5 лет`,
+
+      start: `gov Собеседование в Полицейскую Академию ${tag} начато! Ждём в участке г. ${city}. Не упусти шанс начать карьеру!\ngov Требования: опрятность, юр. образование, медкарта, военный билет, полный пакет документов, прописка от 5 лет`,
+
+      continue: `gov Собеседование в Полицейскую Академию ${tag} продолжается! Ждём вас в участке г. ${city}. Не упустите шанс стать частью команды!\ngov Требования: опрятность, юр. образование, медкарта, военный билет, полный пакет документов, прописка от 5 лет`,
+
+      end: `gov Собеседование в Полицейскую Академию ${tag} окончено. Открыт приём эл. заявлений на трудоустройство в званиях Рядовой и Старшина.\ngov Есть опыт службы в ГУВД? Подайте заявление на восстановление в звании и должности через гос. портал республики.`,
+    }
+  }
+
+  const messages = selectedTime && selectedCity ? generateMessages(selectedTime, selectedCity) : null
+
+  return (
+    <div className="flex-1 p-8 overflow-auto">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold text-blue-600 mb-8">Гос волна ГУВД - ПА (Полицейская академия)</h1>
+
+        <div className="space-y-6">
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold mb-4">Настройки собеседования</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Время собеседования</label>
+                <Select value={selectedTime} onValueChange={setSelectedTime}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Выберите время" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {timeSlots.map((slot) => (
+                      <SelectItem key={slot} value={slot}>
+                        {slot}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Город</label>
+                <Select value={selectedCity} onValueChange={setSelectedCity}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Выберите город" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {cities.map((city) => (
+                      <SelectItem key={city.name} value={city.name}>
+                        {city.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-6 border-l-4 border-l-yellow-400">
+            <h2 className="text-xl font-semibold text-yellow-700 mb-4">Правила выхода в гос волну</h2>
+            <div className="text-sm text-gray-700 space-y-2">
+              <p>• Сообщения государственной волны (/gov) видны всем игрокам на сервере.</p>
+              <p>
+                • Руководство по использованию государственной волны, а также расписание — закреплены в беседе VK —
+                "Гос. волна".
+              </p>
+              <p>• Эфирное время расставляется на сайте.</p>
+              <p>
+                • В государственную волну запрещено писать что-либо, кроме новостей о предстоящих собеседованиях и
+                мероприятиях организации.
+              </p>
+              <p>
+                • Организация вправе занять государственную волну на час и не более с момента первых сообщений,
+                заканчивая последними.
+              </p>
+              <p>• Интервал между подачей сообщений должен быть не менее 10-ти минут.</p>
+              <p>• Интервал между строчками должен быть не менее 3-х секунд.</p>
+              <p>• Максимальное количество строк — 4 (четыре).</p>
+              <p>
+                • Подача сообщений в государственную волну должна быть только от лица одного персонажа (за исключением
+                непредвиденных обстоятельств).
+              </p>
+              <p>• Сообщения в государственную волну о мероприятия должны сопровождаться тэгом — [МП].</p>
+              <p>
+                • При отмене запланированного собеседования/мероприятия лидер обязан отписать об отмене в беседу VK —
+                "Гос. волна". Причина отмены должна быть обоснованной.
+              </p>
+            </div>
+          </Card>
+
+          <Card className="p-6 border-l-4 border-l-blue-400">
+            <h2 className="text-xl font-semibold text-blue-700 mb-4">Правила проведения собеседования</h2>
+            <div className="text-sm text-gray-700 space-y-2">
+              <p>
+                <strong>Собеседование проводится по следующему плану:</strong>
+              </p>
+              <p>
+                • Получить информацию о предстоящем собеседовании можно через новостные источники, либо по факту
+                приглашения кандидата через электронное заявление на государственном портале в разделе государственной
+                организации.
+              </p>
+              <p>
+                • Гражданин, заявивший, что он иностранец, не может служить/работать в государственной организации.
+                Требуется гражданство Республики Провинция.
+              </p>
+              <p>• Знакомство с гражданином: уточнение Ф.И.О, возраста, образования, места проживания и т.д.</p>
+              <p>• Изучение документов гражданина: предоставление паспорта, трудовой книжки, диплома и т.д.</p>
+              <p>• Опрос знаний и проверка квалификации гражданина, если того требует будущая должность.</p>
+              <p>
+                • Дополнительные этапы, предусмотренные конкретной организацией. Например, более тщательное изучение
+                биографии личности.
+              </p>
+            </div>
+          </Card>
+
+          <Card className="p-6 border-l-4 border-l-green-400">
+            <h2 className="text-xl font-semibold text-green-700 mb-4">Требования к кандидатам</h2>
+            <div className="text-sm text-gray-700 space-y-2">
+              <p>• Возраст от 18-ти до 40-ка лет включительно.</p>
+              <p>• Опрятный внешний вид гражданина.</p>
+              <p>• Не менее 5-ти лет проживания в Республике Провинция.</p>
+              <p>• Наличие действующей медкарты.</p>
+              <p>• Наличие военного билета, подтверждающего прохождение срочной службы.</p>
+              <p>• Наличие юридического образования.</p>
+              <p>• Наличие полного пакета документов.</p>
+              <p>• Грамотность, адекватность, умение коммуницировать с гражданами.</p>
+              <p>• Наличие водительских прав категории B.</p>
+              <p>• Отсутствие гражданина в общем черном списке государственных организаций.</p>
+              <p>• Отсутствие гражданина в базе федерального розыска.</p>
+              <p>• Отсутствие у гражданина государственных штрафов.</p>
+            </div>
+          </Card>
+
+          {messages && (
+            <div className="space-y-4">
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-green-600">Объявление (за 30 минут до начала)</h3>
+                  <CopyButton text={messages.announcement} />
+                </div>
+                <div className="bg-gray-50 p-4 rounded font-mono text-sm">
+                  {messages.announcement.split("\n").map((line, index) => (
+                    <div key={index} className="flex items-start gap-2 mb-2 last:mb-0">
+                      <div className="flex-1">{line}</div>
+                      <CopyButton text={line} className="flex-shrink-0 mt-0.5" />
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-blue-600">Начало собеседования</h3>
+                  <CopyButton text={messages.start} />
+                </div>
+                <div className="bg-gray-50 p-4 rounded font-mono text-sm">
+                  {messages.start.split("\n").map((line, index) => (
+                    <div key={index} className="flex items-start gap-2 mb-2 last:mb-0">
+                      <div className="flex-1">{line}</div>
+                      <CopyButton text={line} className="flex-shrink-0 mt-0.5" />
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-orange-600">Продолжение собеседования</h3>
+                  <CopyButton text={messages.continue} />
+                </div>
+                <div className="bg-gray-50 p-4 rounded font-mono text-sm">
+                  {messages.continue.split("\n").map((line, index) => (
+                    <div key={index} className="flex items-start gap-2 mb-2 last:mb-0">
+                      <div className="flex-1">{line}</div>
+                      <CopyButton text={line} className="flex-shrink-0 mt-0.5" />
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-red-600">Окончание собеседования</h3>
+                  <CopyButton text={messages.end} />
+                </div>
+                <div className="bg-gray-50 p-4 rounded font-mono text-sm">
+                  {messages.end.split("\n").map((line, index) => (
+                    <div key={index} className="flex items-start gap-2 mb-2 last:mb-0">
+                      <div className="flex-1">{line}</div>
+                      <CopyButton text={line} className="flex-shrink-0 mt-0.5" />
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </div>
+          )}
+
+          <Card className="p-6 border-l-4 border-l-blue-400">
+            <h2 className="text-xl font-semibold text-blue-700 mb-4">Временная схема</h2>
+            <div className="text-sm text-gray-700 space-y-2">
+              <p>
+                <strong>Пример для времени 00:00-01:00:</strong>
+              </p>
+              <p>• 00:00, 00:10, 00:20 - объявления о предстоящем собеседовании</p>
+              <p>• 00:30 - объявление о начале собеседования</p>
+              <p>• 00:40, 00:50 - продолжение собеседования</p>
+              <p>• 01:00 - окончание собеседования</p>
+            </div>
+          </Card>
+
+          <Card className="p-4 bg-gray-50 border-gray-200">
+            <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
+              <span>Разработчик:</span>
+              <a
+                href="https://vk.com/id503251431"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium"
+              >
+                Poseidon_Wagner
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
+  )
+}
