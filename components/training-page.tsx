@@ -1,11 +1,22 @@
 "use client"
 
+import type React from "react"
 import { useState } from "react"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ChevronDown, ChevronRight, Target } from "lucide-react"
+import { ChevronDown, ChevronRight, Target, Dumbbell, Zap, Clock } from "lucide-react"
 import { CopyButton } from "@/components/copy-button"
 import { SearchBar } from "@/components/search-bar"
+
+interface Training {
+  id: string
+  title: string
+  icon: React.ComponentType<any>
+  duration: string
+  content: string[]
+  note?: string
+  category: "basic" | "advanced" | "special"
+}
 
 export function TrainingPage() {
   const [openTrainings, setOpenTrainings] = useState<{ [key: string]: boolean }>({})
@@ -18,11 +29,13 @@ export function TrainingPage() {
     }))
   }
 
-  const trainings = [
+  const trainings: Training[] = [
     {
       id: "pushups",
       title: 'Тренировка "Отжимания"',
-      icon: "💪",
+      icon: Dumbbell,
+      duration: "1 мин",
+      category: "basic",
       content: [
         'say Тренировка "Отжимания" 30 раз! Приступили к выполнению!',
         'say На этом тренировка "Отжимания" закончена.',
@@ -31,25 +44,33 @@ export function TrainingPage() {
     {
       id: "plank",
       title: 'Тренировка "Планка"',
-      icon: "🏋️",
+      icon: Dumbbell,
+      duration: "2 мин",
+      category: "basic",
       content: ['say Тренировка "Планка" 2 минуты! Начинаем!', 'say На этом тренировка "Планка" закончена.'],
     },
     {
       id: "squats",
       title: 'Тренировка "Приседания"',
-      icon: "🦵",
+      icon: Dumbbell,
+      duration: "1 мин",
+      category: "basic",
       content: ['say Тренировка "Приседания" 30 раз! Приступаем!', 'say На этом тренировка "Приседания" закончена.'],
     },
     {
       id: "running",
       title: 'Тренировка "Бег"',
-      icon: "🏃",
+      icon: Zap,
+      duration: "4 круга",
+      category: "advanced",
       content: ['say Тренировка "Бег" 4 круга! Вперёд!', 'say На этом тренировка "Бег" закончена.'],
     },
     {
       id: "obstacles",
       title: 'Тренировка "Прыжки через препятствия"',
-      icon: "🏃‍♂️",
+      icon: Zap,
+      duration: "10 раз",
+      category: "advanced",
       content: [
         'say Тренировка "Прыжки через препятствия " 10 раз! В работу!',
         'say На этом тренировка "Прыжки через препятствия " закончена.',
@@ -59,7 +80,9 @@ export function TrainingPage() {
     {
       id: "parachute",
       title: 'Тренировка "Прыжки с парашютом"',
-      icon: "🪂",
+      icon: Zap,
+      duration: "1 прыжок",
+      category: "special",
       content: [
         'say Тренировка "Прыжки с парашютом" 1 раз! Приступаем!',
         'say На этом тренировка "Прыжки с парашютом" закончена.',
@@ -69,7 +92,9 @@ export function TrainingPage() {
     {
       id: "punching",
       title: 'Тренировка "Удары по груше"',
-      icon: "🥊",
+      icon: Zap,
+      duration: "2 мин",
+      category: "special",
       content: [
         'say Тренировка "Удары по груше" 2 минуты! Начинаем!',
         'say На этом тренировка "Удары по груше" закончена.',
@@ -79,7 +104,9 @@ export function TrainingPage() {
     {
       id: "noparachute",
       title: 'Тренировка "Прыжки без парашюта"',
-      icon: "🌊",
+      icon: Zap,
+      duration: "1 прыжок",
+      category: "special",
       content: [
         'say Тренировка "Прыжки без парашюта" 1 раз! Вперёд!',
         'say На этом тренировка "Прыжки без парашюта " закончена.',
@@ -89,7 +116,9 @@ export function TrainingPage() {
     {
       id: "shooting",
       title: 'Тренировка "Стрельба в тире"',
-      icon: "🎯",
+      icon: Target,
+      duration: "2 раза",
+      category: "special",
       content: [
         'say Тренировка "Стрельба в тире" 2 раза! Приступаем!',
         'say На этом тренировка "Стрельба в тире " закончена.',
@@ -99,7 +128,9 @@ export function TrainingPage() {
     {
       id: "runobstacles",
       title: 'Тренировка "Бег через препятствия"',
-      icon: "🏃‍♀️",
+      icon: Zap,
+      duration: "2 раза",
+      category: "advanced",
       content: [
         'say Тренировка "Бег через препятствия" 2 раза! В работу!',
         'say На этом тренировка "Бег через препятствия" закончена.',
@@ -109,14 +140,18 @@ export function TrainingPage() {
     {
       id: "swimming",
       title: 'Тренировка "Заплыв"',
-      icon: "🏊",
+      icon: Zap,
+      duration: "2 раза",
+      category: "advanced",
       content: ['say Тренировка "Заплыв" 2 раза! Начинаем!', 'say На этом тренировка "Заплыв" закончена.'],
       note: "выполняется в бассейне в городе Приволжск.",
     },
     {
       id: "maneuvers",
       title: 'Тренировка "Спец. Манёвры"',
-      icon: "🚗",
+      icon: Zap,
+      duration: "2 мин",
+      category: "special",
       content: [
         'say Тренировка "Спец. Манёвры" 2 минуты! Вперёд!',
         'say На этом тренировка "Спец. Манёвры" закончена.',
@@ -124,6 +159,10 @@ export function TrainingPage() {
       note: "выполняется на треке либо на тест-драйве автомобилей в городе Приволжск.",
     },
   ]
+
+  const getItemIcon = (IconComponent: React.ComponentType<any>) => {
+    return <IconComponent className="h-5 w-5" />
+  }
 
   const filteredTrainings = trainings.filter(
     (training) =>
@@ -133,88 +172,124 @@ export function TrainingPage() {
   )
 
   return (
-    <div className="flex-1 p-8 bg-gray-50">
-      <div className="max-w-4xl mx-auto">
-        {/* Изменил цвета заголовка на оранжевые */}
-        <div className="flex items-center gap-3 mb-6">
-          <Target className="h-8 w-8 text-orange-600" />
-          <h1 className="text-3xl font-bold text-orange-700">Тренировки</h1>
+    <div className="space-y-6">
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center">
+          <Target className="h-6 w-6 text-white" />
         </div>
-
-        <div className="mb-6">
-          <SearchBar onSearch={setSearchQuery} placeholder="Поиск тренировок..." />
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Тренировки сотрудников МВД</h1>
+          <p className="text-muted-foreground">Физическая подготовка согласно программе обучения</p>
         </div>
+      </div>
 
-        {/* Изменил цвета информационного блока на оранжевые */}
-        <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
-          <p className="text-orange-800 font-medium">Примерное время на проведение каждой из тренировок - 1 минута.</p>
-        </div>
+      <div className="mb-6">
+        <SearchBar onSearch={setSearchQuery} placeholder="Поиск тренировок..." />
+      </div>
 
-        <div className="space-y-4">
-          {filteredTrainings.map((training) => (
-            <Card key={training.id} className="bg-white border border-gray-200 shadow-sm">
-              <Collapsible open={openTrainings[training.id]} onOpenChange={() => toggleTraining(training.id)}>
-                <CollapsibleTrigger className="w-full p-6 text-left hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      {/* Изменил цвет иконки на оранжевый */}
-                      <span className="text-orange-600 text-lg">{training.icon}</span>
-                      <h2 className="text-xl font-semibold text-orange-700">{training.title}</h2>
-                    </div>
-                    {openTrainings[training.id] ? (
-                      <ChevronDown className="h-5 w-5 text-gray-500" />
-                    ) : (
-                      <ChevronRight className="h-5 w-5 text-gray-500" />
-                    )}
-                  </div>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <div className="px-6 pb-6">
-                    <div className="bg-gray-50 p-4 rounded-lg border">
-                      {training.content.map((line, index) => (
-                        <div key={index} className="flex items-start gap-2 mb-2 last:mb-0">
-                          <div className="flex-1 font-mono text-sm text-gray-700">{line}</div>
-                          {line.trim().startsWith("say ") && (
-                            <CopyButton text={line.trim()} className="flex-shrink-0 mt-0.5" />
-                          )}
+      {/* Все тренировки в одном списке */}
+      <div className="space-y-4">
+        {filteredTrainings.map((training) => (
+          <Card key={training.id} className="border-border bg-card/50">
+            <CardContent className="p-0">
+              <div className="flex items-start gap-4 p-4">
+                <div className="text-primary mt-1">{getItemIcon(training.icon)}</div>
+                <div className="flex-1">
+                  <Collapsible open={openTrainings[training.id]} onOpenChange={() => toggleTraining(training.id)}>
+                    <CollapsibleTrigger className="w-full text-left">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="font-semibold text-foreground text-sm">{training.title}</h3>
                         </div>
-                      ))}
-                    </div>
-                    {training.note && (
-                      <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                        <p className="text-yellow-800 text-sm">
-                          <strong>Уточнение:</strong> {training.note}
-                        </p>
+                        {openTrainings[training.id] ? (
+                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                        )}
                       </div>
-                    )}
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
-            </Card>
-          ))}
-        </div>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="mt-3 bg-muted/50 p-4 rounded-lg border border-border">
+                        {training.content.map((line, index) => (
+                          <div key={index} className="flex items-start gap-2 mb-2 last:mb-0">
+                            <div className="flex-1 font-mono text-sm text-foreground">{line}</div>
+                            {line.trim().startsWith("say ") && (
+                              <CopyButton text={line.trim()} className="flex-shrink-0 mt-0.5" />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      {training.note && (
+                        <div className="mt-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                          <p className="text-yellow-800 dark:text-yellow-200 text-sm">
+                            <strong>Уточнение:</strong> {training.note}
+                          </p>
+                        </div>
+                      )}
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-        {filteredTrainings.length === 0 && searchQuery && (
-          <div className="text-center py-12">
-            <p className="text-gray-500">Тренировки не найдены по запросу "{searchQuery}"</p>
-          </div>
-        )}
-
-        {/* Изменил цвета финального блока на зеленые */}
-        <Card className="p-6 mb-6 mt-6 bg-emerald-50 border border-emerald-200 shadow-sm">
+      {/* Информационная карточка */}
+      <Card className="border-border bg-card/50">
+        <CardContent className="p-4">
           <div className="flex items-start gap-3">
-            <span className="text-emerald-600 text-lg">✅</span>
+            <Clock className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+            <div>
+              <p className="text-foreground font-medium text-sm leading-relaxed">
+                Примерное время на проведение каждой из тренировок - 1 минута.
+              </p>
+              <p className="text-muted-foreground text-xs mt-1">
+                Время может варьироваться в зависимости от сложности упражнения.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Завершающая карточка */}
+      <Card className="border-green-200 dark:border-green-800 bg-green-50/30 dark:bg-green-900/20">
+        <CardContent className="p-6">
+          <div className="flex items-start gap-3">
+            <span className="text-green-600 dark:text-green-400 text-lg">✅</span>
             <div className="w-full">
               <div className="flex items-start gap-2">
-                <div className="flex-1 font-mono text-sm text-gray-700 bg-gray-50 p-4 rounded-lg border">
+                <div className="flex-1 font-mono text-sm text-foreground bg-background p-4 rounded-lg border border-border">
                   say На этом наши тренировки подошли к концу!
                 </div>
                 <CopyButton text="say На этом наши тренировки подошли к концу!" className="flex-shrink-0 mt-4" />
               </div>
             </div>
           </div>
-        </Card>
-      </div>
+        </CardContent>
+      </Card>
+
+      {filteredTrainings.length === 0 && searchQuery && (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">Тренировки не найдены по запросу "{searchQuery}"</p>
+        </div>
+      )}
+
+      <footer className="mt-16 pt-8 border-t border-border">
+        <div className="text-center">
+          <p className="text-sm text-muted-foreground">
+            Разработано{" "}
+            <a
+              href="https://vk.com/id503251431"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:text-primary/80 font-medium transition-colors"
+            >
+              Poseidon_Wagner
+            </a>
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }

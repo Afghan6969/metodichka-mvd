@@ -1,11 +1,20 @@
 "use client"
 
+import type React from "react"
 import { useState } from "react"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ChevronDown, ChevronRight, GraduationCap } from "lucide-react"
 import { CopyButton } from "@/components/copy-button"
 import { SearchBar } from "@/components/search-bar"
+
+interface Lecture {
+  id: string
+  title: string
+  icon: React.ComponentType<any>
+  content: string
+  category: "basic" | "advanced" | "special"
+}
 
 export function LecturesPage() {
   const [openLectures, setOpenLectures] = useState<{ [key: string]: boolean }>({})
@@ -18,11 +27,12 @@ export function LecturesPage() {
     }))
   }
 
-  const lectures = [
+  const lectures: Lecture[] = [
     {
       id: "lecture1",
       title: "Лекция 1. Задержание",
-      icon: "🚔",
+      icon: GraduationCap,
+      category: "basic",
       content: `say Добрый день. Сегодняшняя тема лекции — «Задержание». Разберём основания, сроки и порядок действий сотрудников полиции.
 say Полиция защищает право каждого на свободу и неприкосновенность. say Без суда задержание не может длиться более трёх часов реального времени.
 say Если за 10 минут не удалось посадить нарушителя в КПЗ по объективной причине — он должен быть освобождён.
@@ -41,7 +51,8 @@ say Спасибо за внимание.`,
     {
       id: "lecture2",
       title: "Лекция 2. Права сотрудников полиции",
-      icon: "⚖️",
+      icon: GraduationCap,
+      category: "basic",
       content: `say Добрый день. Сегодняшняя лекция — «Права сотрудников полиции».
 say Кратко разберём, какие полномочия имеют полицейские при исполнении служебных обязанностей.
 say Полиция может требовать от граждан прекратить противоправные действия.
@@ -65,7 +76,8 @@ say На этом лекция «Права сотрудников полици�
     {
       id: "lecture3",
       title: "Лекция 3. Обязанности сотрудников полиции",
-      icon: "📋",
+      icon: GraduationCap,
+      category: "basic",
       content: `say Добрый день. Сегодняшняя лекция — «Обязанности полиции». Рассмотрим основные обязанности сотрудников полиции при исполнении служебных задач.
 say Полиция работает строго в соответствии с законом.
 say Сотрудник несет ответственность за свои действия и приказы.
@@ -97,7 +109,8 @@ say На этом лекция «Обязанности полиции» око�
     {
       id: "lecture4",
       title: "Лекция 4. Применение физ. силы и огнестрельного оружия",
-      icon: "🔫",
+      icon: GraduationCap,
+      category: "advanced",
       content: `say Добрый день. Сегодняшняя лекция — «Применение физической силы, специальных средств и огнестрельного оружия».
 say Сотрудник полиции вправе применять силу, спецсредства и оружие согласно закону без ответственности за вред, если действует правильно.
 say В нужной обороне и при задержании можно использовать подручные средства самозащиты.
@@ -119,7 +132,8 @@ say На этом лекция «Применение силы и оружия»
     {
       id: "lecture5",
       title: "Лекция 5. Запреты сотрудников полиции",
-      icon: "🚫",
+      icon: GraduationCap,
+      category: "advanced",
       content: `say Добрый день. Сегодняшняя лекция — «Запреты сотрудников полиции».
 say Запрещено использовать служебное положение в личных целях, брать взятки, снимать розыск без причины и возвращать права незаконно.
 say Нецензурная брань и оскорбления запрещены, кроме строгих рамок руководства.
@@ -140,7 +154,8 @@ say На этом лекция «Запреты сотрудников поли�
     {
       id: "lecture6",
       title: "Лекция 6. График работы (МСК) и обязанности сотрудников",
-      icon: "⏰",
+      icon: GraduationCap,
+      category: "advanced",
       content: `say Добрый день. Сегодняшняя лекция — «График работы (МСК) и обязанности сотрудников».
 say Государственные фракции работают по следующему графику в будние дни с 9:00 до 21:00 с перерывами на обед с 12:00 до 13:00 и на ужин с 16:00 до 17:00.
 say В выходные дни смена длится с 11:00 до 19:00 с теми же перерывами на обед и ужин.
@@ -153,7 +168,8 @@ say На этом лекция «График работы и обязаннос
     {
       id: "lecture7",
       title: "Лекция 7. Погоня",
-      icon: "🏃‍♂️",
+      icon: GraduationCap,
+      category: "special",
       content: `say Лекция на тему: «Погоня».
 say Начало погони — это всегда напряжённая и ответственная ситуация, требующая максимальной концентрации и чёткого соблюдения процедур.
 say Первым действием обязательно включите световые и звуковые сигналы — специальные громкоговорители и маячки, чтобы оповестить say всех участников дорожного движения о вашем преследовании.
@@ -173,7 +189,8 @@ say На этом лекция на тему «Погоня» завершена
     {
       id: "lecture8",
       title: "Лекция 8. Тактика",
-      icon: "🎯",
+      icon: GraduationCap,
+      category: "special",
       content: `say Лекция на тему: «Тактика действий сотрудников МВД».
 say В работе сотрудников МВД важно использовать все имеющиеся преимущества — численность, техническое оснащение, опыт.
 say На месте происшествия продумывайте несколько вариантов развития событий и выбирайте самый эффективный.
@@ -187,7 +204,8 @@ say На этом лекция по тактике действий сотруд
     {
       id: "lecture9",
       title: "Лекция 9. Колонна",
-      icon: "🚗",
+      icon: GraduationCap,
+      category: "special",
       content: `say Лекция на тему: "Колонна"
 say Колонна — группа ТС, движущихся вместе по правилам для безопасности и слаженности действий всех участников.
 say При движении в колонне запрещено превышать скорость, чтобы избежать аварий и сохранить порядок.
@@ -200,7 +218,8 @@ say Лекция на тему "Колонна" окончена.`,
     {
       id: "lecture10",
       title: "Лекция 10. Субординация",
-      icon: "👮‍♂️",
+      icon: GraduationCap,
+      category: "special",
       content: `say Тема лекции: "Субординация".
 say Субординация — это обязательное соблюдение правил взаимоотношений между сотрудниками полиции.
 say Согласно пункту 2.18, сотрудники обязаны соблюдать субординацию с коллегами.
@@ -215,7 +234,8 @@ say На этом лекция на тему "Субординация" зако
     {
       id: "lecture11",
       title: "Лекция 11. Этика поведения на службе",
-      icon: "🤝",
+      icon: GraduationCap,
+      category: "special",
       content: `say Лекция на тему: "Этика поведения на службе".
 say Сотрудник полиции — это представитель закона, от которого зависит безопасность граждан и общества в целом.
 say В общении с населением важно проявлять уважение, терпимость и корректность, независимо от обстоятельств.
@@ -230,7 +250,8 @@ say На этом лекция на тему "Этика поведения на
     {
       id: "lecture12",
       title: "Лекция 12. Работа с документами и отчетностью",
-      icon: "📄",
+      icon: GraduationCap,
+      category: "special",
       content: `say Лекция на тему: "Работа с документами и отчетностью".
 say Правильное оформление документов — залог успешной и прозрачной работы полиции.
 say Каждый акт, протокол или рапорт должен быть составлен точно, без ошибок и искажений.
@@ -245,7 +266,8 @@ say На этом лекция на тему "Работа с документа
     {
       id: "lecture13",
       title: "Лекция 13. Первая медицинская помощь",
-      icon: "🏥",
+      icon: GraduationCap,
+      category: "special",
       content: `say Лекция на тему: "Первая медицинская помощь".
 say В экстренных ситуациях от ваших действий может зависеть жизнь пострадавшего.
 say Первым делом оценивайте обстановку и обеспечьте безопасность для себя и пострадавшего.
@@ -260,6 +282,10 @@ say На этом лекция на тему "Первая медицинска�
     },
   ]
 
+  const getItemIcon = (IconComponent: React.ComponentType<any>) => {
+    return <IconComponent className="h-5 w-5" />
+  }
+
   const filteredLectures = lectures.filter(
     (lecture) =>
       lecture.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -267,59 +293,83 @@ say На этом лекция на тему "Первая медицинска�
   )
 
   return (
-    <div className="flex-1 p-8 bg-gray-50">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-3 mb-6">
-          <GraduationCap className="h-8 w-8 text-emerald-600" />
-          <h1 className="text-3xl font-bold text-emerald-700">Лекции</h1>
+    <div className="space-y-6">
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-12 h-12 bg-emerald-600 rounded-lg flex items-center justify-center">
+          <GraduationCap className="h-6 w-6 text-white" />
         </div>
-
-        <div className="mb-6">
-          <SearchBar onSearch={setSearchQuery} placeholder="Поиск лекций..." />
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Лекции для сотрудников МВД</h1>
+          <p className="text-muted-foreground">Теоретическая подготовка и изучение регламента</p>
         </div>
-
-        <div className="space-y-4">
-          {filteredLectures.map((lecture) => (
-            <Card key={lecture.id} className="bg-white border border-gray-200 shadow-sm">
-              <Collapsible open={openLectures[lecture.id]} onOpenChange={() => toggleLecture(lecture.id)}>
-                <CollapsibleTrigger className="w-full p-6 text-left hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="text-emerald-600 text-lg">{lecture.icon}</span>
-                      <h2 className="text-xl font-semibold text-emerald-700">{lecture.title}</h2>
-                    </div>
-                    {openLectures[lecture.id] ? (
-                      <ChevronDown className="h-5 w-5 text-gray-500" />
-                    ) : (
-                      <ChevronRight className="h-5 w-5 text-gray-500" />
-                    )}
-                  </div>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <div className="px-6 pb-6">
-                    <div className="bg-gray-50 p-4 rounded-lg border">
-                      {lecture.content.split("\n").map((line, index) => (
-                        <div key={index} className="flex items-start gap-2 mb-2 last:mb-0">
-                          <div className="flex-1 font-mono text-sm text-gray-700">{line}</div>
-                          {line.trim().startsWith("say ") && (
-                            <CopyButton text={line.trim()} className="flex-shrink-0 mt-0.5" />
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
-            </Card>
-          ))}
-        </div>
-
-        {filteredLectures.length === 0 && searchQuery && (
-          <div className="text-center py-12">
-            <p className="text-gray-500">Лекции не найдены по запросу "{searchQuery}"</p>
-          </div>
-        )}
       </div>
+
+      <div className="mb-6">
+        <SearchBar onSearch={setSearchQuery} placeholder="Поиск лекций..." />
+      </div>
+
+      {/* Все лекции в одном списке */}
+      <div className="space-y-4">
+        {filteredLectures.map((lecture) => (
+          <Card key={lecture.id} className="border-border bg-card/50">
+            <CardContent className="p-0">
+              <div className="flex items-start gap-4 p-4">
+                <div className="text-primary mt-1">{getItemIcon(lecture.icon)}</div>
+                <div className="flex-1">
+                  <Collapsible open={openLectures[lecture.id]} onOpenChange={() => toggleLecture(lecture.id)}>
+                    <CollapsibleTrigger className="w-full text-left">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="font-semibold text-foreground text-sm">{lecture.title}</h3>
+                        </div>
+                        {openLectures[lecture.id] ? (
+                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </div>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="mt-3 bg-muted/50 p-4 rounded-lg border border-border">
+                        {lecture.content.split("\n").map((line, index) => (
+                          <div key={index} className="flex items-start gap-2 mb-2 last:mb-0">
+                            <div className="flex-1 font-mono text-sm text-foreground">{line}</div>
+                            {line.trim().startsWith("say ") && (
+                              <CopyButton text={line.trim()} className="flex-shrink-0 mt-0.5" />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {filteredLectures.length === 0 && searchQuery && (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">Лекции не найдены по запросу "{searchQuery}"</p>
+        </div>
+      )}
+
+      <footer className="mt-16 pt-8 border-t border-border">
+        <div className="text-center">
+          <p className="text-sm text-muted-foreground">
+            Разработано{" "}
+            <a
+              href="https://vk.com/id503251431"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:text-primary/80 font-medium transition-colors"
+            >
+              Poseidon_Wagner
+            </a>
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }

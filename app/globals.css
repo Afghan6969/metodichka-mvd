@@ -1,50 +1,72 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
 :root {
-  /* Updated color scheme to МВД official colors */
-  --background: #ffffff; /* Background color for the entire site */
-  --foreground: #002d72; /* Main text color for readability */
-  --card: #f1f5f9; /* Background color for cards, forms, and sections */
-  --card-foreground: #002d72; /* Text color for card content */
-  --popover: #ffffff; /* Background color for popovers */
-  --popover-foreground: #002d72; /* Text color for popovers */
-  --primary: #002d72; /* Used for call-to-action buttons and links */
-  --primary-foreground: #ffffff; /* Text color for primary elements */
-  --secondary: #c8102e; /* Color for secondary actions */
-  --secondary-foreground: #ffffff; /* Text color for secondary elements */
-  --muted: #f1f5f9; /* Background for muted sections */
-  --muted-foreground: #374151; /* Text color for muted text */
-  --accent: #ffd700; /* Used for highlights or important notifications */
-  --accent-foreground: #002d72; /* Text color for accent elements */
-  --destructive: #c8102e; /* Color for error messages or alerts */
-  --destructive-foreground: #ffffff; /* Text color for destructive actions */
-  --border: #d1d5db; /* Border color for cards and sections */
-  --input: #f1f5f9; /* Input field background */
-  --ring: rgba(0, 45, 114, 0.5); /* Focus ring color */
-  --chart-1: #002d72; /* Color for charts */
-  --chart-2: #c8102e; /* Color for charts */
-  --chart-3: #ffd700; /* Color for charts */
-  --chart-4: #f1f5f9; /* Color for charts */
-  --chart-5: #ffffff; /* Color for charts */
-  --radius: 0.25rem; /* Corner rounding for buttons and cards */
-  --sidebar: #f1f5f9; /* Sidebar background */
-  --sidebar-foreground: #002d72; /* Text color in the sidebar */
-  --sidebar-primary: #002d72; /* Primary color for sidebar elements */
-  --sidebar-primary-foreground: #ffffff; /* Text color for sidebar primary elements */
-  --sidebar-accent: #ffd700; /* Accent color for sidebar */
-  --sidebar-accent-foreground: #002d72; /* Text color for sidebar accent elements */
-  --sidebar-border: #d1d5db; /* Border color for sidebar */
-  --sidebar-ring: rgba(0, 45, 114, 0.5); /* Focus ring color for sidebar elements */
+  /* Improved light theme colors for better contrast and readability */
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #1e40af;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #e2e8f0;
+  --muted-foreground: #475569;
+  --accent: #f59e0b;
+  --accent-foreground: #0f172a;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #d1d5db;
+  --input: #ffffff;
+  --ring: rgba(30, 64, 175, 0.2);
+  --radius: 0.875rem;
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #1e40af;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f59e0b;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #d1d5db;
+}
+
+/* Добавил темную тему */
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --popover: #1e293b;
+  --popover-foreground: #f8fafc;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #334155;
+  --secondary-foreground: #f8fafc;
+  --muted: #475569;
+  --muted-foreground: #94a3b8;
+  --accent: #fbbf24;
+  --accent-foreground: #0f172a;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #334155;
+  --input: #1e293b;
+  --ring: rgba(59, 130, 246, 0.3);
+  --sidebar: #1e293b;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #fbbf24;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #334155;
 }
 
 @theme inline {
-  /* обновлены переменные шрифтов для новой типографики */
-  --font-sans: var(--font-inter);
-  --font-serif: var(--font-merriweather);
-  --font-mono: var(--font-jetbrains-mono);
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Playfair Display", Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: "JetBrains Mono", "Fira Code", Consolas, "Liberation Mono", Menlo, monospace;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -64,11 +86,6 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -80,263 +97,116 @@
   --color-sidebar-accent: var(--sidebar-accent);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-}
-
-/* добавлены глобальные анимации и переходы */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-}
-
-@keyframes bounce {
-  0%,
-  20%,
-  53%,
-  80%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  40%,
-  43% {
-    transform: translate3d(0, -8px, 0);
-  }
-  70% {
-    transform: translate3d(0, -4px, 0);
-  }
-  90% {
-    transform: translate3d(0, -2px, 0);
-  }
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    /* добавлены глобальные переходы для всех элементов */
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* добавляю стильный градиентный фон с эмблемой МВД */
+  /* Убрал градиент, добавил простой фон с поддержкой темной темы */
   body {
-    /* изменен основной шрифт на font-sans (Inter) для лучшей читаемости */
     @apply bg-background text-foreground font-sans;
-    background: linear-gradient(135deg, #002d72 0%, #1e40af 25%, #64748b 75%, #f1f5f9 100%);
-    background-attachment: fixed;
-    background-size: cover;
-    position: relative;
-    /* улучшена типографика с лучшим межстрочным интервалом */
-    line-height: 1.6;
-    letter-spacing: 0.01em;
-  }
-
-  /* Эмблема МВД на заднем плане */
-  body::before {
-    content: "";
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 400px;
-    height: 400px;
-    background-image: url("/mvd-emblem.jpg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    opacity: 0.05;
-    z-index: -1;
-    pointer-events: none;
-  }
-
-  /* Обеспечиваем читаемость контента */
-  .main-content {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 45, 114, 0.1);
-    /* добавлена анимация появления для основного контента */
-    animation: fadeIn 0.6s ease-out;
-  }
-
-  /* Карточки с улучшенной читаемостью */
-  .content-card {
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(0, 45, 114, 0.1);
-    box-shadow: 0 4px 16px rgba(0, 45, 114, 0.08);
-    /* добавлены hover-эффекты для карточек */
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .content-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 45, 114, 0.15);
-  }
-
-  /* Темная тема */
-  .dark body {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 75%, #475569 100%);
-  }
-
-  .dark body::before {
-    opacity: 0.03;
-  }
-
-  .dark .main-content {
-    background: rgba(15, 23, 42, 0.95);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  }
-
-  .dark .content-card {
-    background: rgba(30, 41, 59, 0.98);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  }
-
-  .dark .content-card:hover {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-  }
-
-  /* обновлена типографика заголовков для использования Merriweather */
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-serif font-bold;
-    line-height: 1.3;
-    letter-spacing: -0.02em;
-    /* добавлена анимация появления для заголовков */
-    animation: slideIn 0.5s ease-out;
-  }
-
-  /* добавлены стили для улучшения читаемости текста */
-  p {
+    min-height: 100vh;
     line-height: 1.7;
-    margin-bottom: 1rem;
+    letter-spacing: -0.015em;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  /* улучшены стили для кода с использованием JetBrains Mono */
-  code {
-    @apply font-mono;
-    font-feature-settings: "liga" 1, "calt" 1;
+  /* Обновил заголовки для работы с темной темой */
+  h1 {
+    @apply font-serif font-bold text-3xl md:text-4xl lg:text-5xl text-foreground;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
   }
 
-  /* добавлены стили для лучшего отображения ссылок */
-  a {
-    transition: all 0.2s ease-in-out;
+  h2 {
+    @apply font-serif font-semibold text-2xl md:text-3xl lg:text-4xl text-foreground;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
   }
 
-  a:hover {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 3px;
-    /* добавлен эффект свечения для ссылок */
-    text-shadow: 0 0 8px rgba(0, 45, 114, 0.3);
+  h3 {
+    @apply font-serif font-semibold text-xl md:text-2xl lg:text-3xl text-foreground;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
   }
 
-  /* добавлены классы для анимаций */
-  .animate-fade-in {
-    animation: fadeIn 0.6s ease-out;
+  h4 {
+    @apply font-sans font-semibold text-lg md:text-xl text-foreground;
+    line-height: 1.4;
   }
 
-  .animate-slide-in {
-    animation: slideIn 0.5s ease-out;
+  p {
+    @apply text-foreground text-base leading-relaxed;
+    margin-bottom: 1.25rem;
+    font-weight: 400;
   }
 
-  .animate-scale-in {
-    animation: scaleIn 0.4s ease-out;
-  }
-
-  .animate-pulse-slow {
-    animation: pulse 2s infinite;
-  }
-
-  .animate-bounce-gentle {
-    animation: bounce 1s ease-in-out;
-  }
-
-  /* улучшенные hover-эффекты для кнопок */
-  .btn-hover {
+  /* Обновил стили карточек для темной темы */
+  .modern-card {
+    @apply border border-border rounded-2xl p-8 shadow-lg bg-card text-card-foreground;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .btn-hover:hover {
+  .modern-card:hover {
+    transform: translateY(-2px);
+    @apply shadow-xl border-primary/20;
+  }
+
+  /* Обновил стили сайдбара для темной темы */
+  .modern-sidebar {
+    @apply border-r border-sidebar-border bg-sidebar text-sidebar-foreground;
+  }
+
+  /* Обновил стили навигации для темной темы */
+  .modern-nav {
+    @apply backdrop-blur-xl border-b border-border bg-background/95 text-foreground;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  /* Обновил стили кнопок для темной темы */
+  .modern-button {
+    @apply font-medium transition-all duration-200 bg-primary text-primary-foreground;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .modern-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 45, 114, 0.2);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
   }
 
-  .btn-hover:active {
-    transform: translateY(0);
-    transition: all 0.1s ease-out;
+  /* Обновил акцентные элементы для темной темы */
+  .accent-gradient {
+    @apply text-accent;
   }
 
-  /* анимации для элементов списка */
-  .list-item {
-    animation: slideIn 0.4s ease-out;
-    animation-fill-mode: both;
+  /* Добавил стили для лучшей читаемости текста в темной теме */
+  .dark .text-gray-600 {
+    @apply text-muted-foreground;
   }
 
-  .list-item:nth-child(1) {
-    animation-delay: 0.1s;
-  }
-  .list-item:nth-child(2) {
-    animation-delay: 0.2s;
-  }
-  .list-item:nth-child(3) {
-    animation-delay: 0.3s;
-  }
-  .list-item:nth-child(4) {
-    animation-delay: 0.4s;
-  }
-  .list-item:nth-child(5) {
-    animation-delay: 0.5s;
+  .dark .text-gray-800 {
+    @apply text-foreground;
   }
 
-  /* плавные переходы для модальных окон */
-  .modal-overlay {
-    animation: fadeIn 0.3s ease-out;
+  .dark .text-black {
+    @apply text-foreground;
   }
 
-  .modal-content {
-    animation: scaleIn 0.3s ease-out;
+  .dark .bg-white {
+    @apply bg-card;
+  }
+
+  .dark .bg-gray-50 {
+    @apply bg-secondary/30;
+  }
+
+  .dark .bg-gray-100 {
+    @apply bg-secondary;
   }
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Copy, Check, Keyboard, Search, X } from "lucide-react"
+import { Copy, Check, Keyboard, Search, X, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -22,13 +22,17 @@ export function GuvdBindsPage() {
   }
 
   const BindItem = ({ bind, description }: { bind: string; description?: string }) => (
-    <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border animate-fade-in">
+    <div className="flex items-center justify-between p-3 bg-card rounded-lg border border-border animate-fade-in">
       <div className="flex-1">
         <code className="text-sm font-mono text-foreground">{bind}</code>
         {description && <p className="text-xs text-muted-foreground mt-1">{description}</p>}
       </div>
       <Button variant="ghost" size="sm" onClick={() => copyToClipboard(bind)} className="ml-2 h-8 w-8 p-0 btn-hover">
-        {copiedBind === bind ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
+        {copiedBind === bind ? (
+          <Check className="h-4 w-4 text-green-500" />
+        ) : (
+          <Copy className="h-4 w-4 text-muted-foreground" />
+        )}
       </Button>
     </div>
   )
@@ -45,11 +49,11 @@ export function GuvdBindsPage() {
 
   const bindSections = [
     {
-      title: "Приветствие коллег",
+      title: "Представление",
       binds: [{ bind: 'bind [клавиша] say Звание, ГУВД по городу "Город", "Фамилия Имя.' }],
     },
     {
-      title: "Предъявление служебного удостоверения",
+      title: "Требование предоставить документы",
       binds: [{ bind: "bind [клавиша] say Гражданин, предоставьте документ удостоверяющий вашу личность." }],
     },
     {
@@ -60,7 +64,7 @@ export function GuvdBindsPage() {
       ],
     },
     {
-      title: "Проверка через фото и КПК",
+      title: "Проверка личности через фото и КПК",
       binds: [
         { bind: "bind [клавиша] do Мини-фотоаппарат и КПК в кармане." },
         { bind: "bind [клавиша] me достав фотоаппарат и КПК, сфотографировал человека" },
@@ -108,7 +112,7 @@ export function GuvdBindsPage() {
       ],
     },
     {
-      title: "Передача данных по нарушителю",
+      title: "Передача данных по нарушителю (выдача розыска)",
       binds: [
         { bind: "bind [клавиша] do Рация закреплена на нагрудном кармане." },
         { bind: "bind [клавиша] me сняв рацию с нагрудного кармана, продиктовал диспетчеру приметы правонарушителя" },
@@ -116,7 +120,7 @@ export function GuvdBindsPage() {
       ],
     },
     {
-      title: "Снятие обвинений (Розыска)",
+      title: "Снятие обвинений (снятие розыска)",
       binds: [
         { bind: "bind [клавиша] do Рация закреплена на нагрудном кармане." },
         { bind: "bind [клавиша] me сняв рацию с нагрудного кармана, запросил у диспетчера снятие обвинений" },
@@ -204,14 +208,14 @@ export function GuvdBindsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-8">
+    <div className="max-w-4xl mx-auto p-6 space-y-8 bg-background min-h-screen">
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-3">
-          <div className="p-3 bg-secondary/10 rounded-lg">
-            <Keyboard className="h-8 w-8 text-secondary" />
+          <div className="p-3 bg-primary/10 rounded-lg">
+            <Keyboard className="h-8 w-8 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-secondary">Бинды ГУВД</h1>
+            <h1 className="text-3xl font-bold text-foreground">Бинды ГУВД</h1>
             <p className="text-muted-foreground">Готовые команды для сотрудников ГУВД</p>
           </div>
         </div>
@@ -225,16 +229,16 @@ export function GuvdBindsPage() {
             placeholder="Поиск по биндам..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-10 h-10 border-border focus:border-secondary focus:ring-secondary"
+            className="pl-10 pr-10 h-10"
           />
           {searchQuery && (
             <Button
               variant="ghost"
               size="sm"
               onClick={clearSearch}
-              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-muted"
+              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
             >
-              <X className="h-4 w-4" />
+              <X className="h-4 w-4 text-muted-foreground" />
             </Button>
           )}
         </div>
@@ -244,16 +248,19 @@ export function GuvdBindsPage() {
         <div className="text-center text-sm text-muted-foreground">Найдено разделов: {filteredSections.length}</div>
       )}
 
-      <Card className="border-yellow-200 bg-yellow-50">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-lg text-yellow-800">Важные примечания</CardTitle>
+          <CardTitle className="text-lg text-foreground flex items-center gap-2">
+            <Info className="h-5 w-5 text-primary" />
+            Важные примечания
+          </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
+        <CardContent className="space-y-4 text-muted-foreground text-sm">
           <div className="flex items-start gap-2">
             <Badge variant="outline" className="text-xs">
               UP
             </Badge>
-            <p className="text-sm text-yellow-800">
+            <p>
               Клавиши где присутствуют "up", нужно зажимать на 1-2 секунды, после того как отпустите - сработает
               отыгровка "up".
             </p>
@@ -262,13 +269,13 @@ export function GuvdBindsPage() {
             <Badge variant="outline" className="text-xs">
               Интервал
             </Badge>
-            <p className="text-sm text-yellow-800">Интервал между биндами - не менее двух секунд.</p>
+            <p>Интервал между биндами - не менее двух секунд.</p>
           </div>
           <div className="flex items-start gap-2">
             <Badge variant="outline" className="text-xs">
               Лимит
             </Badge>
-            <p className="text-sm text-yellow-800">На одну клавишу не более трёх отыгровок.</p>
+            <p>На одну клавишу не более трёх отыгровок.</p>
           </div>
         </CardContent>
       </Card>
@@ -276,9 +283,9 @@ export function GuvdBindsPage() {
       <div className="grid gap-6">
         {filteredSections.length > 0 ? (
           filteredSections.map((section, sectionIndex) => (
-            <Card key={sectionIndex} className="content-card">
+            <Card key={sectionIndex}>
               <CardHeader>
-                <CardTitle className="text-lg text-secondary">{section.title}</CardTitle>
+                <CardTitle className="text-lg text-foreground">{section.title}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {section.binds.map((item, index) => (
@@ -292,25 +299,24 @@ export function GuvdBindsPage() {
                       <SectionDivider title="Часть 2" />
                     )}
                     {section.title === "Запрос на пробитие номера" && index === 2 && (
-                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <p className="text-sm text-blue-800 font-medium">Пример:</p>
-                        <p className="text-sm text-blue-800 font-mono">
+                      <div className="p-1 bg-card border border-border rounded-lg">
+                        <p className="text-sm text-muted-foreground">
                           Капитан Poseidon_Wagner[1]: [ГУВД-П]-[ГИБДД] Прошу проверить по базе данных автомобильный
                           номер X222XX77.
                         </p>
                       </div>
                     )}
                     {section.title === "Мегафон: требование остановиться" && index === 2 && (
-                      <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                        <p className="text-sm text-yellow-800">
+                      <div className="p-1 bg-card border border-border rounded-lg">
+                        <p className="text-sm text-muted-foreground">
                           Перед применением меры наказания сотрудник должен быть уверен, что выдвинутое требование было
                           верно воспринято именно тем лицом, к которому оно адресовывалось.
                         </p>
                       </div>
                     )}
                     {section.title === "Посадка задержанного в служебный автомобиль" && index === 0 && (
-                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <p className="text-sm text-blue-800">
+                      <div className="p-1 bg-card border border-border rounded-lg">
+                        <p className="text-sm text-muted-foreground">
                           При активном конвоировании (/arr), либо же после отыгровки сесть в автомобиль и прописать
                           /putpl id
                         </p>
@@ -322,7 +328,7 @@ export function GuvdBindsPage() {
             </Card>
           ))
         ) : (
-          <Card className="content-card">
+          <Card>
             <CardContent className="text-center py-8">
               <p className="text-muted-foreground">Ничего не найдено по запросу "{searchQuery}"</p>
               <p className="text-sm text-muted-foreground mt-2">Попробуйте изменить поисковый запрос</p>
@@ -339,7 +345,7 @@ export function GuvdBindsPage() {
               href="https://vk.com/id503251431"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-secondary hover:text-secondary/80 font-medium transition-colors"
+              className="text-primary hover:text-primary/80 font-medium transition-colors"
             >
               Poseidon_Wagner
             </a>

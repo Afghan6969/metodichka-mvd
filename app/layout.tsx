@@ -5,6 +5,7 @@ import { JetBrains_Mono } from "next/font/google"
 import { Merriweather } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
+import { ThemeToggle } from "@/components/theme-toggle"
 import "./globals.css"
 
 const inter = Inter({
@@ -28,6 +29,11 @@ export const metadata: Metadata = {
   title: "Методичка для МВД",
   description: "Методические материалы и инструкции для МВД",
   generator: "v0.app",
+  icons: {
+    icon: "/mvd-logo.jpg",
+    shortcut: "/mvd-logo.jpg",
+    apple: "/mvd-logo.jpg",
+  },
 }
 
 export default function RootLayout({
@@ -38,6 +44,7 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={`font-sans ${inter.variable} ${merriweather.variable} ${jetbrainsMono.variable} antialiased`}>
+        <ThemeToggle />
         <Suspense fallback={null}>
           {children}
           <Analytics />

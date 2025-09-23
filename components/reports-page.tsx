@@ -1,196 +1,258 @@
-import { Radio } from "lucide-react"
+"use client"
+
+import type React from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Radio, Info, MessageSquare, Phone, AlertTriangle } from "lucide-react"
+import { CopyButton } from "@/components/copy-button"
+
+interface ReportCategory {
+  id: string
+  title: string
+  description: string
+  icon: React.ComponentType<any>
+  reports: ReportItem[]
+  category: "basic" | "patrol" | "special"
+}
+
+interface ReportItem {
+  title: string
+  command: string
+  description?: string
+}
 
 export function ReportsPage() {
+  const getItemIcon = (IconComponent: React.ComponentType<any>) => {
+    return <IconComponent className="h-5 w-5" />
+  }
+
+  const reportCategories: ReportCategory[] = [
+    {
+      id: "shift",
+      title: "Смена",
+      description: "Доклады при заступлении и сдаче смены",
+      icon: MessageSquare,
+      category: "basic",
+      reports: [
+        {
+          title: "Заступление на смену",
+          command: "/r [ТЕГ] Заступил на смену.",
+        },
+        {
+          title: "Сдача смены",
+          command: "/r [ТЕГ] Сдал смену.",
+        },
+      ],
+    },
+    {
+      id: "checkpoint",
+      title: "КПП/Дежурная часть",
+      description: "Доклады при работе на стационарных постах",
+      icon: Phone,
+      category: "basic",
+      reports: [
+        {
+          title: "Заступление на пост",
+          command: "/r [ТЕГ] Заступил на пост КПП/Дежурная часть.",
+        },
+        {
+          title: "Доклад о состоянии",
+          command: "/r [ТЕГ] Продолжаю стоять на посту КПП/Дежурная часть. Состояние: стабильное.",
+        },
+        {
+          title: "Покидание поста",
+          command: "/r [ТЕГ] Покидаю пост КПП/Дежурная часть.",
+        },
+      ],
+    },
+    {
+      id: "patrol",
+      title: "Патрулирование города",
+      description: "Доклады при автомобильном патрулировании",
+      icon: Radio,
+      category: "patrol",
+      reports: [
+        {
+          title: "Выезд в патруль",
+          command: "/r [ТЕГ] Выехал в патруль города | Экипаж: 1.",
+        },
+        {
+          title: "Продолжение патруля",
+          command: "/r [ТЕГ] Продолжаю патрулирование города | Состояние: стабильное | Экипаж: 1.",
+        },
+        {
+          title: "Завершение патруля",
+          command: "/r [ТЕГ] Завершаю патрулирование города | Состояние: стабильное | Экипаж: 1.",
+        },
+      ],
+    },
+    {
+      id: "footpatrol",
+      title: "Пеший патруль",
+      description: "Доклады при пешем патрулировании",
+      icon: MessageSquare,
+      category: "patrol",
+      reports: [
+        {
+          title: "Выход в пеший патруль",
+          command: "/r [ТЕГ] Вышел в пеший патруль города.",
+        },
+        {
+          title: "Продолжение пешего патруля",
+          command: "/r [ТЕГ] Продолжаю пеший патруль города | Состояние: стабильное.",
+        },
+        {
+          title: "Завершение пешего патруля",
+          command: "/r [ТЕГ] Завершил пеший патруль города.",
+        },
+      ],
+    },
+    {
+      id: "airpatrol",
+      title: "Воздушный патруль",
+      description: "Доклады при патрулировании на вертолёте",
+      icon: Radio,
+      category: "special",
+      reports: [
+        {
+          title: "Вылет в воздушный патруль",
+          command: "/r [ТЕГ] Вылетел в воздушный патруль города | Экипаж: 1.",
+        },
+        {
+          title: "Воздушный патруль",
+          command: "/r [ТЕГ] Воздушный патруль города | Состояние: стабильное | Экипаж: 1.",
+        },
+        {
+          title: "Завершение воздушного патруля",
+          command: "/r [ТЕГ] Завершил воздушный патруль города | Экипаж: 1.",
+        },
+      ],
+    },
+    {
+      id: "calls",
+      title: "Обработка вызовов",
+      description: "Доклады при работе с вызовами",
+      icon: AlertTriangle,
+      category: "special",
+      reports: [
+        {
+          title: "Принятие вызова",
+          command: "/ro [ТЕГ] 10-5 | *место вызова*.",
+        },
+        {
+          title: "Завершение вызова",
+          command: "/ro [ТЕГ] 10-6 | *место вызова* | Ложный/Обработан.",
+        },
+      ],
+    },
+  ]
+
   return (
-    <div className="flex-1 p-8 overflow-auto bg-background">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-3 mb-8">
-          <Radio className="h-8 w-8 text-primary" />
-          <h1 className="text-3xl font-sans font-bold text-primary">Доклады в рацию</h1>
+    <div className="space-y-6 bg-background min-h-screen p-6">
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
+          <Radio className="h-6 w-6 text-primary" />
         </div>
-
-        <div className="bg-card border border-border rounded-lg p-4 mb-6">
-          <h3 className="font-semibold text-card-foreground mb-2">ℹ️ Важная информация о тегах:</h3>
-          <ul className="text-card-foreground space-y-1 text-sm">
-            <li>
-              • В тегах <code className="bg-muted px-1 rounded">/r</code> указывайте свою должность, например:{" "}
-              <code className="bg-muted px-1 rounded">[МБ]</code>, <code className="bg-muted px-1 rounded">[ОМОН]</code>
-              , <code className="bg-muted px-1 rounded">[СОБР]</code>
-            </li>
-            <li>
-              • В тегах <code className="bg-muted px-1 rounded">/ro</code> и{" "}
-              <code className="bg-muted px-1 rounded">/d</code> указывайте свой город, например:{" "}
-              <code className="bg-muted px-1 rounded">[ГИБДД-М]</code>,{" "}
-              <code className="bg-muted px-1 rounded">[ГУВД-М]</code>
-            </li>
-            <li>
-              • <strong>Теги в рацию /r - не обязательны</strong>, но рекомендуются для лучшей координации
-            </li>
-          </ul>
-        </div>
-
-        <div className="space-y-8">
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-            <h2 className="text-xl font-semibold text-card-foreground mb-4 flex items-center gap-2">
-              📋 Примеры использования
-            </h2>
-            <div className="space-y-4">
-              <div className="bg-background rounded-lg p-4 border border-border">
-                <h3 className="font-medium text-primary mb-2">Пример 1: Заступление на смену (Мотобат)</h3>
-                <div className="bg-muted p-3 rounded-md font-mono text-sm">
-                  <span>/r [МБ] Заступил на смену.</span>
-                </div>
-              </div>
-
-              <div className="bg-background rounded-lg p-4 border border-border">
-                <h3 className="font-medium text-primary mb-2">Пример 2: Патрулирование (ОМОН)</h3>
-                <div className="bg-muted p-3 rounded-md font-mono text-sm">
-                  <span>/r [ОМОН] Выехал в патруль города | Экипаж: 1.</span>
-                </div>
-              </div>
-
-              <div className="bg-background rounded-lg p-4 border border-border">
-                <h3 className="font-medium text-primary mb-2">Пример 3: Обработка вызова</h3>
-                <div className="bg-muted p-3 rounded-md font-mono text-sm">
-                  <span>/ro [ГИБДД-М] 10-5 | Центральная площадь.</span>
-                </div>
-              </div>
-
-              <div className="bg-background rounded-lg p-4 border border-border">
-                <h3 className="font-medium text-primary mb-2">Пример 4: Без тега (допустимо)</h3>
-                <div className="bg-muted p-3 rounded-md font-mono text-sm">
-                  <span>/r Заступил на смену.</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-background rounded-lg shadow-sm border border-border p-6">
-            <h2 className="text-xl font-semibold text-primary mb-4">Доклад при заступлении на смену:</h2>
-            <div className="bg-muted p-4 rounded-md font-mono text-sm">
-              <span>/r [ТЕГ] Заступил на смену.</span>
-            </div>
-          </div>
-
-          <div className="bg-background rounded-lg shadow-sm border border-border p-6">
-            <h2 className="text-xl font-semibold text-primary mb-4">Доклад при покидании смены:</h2>
-            <div className="bg-muted p-4 rounded-md font-mono text-sm">
-              <span>/r [ТЕГ] Сдал смену.</span>
-            </div>
-          </div>
-
-          <div className="bg-background rounded-lg shadow-sm border border-border p-6">
-            <h2 className="text-xl font-semibold text-primary mb-4">Доклады на посту КПП/Дежурная часть:</h2>
-            <div className="space-y-2">
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/r [ТЕГ] Заступил на пост КПП/Дежурная часть.</span>
-              </div>
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/r [ТЕГ] Продолжаю стоять на посту КПП/Дежурная часть. Состояние: стабильное.</span>
-              </div>
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/r [ТЕГ] Покидаю пост КПП/Дежурная часть.</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-background rounded-lg shadow-sm border border-border p-6">
-            <h2 className="text-xl font-semibold text-primary mb-4">Доклады при патрулировании города:</h2>
-            <div className="space-y-2">
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/r [ТЕГ] Выехал в патруль города | Экипаж: 1.</span>
-              </div>
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/r [ТЕГ] Продолжаю патрулирование города | Состояние: стабильное | Экипаж: 1.</span>
-              </div>
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/r [ТЕГ] Завершаю патрулирование города | Состояние: стабильное | Экипаж: 1.</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-background rounded-lg shadow-sm border border-border p-6">
-            <h2 className="text-xl font-semibold text-primary mb-4">Доклады на автомобильном посту:</h2>
-            <div className="space-y-2">
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/r [ТЕГ] Заступил на пост | *Название поста* | Экипаж: 1.</span>
-              </div>
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/r [ТЕГ] Пост | *Название поста* | Состояние: стабильное. | Экипаж: 1.</span>
-              </div>
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/r [ТЕГ] Покидаю пост | *Название поста* | Экипаж: 1.</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-background rounded-lg shadow-sm border border-border p-6">
-            <h2 className="text-xl font-semibold text-primary mb-4">Доклады при пешем патрулировании города:</h2>
-            <div className="space-y-2">
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/r [ТЕГ] Вышел в пеший патруль города.</span>
-              </div>
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/r [ТЕГ] Продолжаю пеший патруль города | Состояние: стабильное.</span>
-              </div>
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/r [ТЕГ] Завершил пеший патруль города.</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-background rounded-lg shadow-sm border border-border p-6">
-            <h2 className="text-xl font-semibent text-primary mb-4">Доклады при обработке вызова:</h2>
-            <div className="space-y-2">
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/ro [ТЕГ] 10-5 | *место вызова*.</span>
-              </div>
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/ro [ТЕГ] 10-6 | *место вызова* | Ложный/Обработан.</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-background rounded-lg shadow-sm border border-border p-6">
-            <h2 className="text-xl font-semibold text-primary mb-4">Доклады при воздушном патрулировании:</h2>
-            <div className="space-y-2">
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/r [ТЕГ] Вылетел в воздушный патруль города | Экипаж: 1.</span>
-              </div>
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/r [ТЕГ] Воздушный патруль города | Состояние: стабильное | Экипаж: 1.</span>
-              </div>
-              <div className="bg-muted p-4 rounded-md font-mono text-sm">
-                <span>/r [ТЕГ] Завершил воздушный патруль города | Экипаж: 1.</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-background rounded-lg shadow-sm border border-border p-6">
-            <h2 className="text-xl font-semibold text-primary mb-4">План перехват (ООП/ООН):</h2>
-            <div className="bg-muted p-4 rounded-md font-mono text-sm">
-              <span>/ro [ТЕГ] Объявляю план "Перехват" ООП/ООН. По базе данных: *Имя_Фамилия преступника*</span>
-            </div>
-          </div>
-
-          <div className="bg-background rounded-lg shadow-sm border border-border p-6">
-            <h2 className="text-xl font-semibold text-primary mb-4">Доклад при принятии плана перехвата:</h2>
-            <div className="bg-muted p-4 rounded-md font-mono text-sm">
-              <span>/ro [ТЕГ] Принято! Выезжаем на подмогу.</span>
-            </div>
-          </div>
-
-          <div className="bg-background rounded-lg shadow-sm border border-border p-6">
-            <h2 className="text-xl font-semibold text-primary mb-4">Пробитие номера при запросе ГУВД:</h2>
-            <div className="bg-muted p-4 rounded-md font-mono text-sm">
-              <span>
-                /ro [ТЕГ] - [ТЕГ] Автомобиль с номерами *номер* принадлежит гражданину с номером паспорта *ID игрока*
-                *Имя Фамилия*.
-              </span>
-            </div>
-          </div>
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Доклады в рацию</h1>
+          <p className="text-muted-foreground">Стандартные фразы для радиосвязи сотрудников МВД</p>
         </div>
       </div>
+
+      {/* Информационная карточка */}
+      <Card className="border-border bg-card">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-card-foreground flex items-center gap-2 text-xl">
+            <Info className="h-5 w-5 text-primary" />
+            Важная информация о тегах
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3 text-sm">
+            <div className="flex items-start gap-2">
+              <span className="text-primary">•</span>
+              <p className="text-card-foreground">
+                В тегах <code className="bg-muted text-muted-foreground px-1 rounded">/r</code> указывайте свою
+                должность, например:{" "}
+                <Badge className="bg-muted text-muted-foreground border-border text-xs">[МБ]</Badge>,{" "}
+                <Badge className="bg-muted text-muted-foreground border-border text-xs">[ОМОН]</Badge>,{" "}
+                <Badge className="bg-muted text-muted-foreground border-border text-xs">[СОБР]</Badge>
+              </p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-primary">•</span>
+              <p className="text-card-foreground">
+                В тегах <code className="bg-muted text-muted-foreground px-1 rounded">/ro</code> и{" "}
+                <code className="bg-muted text-muted-foreground px-1 rounded">/d</code> указывайте свой город, например:{" "}
+                <Badge className="bg-muted text-muted-foreground border-border text-xs">[ГИБДД-М]</Badge>,{" "}
+                <Badge className="bg-muted text-muted-foreground border-border text-xs">[ГУВД-М]</Badge>
+              </p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-primary">•</span>
+              <p className="text-card-foreground">
+                <strong>Теги в рацию /r - не обязательны</strong>, но рекомендуются для лучшей координации
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Доклады */}
+      <div className="space-y-4">
+        {reportCategories.map((category) => (
+          <Card key={category.id} className="border-border bg-card">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-card-foreground flex items-center gap-2 text-xl">
+                {getItemIcon(category.icon)}
+                {category.title}
+              </CardTitle>
+              <CardDescription className="text-muted-foreground">{category.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {category.reports.map((report, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
+                  >
+                    <div className="text-primary mt-1">
+                      <Radio className="h-4 w-4" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h4 className="font-medium text-card-foreground text-sm">{report.title}</h4>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <div className="flex-1 font-mono text-sm text-foreground bg-muted/50 p-3 rounded border border-border">
+                          {report.command}
+                        </div>
+                        <CopyButton text={report.command} className="flex-shrink-0 mt-3" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <footer className="mt-16 pt-8 border-t border-border">
+        <div className="text-center">
+          <p className="text-sm text-muted-foreground">
+            Разработано{" "}
+            <a
+              href="https://vk.com/id503251431"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:text-primary/80 font-medium transition-colors"
+            >
+              Poseidon_Wagner
+            </a>
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }

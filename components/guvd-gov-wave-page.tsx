@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CopyButton } from "./copy-button"
-import { Shield, AlertCircle, ExternalLink } from "lucide-react"
+import { AlertCircle, ExternalLink, Shield, User } from "lucide-react"
 
 const timeSlots = [
   "00:00-01:00",
@@ -52,42 +52,54 @@ export function GuvdGovWavePage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex-1 p-8 overflow-auto">
-        <div className="max-w-md mx-auto mt-20">
-          <Card className="p-8 shadow-lg border-2 border-blue-200">
-            <div className="text-center mb-6">
-              <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                <Shield className="h-8 w-8 text-blue-600" />
+      <div className="flex-1 p-8 overflow-auto bg-background min-h-screen">
+        <div className="max-w-md mx-auto mt-16">
+          <Card className="p-8 bg-card shadow-xl border-border rounded-2xl">
+            <div className="text-center mb-8">
+              <div className="mx-auto w-20 h-20 bg-primary rounded-full flex items-center justify-center mb-6">
+                <Shield className="h-10 w-10 text-primary-foreground" />
               </div>
-              <h1 className="text-2xl font-bold text-blue-600 mb-2">Доступ к Гос волне ПА</h1>
-              <p className="text-sm text-gray-600">Введите пароль для доступа к системе</p>
+              <h1 className="text-2xl font-bold text-card-foreground mb-2">ГУВД - Полицейская Академия</h1>
+              <p className="text-muted-foreground">Авторизованный доступ к системе</p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               {error && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>{error}</AlertDescription>
+                <Alert variant="destructive" className="border-destructive bg-destructive/10">
+                  <AlertCircle className="h-4 w-4 text-destructive" />
+                  <AlertDescription className="text-destructive text-sm">{error}</AlertDescription>
                 </Alert>
               )}
 
-              <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">Пароль доступа</label>
-                <Input
-                  type="password"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value)
-                    setError("")
-                  }}
-                  placeholder="Введите пароль"
-                  onKeyPress={(e) => e.key === "Enter" && handlePasswordSubmit()}
-                  className="h-12"
-                />
+              <div className="space-y-4">
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    type="password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value)
+                      setError("")
+                    }}
+                    placeholder="Введите пароль доступа"
+                    onKeyPress={(e) => e.key === "Enter" && handlePasswordSubmit()}
+                    className="pl-12 h-14 text-base border-input focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl bg-background text-foreground placeholder-muted-foreground"
+                  />
+                </div>
+
+                <Button
+                  onClick={handlePasswordSubmit}
+                  className="w-full h-14 text-base bg-primary hover:bg-primary/90 rounded-xl font-semibold text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200"
+                >
+                  Войти в систему
+                </Button>
               </div>
-              <Button onClick={handlePasswordSubmit} className="w-full h-12 bg-blue-600 hover:bg-blue-700">
-                Войти в систему
-              </Button>
+
+              <div className="text-center pt-4 border-t border-border">
+                <p className="text-xs text-muted-foreground">
+                  Доступ предоставляется только авторизованному персоналу ГУВД
+                </p>
+              </div>
             </div>
           </Card>
         </div>
@@ -109,34 +121,34 @@ export function GuvdGovWavePage() {
     const tag = cityData ? `ГУВД-${cityData.tag}` : "ГУВД-Н"
 
     return {
-      announcement: `gov Сегодня в ${interviewTime} состоится собеседование в Полицейскую Академию ${tag}. Место: участок г. ${city}. Ждём всех желающих!\ngov Требования: опрятность, юр. образование, медкарта, военный билет, полный пакет документов, прописка от 5 лет`,
+      announcement: `gov Сегодня в ${interviewTime} состоится собеседование в Полицейскую Академию ${tag}. Место: участок г. ${city}. Ждём всех желающих!\\ngov Требования: опрятность, юр. образование, медкарта, военный билет, полный пакет документов, прописка от 5 лет`,
 
-      start: `gov Собеседование в Полицейскую Академию ${tag} начато! Ждём в участке г. ${city}. Не упусти шанс начать карьеру!\ngov Требования: опрятность, юр. образование, медкарта, военный билет, полный пакет документов, прописка от 5 лет`,
+      start: `gov Собеседование в Полицейскую Академию ${tag} начато! Ждём в участке г. ${city}. Не упусти шанс начать карьеру!\\ngov Требования: опрятность, юр. образование, медкарта, военный билет, полный пакет документов, прописка от 5 лет`,
 
-      continue: `gov Собеседование в Полицейскую Академию ${tag} продолжается! Ждём вас в участке г. ${city}. Не упустите шанс стать частью команды!\ngov Требования: опрятность, юр. образование, медкарта, военный билет, полный пакет документов, прописка от 5 лет`,
+      continue: `gov Собеседование в Полицейскую Академию ${tag} продолжается! Ждём вас в участке г. ${city}. Не упустите шанс стать частью команды!\\ngov Требования: опрятность, юр. образование, медкарта, военный билет, полный пакет документов, прописка от 5 лет`,
 
-      end: `gov Собеседование в Полицейскую Академию ${tag} окончено. Открыт приём эл. заявлений на трудоустройство в званиях Рядовой и Старшина.\ngov Есть опыт службы в ГУВД? Подайте заявление на восстановление в звании и должности через гос. портал республики.`,
+      end: `gov Собеседование в Полицейскую Академию ${tag} окончено. Открыт приём эл. заявлений на трудоустройство в званиях Рядовой и Старшина.\\ngov Есть опыт службы в ГУВД? Подайте заявление на восстановление в звании и должности через гос. портал республики.`,
     }
   }
 
   const messages = selectedTime && selectedCity ? generateMessages(selectedTime, selectedCity) : null
 
   return (
-    <div className="flex-1 p-8 overflow-auto">
+    <div className="flex-1 p-8 overflow-auto bg-background">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-blue-600 mb-8">Гос волна ГУВД - ПА (Полицейская академия)</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-8">Гос волна ГУВД - ПА (Полицейская академия)</h1>
 
         <div className="space-y-6">
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Настройки собеседования</h2>
+          <Card className="p-6 border border-border bg-card">
+            <h2 className="text-xl font-semibold text-card-foreground mb-4">Настройки собеседования</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Время собеседования</label>
+                <label className="block text-sm font-medium mb-2 text-muted-foreground">Время собеседования</label>
                 <Select value={selectedTime} onValueChange={setSelectedTime}>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-12 border-input bg-background text-foreground focus:ring-primary/20">
                     <SelectValue placeholder="Выберите время" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-popover text-popover-foreground border-border">
                     {timeSlots.map((slot) => (
                       <SelectItem key={slot} value={slot}>
                         {slot}
@@ -146,12 +158,12 @@ export function GuvdGovWavePage() {
                 </Select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Город</label>
+                <label className="block text-sm font-medium mb-2 text-muted-foreground">Город</label>
                 <Select value={selectedCity} onValueChange={setSelectedCity}>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-12 border-input bg-background text-foreground focus:ring-primary/20">
                     <SelectValue placeholder="Выберите город" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-popover text-popover-foreground border-border">
                     {cities.map((city) => (
                       <SelectItem key={city.name} value={city.name}>
                         {city.name}
@@ -163,9 +175,9 @@ export function GuvdGovWavePage() {
             </div>
           </Card>
 
-          <Card className="p-6 border-l-4 border-l-yellow-400">
-            <h2 className="text-xl font-semibold text-yellow-700 mb-4">Правила выхода в гос волну</h2>
-            <div className="text-sm text-gray-700 space-y-2">
+          <Card className="p-6 border-l-4 border-l-primary bg-card">
+            <h2 className="text-xl font-semibold text-card-foreground mb-4">Правила выхода в гос волну</h2>
+            <div className="text-sm text-muted-foreground space-y-2">
               <p>• Сообщения государственной волны (/gov) видны всем игрокам на сервере.</p>
               <p>
                 • Руководство по использованию государственной волны, а также расписание — закреплены в беседе VK —
@@ -195,9 +207,9 @@ export function GuvdGovWavePage() {
             </div>
           </Card>
 
-          <Card className="p-6 border-l-4 border-l-blue-400">
-            <h2 className="text-xl font-semibold text-blue-700 mb-4">Правила проведения собеседования</h2>
-            <div className="text-sm text-gray-700 space-y-2">
+          <Card className="p-6 border-l-4 border-l-primary bg-card">
+            <h2 className="text-xl font-semibold text-card-foreground mb-4">Правила проведения собеседования</h2>
+            <div className="text-sm text-muted-foreground space-y-2">
               <p>
                 <strong>Собеседование проводится по следующему плану:</strong>
               </p>
@@ -220,9 +232,9 @@ export function GuvdGovWavePage() {
             </div>
           </Card>
 
-          <Card className="p-6 border-l-4 border-l-green-400">
-            <h2 className="text-xl font-semibold text-green-700 mb-4">Требования к кандидатам</h2>
-            <div className="text-sm text-gray-700 space-y-2">
+          <Card className="p-6 border-l-4 border-l-primary bg-card">
+            <h2 className="text-xl font-semibold text-card-foreground mb-4">Требования к кандидатам</h2>
+            <div className="text-sm text-muted-foreground space-y-2">
               <p>• Возраст от 18-ти до 40-ка лет включительно.</p>
               <p>• Опрятный внешний вид гражданина.</p>
               <p>• Не менее 5-ти лет проживания в Республике Провинция.</p>
@@ -240,13 +252,13 @@ export function GuvdGovWavePage() {
 
           {messages && (
             <div className="space-y-4">
-              <Card className="p-6">
+              <Card className="p-6 bg-card border border-border">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-green-600">Объявление (за 30 минут до начала)</h3>
+                  <h3 className="text-lg font-semibold text-card-foreground">Объявление (за 30 минут до начала)</h3>
                   <CopyButton text={messages.announcement} />
                 </div>
-                <div className="bg-gray-50 p-4 rounded font-mono text-sm">
-                  {messages.announcement.split("\n").map((line, index) => (
+                <div className="bg-muted p-4 rounded font-mono text-sm text-muted-foreground">
+                  {messages.announcement.split("\\n").map((line, index) => (
                     <div key={index} className="flex items-start gap-2 mb-2 last:mb-0">
                       <div className="flex-1">{line}</div>
                       <CopyButton text={line} className="flex-shrink-0 mt-0.5" />
@@ -255,13 +267,13 @@ export function GuvdGovWavePage() {
                 </div>
               </Card>
 
-              <Card className="p-6">
+              <Card className="p-6 bg-card border border-border">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-blue-600">Начало собеседования</h3>
+                  <h3 className="text-lg font-semibold text-card-foreground">Начало собеседования</h3>
                   <CopyButton text={messages.start} />
                 </div>
-                <div className="bg-gray-50 p-4 rounded font-mono text-sm">
-                  {messages.start.split("\n").map((line, index) => (
+                <div className="bg-muted p-4 rounded font-mono text-sm text-muted-foreground">
+                  {messages.start.split("\\n").map((line, index) => (
                     <div key={index} className="flex items-start gap-2 mb-2 last:mb-0">
                       <div className="flex-1">{line}</div>
                       <CopyButton text={line} className="flex-shrink-0 mt-0.5" />
@@ -270,13 +282,13 @@ export function GuvdGovWavePage() {
                 </div>
               </Card>
 
-              <Card className="p-6">
+              <Card className="p-6 bg-card border border-border">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-orange-600">Продолжение собеседования</h3>
+                  <h3 className="text-lg font-semibold text-card-foreground">Продолжение собеседования</h3>
                   <CopyButton text={messages.continue} />
                 </div>
-                <div className="bg-gray-50 p-4 rounded font-mono text-sm">
-                  {messages.continue.split("\n").map((line, index) => (
+                <div className="bg-muted p-4 rounded font-mono text-sm text-muted-foreground">
+                  {messages.continue.split("\\n").map((line, index) => (
                     <div key={index} className="flex items-start gap-2 mb-2 last:mb-0">
                       <div className="flex-1">{line}</div>
                       <CopyButton text={line} className="flex-shrink-0 mt-0.5" />
@@ -285,13 +297,13 @@ export function GuvdGovWavePage() {
                 </div>
               </Card>
 
-              <Card className="p-6">
+              <Card className="p-6 bg-card border border-border">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-red-600">Окончание собеседования</h3>
+                  <h3 className="text-lg font-semibold text-card-foreground">Окончание собеседования</h3>
                   <CopyButton text={messages.end} />
                 </div>
-                <div className="bg-gray-50 p-4 rounded font-mono text-sm">
-                  {messages.end.split("\n").map((line, index) => (
+                <div className="bg-muted p-4 rounded font-mono text-sm text-muted-foreground">
+                  {messages.end.split("\\n").map((line, index) => (
                     <div key={index} className="flex items-start gap-2 mb-2 last:mb-0">
                       <div className="flex-1">{line}</div>
                       <CopyButton text={line} className="flex-shrink-0 mt-0.5" />
@@ -302,9 +314,9 @@ export function GuvdGovWavePage() {
             </div>
           )}
 
-          <Card className="p-6 border-l-4 border-l-blue-400">
-            <h2 className="text-xl font-semibold text-blue-700 mb-4">Временная схема</h2>
-            <div className="text-sm text-gray-700 space-y-2">
+          <Card className="p-6 border-l-4 border-l-primary bg-card">
+            <h2 className="text-xl font-semibold text-card-foreground mb-4">Временная схема</h2>
+            <div className="text-sm text-muted-foreground space-y-2">
               <p>
                 <strong>Пример для времени 00:00-01:00:</strong>
               </p>
@@ -315,14 +327,14 @@ export function GuvdGovWavePage() {
             </div>
           </Card>
 
-          <Card className="p-4 bg-gray-50 border-gray-200">
-            <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
+          <Card className="p-4 bg-card border-border">
+            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
               <span>Разработчик:</span>
               <a
                 href="https://vk.com/id503251431"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium"
+                className="inline-flex items-center gap-1 text-primary hover:text-primary/80 font-medium"
               >
                 Poseidon_Wagner
                 <ExternalLink className="h-3 w-3" />

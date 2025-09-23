@@ -1,5 +1,6 @@
 "use client"
 
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ExternalLink, FileText, Scale, Shield, Users, AlertTriangle, Book, Camera } from "lucide-react"
 
 export function ResourcesPage() {
@@ -79,19 +80,27 @@ export function ResourcesPage() {
   const categories = ["Законодательство", "Правила организаций", "Специальные документы"]
 
   return (
-    <div className="flex-1 p-8 bg-gray-50">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-3 mb-6">
-          <ExternalLink className="h-8 w-8 text-blue-600" />
-          <h1 className="text-3xl font-bold text-gray-800">Информационные ресурсы</h1>
+    <div className="space-y-6 bg-background min-h-screen p-6">
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+          <ExternalLink className="h-6 w-6 text-primary-foreground" />
         </div>
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Информационные ресурсы</h1>
+          <p className="text-muted-foreground">
+            Официальные документы и правила Республики Провинция для сотрудников МВД
+          </p>
+        </div>
+      </div>
 
-        <p className="text-gray-600 mb-8">Официальные документы и правила Республики Провинция для сотрудников МВД</p>
-
-        {categories.map((category) => (
-          <div key={category} className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">{category}</h2>
-            <div className="grid gap-4 md:grid-cols-2">
+      {categories.map((category) => (
+        <Card key={category} className="border-border bg-card">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-card-foreground text-xl">{category}</CardTitle>
+            <CardDescription className="text-muted-foreground">Документы категории "{category}"</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
               {resources
                 .filter((resource) => resource.category === category)
                 .map((resource, index) => (
@@ -100,27 +109,43 @@ export function ResourcesPage() {
                     href={resource.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow group"
+                    className="flex items-start gap-4 p-4 rounded-lg border border-border bg-card shadow-sm hover:shadow-md transition-shadow group"
                   >
-                    <div className="flex items-start gap-4">
-                      <div className="text-blue-600 group-hover:text-blue-700 transition-colors">{resource.icon}</div>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-800 group-hover:text-blue-600 transition-colors mb-2">
-                          {resource.title}
-                        </h3>
-                        <p className="text-gray-600 text-sm leading-relaxed">{resource.description}</p>
-                        <div className="flex items-center gap-1 mt-3 text-blue-600 text-sm">
-                          <span>Открыть на форуме</span>
-                          <ExternalLink className="h-3 w-3" />
-                        </div>
+                    <div className="text-primary group-hover:text-primary/80 transition-colors mt-1">
+                      {resource.icon}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-card-foreground group-hover:text-primary transition-colors mb-2">
+                        {resource.title}
+                      </h3>
+                      <p className="text-muted-foreground text-sm leading-relaxed mb-3">{resource.description}</p>
+                      <div className="flex items-center gap-1 text-primary text-sm">
+                        <span>Открыть на форуме</span>
+                        <ExternalLink className="h-3 w-3" />
                       </div>
                     </div>
                   </a>
                 ))}
             </div>
-          </div>
-        ))}
-      </div>
+          </CardContent>
+        </Card>
+      ))}
+
+      <footer className="mt-16 pt-8 border-t border-border">
+        <div className="text-center">
+          <p className="text-sm text-muted-foreground">
+            Разработано{" "}
+            <a
+              href="https://vk.com/id503251431"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:text-primary/80 font-medium transition-colors"
+            >
+              Poseidon_Wagner
+            </a>
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }

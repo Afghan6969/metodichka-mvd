@@ -92,14 +92,14 @@ export function GibddVehiclesPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Автопарк ГИБДД</h1>
           <p className="text-muted-foreground">
-            Транспортные средства, доступные сотрудникам ГИБДД по рангам и должностям
+            Транспортные средства, доступные сотрудникам ГИБДД по рангам
           </p>
         </div>
 
         <div className="grid gap-8">
           {vehicleData.map((cityData) => (
             <Card key={cityData.city} className="border-border">
-              <CardHeader className="bg-primary/10">
+              <CardHeader className="bg-secondary/10">
                 <CardTitle className="text-xl text-primary">ГИБДД г. {cityData.city}</CardTitle>
                 <CardDescription>
                   Автопарк Государственной инспекции безопасности дорожного движения города {cityData.city}
@@ -114,7 +114,7 @@ export function GibddVehiclesPage() {
                     >
                       <div className="text-primary mt-1">{getVehicleIcon(vehicle.type)}</div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-foreground truncate">{vehicle.name}</h3>
+                        <h3 className="font-medium text-sm text-foreground truncate">{vehicle.name}</h3>
                         <div className="flex items-center gap-2 mt-2">
                           <Badge className={getRankColor(vehicle.rank)}>{vehicle.rank}</Badge>
                         </div>
@@ -144,6 +144,22 @@ export function GibddVehiclesPage() {
             </ul>
           </CardContent>
         </Card>
+
+        <footer className="mt-16 pt-8 border-t border-border">
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground">
+              Разработано{" "}
+              <a
+                href="https://vk.com/id503251431"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:text-primary/80 font-medium transition-colors"
+              >
+                Poseidon_Wagner
+              </a>
+            </p>
+          </div>
+        </footer>
       </div>
     </div>
   )

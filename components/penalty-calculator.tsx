@@ -1016,8 +1016,8 @@ const PenaltyCalculator = () => {
   const getAllViolations = () => {
     const allViolations: Array<{ key: string; violation: Violation; category: string }> = []
     Object.entries(violations).forEach(([categoryKey, category]) => {
-      Object.entries(category.items).forEach(([key, violation]) => {
-        allViolations.push({ key, violation, category: category.name })
+      Object.entries(category.items).forEach(([violationKey, violation]) => {
+        allViolations.push({ key: `${categoryKey}.${violationKey}`, violation, category: category.name })
       })
     })
     return allViolations
@@ -1127,20 +1127,25 @@ const PenaltyCalculator = () => {
                   <CommandList className="max-h-[300px]">
                     {Object.entries(violations).map(([categoryKey, category]) => (
                       <CommandGroup key={categoryKey} heading={category.name}>
-                        {Object.entries(category.items).map(([key, violation]) => (
+                        {Object.entries(category.items).map(([violationKey, violation]) => (
                           <CommandItem
-                            key={key}
-                            value={`${violation.article} ${violation.description}`}
-                            onSelect={() => {
+                            key={violationKey}
+                            value={violationKey}
+                            onSelect={(currentValue) => {
+                              const fullKey = `${categoryKey}.${currentValue}`
                               setSelectedViolations((prev) =>
-                                prev.includes(key) ? prev.filter((v) => v !== key) : [...prev, key],
+                                prev.includes(fullKey) ? prev.filter((item) => item !== fullKey) : [...prev, fullKey],
                               )
+                              setOpen(false)
+                              setForceUpdate((prev) => prev + 1)
                             }}
                           >
                             <Check
                               className={cn(
                                 "mr-2 h-4 w-4",
-                                selectedViolations.includes(key) ? "opacity-100" : "opacity-0",
+                                selectedViolations.includes(`${categoryKey}.${violationKey}`)
+                                  ? "opacity-100"
+                                  : "opacity-0",
                               )}
                             />
                             <div className="flex-1">
@@ -1236,7 +1241,6 @@ const PenaltyCalculator = () => {
               </CardContent>
             </Card>
           </div>
-
           {alternatives.length > 0 && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-foreground">Альтернативные варианты наказания:</h3>
@@ -1274,7 +1278,6 @@ const PenaltyCalculator = () => {
               </div>
             </div>
           )}
-
           {selectedViolations.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">Выберите статьи для расчета наказания</div>
           )}
@@ -1283,6 +1286,5 @@ const PenaltyCalculator = () => {
     </Card>
   )
 }
-
 export { PenaltyCalculator }
 export default PenaltyCalculator

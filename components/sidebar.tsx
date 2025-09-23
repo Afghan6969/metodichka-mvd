@@ -34,6 +34,10 @@ interface SidebarProps {
     | "reports"
     | "ranks"
     | "commands"
+    | "ammunition"
+    | "terms"
+    | "resources"
+    | "penalty-calculator"
     | "gibdd-positions"
     | "guvd-positions"
     | "guvd-vehicles"
@@ -42,10 +46,6 @@ interface SidebarProps {
     | "gibdd-gov-wave"
     | "gibdd-binds"
     | "guvd-binds"
-    | "ammunition"
-    | "terms"
-    | "resources"
-    | "penalty-calculator"
     | "versions"
   onPageChange: (page: SidebarProps["currentPage"]) => void
   onGlobalSearchOpen: () => void
@@ -56,16 +56,16 @@ export function Sidebar({ currentPage, onPageChange, onGlobalSearchOpen }: Sideb
 
   const commonItems = [
     { id: "contents" as const, icon: BookOpen, label: "Содержание", priority: 1 },
-    { id: "penalty-calculator" as const, icon: Calculator, label: "Калькулятор штрафов", priority: 2 },
     { id: "lectures" as const, icon: GraduationCap, label: "Лекции", priority: 3 },
     { id: "training" as const, icon: Target, label: "Тренировки", priority: 4 },
     { id: "tests" as const, icon: ClipboardCheck, label: "Тесты", priority: 5 },
     { id: "reports" as const, icon: Radio, label: "Доклады в рацию", priority: 6 },
     { id: "ranks" as const, icon: Star, label: "Звания и ранги", priority: 7 },
     { id: "commands" as const, icon: Terminal, label: "Команды", priority: 8 },
-    { id: "ammunition" as const, icon: Shield, label: "Аммуниция", priority: 9 },
-    { id: "terms" as const, icon: Book, label: "Термины", priority: 10 },
-    { id: "resources" as const, icon: ExternalLink, label: "Ресурсы", priority: 11 },
+    { id: "penalty-calculator" as const, icon: Calculator, label: "Калькулятор штрафов", priority: 9 },
+    { id: "ammunition" as const, icon: Shield, label: "Аммуниция", priority: 10 },
+    { id: "terms" as const, icon: Book, label: "Термины", priority: 11 },
+    { id: "resources" as const, icon: ExternalLink, label: "Ресурсы", priority: 12 },
   ]
 
   const gibddItems = [

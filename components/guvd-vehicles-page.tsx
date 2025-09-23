@@ -101,7 +101,7 @@ export function GuvdVehiclesPage() {
           {vehicleData.map((cityData) => (
             <Card key={cityData.city} className="border-border">
               <CardHeader className="bg-secondary/10">
-                <CardTitle className="text-xl text-secondary">ГУВД г. {cityData.city}</CardTitle>
+                <CardTitle className="text-xl text-primary">ГУВД г. {cityData.city}</CardTitle>
                 <CardDescription>Автопарк управления внутренних дел города {cityData.city}</CardDescription>
               </CardHeader>
               <CardContent className="p-6">
@@ -113,7 +113,7 @@ export function GuvdVehiclesPage() {
                     >
                       <div className="text-primary mt-1">{getVehicleIcon(vehicle.type)}</div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-foreground truncate">{vehicle.name}</h3>
+                        <h3 className="font-medium text-sm text-foreground truncate">{vehicle.name}</h3>
                         <div className="flex items-center gap-2 mt-2">
                           <Badge className={getRankColor(vehicle.rank)}>{vehicle.rank}</Badge>
                         </div>

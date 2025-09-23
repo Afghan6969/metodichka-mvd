@@ -27,10 +27,14 @@ export function CopyButton({ text, className = "" }: CopyButtonProps) {
       variant="ghost"
       size="sm"
       onClick={handleCopy}
-      className={`h-6 w-6 p-0 hover:bg-gray-100 ${className}`}
+      className={`h-6 w-6 p-0 hover:bg-muted border border-border hover:border-primary/50 transition-all duration-200 ${className}`}
       title="Копировать"
     >
-      {copied ? <Check className="h-3 w-3 text-green-600" /> : <Copy className="h-3 w-3 text-gray-500" />}
+      {copied ? (
+        <Check className="h-3 w-3 text-green-600" />
+      ) : (
+        <Copy className="h-3 w-3 text-muted-foreground hover:text-foreground transition-colors" />
+      )}
     </Button>
   )
 }

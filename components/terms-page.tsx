@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { SearchBar } from "@/components/search-bar"
 import { BookOpen } from "lucide-react"
 
@@ -99,32 +100,59 @@ export function TermsPage() {
   )
 
   return (
-    <div className="flex-1 p-8 bg-gray-50">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-3 mb-6">
-          <BookOpen className="h-8 w-8 text-blue-600" />
-          <h1 className="text-3xl font-bold text-gray-800">Термины и определения</h1>
+    <div className="space-y-6 bg-background min-h-screen p-6">
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
+          <BookOpen className="h-6 w-6 text-primary" />
         </div>
-
-        <div className="mb-6">
-          <SearchBar onSearch={setSearchQuery} placeholder="Поиск терминов..." />
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Термины и определения</h1>
+          <p className="text-muted-foreground">Основные понятия и определения для сотрудников МВД</p>
         </div>
-
-        <div className="space-y-4">
-          {filteredTerms.map((item, index) => (
-            <div key={index} className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-              <h3 className="text-xl font-semibold text-blue-600 mb-3">{item.term}</h3>
-              <p className="text-gray-700 leading-relaxed">{item.definition}</p>
-            </div>
-          ))}
-        </div>
-
-        {filteredTerms.length === 0 && searchQuery && (
-          <div className="text-center py-12">
-            <p className="text-gray-500">Термины не найдены по запросу "{searchQuery}"</p>
-          </div>
-        )}
       </div>
+
+      <div className="mb-6">
+        <SearchBar
+          onSearch={setSearchQuery}
+          placeholder="Поиск терминов..."
+          className="bg-muted border-border text-foreground placeholder-muted-foreground focus:border-primary focus:ring-primary/20"
+        />
+      </div>
+
+      <div className="space-y-4">
+        {filteredTerms.map((item, index) => (
+          <Card key={index} className="border-border bg-card">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-card-foreground text-xl">{item.term}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground leading-relaxed">{item.definition}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {filteredTerms.length === 0 && searchQuery && (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">Термины не найдены по запросу "{searchQuery}"</p>
+        </div>
+      )}
+
+      <footer className="mt-16 pt-8 border-t border-border">
+        <div className="text-center">
+          <p className="text-sm text-muted-foreground">
+            Разработано{" "}
+            <a
+              href="https://vk.com/id503251431"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:text-primary/80 font-medium transition-colors"
+            >
+              Poseidon_Wagner
+            </a>
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }
