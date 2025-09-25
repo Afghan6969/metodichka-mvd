@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Check, ChevronsUpDown, Calculator, Star, GraduationCap, X, DollarSign, Car, Shield } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -943,7 +944,7 @@ const PenaltyCalculator = () => {
               suspension: 0,
               arrest: 0,
               retraining: false,
-},
+            },
           ],
         },
         "19.2": {
@@ -968,7 +969,7 @@ const PenaltyCalculator = () => {
               suspension: 0,
               arrest: 0,
               retraining: false,
-},
+            },
           ],
         },
         "19.3": {
@@ -979,7 +980,7 @@ const PenaltyCalculator = () => {
           arrest: 1,
           retraining: false,
           alternatives: [
-{
+            {
               name: "Арест 10 суток",
               fine: 0,
               suspension: 0,
@@ -993,7 +994,7 @@ const PenaltyCalculator = () => {
               suspension: 0,
               arrest: 0,
               retraining: false,
-},
+            },
           ],
         },
         "19.4": {
@@ -1019,7 +1020,7 @@ const PenaltyCalculator = () => {
               arrest: 0,
               retraining: false,
             },
-{
+            {
               name: "Арест 10 суток",
               fine: 0,
               suspension: 0,
@@ -1052,7 +1053,7 @@ const PenaltyCalculator = () => {
           arrest: 1,
           retraining: false,
           alternatives: [
-{
+            {
               name: "Арест 10 суток",
               fine: 0,
               suspension: 0,
@@ -1066,7 +1067,7 @@ const PenaltyCalculator = () => {
               suspension: 0,
               arrest: 0,
               retraining: false,
-},
+            },
           ],
         },
         "19.9": {
@@ -1077,7 +1078,7 @@ const PenaltyCalculator = () => {
           arrest: 0,
           retraining: false,
           alternatives: [
-{
+            {
               name: "Арест до 20 суток",
               fine: 0,
               suspension: 0,
@@ -1091,14 +1092,14 @@ const PenaltyCalculator = () => {
               suspension: 0,
               arrest: 0,
               retraining: false,
-},
+            },
             {
               name: "Лишение прав на 1 год",
               fine: 0,
               suspension: 1,
               arrest: 0,
               retraining: false,
-},
+            },
           ],
         },
         "19.10": {
@@ -1581,7 +1582,7 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 1,
           retraining: false,          
-alternatives: [
+          alternatives: [
             {
               name: "Арест 1-6 лет",
               fine: 100000,
@@ -2133,109 +2134,123 @@ alternatives: [
                       
                       {violation.alternatives && (
                         <div className="flex flex-col gap-2">
-                          <select
-                            value={selectedPenalties[violationKey] || "default"}
-                            onChange={(e) => {
-                              const newPenalty = e.target.value
-                              setSelectedPenalties((prev) => ({
-                                ...prev,
-                                [violationKey]: newPenalty,
-                              }))
-                              // Сброс значений для диапазонов при смене альтернативы
-                              if (newPenalty === "default") {
-                                setSelectedFineAmounts((prev) => {
-                                  const newAmounts = { ...prev }
-                                  delete newAmounts[violationKey]
-                                  return newAmounts
-                                })
-                                setSelectedArrestAmounts((prev) => {
-                                  const newAmounts = { ...prev }
-                                  if (violation.arrestRange) {
-                                    newAmounts[violationKey] = violation.arrest
-                                  } else {
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-medium">Наказание:</span>
+                            <Select
+                              value={selectedPenalties[violationKey] || "default"}
+                              onValueChange={(newPenalty) => {
+                                setSelectedPenalties((prev) => ({
+                                  ...prev,
+                                  [violationKey]: newPenalty,
+                                }))
+                                // Сброс значений для диапазонов при смене альтернативы
+                                if (newPenalty === "default") {
+                                  setSelectedFineAmounts((prev) => {
+                                    const newAmounts = { ...prev }
                                     delete newAmounts[violationKey]
+                                    return newAmounts
+                                  })
+                                  setSelectedArrestAmounts((prev) => {
+                                    const newAmounts = { ...prev }
+                                    if (violation.arrestRange) {
+                                      newAmounts[violationKey] = violation.arrest
+                                    } else {
+                                      delete newAmounts[violationKey]
+                                    }
+                                    return newAmounts
+                                  })
+                                } else {
+                                  const alt = violation.alternatives?.find(a => a.name === newPenalty)
+                                  if (alt) {
+                                    setSelectedFineAmounts((prev) => ({
+                                      ...prev,
+                                      [violationKey]: alt.fineRange ? alt.fine : prev[violationKey],
+                                    }))
+                                    setSelectedArrestAmounts((prev) => ({
+                                      ...prev,
+                                      [violationKey]: alt.arrestRange ? alt.arrest : prev[violationKey] ?? violation.arrest,
+                                    }))
                                   }
-                                  return newAmounts
-                                })
-                              } else {
-                                const alt = violation.alternatives?.find(a => a.name === newPenalty)
-                                if (alt) {
-                                  setSelectedFineAmounts((prev) => ({
-                                    ...prev,
-                                    [violationKey]: alt.fineRange ? alt.fine : prev[violationKey],
-                                  }))
-                                  setSelectedArrestAmounts((prev) => ({
-                                    ...prev,
-                                    [violationKey]: alt.arrestRange ? alt.arrest : prev[violationKey] ?? violation.arrest,
-                                  }))
                                 }
-                              }
-                            }}
-                            className="text-xs border rounded p-1 bg-background"
-                          >
-                            <option value="default">Выбрать наказание</option>
-                            {violation.alternatives.map((alt) => (
-                              <option key={alt.name} value={alt.name}>
-                                {alt.name}
-                              </option>
-                            ))}
-                          </select>
+                              }}
+                            >
+                              <SelectTrigger className="text-xs bg-background border-gray-200">
+                                <SelectValue placeholder="Выбрать наказание" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="default">Основное наказание</SelectItem>
+                                {violation.alternatives.map((alt) => (
+                                  <SelectItem key={alt.name} value={alt.name}>
+                                    {alt.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
 
                           {selectedAlt?.fineRange && (
                             <div className="flex items-center gap-2">
-                              <span className="text-xs">Сумма штрафа:</span>
-                              <select
-                                value={selectedFineAmounts[violationKey] ?? selectedAlt.fine}
-                                onChange={(e) =>
+                              <span className="text-xs font-medium">Сумма штрафа:</span>
+                              <Select
+                                value={(selectedFineAmounts[violationKey] ?? selectedAlt.fine).toString()}
+                                onValueChange={(value) =>
                                   setSelectedFineAmounts((prev) => ({
                                     ...prev,
-                                    [violationKey]: parseInt(e.target.value),
+                                    [violationKey]: parseInt(value),
                                   }))
                                 }
-                                className="text-xs border rounded p-1 bg-background"
                               >
-                                {Array.from(
-                                  { length: (selectedAlt.fineRange.max - selectedAlt.fineRange.min) / 500 + 1 },
-                                  (_, i) => {
-                                    const amount = selectedAlt.fineRange!.min + i * 500
-                                    return (
-                                      <option key={amount} value={amount}>
-                                        {amount.toLocaleString()} ₽
-                                      </option>
-                                    )
-                                  }
-                                )}
-                              </select>
+                                <SelectTrigger className="text-xs bg-background border-gray-200">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {Array.from(
+                                    { length: (selectedAlt.fineRange.max - selectedAlt.fineRange.min) / 500 + 1 },
+                                    (_, i) => {
+                                      const amount = selectedAlt.fineRange!.min + i * 500
+                                      return (
+                                        <SelectItem key={amount} value={amount.toString()}>
+                                          {amount.toLocaleString()} ₽
+                                        </SelectItem>
+                                      )
+                                    }
+                                  )}
+                                </SelectContent>
+                              </Select>
                             </div>
                           )}
 
                           {(violation.arrestRange || selectedAlt?.arrestRange) && (
                             <div className="flex items-center gap-2">
-                              <span className="text-xs">Срок ареста:</span>
-                              <select
-                                value={selectedArrestAmounts[violationKey] ?? (selectedAlt?.arrest || violation.arrest)}
-                                onChange={(e) => {
-                                  const newValue = parseInt(e.target.value)
+                              <span className="text-xs font-medium">Срок ареста:</span>
+                              <Select
+                                value={(selectedArrestAmounts[violationKey] ?? (selectedAlt?.arrest || violation.arrest)).toString()}
+                                onValueChange={(value) => {
+                                  const newValue = parseInt(value)
                                   setSelectedArrestAmounts((prev) => ({
                                     ...prev,
                                     [violationKey]: newValue,
                                   }))
                                 }}
-                                className="text-xs border rounded p-1 bg-background"
                               >
-                                {Array.from(
-                                  { length: ((selectedAlt?.arrestRange || violation.arrestRange)!.max - (selectedAlt?.arrestRange || violation.arrestRange)!.min) + 1 },
-                                  (_, i) => {
-                                    const range = selectedAlt?.arrestRange || violation.arrestRange!
-                                    const amount = range.min + i
-                                    return (
-                                      <option key={amount} value={amount}>
-                                        {amount} {amount === 1 ? "год" : amount < 5 ? "года" : "лет"}
-                                      </option>
-                                    )
-                                  }
-                                )}
-                              </select>
+                                <SelectTrigger className="text-xs bg-background border-gray-200">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {Array.from(
+                                    { length: ((selectedAlt?.arrestRange || violation.arrestRange)!.max - (selectedAlt?.arrestRange || violation.arrestRange)!.min) + 1 },
+                                    (_, i) => {
+                                      const range = selectedAlt?.arrestRange || violation.arrestRange!
+                                      const amount = range.min + i
+                                      return (
+                                        <SelectItem key={amount} value={amount.toString()}>
+                                          {amount} {amount === 1 ? "год" : amount < 5 ? "года" : "лет"}
+                                        </SelectItem>
+                                      )
+                                    }
+                                  )}
+                                </SelectContent>
+                              </Select>
                             </div>
                           )}
                         </div>
@@ -2243,32 +2258,36 @@ alternatives: [
 
                       {violation.suspensionRange && (
                         <div className="flex items-center gap-2">
-                          <span className="text-xs">Срок лишения:</span>
-                          <select
-                            value={selectedSuspensionAmounts[violationKey] ?? violation.suspension}
-                            onChange={(e) => {
-                              const value = parseInt(e.target.value)
+                          <span className="text-xs font-medium">Срок лишения:</span>
+                          <Select
+                            value={(selectedSuspensionAmounts[violationKey] ?? violation.suspension).toString()}
+                            onValueChange={(value) => {
+                              const newValue = parseInt(value)
                               setSelectedSuspensionAmounts((prev) => ({
                                 ...prev,
-                                [violationKey]: value,
+                                [violationKey]: newValue,
                               }))
                             }}
-                            className="text-xs border rounded p-1 bg-background"
                           >
-                            {Array.from(
-                              { length: violation.suspensionRange.max - violation.suspensionRange.min + 1 },
-                              (_, i) => {
-                                const amount = violation.suspensionRange!.min + i
-                                return (
-                                  <option key={amount} value={amount}>
-                                    {amount === 0
-                                      ? "Лишение прав (с переобучением)"
-                                      : `${amount} ${amount === 1 ? "год" : amount < 5 ? "года" : "лет"}`}
-                                  </option>
-                                )
-                              }
-                            )}
-                          </select>
+                            <SelectTrigger className="text-xs bg-background border-gray-200">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Array.from(
+                                { length: violation.suspensionRange.max - violation.suspensionRange.min + 1 },
+                                (_, i) => {
+                                  const amount = violation.suspensionRange!.min + i
+                                  return (
+                                    <SelectItem key={amount} value={amount.toString()}>
+                                      {amount === 0
+                                        ? "Лишение прав (с переобучением)"
+                                        : `${amount} ${amount === 1 ? "год" : amount < 5 ? "года" : "лет"}`}
+                                    </SelectItem>
+                                  )
+                                }
+                              )}
+                            </SelectContent>
+                          </Select>
                         </div>
                       )}
                     </div>
