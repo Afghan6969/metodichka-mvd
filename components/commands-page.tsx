@@ -66,7 +66,7 @@ export function CommandsPage() {
       icon: Shield,
       category: "arrest",
       commands: [
-        { command: "/cuff [ID]", description: "Надевает на преступника наручники (игрок должен быть в розыске)" },
+        { command: "/cuff [ID]", description: "Надевает на преступника наручники" },
         { command: "/uncuff [ID]", description: "Снимает наручники с преступника" },
         { command: "/putpl [ID]", description: "Посадить преступника в машину" },
         { command: "/arr [ID]", description: "Конвоировать преступника за собой" },
@@ -86,7 +86,7 @@ export function CommandsPage() {
       category: "admin",
       commands: [
         {
-          command: "/su [ID] [Уровень розыска 1-3] [Причина]",
+          command: "/su [ID] [Уровень розыска 1-6] [Причина]",
           description: "Подать игрока в розыск",
           rankRequired: "2+",
         },
@@ -95,7 +95,7 @@ export function CommandsPage() {
           description: "Выдать игроку штраф от 500 до 100.000 (ГИБДД)/250.000 (ГУВД)",
           rankRequired: "3/5+",
         },
-        { command: "/clear [ID]", description: "Убрать розыск с преступника", rankRequired: "3+" },
+        { command: "/clear [ID]", description: "Убрать розыск с преступника"},
         { command: "/jailbreak [ID]", description: "Выпустить заключенного из КПЗ", rankRequired: "8+" },
         {
           command: "/giverank [ID] [Номер ранга]",
@@ -142,53 +142,48 @@ export function CommandsPage() {
   const specialCommands = commandCategories.filter((cat) => cat.category === "special")
 
   return (
-    <div className="space-y-6 bg-background min-h-screen p-6">
+    <div className="space-y-6 bg-gray-900 min-h-screen p-6">
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
-          <Terminal className="h-6 w-6 text-primary" />
+        <div className="w-12 h-12 bg-blue-900 rounded-lg flex items-center justify-center">
+          <Terminal className="h-6 w-6 text-blue-300" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Команды сотрудников МВД</h1>
-          <p className="text-muted-foreground">Полный список игровых команд и их описание</p>
+          <h1 className="text-3xl font-bold text-white">Команды сотрудников МВД</h1>
+          <p className="text-gray-400">Полный список игровых команд и их описание</p>
         </div>
       </div>
 
       {/* Команды рации */}
-      <Card className="border-border bg-card">
+      <Card className="border-gray-700 bg-gray-800">
         <CardHeader className="pb-4">
-          <CardTitle className="text-card-foreground flex items-center gap-2 text-xl">
+          <CardTitle className="text-white flex items-center gap-2 text-xl">
             <Radio className="h-5 w-5 text-blue-400" />
             Команды рации
           </CardTitle>
-          <CardDescription className="text-muted-foreground">Радиосвязь между сотрудниками и фракциями</CardDescription>
+          <CardDescription className="text-gray-400">Радиосвязь между сотрудниками и фракциями</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {radioCommands[0].commands.map((command, index) => (
               <div
                 key={index}
-                className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
+                className="flex items-start gap-4 p-4 rounded-lg border border-gray-600 bg-gray-700 shadow-sm"
               >
                 <div className="text-blue-400 mt-1">
                   <Radio className="h-4 w-4" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <code className="font-mono text-sm bg-muted text-foreground px-3 py-1.5 rounded border border-border">
-                      {command.command}
-                    </code>
+                    <code className="font-mono text-sm bg-gray-700 text-gray-200 px-2 py-1 rounded">{command.command}</code>
                     {command.rankRequired && (
-                      <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
+                      <Badge className="bg-gray-600 text-gray-200 border-gray-600 text-xs">
                         {command.rankRequired}
                       </Badge>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground">{command.description}</p>
+                  <p className="text-sm text-gray-400">{command.description}</p>
                 </div>
-                <CopyButton
-                  text={command.command}
-                  className="flex-shrink-0 mt-1 opacity-70 hover:opacity-100 transition-opacity"
-                />
+                <CopyButton text={command.command} className="flex-shrink-0 mt-1" />
               </div>
             ))}
           </div>
@@ -196,41 +191,36 @@ export function CommandsPage() {
       </Card>
 
       {/* Информационные команды */}
-      <Card className="border-border bg-card">
+      <Card className="border-gray-700 bg-gray-800">
         <CardHeader className="pb-4">
-          <CardTitle className="text-card-foreground flex items-center gap-2 text-xl">
+          <CardTitle className="text-white flex items-center gap-2 text-xl">
             <Terminal className="h-5 w-5 text-green-400" />
             Информационные команды
           </CardTitle>
-          <CardDescription className="text-muted-foreground">Получение данных и статистики</CardDescription>
+          <CardDescription className="text-gray-400">Получение данных и статистики</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {infoCommands[0].commands.map((command, index) => (
               <div
                 key={index}
-                className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
+                className="flex items-start gap-4 p-4 rounded-lg border border-gray-600 bg-gray-700 shadow-sm"
               >
                 <div className="text-green-400 mt-1">
                   <Terminal className="h-4 w-4" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <code className="font-mono text-sm bg-muted text-foreground px-3 py-1.5 rounded border border-border">
-                      {command.command}
-                    </code>
+                    <code className="font-mono text-sm bg-gray-700 text-gray-200 px-2 py-1 rounded">{command.command}</code>
                     {command.rankRequired && (
-                      <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
+                      <Badge className="bg-gray-600 text-gray-200 border-gray-600 text-xs">
                         {command.rankRequired}
                       </Badge>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground">{command.description}</p>
+                  <p className="text-sm text-gray-400">{command.description}</p>
                 </div>
-                <CopyButton
-                  text={command.command}
-                  className="flex-shrink-0 mt-1 opacity-70 hover:opacity-100 transition-opacity"
-                />
+                <CopyButton text={command.command} className="flex-shrink-0 mt-1" />
               </div>
             ))}
           </div>
@@ -238,36 +228,31 @@ export function CommandsPage() {
       </Card>
 
       {/* Команды задержания */}
-      <Card className="border-border bg-card">
+      <Card className="border-gray-700 bg-gray-800">
         <CardHeader className="pb-4">
-          <CardTitle className="text-card-foreground flex items-center gap-2 text-xl">
+          <CardTitle className="text-white flex items-center gap-2 text-xl">
             <Shield className="h-5 w-5 text-yellow-400" />
             Команды задержания
           </CardTitle>
-          <CardDescription className="text-muted-foreground">Задержание и конвоирование преступников</CardDescription>
+          <CardDescription className="text-gray-400">Задержание и конвоирование преступников</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {arrestCommands[0].commands.map((command, index) => (
               <div
                 key={index}
-                className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
+                className="flex items-start gap-4 p-4 rounded-lg border border-gray-600 bg-gray-700 shadow-sm"
               >
                 <div className="text-yellow-400 mt-1">
                   <Shield className="h-4 w-4" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <code className="font-mono text-sm bg-muted text-foreground px-3 py-1.5 rounded border border-border">
-                      {command.command}
-                    </code>
+                    <code className="font-mono text-sm bg-gray-700 text-gray-200 px-2 py-1 rounded">{command.command}</code>
                   </div>
-                  <p className="text-sm text-muted-foreground">{command.description}</p>
+                  <p className="text-sm text-gray-400">{command.description}</p>
                 </div>
-                <CopyButton
-                  text={command.command}
-                  className="flex-shrink-0 mt-1 opacity-70 hover:opacity-100 transition-opacity"
-                />
+                <CopyButton text={command.command} className="flex-shrink-0 mt-1" />
               </div>
             ))}
           </div>
@@ -275,43 +260,36 @@ export function CommandsPage() {
       </Card>
 
       {/* Административные команды */}
-      <Card className="border-border bg-card">
+      <Card className="border-gray-700 bg-gray-800">
         <CardHeader className="pb-4">
-          <CardTitle className="text-card-foreground flex items-center gap-2 text-xl">
+          <CardTitle className="text-white flex items-center gap-2 text-xl">
             <Users className="h-5 w-5 text-orange-400" />
             Административные команды
           </CardTitle>
-          <CardDescription className="text-muted-foreground">
-            Управление розыском, штрафами и персоналом
-          </CardDescription>
+          <CardDescription className="text-gray-400">Управление розыском, штрафами и персоналом</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {adminCommands[0].commands.map((command, index) => (
               <div
                 key={index}
-                className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
+                className="flex items-start gap-4 p-4 rounded-lg border border-gray-600 bg-gray-700 shadow-sm"
               >
                 <div className="text-orange-400 mt-1">
                   <Users className="h-4 w-4" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <code className="font-mono text-sm bg-muted text-foreground px-3 py-1.5 rounded border border-border">
-                      {command.command}
-                    </code>
+                    <code className="font-mono text-sm bg-gray-700 text-gray-200 px-2 py-1 rounded">{command.command}</code>
                     {command.rankRequired && (
-                      <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
+                      <Badge className="bg-gray-600 text-gray-200 border-gray-600 text-xs">
                         {command.rankRequired}
                       </Badge>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground">{command.description}</p>
+                  <p className="text-sm text-gray-400">{command.description}</p>
                 </div>
-                <CopyButton
-                  text={command.command}
-                  className="flex-shrink-0 mt-1 opacity-70 hover:opacity-100 transition-opacity"
-                />
+                <CopyButton text={command.command} className="flex-shrink-0 mt-1" />
               </div>
             ))}
           </div>
@@ -319,19 +297,19 @@ export function CommandsPage() {
       </Card>
 
       {/* Специальные команды */}
-      <Card className="border-border bg-card">
+      <Card className="border-gray-700 bg-gray-800">
         <CardHeader className="pb-4">
-          <CardTitle className="text-card-foreground flex items-center gap-2 text-xl">
+          <CardTitle className="text-white flex items-center gap-2 text-xl">
             <AlertTriangle className="h-5 w-5 text-red-400" />
             Специальные команды
           </CardTitle>
-          <CardDescription className="text-muted-foreground">Команды ГИБДД и высшего руководства</CardDescription>
+          <CardDescription className="text-gray-400">Команды ГИБДД и высшего руководства</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
             {specialCommands.map((category) => (
               <div key={category.id} className="space-y-3">
-                <h3 className="font-semibold text-card-foreground flex items-center gap-2">
+                <h3 className="font-semibold text-white flex items-center gap-2">
                   {getItemIcon(category.icon)}
                   {category.title}
                 </h3>
@@ -339,26 +317,21 @@ export function CommandsPage() {
                   {category.commands.map((command, index) => (
                     <div
                       key={index}
-                      className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
+                      className="flex items-start gap-4 p-4 rounded-lg border border-gray-600 bg-gray-700 shadow-sm"
                     >
                       <div className="text-red-400 mt-1">{getItemIcon(category.icon)}</div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          <code className="font-mono text-sm bg-muted text-foreground px-3 py-1.5 rounded border border-border">
-                            {command.command}
-                          </code>
+                          <code className="font-mono text-sm bg-gray-700 text-gray-200 px-2 py-1 rounded">{command.command}</code>
                           {command.rankRequired && (
-                            <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
+                            <Badge className="bg-gray-600 text-gray-200 border-gray-600 text-xs">
                               {command.rankRequired}
                             </Badge>
                           )}
                         </div>
-                        <p className="text-sm text-muted-foreground">{command.description}</p>
+                        <p className="text-sm text-gray-400">{command.description}</p>
                       </div>
-                      <CopyButton
-                        text={command.command}
-                        className="flex-shrink-0 mt-1 opacity-70 hover:opacity-100 transition-opacity"
-                      />
+                      <CopyButton text={command.command} className="flex-shrink-0 mt-1" />
                     </div>
                   ))}
                 </div>
@@ -369,30 +342,28 @@ export function CommandsPage() {
       </Card>
 
       {/* Анимации */}
-      <Card className="border-border bg-card">
+      <Card className="border-gray-700 bg-gray-800">
         <CardHeader className="pb-4">
-          <CardTitle className="text-card-foreground flex items-center gap-2 text-xl">
+          <CardTitle className="text-white flex items-center gap-2 text-xl">
             <Users className="h-5 w-5 text-purple-400" />
             Анимации
           </CardTitle>
-          <CardDescription className="text-muted-foreground">Команды для воспроизведения анимаций</CardDescription>
+          <CardDescription className="text-gray-400">Команды для воспроизведения анимаций</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm">
+            <div className="flex items-start gap-4 p-4 rounded-lg border border-gray-600 bg-gray-700 shadow-sm">
               <div className="text-purple-400 mt-1">
                 <Users className="h-4 w-4" />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <code className="font-mono text-sm bg-muted text-foreground px-3 py-1.5 rounded border border-border">
-                    /animarmy [1-9]
-                  </code>
+                  <code className="font-mono text-sm bg-gray-700 text-gray-200 px-2 py-1 rounded">/animarmy [1-9]</code>
                 </div>
-                <p className="text-sm text-muted-foreground mb-3">Вызов анимации</p>
-                <div className="bg-background border border-border p-4 rounded-lg">
-                  <h4 className="font-semibold text-card-foreground mb-2">Список анимаций:</h4>
-                  <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                <p className="text-sm text-gray-400 mb-3">Вызов анимации</p>
+                <div className="bg-gray-700 border border-gray-600 p-4 rounded-lg">
+                  <h4 className="font-semibold text-white mb-2">Список анимаций:</h4>
+                  <div className="grid grid-cols-2 gap-2 text-sm text-gray-300">
                     <div>1. Отжимания</div>
                     <div>2. Приседания</div>
                     <div>3. Воинское приветствие</div>
@@ -405,24 +376,21 @@ export function CommandsPage() {
                   </div>
                 </div>
               </div>
-              <CopyButton
-                text="/animarmy [1-9]"
-                className="flex-shrink-0 mt-1 opacity-70 hover:opacity-100 transition-opacity"
-              />
+              <CopyButton text="/animarmy [1-9]" className="flex-shrink-0 mt-1" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <footer className="mt-16 pt-8 border-t border-border">
+      <footer className="mt-16 pt-8 border-t border-gray-600">
         <div className="text-center">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-400">
             Разработано{" "}
             <a
               href="https://vk.com/id503251431"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 font-medium transition-colors"
+              className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
             >
               Poseidon_Wagner
             </a>

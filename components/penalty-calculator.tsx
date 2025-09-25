@@ -1846,7 +1846,7 @@ const PenaltyCalculator = () => {
     },
   }
 
-  const getAllViolations = () => {
+const getAllViolations = () => {
     const allViolations: Array<{ key: string; violation: Violation; category: string }> = []
     Object.entries(violations).forEach(([categoryKey, category]) => {
       Object.entries(category.items).forEach(([violationKey, violation]) => {
@@ -1858,7 +1858,7 @@ const PenaltyCalculator = () => {
 
   const calculateTotals = () => {
     let totalFine = 0
-    let maxSuspension = 0
+    let totalSuspension = 0
     let totalArrest = 0
     let hasRetraining = false
 
@@ -1877,7 +1877,6 @@ const PenaltyCalculator = () => {
           }
         }
 
-        // Обработка fineRange
         if (penalty.fineRange && selectedFineAmounts[violationKey] !== undefined) {
           penalty = {
             ...penalty,
@@ -1885,7 +1884,6 @@ const PenaltyCalculator = () => {
           }
         }
 
-        // Обработка arrestRange
         if (penalty.arrestRange && selectedArrestAmounts[violationKey] !== undefined) {
           penalty = {
             ...penalty,
@@ -1893,13 +1891,12 @@ const PenaltyCalculator = () => {
           }
         }
 
-        // Обработка suspensionRange
         const suspension = violation.suspensionRange && selectedSuspensionAmounts[violationKey] !== undefined
           ? selectedSuspensionAmounts[violationKey]
           : penalty.suspension
 
         totalFine += penalty.fine
-        maxSuspension = Math.max(maxSuspension, suspension)
+        totalSuspension += suspension
         totalArrest += penalty.arrest
         if (penalty.retraining || (violation.suspensionRange && selectedSuspensionAmounts[violationKey] === 0)) {
           hasRetraining = true
@@ -1907,12 +1904,12 @@ const PenaltyCalculator = () => {
       }
     })
 
-    maxSuspension = Math.min(maxSuspension, 4)
+    totalSuspension = Math.min(totalSuspension, 4)
     totalArrest = Math.min(totalArrest, 6)
 
     return {
       fine: totalFine,
-      suspension: maxSuspension,
+      suspension: totalSuspension,
       arrest: totalArrest,
       retraining: hasRetraining,
     }
@@ -2078,8 +2075,7 @@ const PenaltyCalculator = () => {
                   if (!found) return null
                   const violation = found.violation
                   const selectedAlt = getSelectedAlternative(violationKey)
-                  
-                  // Инициализация значения для arrestRange
+
                   if (violation.arrestRange && selectedArrestAmounts[violationKey] === undefined) {
                     setSelectedArrestAmounts((prev) => ({
                       ...prev,
@@ -2131,7 +2127,7 @@ const PenaltyCalculator = () => {
                         </Badge>
                         <span className="text-xs text-muted-foreground">{violation.description}</span>
                       </div>
-                      
+
                       {violation.alternatives && (
                         <div className="flex flex-col gap-2">
                           <div className="flex items-center gap-2">
@@ -2143,7 +2139,6 @@ const PenaltyCalculator = () => {
                                   ...prev,
                                   [violationKey]: newPenalty,
                                 }))
-                                // Сброс значений для диапазонов при смене альтернативы
                                 if (newPenalty === "default") {
                                   setSelectedFineAmounts((prev) => {
                                     const newAmounts = { ...prev }
@@ -2301,115 +2296,95 @@ const PenaltyCalculator = () => {
         <Separator />
 
         <div className="space-y-4">
-          <h3 className="text-lg font-medium">Результат расчета</h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <h3 className="text-lg font-medium">Итоговое наказание</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
-              <CardContent className="p-4">
-                <div className="text-2xl font-bold text-green-600">{totals.fine.toLocaleString()} ₽</div>
-                <div className="text-sm text-muted-foreground">Штраф</div>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <DollarSign className="h-5 w-5" />
+                  Штраф
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold">{totals.fine.toLocaleString()} ₽</p>
               </CardContent>
             </Card>
-
             <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2">
-                  <div className="text-2xl font-bold text-orange-600">
-                    {totals.suspension > 0
-                      ? `${totals.suspension} ${totals.suspension === 1 ? "год" : totals.suspension < 5 ? "года" : "лет"}`
-                      : totals.retraining
-                      ? "Лишение прав (с переобучением)"
-                      : "—"}
-                  </div>
-                  {totals.retraining && <GraduationCap className="h-4 w-4 text-blue-500" />}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  Лишение прав {totals.retraining && totals.suspension === 0 && "(с переобучением)"}
-                </div>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Car className="h-5 w-5" />
+                  Лишение прав
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold">
+                  {totals.suspension > 0
+                    ? `${totals.suspension} ${totals.suspension === 1 ? "год" : totals.suspension < 5 ? "года" : "лет"}`
+                    : "Нет"}
+                </p>
               </CardContent>
             </Card>
-
             <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-1">
-                  {totals.arrest > 0 ? (
-                    renderStars(totals.arrest)
-                  ) : (
-                    <span className="text-2xl font-bold text-red-600">—</span>
-                  )}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  Уровень розыска{" "}
-                  {totals.arrest > 0 &&
-                    `(${totals.arrest} ${totals.arrest === 1 ? "звезда" : totals.arrest < 5 ? "звезды" : "звезд"})`}
-                </div>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5" />
+                  Арест
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold">
+                  {totals.arrest > 0
+                    ? `${totals.arrest} ${totals.arrest === 1 ? "год" : totals.arrest < 5 ? "года" : "лет"}`
+                    : "Нет"}
+                </p>
               </CardContent>
             </Card>
-
             <Card>
-              <CardContent className="p-4">
-                <div className="text-2xl font-bold text-blue-600">{selectedViolations.length}</div>
-                <div className="text-sm text-muted-foreground">Статей выбрано</div>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <GraduationCap className="h-5 w-5" />
+                  Переобучение
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold">{totals.retraining ? "Требуется" : "Не требуется"}</p>
               </CardContent>
             </Card>
           </div>
+        </div>
 
-          {alternatives.length > 0 && (
+        {alternatives.length > 0 && (
+          <>
+            <Separator />
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground">Выбранные альтернативные наказания:</h3>
-              <div className="space-y-3">
+              <h3 className="text-lg font-medium">Детализация наказаний</h3>
+              <div className="space-y-2">
                 {alternatives.map((alt, index) => (
-                  <div key={index} className="p-4 bg-muted/50 rounded-lg border">
-                    <h4 className="font-medium text-foreground mb-2">{alt.name}</h4>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                      <div className="flex items-center gap-2">
-                        <DollarSign className="h-4 w-4 text-green-600" />
-                        <span>
-                          {alt.fine.toLocaleString()} ₽
-                          {alt.hasRange && alt.range && (
-                            <span className="text-xs text-muted-foreground ml-1">
-                              (из {alt.range.min.toLocaleString()}-{alt.range.max.toLocaleString()} ₽)
-                            </span>
-                          )}
-                        </span>
+                  <div key={index} className="flex flex-col gap-2 p-3 border rounded-lg">
+                    <div className="font-medium">{alt.name}</div>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div>Штраф: {alt.fine.toLocaleString()} ₽</div>
+                      <div>
+                        Лишение прав: {alt.suspension > 0
+                          ? `${alt.suspension} ${alt.suspension === 1 ? "год" : alt.suspension < 5 ? "года" : "лет"}`
+                          : "Нет"}
                       </div>
-                      {alt.suspension > 0 && (
-                        <div className="flex items-center gap-2">
-                          <Car className="h-4 w-4 text-orange-600" />
-                          <span>
-                            {alt.suspension} {alt.suspension === 1 ? "год" : alt.suspension < 5 ? "года" : "лет"}
-                          </span>
-                          {alt.retraining && <GraduationCap className="h-4 w-4 text-blue-600" />}
-                        </div>
-                      )}
-                      {alt.arrest > 0 && (
-                        <div className="flex items-center gap-2">
-                          <Shield className="h-4 w-4 text-red-600" />
-                          <span>
-                            {alt.arrest} {alt.arrest === 1 ? "год" : alt.arrest < 5 ? "года" : "лет"}
-                            {alt.hasArrestRange && alt.arrestRange && (
-                              <span className="text-xs text-muted-foreground ml-1">
-                                (из {alt.arrestRange.min}-{alt.arrestRange.max} лет)
-                              </span>
-                            )}
-                          </span>
-                        </div>
-                      )}
+                      <div>
+                        Арест: {alt.arrest > 0
+                          ? `${alt.arrest} ${alt.arrest === 1 ? "год" : alt.arrest < 5 ? "года" : "лет"}`
+                          : "Нет"}
+                      </div>
+                      <div>Переобучение: {alt.retraining ? "Требуется" : "Не требуется"}</div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-          )}
-
-          {selectedViolations.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">Выберите статьи для расчета наказания</div>
-          )}
-        </div>
+          </>
+        )}
       </CardContent>
     </Card>
   )
 }
 
-export { PenaltyCalculator }
 export default PenaltyCalculator
