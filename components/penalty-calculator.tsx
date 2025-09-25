@@ -2386,5 +2386,5 @@ const getAllViolations = () => {
     </Card>
   )
 }
-
+export { PenaltyCalculator }
 export default PenaltyCalculator
