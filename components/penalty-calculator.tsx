@@ -14,13 +14,17 @@ interface Violation {
   description: string
   fine: number
   suspension: number
+  suspensionRange?: { min: number; max: number }
   arrest: number
+  arrestRange?: { min: number; max: number }
   retraining: boolean
   alternatives?: Array<{
     name: string
     fine: number
+    fineRange?: { min: number; max: number }
     suspension: number
     arrest: number
+    arrestRange?: { min: number; max: number }
     retraining: boolean
   }>
 }
@@ -32,8 +36,11 @@ interface ViolationCategory {
 
 const PenaltyCalculator = () => {
   const [selectedViolations, setSelectedViolations] = useState<string[]>([])
+  const [selectedPenalties, setSelectedPenalties] = useState<Record<string, string>>({})
+  const [selectedFineAmounts, setSelectedFineAmounts] = useState<Record<string, number>>({})
+  const [selectedSuspensionAmounts, setSelectedSuspensionAmounts] = useState<Record<string, number>>({})
+  const [selectedArrestAmounts, setSelectedArrestAmounts] = useState<Record<string, number>>({})
   const [open, setOpen] = useState(false)
-  const [forceUpdate, setForceUpdate] = useState(0)
 
   const violations: Record<string, ViolationCategory> = {
     traffic: {
@@ -49,7 +56,7 @@ const PenaltyCalculator = () => {
         },
         "5.2": {
           article: "КоАП 5.2",
-          description: "Непредоставление документов по требованию",
+          description: "Непредоставление документов по требованию полиции",
           fine: 30000,
           suspension: 0,
           arrest: 0,
@@ -57,7 +64,7 @@ const PenaltyCalculator = () => {
         },
         "5.3": {
           article: "КоАП 5.3",
-          description: "Управление незарегистрированным ТС",
+          description: "Управление незарегистрированным ТС или без номеров",
           fine: 10000,
           suspension: 0,
           arrest: 0,
@@ -65,7 +72,7 @@ const PenaltyCalculator = () => {
         },
         "5.4": {
           article: "КоАП 5.4",
-          description: "Управление ТС с тонировкой",
+          description: "Управление ТС с тонировкой менее 70%",
           fine: 20000,
           suspension: 0,
           arrest: 0,
@@ -73,11 +80,28 @@ const PenaltyCalculator = () => {
         },
         "5.5": {
           article: "КоАП 5.5",
-          description: "Управление ТС при технической неисправности",
+          description: "Управление ТС с технической неисправностью",
           fine: 30000,
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Штраф 10000-30000",
+              fine: 10000,
+              fineRange: { min: 10000, max: 30000 },
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "5.6": {
           article: "КоАП 5.6",
@@ -86,6 +110,15 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "5.7": {
           article: "КоАП 5.7",
@@ -94,6 +127,23 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Штраф 5000-15000",
+              fine: 5000,
+              fineRange: { min: 5000, max: 15000 },
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "5.8": {
           article: "КоАП 5.8",
@@ -102,10 +152,19 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "5.9": {
           article: "КоАП 5.9",
-          description: "Игнорирование требования об остановке",
+          description: "Игнорирование требования об остановке с помощью жезла",
           fine: 20000,
           suspension: 0,
           arrest: 0,
@@ -121,7 +180,7 @@ const PenaltyCalculator = () => {
         },
         "6.1": {
           article: "КоАП 6.1",
-          description: "Использование приоритета без убеждения в безопасности",
+          description: "Использование приоритета с маячками без безопасности",
           fine: 10000,
           suspension: 0,
           arrest: 0,
@@ -134,6 +193,15 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "6.3": {
           article: "КоАП 6.3",
@@ -142,6 +210,15 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "6.4": {
           article: "КоАП 6.4",
@@ -150,6 +227,15 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "6.5": {
           article: "КоАП 6.5",
@@ -158,10 +244,19 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "7.1": {
           article: "КоАП 7.1",
-          description: "Проезд на красный свет или запрещающий жест",
+          description: "Проезд на красный сигнал светофора",
           fine: 20000,
           suspension: 0,
           arrest: 0,
@@ -177,11 +272,20 @@ const PenaltyCalculator = () => {
         },
         "8.1": {
           article: "КоАП 8.1",
-          description: "Маневрирование без сигнала поворота",
+          description: "Маневры без использования поворотников",
           fine: 5000,
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "8.2": {
           article: "КоАП 8.2",
@@ -193,7 +297,7 @@ const PenaltyCalculator = () => {
         },
         "8.3": {
           article: "КоАП 8.3",
-          description: "Поворот из неположенной полосы",
+          description: "Поворот или разворот из неправильной полосы",
           fine: 20000,
           suspension: 0,
           arrest: 0,
@@ -201,7 +305,7 @@ const PenaltyCalculator = () => {
         },
         "8.4": {
           article: "КоАП 8.4",
-          description: "Поворот или разворот в нарушение ПДД",
+          description: "Неправильный поворот, разворот или движение задним ходом",
           fine: 20000,
           suspension: 0,
           arrest: 0,
@@ -209,15 +313,16 @@ const PenaltyCalculator = () => {
         },
         "9.1": {
           article: "КоАП 9.1",
-          description: "Движение по встречной полосе",
+          description: "Движение по полосе, предназначенной для встречного движения",
           fine: 50000,
           suspension: 2,
+          suspensionRange: { min: 0, max: 2 },
           arrest: 0,
-          retraining: false,
+          retraining: true,
         },
         "9.2": {
           article: "КоАП 9.2",
-          description: "Выезд на встречную полосу",
+          description: "Выезд на полосу встречного движения",
           fine: 50000,
           suspension: 0,
           arrest: 0,
@@ -230,6 +335,15 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "9.4": {
           article: "КоАП 9.4",
@@ -238,10 +352,19 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "9.5": {
           article: "КоАП 9.5",
-          description: "Движение по обочинам, тротуарам, газону",
+          description: "Движение по разделительным полосам, обочинам, тротуарам",
           fine: 30000,
           suspension: 0,
           arrest: 0,
@@ -249,15 +372,24 @@ const PenaltyCalculator = () => {
         },
         "9.6": {
           article: "КоАП 9.6",
-          description: "Несоблюдение дистанции и бокового интервала",
+          description: "Несоблюдение дистанции или бокового интервала",
           fine: 10000,
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "10.1": {
           article: "КоАП 10.1",
-          description: "Обгон спецтранспорта с синим маячком",
+          description: "Обгон ТС с маячками и звуковым сигналом",
           fine: 20000,
           suspension: 0,
           arrest: 0,
@@ -265,7 +397,7 @@ const PenaltyCalculator = () => {
         },
         "10.2": {
           article: "КоАП 10.2",
-          description: "Обгон спецтранспорта с синим/красным маячком",
+          description: "Обгон ТС с цветографическими схемами и маячками",
           fine: 20000,
           suspension: 0,
           arrest: 0,
@@ -289,7 +421,7 @@ const PenaltyCalculator = () => {
         },
         "11.1": {
           article: "КоАП 11.1",
-          description: "Остановка на пешеходном переходе или тротуаре",
+          description: "Остановка/стоянка на пешеходном переходе",
           fine: 10000,
           suspension: 0,
           arrest: 0,
@@ -297,7 +429,7 @@ const PenaltyCalculator = () => {
         },
         "11.2": {
           article: "КоАП 11.2",
-          description: "Остановка в местах остановки маршрутных ТС",
+          description: "Остановка/стоянка в местах остановки маршрутных ТС",
           fine: 10000,
           suspension: 0,
           arrest: 0,
@@ -305,7 +437,7 @@ const PenaltyCalculator = () => {
         },
         "11.3": {
           article: "КоАП 11.3",
-          description: "Остановка на трамвайных путях или газоне",
+          description: "Остановка/стоянка на трамвайных путях или далее первого ряда",
           fine: 10000,
           suspension: 0,
           arrest: 0,
@@ -313,7 +445,7 @@ const PenaltyCalculator = () => {
         },
         "11.4": {
           article: "КоАП 11.4",
-          description: "Нарушение правил остановки с созданием препятствий",
+          description: "Нарушение остановки/стоянки, создающее препятствия",
           fine: 10000,
           suspension: 0,
           arrest: 0,
@@ -321,7 +453,7 @@ const PenaltyCalculator = () => {
         },
         "11.5": {
           article: "КоАП 11.5",
-          description: "Прочие нарушения правил остановки",
+          description: "Нарушение правил остановки/стоянки",
           fine: 10000,
           suspension: 0,
           arrest: 0,
@@ -329,15 +461,24 @@ const PenaltyCalculator = () => {
         },
         "12.1": {
           article: "КоАП 12.1",
-          description: "Нарушения проезда перекрестков без опасности",
+          description: "Нарушение правил проезда перекрестков без опасности",
           fine: 5000,
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "12.2": {
           article: "КоАП 12.2",
-          description: "Нарушения проезда перекрестков с опасностью",
+          description: "Нарушение правил проезда перекрестков с опасностью",
           fine: 10000,
           suspension: 0,
           arrest: 0,
@@ -350,6 +491,15 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "13.2": {
           article: "КоАП 13.2",
@@ -361,15 +511,24 @@ const PenaltyCalculator = () => {
         },
         "13.3": {
           article: "КоАП 13.3",
-          description: "Остановка ближе 5м от шлагбаума",
+          description: "Остановка ближе 5 м от шлагбаума или 10 м от рельса",
           fine: 5000,
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "14.1": {
           article: "КоАП 14.1",
-          description: "Движение по автомагистрали ТС менее 40 км/ч",
+          description: "Движение по автомагистрали со скоростью менее 40 км/ч",
           fine: 10000,
           suspension: 0,
           arrest: 0,
@@ -377,11 +536,20 @@ const PenaltyCalculator = () => {
         },
         "14.2": {
           article: "КоАП 14.2",
-          description: "Движение грузовых ТС далее второй полосы",
+          description: "Движение грузовиков далее второй полосы на автомагистрали",
           fine: 5000,
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "14.3": {
           article: "КоАП 14.3",
@@ -393,19 +561,37 @@ const PenaltyCalculator = () => {
         },
         "14.4": {
           article: "КоАП 14.4",
-          description: "Создание помех пешеходом в жилых зонах",
+          description: "Создание пешеходом помех в жилой зоне",
           fine: 5000,
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "14.5": {
           article: "КоАП 14.5",
-          description: "Сквозное движение, учебная езда в жилых зонах",
+          description: "Сквозное движение, учебная езда, стоянка в жилой зоне",
           fine: 5000,
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "14.6": {
           article: "КоАП 14.6",
@@ -414,10 +600,19 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "15.1": {
           article: "КоАП 15.1",
-          description: "Непредоставление преимущества спецтранспорту",
+          description: "Непредоставление преимущества ТС с маячками",
           fine: 20000,
           suspension: 0,
           arrest: 0,
@@ -441,17 +636,27 @@ const PenaltyCalculator = () => {
         },
         "15.4": {
           article: "КоАП 15.4",
-          description: "Непредоставление преимущества пешеходам",
+          description: "Непредоставление преимущества пешеходам/велосипедистам",
           fine: 5000,
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "16.1": {
           article: "КоАП 16.1",
           description: "Оставление места ДТП",
           fine: 30000,
           suspension: 4,
+          suspensionRange: { min: 3, max: 4 },
           arrest: 2,
           retraining: false,
         },
@@ -470,50 +675,47 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 10000-35000",
+              fine: 10000,
+              fineRange: { min: 10000, max: 35000 },
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "17.1.4": {
           article: "КоАП 17.1.4",
-          description: "Управление в состоянии опьянения",
+          description: "Управление ТС в состоянии опьянения или передача управления",
           fine: 30000,
           suspension: 1,
+          suspensionRange: { min: 0, max: 1 },
           arrest: 0,
-          retraining: false,
+          retraining: true,
         },
         "17.1.5": {
           article: "КоАП 17.1.5",
-          description: "Отказ от медосвидетельствования",
+          description: "Невыполнение требования о прохождении освидетельствования",
           fine: 30000,
           suspension: 1,
+          suspensionRange: { min: 0, max: 1 },
           arrest: 0,
-          retraining: false,
+          retraining: true,
         },
         "17.2": {
           article: "КоАП 17.2",
           description: "Опасное вождение",
           fine: 30000,
           suspension: 2,
+          suspensionRange: { min: 0, max: 2 },
           arrest: 0,
-          retraining: false,
-        },
-        "17.3": {
-          article: "КоАП 17.3",
-          description: "Управление с неуплатой штрафов до 10.000",
-          fine: 0,
-          suspension: 0,
-          arrest: 0,
-          retraining: false,
-        },
-        "17.4": {
-          article: "КоАП 17.4",
-          description: "Управление с неуплатой штрафов 10.000-50.000",
-          fine: 30000,
-          suspension: 0,
-          arrest: 0,
-          retraining: false,
+          retraining: true,
         },
         "17.5": {
           article: "КоАП 17.5",
-          description: "Управление с неуплатой штрафов 50.000-100.000",
+          description: "Управление ТС с неуплатой штрафов 50.000–100.000 рублей",
           fine: 50000,
           suspension: 1,
           arrest: 0,
@@ -521,7 +723,7 @@ const PenaltyCalculator = () => {
         },
         "17.6": {
           article: "КоАП 17.6",
-          description: "Управление с неуплатой штрафов более 100.000",
+          description: "Управление ТС с неуплатой штрафов более 100.000 рублей",
           fine: 100000,
           suspension: 2,
           arrest: 0,
@@ -534,6 +736,15 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 0,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+          ],
         },
         "18.2": {
           article: "КоАП 18.2",
@@ -567,11 +778,6 @@ const PenaltyCalculator = () => {
           arrest: 0,
           retraining: false,
         },
-      },
-    },
-    public_order: {
-      name: "Общественный порядок (КоАП)",
-      items: {
         "19.1": {
           article: "КоАП 19.1",
           description: "Мелкое хулиганство",
@@ -579,14 +785,48 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 1,
           retraining: false,
+          alternatives: [
+            {
+              name: "Арест 10 суток",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              retraining: false,
+            },
+            {
+              name: "Штраф 500-10000",
+              fine: 500,
+              fineRange: { min: 500, max: 10000 },
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+},
+          ],
         },
         "19.2": {
           article: "КоАП 19.2",
-          description: "Оскорбление",
+          description: "Оскорбление, унижение чести и достоинства",
           fine: 10000,
           suspension: 0,
           arrest: 1,
           retraining: false,
+          alternatives: [
+            {
+              name: "Арест 10 суток",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              retraining: false,
+            },
+            {
+              name: "Штраф 500-10000",
+              fine: 500,
+              fineRange: { min: 500, max: 10000 },
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+},
+          ],
         },
         "19.3": {
           article: "КоАП 19.3",
@@ -595,6 +835,23 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 1,
           retraining: false,
+          alternatives: [
+{
+              name: "Арест 10 суток",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              retraining: false,
+            },
+            {
+              name: "Штраф 500-20000",
+              fine: 500,
+              fineRange: { min: 500, max: 20000 },
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+},
+          ],
         },
         "19.4": {
           article: "КоАП 19.4",
@@ -611,6 +868,22 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 1,
           retraining: false,
+          alternatives: [
+            {
+              name: "Предупреждение",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+{
+              name: "Арест 10 суток",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              retraining: false,
+            },
+          ],
         },
         "19.6": {
           article: "КоАП 19.6",
@@ -622,7 +895,7 @@ const PenaltyCalculator = () => {
         },
         "19.7": {
           article: "КоАП 19.7",
-          description: "Заведомо ложный вызов служб",
+          description: "Заведомо ложный вызов экстренных служб",
           fine: 20000,
           suspension: 0,
           arrest: 0,
@@ -630,19 +903,60 @@ const PenaltyCalculator = () => {
         },
         "19.8": {
           article: "КоАП 19.8",
-          description: "Организация несанкционированного митинга",
+          description: "Участие в несанкционированном митинге",
           fine: 20000,
           suspension: 0,
           arrest: 1,
           retraining: false,
+          alternatives: [
+{
+              name: "Арест 10 суток",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              retraining: false,
+            },
+            {
+              name: "Штраф 500-20000",
+              fine: 500,
+              fineRange: { min: 500, max: 20000 },
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+},
+          ],
         },
         "19.9": {
           article: "КоАП 19.9",
-          description: "Неповиновение сотруднику полиции",
+          description: "Неповиновение законному распоряжению полиции",
           fine: 20000,
           suspension: 1,
-          arrest: 2,
+          arrest: 0,
           retraining: false,
+          alternatives: [
+{
+              name: "Арест до 20 суток",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              arrestRange: { min: 1, max: 2 },
+              retraining: false,
+            },
+            {
+              name: "Штраф 20000",
+              fine: 20000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+},
+            {
+              name: "Лишение прав на 1 год",
+              fine: 0,
+              suspension: 1,
+              arrest: 0,
+              retraining: false,
+},
+          ],
         },
         "19.10": {
           article: "КоАП 19.10",
@@ -678,8 +992,19 @@ const PenaltyCalculator = () => {
           description: "Особо тяжкие телесные повреждения двум или более лицам",
           fine: 0,
           suspension: 0,
-          arrest: 6,
+          arrest: 4,
+          arrestRange: { min: 4, max: 6 },
           retraining: false,
+          alternatives: [
+            {
+              name: "Арест 4-6 лет",
+              fine: 0,
+              suspension: 0,
+              arrest: 4,
+              arrestRange: { min: 4, max: 6 },
+              retraining: false,
+            },
+          ],
         },
         "4.2.2": {
           article: "УК 4.2.2",
@@ -688,6 +1013,16 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 2,
           retraining: false,
+          alternatives: [
+            {
+              name: "Арест 1-2 лет",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              arrestRange: { min: 1, max: 2 },
+              retraining: false,
+            },
+          ],
         },
         "4.3": {
           article: "УК 4.3",
@@ -702,16 +1037,38 @@ const PenaltyCalculator = () => {
           description: "Похищение гражданина или незаконное лишение свободы",
           fine: 0,
           suspension: 0,
-          arrest: 6,
+          arrest: 4,
+          arrestRange: { min: 4, max: 6 },
           retraining: false,
+          alternatives: [
+            {
+              name: "Арест 4-6 лет",
+              fine: 0,
+              suspension: 0,
+              arrest: 4,
+              arrestRange: { min: 4, max: 6 },
+              retraining: false,
+            },
+          ],
         },
         "4.5": {
           article: "УК 4.5",
           description: "Действия против половой неприкосновенности",
           fine: 0,
           suspension: 0,
-          arrest: 6,
+          arrest: 3,
+          arrestRange: { min: 3, max: 6 },
           retraining: false,
+          alternatives: [
+            {
+              name: "Арест 3-6 лет",
+              fine: 0,
+              suspension: 0,
+              arrest: 3,
+              arrestRange: { min: 3, max: 6 },
+              retraining: false,
+            },
+          ],
         },
         "4.6": {
           article: "УК 4.6",
@@ -720,6 +1077,22 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 1,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 30000",
+              fine: 30000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Арест 1 год",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              retraining: false,
+            },
+          ],
         },
       },
     },
@@ -747,8 +1120,19 @@ const PenaltyCalculator = () => {
           description: "Посягательство на жизнь и здоровье сотрудника полиции",
           fine: 0,
           suspension: 0,
-          arrest: 6,
+          arrest: 3,
+          arrestRange: { min: 3, max: 6 },
           retraining: false,
+          alternatives: [
+            {
+              name: "Арест 3-6 лет",
+              fine: 0,
+              suspension: 0,
+              arrest: 3,
+              arrestRange: { min: 3, max: 6 },
+              retraining: false,
+            },
+          ],
         },
         "5.4": {
           article: "УК 5.4",
@@ -757,6 +1141,16 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 3,
           retraining: false,
+          alternatives: [
+            {
+              name: "Арест 1-3 лет",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              arrestRange: { min: 1, max: 3 },
+              retraining: false,
+            },
+          ],
         },
         "5.5": {
           article: "УК 5.5",
@@ -765,6 +1159,22 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 1,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 15000",
+              fine: 15000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Арест 1 год",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              retraining: false,
+            },
+          ],
         },
         "5.6": {
           article: "УК 5.6",
@@ -773,6 +1183,22 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 2,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 25000",
+              fine: 25000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Арест 2 года",
+              fine: 0,
+              suspension: 0,
+              arrest: 2,
+              retraining: false,
+            },
+          ],
         },
         "5.7": {
           article: "УК 5.7",
@@ -781,6 +1207,23 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 2,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 50000",
+              fine: 50000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Арест 1-2 года",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              arrestRange: { min: 1, max: 2 },
+              retraining: false,
+            },
+          ],
         },
         "5.7.1": {
           article: "УК 5.7.1",
@@ -789,6 +1232,23 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 2,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 50000",
+              fine: 50000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Арест 1-2 года",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              arrestRange: { min: 1, max: 2 },
+              retraining: false,
+            },
+          ],
         },
         "5.8": {
           article: "УК 5.8",
@@ -821,6 +1281,22 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 2,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 50000",
+              fine: 50000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Арест 2 года",
+              fine: 0,
+              suspension: 0,
+              arrest: 2,
+              retraining: false,
+            },
+          ],
         },
         "5.10": {
           article: "УК 5.10",
@@ -829,6 +1305,22 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 2,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 25000",
+              fine: 25000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Арест 2 года",
+              fine: 0,
+              suspension: 0,
+              arrest: 2,
+              retraining: false,
+            },
+          ],
         },
         "5.11": {
           article: "УК 5.11",
@@ -837,6 +1329,16 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 3,
           retraining: false,
+          alternatives: [
+            {
+              name: "Арест 1-3 лет",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              arrestRange: { min: 1, max: 3 },
+              retraining: false,
+            },
+          ],
         },
         "5.12": {
           article: "УК 5.12",
@@ -845,6 +1347,22 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 1,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 30000",
+              fine: 30000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Арест 1 год",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              retraining: false,
+            },
+          ],
         },
         "5.13": {
           article: "УК 5.13",
@@ -853,13 +1371,40 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 3,
           retraining: false,
+          alternatives: [
+            {
+              name: "Арест 1-3 лет",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              arrestRange: { min: 1, max: 3 },
+              retraining: false,
+            },
+          ],
         },
       },
     },
     criminal_public: {
       name: "Преступления против общественного порядка (УК)",
       items: {
-        "6.1": { article: "УК 6.1", description: "Терроризм", fine: 0, suspension: 0, arrest: 6, retraining: false },
+        "6.1": {
+          article: "УК 6.1",
+          description: "Терроризм",
+          fine: 0,
+          suspension: 0,
+          arrest: 6,
+          retraining: false,
+          alternatives: [
+            {
+              name: "Арест 1-6 лет",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              arrestRange: { min: 1, max: 6 },
+              retraining: false,
+            },
+          ],
+        },
         "6.2": {
           article: "УК 6.2",
           description: "Заведомо ложное сообщение о готовящихся взрыве",
@@ -875,22 +1420,52 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 3,
           retraining: false,
+          alternatives: [
+            {
+              name: "Арест 1-3 лет",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              arrestRange: { min: 1, max: 3 },
+              retraining: false,
+            },
+          ],
         },
         "6.4": {
           article: "УК 6.4",
           description: "Организация массовых беспорядков",
           fine: 100000,
           suspension: 0,
-          arrest: 6,
-          retraining: false,
+          arrest: 1,
+          retraining: false,          
+alternatives: [
+            {
+              name: "Арест 1-6 лет",
+              fine: 100000,
+              suspension: 0,
+              arrest: 1,
+              arrestRange: { min: 1, max: 6 },
+              retraining: false,
+            },
+          ],
         },
         "6.5": {
           article: "УК 6.5",
           description: "Создание устойчивой группы для нападений (банды)",
           fine: 0,
           suspension: 0,
-          arrest: 6,
+          arrest: 1,
           retraining: false,
+          alternatives: [
+            {
+              name: "Арест 1-6 лет",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              arrestRange: { min: 1, max: 6 },
+              retraining: false,
+            },
+          ],
         },
         "6.6": {
           article: "УК 6.6",
@@ -899,6 +1474,22 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 1,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 10000",
+              fine: 10000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Арест 1 год",
+              fine: 0,
+              suspension: 0,
+              arrest: 1,
+              retraining: false,
+            },
+          ],
         },
         "6.7": {
           article: "УК 6.7",
@@ -915,6 +1506,22 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 2,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 10000",
+              fine: 10000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Арест 2 года",
+              fine: 0,
+              suspension: 0,
+              arrest: 2,
+              retraining: false,
+            },
+          ],
         },
         "6.9": {
           article: "УК 6.9",
@@ -955,6 +1562,22 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 3,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 20000",
+              fine: 20000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Арест 3 года",
+              fine: 0,
+              suspension: 0,
+              arrest: 3,
+              retraining: false,
+            },
+          ],
         },
         "6.14": {
           article: "УК 6.14",
@@ -963,6 +1586,24 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 3,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 500-50000",
+              fine: 500,
+              fineRange: { min: 500, max: 50000 },
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Арест 1-3 года",
+              fine: 0,
+              suspension: 0,
+              arrest: 3,
+              arrestRange: { min: 1, max: 3 },
+              retraining: false,
+            },
+          ],
         },
       },
     },
@@ -976,6 +1617,22 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 3,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 50000 и возмещение ущерба",
+              fine: 50000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Арест 3 года",
+              fine: 0,
+              suspension: 0,
+              arrest: 3,
+              retraining: false,
+            },
+          ],
         },
         "7.2": {
           article: "УК 7.2",
@@ -1000,6 +1657,22 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 2,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 50000 и возмещение ущерба",
+              fine: 50000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Арест 2 года",
+              fine: 0,
+              suspension: 0,
+              arrest: 2,
+              retraining: false,
+            },
+          ],
         },
         "7.5": {
           article: "УК 7.5",
@@ -1008,6 +1681,22 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 2,
           retraining: false,
+          alternatives: [
+            {
+              name: "Штраф 50000",
+              fine: 50000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Арест 2 года",
+              fine: 0,
+              suspension: 0,
+              arrest: 2,
+              retraining: false,
+            },
+          ],
         },
       },
     },
@@ -1034,10 +1723,43 @@ const PenaltyCalculator = () => {
       const found = allViolations.find((v) => v.key === violationKey)
       if (found) {
         const violation = found.violation
-        totalFine += violation.fine
-        maxSuspension = Math.max(maxSuspension, violation.suspension)
-        totalArrest += violation.arrest
-        if (violation.retraining) hasRetraining = true
+        const selectedPenalty = selectedPenalties[violationKey] || "default"
+        let penalty = violation
+
+        if (selectedPenalty !== "default" && violation.alternatives) {
+          const selectedAlt = violation.alternatives.find((alt) => alt.name === selectedPenalty)
+          if (selectedAlt) {
+            penalty = selectedAlt
+          }
+        }
+
+        // Обработка fineRange
+        if (penalty.fineRange && selectedFineAmounts[violationKey] !== undefined) {
+          penalty = {
+            ...penalty,
+            fine: selectedFineAmounts[violationKey],
+          }
+        }
+
+        // Обработка arrestRange
+        if (penalty.arrestRange && selectedArrestAmounts[violationKey] !== undefined) {
+          penalty = {
+            ...penalty,
+            arrest: selectedArrestAmounts[violationKey],
+          }
+        }
+
+        // Обработка suspensionRange
+        const suspension = violation.suspensionRange && selectedSuspensionAmounts[violationKey] !== undefined
+          ? selectedSuspensionAmounts[violationKey]
+          : penalty.suspension
+
+        totalFine += penalty.fine
+        maxSuspension = Math.max(maxSuspension, suspension)
+        totalArrest += penalty.arrest
+        if (penalty.retraining || (violation.suspensionRange && selectedSuspensionAmounts[violationKey] === 0)) {
+          hasRetraining = true
+        }
       }
     })
 
@@ -1059,20 +1781,47 @@ const PenaltyCalculator = () => {
       suspension: number
       arrest: number
       retraining: boolean
+      hasRange?: boolean
+      range?: { min: number; max: number }
+      hasArrestRange?: boolean
+      arrestRange?: { min: number; max: number }
     }> = []
 
     selectedViolations.forEach((violationKey) => {
       const allViolations = getAllViolations()
       const found = allViolations.find((v) => v.key === violationKey)
-      if (found?.violation.alternatives) {
-        found.violation.alternatives.forEach((alt) => {
-          alternatives.push({
-            name: `${found.violation.article}: ${alt.name}`,
-            fine: alt.fine,
-            suspension: alt.suspension,
-            arrest: alt.arrest,
-            retraining: alt.retraining,
-          })
+      if (found) {
+        const violation = found.violation
+        const selectedPenalty = selectedPenalties[violationKey] || "default"
+        let penalty = violation
+
+        if (selectedPenalty !== "default" && violation.alternatives) {
+          const selectedAlt = violation.alternatives.find((alt) => alt.name === selectedPenalty)
+          if (selectedAlt) {
+            penalty = selectedAlt
+          }
+        }
+
+        const fineAmount = penalty.fineRange 
+          ? (selectedFineAmounts[violationKey] ?? penalty.fine) 
+          : penalty.fine
+
+        const arrestAmount = penalty.arrestRange
+          ? (selectedArrestAmounts[violationKey] ?? penalty.arrest)
+          : penalty.arrest
+
+        const altName = selectedPenalty !== "default" && penalty.name ? penalty.name : "Основное наказание"
+
+        alternatives.push({
+          name: `${violation.article}: ${altName}`,
+          fine: fineAmount,
+          suspension: penalty.suspension,
+          arrest: arrestAmount,
+          retraining: penalty.retraining,
+          hasRange: !!penalty.fineRange,
+          range: penalty.fineRange,
+          hasArrestRange: !!penalty.arrestRange,
+          arrestRange: penalty.arrestRange,
         })
       }
     })
@@ -1085,6 +1834,12 @@ const PenaltyCalculator = () => {
 
   const renderStars = (count: number) => {
     return Array.from({ length: count }, (_, i) => <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />)
+  }
+
+  const getSelectedAlternative = (violationKey: string) => {
+    const found = getAllViolations().find((v) => v.key === violationKey)
+    if (!found || !selectedPenalties[violationKey]) return null
+    return found.violation.alternatives?.find(alt => alt.name === selectedPenalties[violationKey])
   }
 
   return (
@@ -1101,7 +1856,17 @@ const PenaltyCalculator = () => {
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">Выбор статей</h3>
             {selectedViolations.length > 0 && (
-              <Button variant="outline" size="sm" onClick={() => setSelectedViolations([])}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setSelectedViolations([])
+                  setSelectedPenalties({})
+                  setSelectedFineAmounts({})
+                  setSelectedSuspensionAmounts({})
+                  setSelectedArrestAmounts({})
+                }}
+              >
                 Очистить все
               </Button>
             )}
@@ -1124,20 +1889,18 @@ const PenaltyCalculator = () => {
                 <Command>
                   <CommandInput placeholder="Поиск статей..." />
                   <CommandEmpty>Статьи не найдены.</CommandEmpty>
-                  <CommandList className="max-h-[300px]">
+                  <CommandList className="max-h-[300px] overflow-y-auto">
                     {Object.entries(violations).map(([categoryKey, category]) => (
                       <CommandGroup key={categoryKey} heading={category.name}>
                         {Object.entries(category.items).map(([violationKey, violation]) => (
                           <CommandItem
                             key={violationKey}
-                            value={violationKey}
+                            value={`${categoryKey}.${violationKey}`}
                             onSelect={(currentValue) => {
-                              const fullKey = `${categoryKey}.${currentValue}`
                               setSelectedViolations((prev) =>
-                                prev.includes(fullKey) ? prev.filter((item) => item !== fullKey) : [...prev, fullKey],
+                                prev.includes(currentValue) ? prev.filter((item) => item !== currentValue) : [...prev, currentValue]
                               )
                               setOpen(false)
-                              setForceUpdate((prev) => prev + 1)
                             }}
                           >
                             <Check
@@ -1145,7 +1908,7 @@ const PenaltyCalculator = () => {
                                 "mr-2 h-4 w-4",
                                 selectedViolations.includes(`${categoryKey}.${violationKey}`)
                                   ? "opacity-100"
-                                  : "opacity-0",
+                                  : "opacity-0"
                               )}
                             />
                             <div className="flex-1">
@@ -1169,18 +1932,203 @@ const PenaltyCalculator = () => {
                 {selectedViolations.map((violationKey) => {
                   const found = getAllViolations().find((v) => v.key === violationKey)
                   if (!found) return null
+                  const violation = found.violation
+                  const selectedAlt = getSelectedAlternative(violationKey)
+                  
+                  // Инициализация значения для arrestRange
+                  if (violation.arrestRange && selectedArrestAmounts[violationKey] === undefined) {
+                    setSelectedArrestAmounts((prev) => ({
+                      ...prev,
+                      [violationKey]: violation.arrest,
+                    }))
+                  }
+                  if (selectedAlt?.arrestRange && selectedArrestAmounts[violationKey] === undefined) {
+                    setSelectedArrestAmounts((prev) => ({
+                      ...prev,
+                      [violationKey]: selectedAlt.arrest,
+                    }))
+                  }
+
                   return (
-                    <Badge key={violationKey} variant="secondary" className="flex items-center gap-1">
-                      {found.violation.article}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-4 w-4 p-0 hover:bg-transparent"
-                        onClick={() => setSelectedViolations((prev) => prev.filter((v) => v !== violationKey))}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </Badge>
+                    <div key={violationKey} className="flex flex-col gap-2 p-3 border rounded-lg bg-muted/20">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="flex items-center gap-1">
+                          {violation.article}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-4 w-4 p-0 hover:bg-transparent"
+                            onClick={() => {
+                              setSelectedViolations((prev) => prev.filter((v) => v !== violationKey))
+                              setSelectedPenalties((prev) => {
+                                const newPenalties = { ...prev }
+                                delete newPenalties[violationKey]
+                                return newPenalties
+                              })
+                              setSelectedFineAmounts((prev) => {
+                                const newAmounts = { ...prev }
+                                delete newAmounts[violationKey]
+                                return newAmounts
+                              })
+                              setSelectedSuspensionAmounts((prev) => {
+                                const newAmounts = { ...prev }
+                                delete newAmounts[violationKey]
+                                return newAmounts
+                              })
+                              setSelectedArrestAmounts((prev) => {
+                                const newAmounts = { ...prev }
+                                delete newAmounts[violationKey]
+                                return newAmounts
+                              })
+                            }}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">{violation.description}</span>
+                      </div>
+                      
+                      {violation.alternatives && (
+                        <div className="flex flex-col gap-2">
+                          <select
+                            value={selectedPenalties[violationKey] || "default"}
+                            onChange={(e) => {
+                              const newPenalty = e.target.value
+                              setSelectedPenalties((prev) => ({
+                                ...prev,
+                                [violationKey]: newPenalty,
+                              }))
+                              // Сброс значений для диапазонов при смене альтернативы
+                              if (newPenalty === "default") {
+                                setSelectedFineAmounts((prev) => {
+                                  const newAmounts = { ...prev }
+                                  delete newAmounts[violationKey]
+                                  return newAmounts
+                                })
+                                setSelectedArrestAmounts((prev) => {
+                                  const newAmounts = { ...prev }
+                                  if (violation.arrestRange) {
+                                    newAmounts[violationKey] = violation.arrest
+                                  } else {
+                                    delete newAmounts[violationKey]
+                                  }
+                                  return newAmounts
+                                })
+                              } else {
+                                const alt = violation.alternatives?.find(a => a.name === newPenalty)
+                                if (alt) {
+                                  setSelectedFineAmounts((prev) => ({
+                                    ...prev,
+                                    [violationKey]: alt.fineRange ? alt.fine : prev[violationKey],
+                                  }))
+                                  setSelectedArrestAmounts((prev) => ({
+                                    ...prev,
+                                    [violationKey]: alt.arrestRange ? alt.arrest : prev[violationKey] ?? violation.arrest,
+                                  }))
+                                }
+                              }
+                            }}
+                            className="text-xs border rounded p-1 bg-background"
+                          >
+                            <option value="default">Выбрать наказание</option>
+                            {violation.alternatives.map((alt) => (
+                              <option key={alt.name} value={alt.name}>
+                                {alt.name}
+                              </option>
+                            ))}
+                          </select>
+
+                          {selectedAlt?.fineRange && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs">Сумма штрафа:</span>
+                              <select
+                                value={selectedFineAmounts[violationKey] ?? selectedAlt.fine}
+                                onChange={(e) =>
+                                  setSelectedFineAmounts((prev) => ({
+                                    ...prev,
+                                    [violationKey]: parseInt(e.target.value),
+                                  }))
+                                }
+                                className="text-xs border rounded p-1 bg-background"
+                              >
+                                {Array.from(
+                                  { length: (selectedAlt.fineRange.max - selectedAlt.fineRange.min) / 500 + 1 },
+                                  (_, i) => {
+                                    const amount = selectedAlt.fineRange!.min + i * 500
+                                    return (
+                                      <option key={amount} value={amount}>
+                                        {amount.toLocaleString()} ₽
+                                      </option>
+                                    )
+                                  }
+                                )}
+                              </select>
+                            </div>
+                          )}
+
+                          {(violation.arrestRange || selectedAlt?.arrestRange) && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs">Срок ареста:</span>
+                              <select
+                                value={selectedArrestAmounts[violationKey] ?? (selectedAlt?.arrest || violation.arrest)}
+                                onChange={(e) => {
+                                  const newValue = parseInt(e.target.value)
+                                  setSelectedArrestAmounts((prev) => ({
+                                    ...prev,
+                                    [violationKey]: newValue,
+                                  }))
+                                }}
+                                className="text-xs border rounded p-1 bg-background"
+                              >
+                                {Array.from(
+                                  { length: ((selectedAlt?.arrestRange || violation.arrestRange)!.max - (selectedAlt?.arrestRange || violation.arrestRange)!.min) + 1 },
+                                  (_, i) => {
+                                    const range = selectedAlt?.arrestRange || violation.arrestRange!
+                                    const amount = range.min + i
+                                    return (
+                                      <option key={amount} value={amount}>
+                                        {amount} {amount === 1 ? "год" : amount < 5 ? "года" : "лет"}
+                                      </option>
+                                    )
+                                  }
+                                )}
+                              </select>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {violation.suspensionRange && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs">Срок лишения:</span>
+                          <select
+                            value={selectedSuspensionAmounts[violationKey] ?? violation.suspension}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value)
+                              setSelectedSuspensionAmounts((prev) => ({
+                                ...prev,
+                                [violationKey]: value,
+                              }))
+                            }}
+                            className="text-xs border rounded p-1 bg-background"
+                          >
+                            {Array.from(
+                              { length: violation.suspensionRange.max - violation.suspensionRange.min + 1 },
+                              (_, i) => {
+                                const amount = violation.suspensionRange!.min + i
+                                return (
+                                  <option key={amount} value={amount}>
+                                    {amount === 0
+                                      ? "Лишение прав (с переобучением)"
+                                      : `${amount} ${amount === 1 ? "год" : amount < 5 ? "года" : "лет"}`}
+                                  </option>
+                                )
+                              }
+                            )}
+                          </select>
+                        </div>
+                      )}
+                    </div>
                   )
                 })}
               </div>
@@ -1207,12 +2155,14 @@ const PenaltyCalculator = () => {
                   <div className="text-2xl font-bold text-orange-600">
                     {totals.suspension > 0
                       ? `${totals.suspension} ${totals.suspension === 1 ? "год" : totals.suspension < 5 ? "года" : "лет"}`
+                      : totals.retraining
+                      ? "Лишение прав (с переобучением)"
                       : "—"}
                   </div>
                   {totals.retraining && <GraduationCap className="h-4 w-4 text-blue-500" />}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  Лишение прав {totals.retraining && "(с переобучением)"}
+                  Лишение прав {totals.retraining && totals.suspension === 0 && "(с переобучением)"}
                 </div>
               </CardContent>
             </Card>
@@ -1241,9 +2191,10 @@ const PenaltyCalculator = () => {
               </CardContent>
             </Card>
           </div>
+
           {alternatives.length > 0 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground">Альтернативные варианты наказания:</h3>
+              <h3 className="text-lg font-semibold text-foreground">Выбранные альтернативные наказания:</h3>
               <div className="space-y-3">
                 {alternatives.map((alt, index) => (
                   <div key={index} className="p-4 bg-muted/50 rounded-lg border">
@@ -1251,7 +2202,14 @@ const PenaltyCalculator = () => {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div className="flex items-center gap-2">
                         <DollarSign className="h-4 w-4 text-green-600" />
-                        <span>{alt.fine.toLocaleString()} ₽</span>
+                        <span>
+                          {alt.fine.toLocaleString()} ₽
+                          {alt.hasRange && alt.range && (
+                            <span className="text-xs text-muted-foreground ml-1">
+                              (из {alt.range.min.toLocaleString()}-{alt.range.max.toLocaleString()} ₽)
+                            </span>
+                          )}
+                        </span>
                       </div>
                       {alt.suspension > 0 && (
                         <div className="flex items-center gap-2">
@@ -1265,11 +2223,14 @@ const PenaltyCalculator = () => {
                       {alt.arrest > 0 && (
                         <div className="flex items-center gap-2">
                           <Shield className="h-4 w-4 text-red-600" />
-                          <div className="flex">
-                            {Array.from({ length: Math.min(alt.arrest, 6) }, (_, i) => (
-                              <Star key={i} className="h-4 w-4 fill-red-600 text-red-600" />
-                            ))}
-                          </div>
+                          <span>
+                            {alt.arrest} {alt.arrest === 1 ? "год" : alt.arrest < 5 ? "года" : "лет"}
+                            {alt.hasArrestRange && alt.arrestRange && (
+                              <span className="text-xs text-muted-foreground ml-1">
+                                (из {alt.arrestRange.min}-{alt.arrestRange.max} лет)
+                              </span>
+                            )}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -1278,6 +2239,7 @@ const PenaltyCalculator = () => {
               </div>
             </div>
           )}
+
           {selectedViolations.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">Выберите статьи для расчета наказания</div>
           )}
@@ -1286,5 +2248,6 @@ const PenaltyCalculator = () => {
     </Card>
   )
 }
+
 export { PenaltyCalculator }
 export default PenaltyCalculator
