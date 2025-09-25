@@ -72,7 +72,7 @@ const PenaltyCalculator = () => {
         },
         "5.4": {
           article: "КоАП 5.4",
-          description: "Управление ТС с тонировкой менее 70%",
+          description: "Управление ТС с тонировкой более 30%",
           fine: 20000,
           suspension: 0,
           arrest: 0,
