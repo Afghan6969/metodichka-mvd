@@ -61,6 +61,22 @@ const PenaltyCalculator = () => {
           suspension: 0,
           arrest: 0,
           retraining: true,
+          alternatives: [
+            {
+              name: "Штраф 30000",
+              fine: 30000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Лишение прав с возможностью переобучения",
+              fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: true,
+            },
+          ],
         },
         "5.3": {
           article: "КоАП 5.3",
@@ -118,6 +134,13 @@ const PenaltyCalculator = () => {
               arrest: 0,
               retraining: false,
             },
+            {
+              name: "Штраф 5000",
+              fine: 5000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
           ],
         },
         "5.7": {
@@ -160,6 +183,14 @@ const PenaltyCalculator = () => {
               arrest: 0,
               retraining: false,
             },
+            {
+              name: "Штраф 5000",
+              fine: 5000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+
           ],
         },
         "5.9": {
@@ -201,6 +232,13 @@ const PenaltyCalculator = () => {
               arrest: 0,
               retraining: false,
             },
+            {
+              name: "Штраф 10000",
+              fine: 10000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
           ],
         },
         "6.3": {
@@ -214,6 +252,13 @@ const PenaltyCalculator = () => {
             {
               name: "Предупреждение",
               fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Штраф 10000",
+              fine: 10000,
               suspension: 0,
               arrest: 0,
               retraining: false,
@@ -235,6 +280,13 @@ const PenaltyCalculator = () => {
               arrest: 0,
               retraining: false,
             },
+            {
+              name: "Штраф 5000",
+              fine: 5000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
           ],
         },
         "6.5": {
@@ -248,6 +300,13 @@ const PenaltyCalculator = () => {
             {
               name: "Предупреждение",
               fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Штраф 5000",
+              fine: 5000,
               suspension: 0,
               arrest: 0,
               retraining: false,
@@ -281,6 +340,13 @@ const PenaltyCalculator = () => {
             {
               name: "Предупреждение",
               fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Штраф 5000",
+              fine: 5000,
               suspension: 0,
               arrest: 0,
               retraining: false,
@@ -343,6 +409,13 @@ const PenaltyCalculator = () => {
               arrest: 0,
               retraining: false,
             },
+            {
+              name: "Штраф 5000",
+              fine: 5000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
           ],
         },
         "9.4": {
@@ -356,6 +429,13 @@ const PenaltyCalculator = () => {
             {
               name: "Предупреждение",
               fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Штраф 10000",
+              fine: 10000,
               suspension: 0,
               arrest: 0,
               retraining: false,
@@ -381,6 +461,13 @@ const PenaltyCalculator = () => {
             {
               name: "Предупреждение",
               fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Штраф 10000",
+              fine: 10000,
               suspension: 0,
               arrest: 0,
               retraining: false,
@@ -474,6 +561,13 @@ const PenaltyCalculator = () => {
               arrest: 0,
               retraining: false,
             },
+            {
+              name: "Штраф 5000",
+              fine: 5000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
           ],
         },
         "12.2": {
@@ -495,6 +589,13 @@ const PenaltyCalculator = () => {
             {
               name: "Предупреждение",
               fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Штраф 5000",
+              fine: 5000,
               suspension: 0,
               arrest: 0,
               retraining: false,
@@ -524,6 +625,13 @@ const PenaltyCalculator = () => {
               arrest: 0,
               retraining: false,
             },
+            {
+              name: "Штраф 5000",
+              fine: 5000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
           ],
         },
         "14.1": {
@@ -545,6 +653,13 @@ const PenaltyCalculator = () => {
             {
               name: "Предупреждение",
               fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Штраф 5000",
+              fine: 5000,
               suspension: 0,
               arrest: 0,
               retraining: false,
@@ -574,6 +689,13 @@ const PenaltyCalculator = () => {
               arrest: 0,
               retraining: false,
             },
+            {
+              name: "Штраф 5000",
+              fine: 5000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
           ],
         },
         "14.5": {
@@ -591,6 +713,13 @@ const PenaltyCalculator = () => {
               arrest: 0,
               retraining: false,
             },
+            {
+              name: "Штраф 5000",
+              fine: 5000,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
           ],
         },
         "14.6": {
@@ -604,6 +733,13 @@ const PenaltyCalculator = () => {
             {
               name: "Предупреждение",
               fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Штраф 10000",
+              fine: 10000,
               suspension: 0,
               arrest: 0,
               retraining: false,
@@ -645,6 +781,13 @@ const PenaltyCalculator = () => {
             {
               name: "Предупреждение",
               fine: 0,
+              suspension: 0,
+              arrest: 0,
+              retraining: false,
+            },
+            {
+              name: "Штраф 5000",
+              fine: 5000,
               suspension: 0,
               arrest: 0,
               retraining: false,
