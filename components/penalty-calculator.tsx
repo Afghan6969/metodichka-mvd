@@ -2178,7 +2178,7 @@ const PenaltyCalculator = () => {
                                 <SelectValue placeholder="Выбрать наказание" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="default">Основное наказание</SelectItem>
+                                <SelectItem value="default">Выбрать наказание</SelectItem>
                                 {violation.alternatives.map((alt) => (
                                   <SelectItem key={alt.name} value={alt.name}>
                                     {alt.name}
