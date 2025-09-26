@@ -89,7 +89,7 @@ return (
           <Shield className="h-6 w-6 text-blue-300" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Аммуниция сотрудников полиции</h1>
+          <h1 className="text-3xl font-bold text-foreground">Амуниция сотрудников полиции</h1>
           <p className="text-muted-foreground">
             Обязательная и дополнительная экипировка согласно пункту 2.7 регламента
           </p>

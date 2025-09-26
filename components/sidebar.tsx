@@ -63,7 +63,7 @@ export function Sidebar({ currentPage, onPageChange, onGlobalSearchOpen }: Sideb
     { id: "ranks" as const, icon: Star, label: "Звания и ранги", priority: 7 },
     { id: "commands" as const, icon: Terminal, label: "Команды", priority: 8 },
     { id: "penalty-calculator" as const, icon: Calculator, label: "Калькулятор штрафов", priority: 9 },
-    { id: "ammunition" as const, icon: Shield, label: "Аммуниция", priority: 10 },
+    { id: "ammunition" as const, icon: Shield, label: "Амуниция", priority: 10 },
     { id: "terms" as const, icon: Book, label: "Термины", priority: 11 },
     { id: "resources" as const, icon: ExternalLink, label: "Ресурсы", priority: 12 },
   ]
