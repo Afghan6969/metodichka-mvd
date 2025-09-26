@@ -1,8 +1,9 @@
 "use client"
 
-import { Search, Menu } from "lucide-react"
+import { Search, Menu, Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useState, useEffect } from "react"
 
 interface ModernHeaderProps {
   onMenuClick: () => void
@@ -10,6 +11,36 @@ interface ModernHeaderProps {
 }
 
 export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) {
+  const [isDark, setIsDark] = useState(false)
+
+  useEffect(() => {
+    // Проверяем сохраненную тему или системные настройки
+    const savedTheme = localStorage.getItem("theme")
+    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+
+    const shouldBeDark = savedTheme === "dark" || (!savedTheme && systemPrefersDark)
+    setIsDark(shouldBeDark)
+
+    if (shouldBeDark) {
+      document.documentElement.classList.add("dark")
+    } else {
+      document.documentElement.classList.remove("dark")
+    }
+  }, [])
+
+  const toggleTheme = () => {
+    const newTheme = !isDark
+    setIsDark(newTheme)
+
+    if (newTheme) {
+      document.documentElement.classList.add("dark")
+      localStorage.setItem("theme", "dark")
+    } else {
+      document.documentElement.classList.remove("dark")
+      localStorage.setItem("theme", "light")
+    }
+  }
+
   return (
     <header className="modern-nav px-8 py-6">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
@@ -39,6 +70,15 @@ export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) 
           </div>
           <Button variant="ghost" size="icon" onClick={onSearchClick} className="md:hidden rounded-xl">
             <Search className="h-5 w-5" />
+          </Button>
+          <Button
+            onClick={toggleTheme}
+            variant="ghost"
+            size="icon"
+            className="rounded-xl bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 border-2 border-primary/20"
+            aria-label={isDark ? "Переключить на светлую тему" : "Переключить на тёмную тему"}
+          >
+            {isDark ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
           </Button>
         </div>
       </div>
