@@ -83,7 +83,7 @@ export function ModernSidebar({ currentPage, onPageChange, onGlobalSearchOpen, i
     { id: "reports", label: "Доклады в рацию", icon: FileText },
     { id: "commands", label: "Команды", icon: Users },
     { id: "penalty-calculator", label: "Калькулятор штрафов", icon: Calculator },
-    { id: "ammunition", label: "Аммуниция", icon: Shield },
+    { id: "ammunition", label: "Амуниция", icon: Shield },
     { id: "terms", label: "Термины", icon: Book },
     { id: "resources", label: "Ресурсы", icon: Folder },
   ]
