@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ChevronDown, ChevronRight, Target, Dumbbell, Zap, Clock } from "lucide-react"
 import { CopyButton } from "@/components/copy-button"
@@ -200,6 +201,9 @@ export function TrainingPage() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 mb-2">
                           <h3 className="font-semibold text-foreground text-sm">{training.title}</h3>
+                          <Badge className="bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300 text-xs">
+                            {training.duration}
+                          </Badge>
                         </div>
                         {openTrainings[training.id] ? (
                           <ChevronDown className="h-4 w-4 text-muted-foreground" />

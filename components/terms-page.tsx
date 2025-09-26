@@ -100,14 +100,14 @@ export function TermsPage() {
   )
 
   return (
-    <div className="space-y-6 bg-background min-h-screen p-6">
+    <div className="space-y-6 bg-gray-900 min-h-screen p-6">
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
-          <BookOpen className="h-6 w-6 text-primary" />
+        <div className="w-12 h-12 bg-blue-900 rounded-lg flex items-center justify-center">
+          <BookOpen className="h-6 w-6 text-blue-300" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Термины и определения</h1>
-          <p className="text-muted-foreground">Основные понятия и определения для сотрудников МВД</p>
+          <h1 className="text-3xl font-bold text-white">Термины и определения</h1>
+          <p className="text-gray-400">Основные понятия и определения для сотрудников МВД</p>
         </div>
       </div>
 
@@ -115,18 +115,18 @@ export function TermsPage() {
         <SearchBar
           onSearch={setSearchQuery}
           placeholder="Поиск терминов..."
-          className="bg-muted border-border text-foreground placeholder-muted-foreground focus:border-primary focus:ring-primary/20"
+          className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-700/50"
         />
       </div>
 
       <div className="space-y-4">
         {filteredTerms.map((item, index) => (
-          <Card key={index} className="border-border bg-card">
+          <Card key={index} className="border-gray-700 bg-gray-800">
             <CardHeader className="pb-3">
-              <CardTitle className="text-card-foreground text-xl">{item.term}</CardTitle>
+              <CardTitle className="text-white text-xl">{item.term}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground leading-relaxed">{item.definition}</p>
+              <p className="text-gray-400 leading-relaxed">{item.definition}</p>
             </CardContent>
           </Card>
         ))}
@@ -134,19 +134,19 @@ export function TermsPage() {
 
       {filteredTerms.length === 0 && searchQuery && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">Термины не найдены по запросу "{searchQuery}"</p>
+          <p className="text-gray-400">Термины не найдены по запросу "{searchQuery}"</p>
         </div>
       )}
 
-      <footer className="mt-16 pt-8 border-t border-border">
+      <footer className="mt-16 pt-8 border-t border-gray-600">
         <div className="text-center">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-400">
             Разработано{" "}
             <a
               href="https://vk.com/id503251431"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 font-medium transition-colors"
+              className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
             >
               Poseidon_Wagner
             </a>

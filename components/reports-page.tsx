@@ -148,49 +148,61 @@ export function ReportsPage() {
   ]
 
   return (
-    <div className="space-y-6 bg-background min-h-screen p-6">
+    <div className="space-y-6 bg-gray-900 min-h-screen p-6">
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
-          <Radio className="h-6 w-6 text-primary" />
+        <div className="w-12 h-12 bg-blue-900 rounded-lg flex items-center justify-center">
+          <Radio className="h-6 w-6 text-blue-300" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Доклады в рацию</h1>
-          <p className="text-muted-foreground">Стандартные фразы для радиосвязи сотрудников МВД</p>
+          <h1 className="text-3xl font-bold text-white">Доклады в рацию</h1>
+          <p className="text-gray-400">Стандартные фразы для радиосвязи сотрудников МВД</p>
         </div>
       </div>
 
       {/* Информационная карточка */}
-      <Card className="border-border bg-card">
+      <Card className="border-gray-700 bg-gray-800">
         <CardHeader className="pb-4">
-          <CardTitle className="text-card-foreground flex items-center gap-2 text-xl">
-            <Info className="h-5 w-5 text-primary" />
+          <CardTitle className="text-white flex items-center gap-2 text-xl">
+            <Info className="h-5 w-5 text-blue-400" />
             Важная информация о тегах
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3 text-sm">
             <div className="flex items-start gap-2">
-              <span className="text-primary">•</span>
-              <p className="text-card-foreground">
-                В тегах <code className="bg-muted text-muted-foreground px-1 rounded">/r</code> указывайте свою
-                должность, например:{" "}
-                <Badge className="bg-muted text-muted-foreground border-border text-xs">[МБ]</Badge>,{" "}
-                <Badge className="bg-muted text-muted-foreground border-border text-xs">[ОМОН]</Badge>,{" "}
-                <Badge className="bg-muted text-muted-foreground border-border text-xs">[СОБР]</Badge>
+              <span className="text-blue-400">•</span>
+              <p className="text-gray-300">
+                В тегах <code className="bg-gray-700 text-gray-200 px-1 rounded">/r</code> указывайте свою должность, например:{" "}
+                <Badge className="bg-gray-600 text-gray-200 border-gray-600 text-xs">
+                  [МБ]
+                </Badge>
+                ,{" "}
+                <Badge className="bg-gray-600 text-gray-200 border-gray-600 text-xs">
+                  [ОМОН]
+                </Badge>
+                ,{" "}
+                <Badge className="bg-gray-600 text-gray-200 border-gray-600 text-xs">
+                  [СОБР]
+                </Badge>
               </p>
             </div>
             <div className="flex items-start gap-2">
-              <span className="text-primary">•</span>
-              <p className="text-card-foreground">
-                В тегах <code className="bg-muted text-muted-foreground px-1 rounded">/ro</code> и{" "}
-                <code className="bg-muted text-muted-foreground px-1 rounded">/d</code> указывайте свой город, например:{" "}
-                <Badge className="bg-muted text-muted-foreground border-border text-xs">[ГИБДД-М]</Badge>,{" "}
-                <Badge className="bg-muted text-muted-foreground border-border text-xs">[ГУВД-М]</Badge>
+              <span className="text-blue-400">•</span>
+              <p className="text-gray-300">
+                В тегах <code className="bg-gray-700 text-gray-200 px-1 rounded">/ro</code> и{" "}
+                <code className="bg-gray-700 text-gray-200 px-1 rounded">/d</code> указывайте свой город, например:{" "}
+                <Badge className="bg-gray-600 text-gray-200 border-gray-600 text-xs">
+                  [ГИБДД-М]
+                </Badge>
+                ,{" "}
+                <Badge className="bg-gray-600 text-gray-200 border-gray-600 text-xs">
+                  [ГУВД-М]
+                </Badge>
               </p>
             </div>
             <div className="flex items-start gap-2">
-              <span className="text-primary">•</span>
-              <p className="text-card-foreground">
+              <span className="text-blue-400">•</span>
+              <p className="text-gray-300">
                 <strong>Теги в рацию /r - не обязательны</strong>, но рекомендуются для лучшей координации
               </p>
             </div>
@@ -201,30 +213,30 @@ export function ReportsPage() {
       {/* Доклады */}
       <div className="space-y-4">
         {reportCategories.map((category) => (
-          <Card key={category.id} className="border-border bg-card">
+          <Card key={category.id} className="border-gray-700 bg-gray-800">
             <CardHeader className="pb-4">
-              <CardTitle className="text-card-foreground flex items-center gap-2 text-xl">
+              <CardTitle className="text-white flex items-center gap-2 text-xl">
                 {getItemIcon(category.icon)}
                 {category.title}
               </CardTitle>
-              <CardDescription className="text-muted-foreground">{category.description}</CardDescription>
+              <CardDescription className="text-gray-400">{category.description}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 {category.reports.map((report, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
+                    className="flex items-start gap-4 p-4 rounded-lg border border-gray-600 bg-gray-700 shadow-sm"
                   >
-                    <div className="text-primary mt-1">
+                    <div className="text-blue-400 mt-1">
                       <Radio className="h-4 w-4" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <h4 className="font-medium text-card-foreground text-sm">{report.title}</h4>
+                        <h4 className="font-medium text-white text-sm">{report.title}</h4>
                       </div>
                       <div className="flex items-start gap-2">
-                        <div className="flex-1 font-mono text-sm text-foreground bg-muted/50 p-3 rounded border border-border">
+                        <div className="flex-1 font-mono text-sm text-gray-200 bg-gray-700 p-3 rounded border border-gray-600">
                           {report.command}
                         </div>
                         <CopyButton text={report.command} className="flex-shrink-0 mt-3" />
@@ -238,15 +250,15 @@ export function ReportsPage() {
         ))}
       </div>
 
-      <footer className="mt-16 pt-8 border-t border-border">
+      <footer className="mt-16 pt-8 border-t border-gray-600">
         <div className="text-center">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-400">
             Разработано{" "}
             <a
               href="https://vk.com/id503251431"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 font-medium transition-colors"
+              className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
             >
               Poseidon_Wagner
             </a>

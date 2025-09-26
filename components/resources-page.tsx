@@ -80,24 +80,24 @@ export function ResourcesPage() {
   const categories = ["Законодательство", "Правила организаций", "Специальные документы"]
 
   return (
-    <div className="space-y-6 bg-background min-h-screen p-6">
+    <div className="space-y-6 bg-gray-900 min-h-screen p-6">
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-          <ExternalLink className="h-6 w-6 text-primary-foreground" />
+        <div className="w-12 h-12 bg-blue-900 rounded-lg flex items-center justify-center">
+          <ExternalLink className="h-6 w-6 text-blue-300" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Информационные ресурсы</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold text-white">Информационные ресурсы</h1>
+          <p className="text-gray-400">
             Официальные документы и правила Республики Провинция для сотрудников МВД
           </p>
         </div>
       </div>
 
       {categories.map((category) => (
-        <Card key={category} className="border-border bg-card">
+        <Card key={category} className="border-gray-700 bg-gray-800">
           <CardHeader className="pb-4">
-            <CardTitle className="text-card-foreground text-xl">{category}</CardTitle>
-            <CardDescription className="text-muted-foreground">Документы категории "{category}"</CardDescription>
+            <CardTitle className="text-white text-xl">{category}</CardTitle>
+            <CardDescription className="text-gray-400">Документы категории "{category}"</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -109,17 +109,17 @@ export function ResourcesPage() {
                     href={resource.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-start gap-4 p-4 rounded-lg border border-border bg-card shadow-sm hover:shadow-md transition-shadow group"
+                    className="flex items-start gap-4 p-4 rounded-lg border border-gray-600 bg-gray-700 shadow-sm hover:shadow-md transition-shadow group"
                   >
-                    <div className="text-primary group-hover:text-primary/80 transition-colors mt-1">
+                    <div className="text-blue-400 group-hover:text-blue-300 transition-colors mt-1">
                       {resource.icon}
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-card-foreground group-hover:text-primary transition-colors mb-2">
+                      <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors mb-2">
                         {resource.title}
                       </h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-3">{resource.description}</p>
-                      <div className="flex items-center gap-1 text-primary text-sm">
+                      <p className="text-gray-400 text-sm leading-relaxed mb-3">{resource.description}</p>
+                      <div className="flex items-center gap-1 text-blue-400 text-sm">
                         <span>Открыть на форуме</span>
                         <ExternalLink className="h-3 w-3" />
                       </div>
@@ -131,15 +131,15 @@ export function ResourcesPage() {
         </Card>
       ))}
 
-      <footer className="mt-16 pt-8 border-t border-border">
+      <footer className="mt-16 pt-8 border-t border-gray-600">
         <div className="text-center">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-400">
             Разработано{" "}
             <a
               href="https://vk.com/id503251431"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 font-medium transition-colors"
+              className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
             >
               Poseidon_Wagner
             </a>

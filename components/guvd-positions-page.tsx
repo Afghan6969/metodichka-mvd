@@ -9,8 +9,8 @@ export function GuvdPositionsPage() {
     {
       category: "Руководящий состав",
       icon: Shield,
-      color: "bg-primary/10 border-border",
-      titleColor: "text-foreground",
+      color: "bg-blue border-border",
+      titleColor: "text-white",
       positions: [
         { title: "Начальник ГУВД", abbr: "Нач. ГУВД", rank: "Генерал", level: "11 ранг" },
         { title: "Первый заместитель начальника ГУВД", abbr: "Пр. Зам. Нач.", rank: "Полковник", level: "10 ранг" },
@@ -37,8 +37,8 @@ export function GuvdPositionsPage() {
     {
       category: "Старший состав",
       icon: Star,
-      color: "bg-primary/10 border-border",
-      titleColor: "text-foreground",
+      color: "bg-blue border-border",
+      titleColor: "text-white",
       positions: [
         {
           title: "Начальник Отряда мобильного особого назначения / Начальник СОБРа",
@@ -59,36 +59,36 @@ export function GuvdPositionsPage() {
     {
       category: "Отдел воздушного патрулирования",
       icon: Award,
-      color: "bg-primary/10 border-border",
-      titleColor: "text-foreground",
+      color: "bg-blue border-border",
+      titleColor: "text-white",
       positions: [{ title: "Сотрудник ОВП", abbr: "ОВП", rank: "Лейтенант–Майор", level: "5-8 ранг" }],
     },
     {
       category: "Отряд мобильного особого назначения",
       icon: Shield,
-      color: "bg-primary/10 border-border",
-      titleColor: "text-foreground",
+      color: "bg-blue border-border",
+      titleColor: "text-white",
       positions: [{ title: "Боец ОМОН", abbr: "ОМОН", rank: "Лейтенант–Капитан", level: "5-7 ранг" }],
     },
     {
       category: "Специальный отряд быстрого реагирования",
       icon: Shield,
-      color: "bg-primary/10 border-border",
-      titleColor: "text-foreground",
+      color: "bg-blue border-border",
+      titleColor: "text-white",
       positions: [{ title: "Боец СОБРа", abbr: "СОБР", rank: "Лейтенант–Капитан", level: "5-7 ранг" }],
     },
     {
       category: "Патрульно-постовая служба",
       icon: Users,
-      color: "bg-primary/10 border-border",
-      titleColor: "text-foreground",
+      color: "bg-blue border-border",
+      titleColor: "text-white",
       positions: [{ title: "Инспектор ППС", abbr: "ППС", rank: "Лейтенант", level: "3-7 ранг" }],
     },
     {
       category: "Полицейская академия",
       icon: Award,
-      color: "bg-primary/10 border-border",
-      titleColor: "text-foreground",
+      color: "bg-blue border-border",
+      titleColor: "text-white",
       positions: [{ title: "Курсант ПА", abbr: "ПА", rank: "Рядовой–Сержант", level: "1-2 ранг" }],
     },
   ]
@@ -109,9 +109,9 @@ export function GuvdPositionsPage() {
         {positions.map((section, index) => {
           const Icon = section.icon
           return (
-            <Card key={index} className={`${section.color} border-2`}>
+            <Card key={index} className={`${section.color} dark:bg-opacity-20 border-2`}>
               <CardHeader className="pb-4">
-                <CardTitle className={`flex items-center gap-3 ${section.titleColor} text-xl`}>
+                <CardTitle className={`flex items-center gap-3 ${section.titleColor} dark:opacity-90 text-xl`}>
                   <Icon className="h-5 w-5" />
                   {section.category}
                 </CardTitle>

@@ -20,16 +20,14 @@ interface CityVehicles {
   vehicles: Vehicle[]
 }
 
-// Объект для хранения ссылок на изображения по имени ТС
-// Просто добавляйте сюда ссылки для нужных ТС
 const vehicleImages: Record<string, string> = {
   "Lada Vesta": "https://i.imgur.com/l7444DX.png",
   "Skoda Octavia": "https://i.imgur.com/HxTTuCU.png",
   "Volkswagen Touareg": "https://i.imgur.com/9ZNOuAp.png",
-  "BMW M5 (E60)": "",
-  "Mercedes-Benz C63 AMG (W204)": "",
-  "Mercedes-Benz E63 S AMG (W212)": "",
-  "BMW M5 (F90)": "",
+  "BMW M5 (E60)": "https://i.imgur.com/gnrQztG.png",
+  "Mercedes-Benz C63 AMG (W204)": "https://i.imgur.com/RIujv72.png",
+  "Mercedes-Benz E63 S AMG (W212)": "https://i.imgur.com/ueAr7Ki.png",
+  "BMW M5 (F90)": "https://i.imgur.com/5hrMqnN.png",
   "Mercedes-Benz S AMG (W213)": "https://i.imgur.com/STj8qu9.png",
   "Lexus LX570": "https://i.imgur.com/nPZuRbk.png",
   "Kia Stinger": "https://i.imgur.com/bJU4Nxp.png",
@@ -142,29 +140,31 @@ export function GibddVehiclesPage() {
                   {cityData.vehicles.map((vehicle, index) => (
                     <div
                       key={index}
-                      className="flex items-start gap-3 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors"
+                      className="flex flex-col justify-between h-full p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors"
                     >
-                      <div className="text-primary mt-1">{getVehicleIcon(vehicle.type)}</div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-sm text-foreground truncate">{vehicle.name}</h3>
-                        <div className="flex items-center gap-2 mt-2">
-                          <Badge className={getRankColor(vehicle.rank)}>{vehicle.rank}</Badge>
+                      <div className="flex items-start gap-3">
+                        <div className="text-primary mt-1">{getVehicleIcon(vehicle.type)}</div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium text-sm text-foreground truncate">{vehicle.name}</h3>
+                          <div className="flex items-center gap-2 mt-2">
+                            <Badge className={getRankColor(vehicle.rank)}>{vehicle.rank}</Badge>
+                          </div>
+                          {vehicle.special && (
+                            <p className="text-xs text-muted-foreground mt-2 italic">{vehicle.special}</p>
+                          )}
                         </div>
-                        {vehicle.special && (
-                          <p className="text-xs text-muted-foreground mt-2 italic">{vehicle.special}</p>
-                        )}
-                        {vehicle.image && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="mt-2 w-full"
-                            onClick={() => openImageModal(vehicle.image)}
-                          >
-                            <Eye className="h-3 w-3 mr-1" />
-                            Показать изображение
-                          </Button>
-                        )}
                       </div>
+                      {vehicle.image && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="mt-4 w-full"
+                          onClick={() => openImageModal(vehicle.image)}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          Показать изображение
+                        </Button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -189,25 +189,25 @@ export function GibddVehiclesPage() {
         </Card>
 
         {selectedImage && (
-          <div className="fixed inset-x-0 bottom-0 z-50 bg-background/90 backdrop-blur-sm flex justify-center items-end p-4">
-            <div className="relative max-w-3xl w-full bg-background border border-border rounded-t-lg shadow-lg p-4 animate-slide-up">
+          <div className="fixed inset-0 z-50 bg-black/80 flex justify-center items-center p-4">
+            <div className="relative max-w-4xl w-full bg-background border border-border rounded-lg shadow-lg p-6 animate-scale-in">
               <button
-                className="absolute top-2 right-2 text-foreground hover:text-primary"
+                className="absolute top-4 right-4 text-foreground hover:text-primary"
                 onClick={closeImageModal}
               >
                 <X className="h-6 w-6" />
               </button>
-              <div className="relative w-full h-[60vh] max-h-[600px]">
+              <div className="relative w-full h-[70vh] max-h-[800px]">
                 <Image
                   src={selectedImage}
                   alt="Увеличенное изображение ТС"
                   fill
                   className="object-contain rounded-md"
-                  sizes="(max-width: 768px) 100vw, 800px"
+                  sizes="(max-width: 768px) 100vw, 1200px"
                   priority
                 />
               </div>
-              <p className="text-center text-foreground mt-2">
+              <p className="text-center text-foreground mt-4 font-medium">
                 {Object.keys(vehicleImages).find((key) => vehicleImages[key] === selectedImage) || "Транспортное средство"}
               </p>
             </div>
@@ -232,15 +232,17 @@ export function GibddVehiclesPage() {
       </div>
 
       <style jsx>{`
-        .animate-slide-up {
-          animation: slide-up 0.3s ease-out;
+        .animate-scale-in {
+          animation: scale-in 0.3s ease-out;
         }
-        @keyframes slide-up {
+        @keyframes scale-in {
           from {
-            transform: translateY(100%);
+            transform: scale(0.8);
+            opacity: 0;
           }
           to {
-            transform: translateY(0);
+            transform: scale(1);
+            opacity: 1;
           }
         }
       `}</style>

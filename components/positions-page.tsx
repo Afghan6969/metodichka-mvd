@@ -9,8 +9,8 @@ export function PositionsPage() {
     {
       category: "Руководящий состав",
       icon: Crown,
-      color: "bg-primary/10 border-border",
-      titleColor: "text-foreground",
+      color: "bg-blue border-border",
+      titleColor: "text-white",
       positions: [
         { title: "Начальник ГИБДД", abbr: "Нач ГИБДД", rank: "Генерал", level: "11 ранг" },
         { title: "Первый заместитель начальника ГИБДД", abbr: "Пр Зам Нач", rank: "Полковник", level: "10 ранг" },
@@ -37,8 +37,8 @@ export function PositionsPage() {
     {
       category: "Старший состав",
       icon: Star,
-      color: "bg-primary/10 border-border",
-      titleColor: "text-foreground",
+      color: "bg-blue border-border",
+      titleColor: "text-white",
       positions: [
         { title: "Начальник Специализированного Батальона", abbr: "Нач СБ", rank: "Подполковник", level: "9 ранг" },
         { title: "Начальник Отдельного Батальона", abbr: "Нач ОБ", rank: "Подполковник", level: "9 ранг" },
@@ -58,29 +58,29 @@ export function PositionsPage() {
     {
       category: "Мотобатальон",
       icon: Car,
-      color: "bg-primary/10 border-border",
-      titleColor: "text-foreground",
+      color: "bg-blue border-border",
+      titleColor: "text-white",
       positions: [{ title: "Инспектор МБ", abbr: "МБ", rank: "Старший Лейтенант-Капитан", level: "6-7 ранг" }],
     },
     {
       category: "Специализированный Батальон",
       icon: Award,
-      color: "bg-primary/10 border-border",
-      titleColor: "text-foreground",
+      color: "bg-blue border-border",
+      titleColor: "text-white",
       positions: [{ title: "Инспектор СБ", abbr: "СБ", rank: "Прапорщик-Капитан", level: "4-7 ранг" }],
     },
     {
       category: "Отдельный Батальон",
       icon: Users,
-      color: "bg-primary/10 border-border",
-      titleColor: "text-foreground",
+      color: "bg-blue border-border",
+      titleColor: "text-white",
       positions: [{ title: "Инспектор ОБ", abbr: "ОБ", rank: "Старшина-Капитан", level: "3-7 ранг" }],
     },
     {
       category: "Учебный Батальон",
       icon: Shield,
-      color: "bg-primary/10 border-border",
-      titleColor: "text-foreground",
+      color: "bg-blue border-border",
+      titleColor: "text-white",
       positions: [{ title: "Курсант УБ", abbr: "УБ", rank: "Рядовой-Сержант", level: "1-2 ранг" }],
     },
   ]
@@ -101,9 +101,9 @@ export function PositionsPage() {
         {positions.map((section, index) => {
           const Icon = section.icon
           return (
-            <Card key={index} className={`${section.color} border-2`}>
+            <Card key={index} className={`${section.color} dark:bg-opacity-20 border-2`}>
               <CardHeader className="pb-4">
-                <CardTitle className={`flex items-center gap-3 ${section.titleColor} text-xl`}>
+                <CardTitle className={`flex items-center gap-3 ${section.titleColor} dark:opacity-90 text-xl`}>
                   <Icon className="h-5 w-5" />
                   {section.category}
                 </CardTitle>
