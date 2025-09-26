@@ -1,14 +1,18 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Car, Truck, Plane, Bike } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Car, Truck, Plane, Bike, X, Eye } from "lucide-react"
+import Image from "next/image"
 
 interface Vehicle {
   name: string
   rank: string
   type: "car" | "truck" | "helicopter" | "motorcycle"
   special?: string
+  image?: string
 }
 
 interface CityVehicles {
@@ -16,48 +20,68 @@ interface CityVehicles {
   vehicles: Vehicle[]
 }
 
+// Объект для хранения ссылок на изображения по имени ТС
+// Просто добавляйте сюда ссылки для нужных ТС
+const vehicleImages: Record<string, string> = {
+  "Lada Vesta": "https://i.imgur.com/l7444DX.png",
+  "Skoda Octavia": "https://i.imgur.com/HxTTuCU.png",
+  "Volkswagen Touareg": "https://i.imgur.com/9ZNOuAp.png",
+  "BMW M5 (E60)": "",
+  "Mercedes-Benz C63 AMG (W204)": "",
+  "Mercedes-Benz E63 S AMG (W212)": "",
+  "BMW M5 (F90)": "",
+  "Mercedes-Benz S AMG (W213)": "https://i.imgur.com/STj8qu9.png",
+  "Lexus LX570": "https://i.imgur.com/nPZuRbk.png",
+  "Kia Stinger": "https://i.imgur.com/bJU4Nxp.png",
+  "ПАЗ-320405-04": "https://i.imgur.com/qbomzqO.png",
+  "BMW R1200": "https://i.imgur.com/5e935xj.png",
+  'Вертолет "Maverick"': "https://i.imgur.com/WP05qBK.png",
+}
+
 export function GibddVehiclesPage() {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+
   const vehicleData: CityVehicles[] = [
     {
       city: "Приволжск",
       vehicles: [
-        { name: "Lada Vesta", rank: "2+ ранг", type: "car" },
-        { name: "Skoda Octavia", rank: "2+ ранг", type: "car" },
-        { name: "Volkswagen Touareg", rank: "3+ ранг", type: "car" },
-        { name: "BMW M5 (E60)", rank: "4+ ранг", type: "car" },
-        { name: "Mercedes-Benz E63 S AMG (W212)", rank: "6+ ранг", type: "car" },
-        { name: "Lexus LX570", rank: "7+ ранг", type: "car" },
-        { name: "ПАЗ-320405-04", rank: "5+ ранг", type: "truck", special: "для мероприятий, сборов, тренировок" },
-        { name: "BMW R1200", rank: "6+ ранг", type: "motorcycle", special: 'для подразделения "Мотобат"' },
-        { name: 'Вертолет "Maverick"', rank: "8+ ранг", type: "helicopter" },
+        { name: "Lada Vesta", rank: "2+ ранг", type: "car", image: vehicleImages["Lada Vesta"] },
+        { name: "Skoda Octavia", rank: "2+ ранг", type: "car", image: vehicleImages["Skoda Octavia"] },
+        { name: "Volkswagen Touareg", rank: "3+ ранг", type: "car", image: vehicleImages["Volkswagen Touareg"] },
+        { name: "BMW M5 (E60)", rank: "4+ ранг", type: "car", image: vehicleImages["BMW M5 (E60)"] },
+        { name: "Mercedes-Benz E63 S AMG (W212)", rank: "6+ ранг", type: "car", image: vehicleImages["Mercedes-Benz E63 S AMG (W212)"] },
+        { name: "Lexus LX570", rank: "7+ ранг", type: "car", image: vehicleImages["Lexus LX570"] },
+        { name: "ПАЗ-320405-04", rank: "5+ ранг", type: "truck", special: "для мероприятий, сборов, тренировок", image: vehicleImages["ПАЗ-320405-04"] },
+        { name: "BMW R1200", rank: "6+ ранг", type: "motorcycle", special: 'для подразделения "Мотобат"', image: vehicleImages["BMW R1200"] },
+        { name: 'Вертолет "Maverick"', rank: "8+ ранг", type: "helicopter", image: vehicleImages['Вертолет "Maverick"'] },
       ],
     },
     {
       city: "Мирный",
       vehicles: [
-        { name: "Lada Vesta", rank: "2+ ранг", type: "car" },
-        { name: "Skoda Octavia", rank: "2+ ранг", type: "car" },
-        { name: "Volkswagen Touareg", rank: "3+ ранг", type: "car" },
-        { name: "Mercedes-Benz C63 AMG (W204)", rank: "4+ ранг", type: "car" },
-        { name: "BMW M5 (F90)", rank: "6+ ранг", type: "car" },
-        { name: "Lexus LX570", rank: "7+ ранг", type: "car" },
-        { name: "ПАЗ-320405-04", rank: "5+ ранг", type: "truck", special: "для мероприятий, сборов, тренировок" },
-        { name: "BMW R1200", rank: "6+ ранг", type: "motorcycle", special: 'для подразделения "Мотобат"' },
-        { name: 'Вертолет "Maverick"', rank: "8+ ранг", type: "helicopter" },
+        { name: "Lada Vesta", rank: "2+ ранг", type: "car", image: vehicleImages["Lada Vesta"] },
+        { name: "Skoda Octavia", rank: "2+ ранг", type: "car", image: vehicleImages["Skoda Octavia"] },
+        { name: "Volkswagen Touareg", rank: "3+ ранг", type: "car", image: vehicleImages["Volkswagen Touareg"] },
+        { name: "Mercedes-Benz C63 AMG (W204)", rank: "4+ ранг", type: "car", image: vehicleImages["Mercedes-Benz C63 AMG (W204)"] },
+        { name: "BMW M5 (F90)", rank: "6+ ранг", type: "car", image: vehicleImages["BMW M5 (F90)"] },
+        { name: "Lexus LX570", rank: "7+ ранг", type: "car", image: vehicleImages["Lexus LX570"] },
+        { name: "ПАЗ-320405-04", rank: "5+ ранг", type: "truck", special: "для мероприятий, сборов, тренировок", image: vehicleImages["ПАЗ-320405-04"] },
+        { name: "BMW R1200", rank: "6+ ранг", type: "motorcycle", special: 'для подразделения "Мотобат"', image: vehicleImages["BMW R1200"] },
+        { name: 'Вертолет "Maverick"', rank: "8+ ранг", type: "helicopter", image: vehicleImages['Вертолет "Maverick"'] },
       ],
     },
     {
       city: "Невский",
       vehicles: [
-        { name: "Lada Vesta", rank: "2+ ранг", type: "car" },
-        { name: "Skoda Octavia", rank: "2+ ранг", type: "car" },
-        { name: "Volkswagen Touareg", rank: "3+ ранг", type: "car" },
-        { name: "Kia Stinger", rank: "4+ ранг", type: "car" },
-        { name: "Mercedes-Benz S AMG (W213)", rank: "6+ ранг", type: "car" },
-        { name: "Lexus LX570", rank: "7+ ранг", type: "car" },
-        { name: "ПАЗ-320405-04", rank: "5+ ранг", type: "truck", special: "для мероприятий, сборов, тренировок" },
-        { name: "BMW R1200", rank: "6+ ранг", type: "motorcycle", special: 'для подразделения "Мотобат"' },
-        { name: 'Вертолет "Maverick"', rank: "8+ ранг", type: "helicopter" },
+        { name: "Lada Vesta", rank: "2+ ранг", type: "car", image: vehicleImages["Lada Vesta"] },
+        { name: "Skoda Octavia", rank: "2+ ранг", type: "car", image: vehicleImages["Skoda Octavia"] },
+        { name: "Volkswagen Touareg", rank: "3+ ранг", type: "car", image: vehicleImages["Volkswagen Touareg"] },
+        { name: "Kia Stinger", rank: "4+ ранг", type: "car", image: vehicleImages["Kia Stinger"] },
+        { name: "Mercedes-Benz S AMG (W213)", rank: "6+ ранг", type: "car", image: vehicleImages["Mercedes-Benz S AMG (W213)"] },
+        { name: "Lexus LX570", rank: "7+ ранг", type: "car", image: vehicleImages["Lexus LX570"] },
+        { name: "ПАЗ-320405-04", rank: "5+ ранг", type: "truck", special: "для мероприятий, сборов, тренировок", image: vehicleImages["ПАЗ-320405-04"] },
+        { name: "BMW R1200", rank: "6+ ранг", type: "motorcycle", special: 'для подразделения "Мотобат"', image: vehicleImages["BMW R1200"] },
+        { name: 'Вертолет "Maverick"', rank: "8+ ранг", type: "helicopter", image: vehicleImages['Вертолет "Maverick"'] },
       ],
     },
   ]
@@ -78,12 +102,20 @@ export function GibddVehiclesPage() {
   }
 
   const getRankColor = (rank: string) => {
-    const rankNumber = Number.parseInt(rank)
+    const rankNumber = parseInt(rank)
     if (rankNumber <= 2) return "bg-gray-100 text-gray-800"
     if (rankNumber <= 4) return "bg-blue-100 text-blue-800"
     if (rankNumber <= 6) return "bg-green-100 text-green-800"
     if (rankNumber <= 7) return "bg-yellow-100 text-yellow-800"
     return "bg-red-100 text-red-800"
+  }
+
+  const openImageModal = (image: string) => {
+    setSelectedImage(image)
+  }
+
+  const closeImageModal = () => {
+    setSelectedImage(null)
   }
 
   return (
@@ -121,6 +153,17 @@ export function GibddVehiclesPage() {
                         {vehicle.special && (
                           <p className="text-xs text-muted-foreground mt-2 italic">{vehicle.special}</p>
                         )}
+                        {vehicle.image && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="mt-2 w-full"
+                            onClick={() => openImageModal(vehicle.image)}
+                          >
+                            <Eye className="h-3 w-3 mr-1" />
+                            Показать изображение
+                          </Button>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -145,6 +188,32 @@ export function GibddVehiclesPage() {
           </CardContent>
         </Card>
 
+        {selectedImage && (
+          <div className="fixed inset-x-0 bottom-0 z-50 bg-background/90 backdrop-blur-sm flex justify-center items-end p-4">
+            <div className="relative max-w-3xl w-full bg-background border border-border rounded-t-lg shadow-lg p-4 animate-slide-up">
+              <button
+                className="absolute top-2 right-2 text-foreground hover:text-primary"
+                onClick={closeImageModal}
+              >
+                <X className="h-6 w-6" />
+              </button>
+              <div className="relative w-full h-[60vh] max-h-[600px]">
+                <Image
+                  src={selectedImage}
+                  alt="Увеличенное изображение ТС"
+                  fill
+                  className="object-contain rounded-md"
+                  sizes="(max-width: 768px) 100vw, 800px"
+                  priority
+                />
+              </div>
+              <p className="text-center text-foreground mt-2">
+                {Object.keys(vehicleImages).find((key) => vehicleImages[key] === selectedImage) || "Транспортное средство"}
+              </p>
+            </div>
+          </div>
+        )}
+
         <footer className="mt-16 pt-8 border-t border-border">
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
@@ -161,6 +230,20 @@ export function GibddVehiclesPage() {
           </div>
         </footer>
       </div>
+
+      <style jsx>{`
+        .animate-slide-up {
+          animation: slide-up 0.3s ease-out;
+        }
+        @keyframes slide-up {
+          from {
+            transform: translateY(100%);
+          }
+          to {
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   )
 }
