@@ -52,6 +52,7 @@ export function CommandsPage() {
       category: "info",
       commands: [
         { command: "/find", description: "Список игроков во фракции онлайн" },
+        { command: "/skan [ID]", description: "Показывает сумму штрафов у гражданина (10.000+)" },
         { command: "/wanted", description: "Список всех игроков онлайн которые находятся в розыске" },
         { command: "/fines", description: "Список игроков, имеющих штрафы" },
         { command: "/crimrec [ID]", description: "Показывает совершенные преступления игрока" },
