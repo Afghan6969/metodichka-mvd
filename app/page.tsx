@@ -17,11 +17,11 @@ import { GuvdBindsPage } from "@/components/guvd-binds-page"
 import { AmmunitionPage } from "@/components/ammunition-page"
 import { TermsPage } from "@/components/terms-page"
 import { ResourcesPage } from "@/components/resources-page"
-import { PenaltyCalculator } from "@/components/penalty-calculator"
+import PenaltyCalculator from "@/components/penalty-calculator"
 import { GlobalSearch } from "@/components/global-search"
 import { VersionsPage } from "@/components/versions-page"
 import { Button } from "@/components/ui/button"
-import { Shield } from "lucide-react"
+import { Shield, ArrowRight } from "lucide-react"
 import { PositionsPage } from "@/components/positions-page"
 import { GuvdPositionsPage } from "@/components/guvd-positions-page"
 
@@ -89,53 +89,55 @@ export default function Home() {
       default:
         return (
           <div className="flex-1">
-            <div className="bg-gradient-to-br from-primary/90 via-primary to-primary/80 relative overflow-hidden">
-              {/* Декоративные элементы */}
-              <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=60 height=60 viewBox=0 0 60 60 xmlns=http://www.w3.org/2000/svg%3E%3Cg fill=none fillRule=evenodd%3E%3Cg fill=%23ffffff fillOpacity=0.03%3E%3Ccircle cx=30 cy=30 r=2/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+            <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+              {/* Background pattern */}
+              <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/30 to-background"></div>
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=80 height=80 viewBox=0 0 80 80 xmlns=http://www.w3.org/2000/svg%3E%3Cg fill=none fillRule=evenodd%3E%3Cg fill=%23000000 fillOpacity=0.02%3E%3Cpath d=M0 0h80v80H0V0zm20 20v40h40V20H20zm20 35a15 15 0 1 1 0-30 15 15 0 0 1 0 30z/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
 
-              <div className="max-w-7xl mx-auto px-6 py-20 relative">
-                <div className="text-center">
-                  <div className="inline-flex items-center gap-4 mb-8">
-                    <div className="w-20 h-20 bg-primary-foreground/15 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-primary-foreground/20 shadow-2xl">
-                      <Shield className="h-10 w-10 text-primary-foreground" />
+              <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
+                <div className="mb-12">
+                  <div className="inline-flex items-center gap-6 mb-8">
+                    <div className="w-24 h-24 bg-primary rounded-3xl flex items-center justify-center shadow-2xl">
+                      <Shield className="h-12 w-12 text-primary-foreground" />
                     </div>
                     <div className="text-left">
-                      <h1 className="text-5xl font-bold text-primary-foreground mb-2">МВД РП</h1>
-                      <p className="text-primary-foreground/80 text-xl font-medium">Методические материалы</p>
+                      <h1 className="text-6xl font-bold text-foreground mb-2 text-balance">МВД РП</h1>
+                      <p className="text-muted-foreground text-2xl font-medium">Методические материалы</p>
                     </div>
                   </div>
+                </div>
 
-                  <div className="max-w-3xl mx-auto mb-10">
-                    <h2 className="text-2xl text-primary-foreground/90 mb-4 font-medium">
-                      Полная база знаний для сотрудников
-                    </h2>
-                    <p className="text-lg text-primary-foreground/80 leading-relaxed">
-                      Министерства внутренних дел Республики Провинции
-                    </p>
-                  </div>
+                <div className="max-w-4xl mx-auto mb-16">
+                  <h2 className="text-3xl text-foreground mb-6 font-medium text-balance">
+                    Полная база знаний для сотрудников
+                  </h2>
+                  <p className="text-xl text-muted-foreground leading-relaxed text-pretty">
+                    Министерства внутренних дел Республики Провинции
+                  </p>
+                </div>
 
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <Button
-                      size="lg"
-                      className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold px-8 py-4 text-lg shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
-                      onClick={() => setCurrentPage("lectures")}
-                    >
-                      Начать изучение
-                    </Button>
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-semibold px-8 py-4 text-lg backdrop-blur-sm bg-transparent"
-                      onClick={() => setCurrentPage("penalty-calculator")}
-                    >
-                      Калькулятор штрафов
-                    </Button>
-                  </div>
+                <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                  <Button
+                    size="lg"
+                    className="modern-button group px-10 py-5 text-lg font-medium"
+                    onClick={() => setCurrentPage("lectures")}
+                  >
+                    Начать изучение
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-2 border-border text-foreground hover:bg-muted font-medium px-10 py-5 text-lg rounded-2xl transition-all duration-300 hover:border-primary bg-transparent"
+                    onClick={() => setCurrentPage("penalty-calculator")}
+                  >
+                    Калькулятор штрафов
+                  </Button>
                 </div>
               </div>
             </div>
 
-            <div className="px-6 py-16 bg-secondary/30">
+            <div className="px-6 py-24 bg-muted/30">
               <div className="max-w-7xl mx-auto">
                 <MainContent />
               </div>
@@ -174,7 +176,7 @@ export default function Home() {
           {currentPage === "contents" ? (
             renderContent()
           ) : (
-            <div className="px-6 py-8">
+            <div className="px-6 py-12">
               <div className="max-w-7xl mx-auto">{renderContent()}</div>
             </div>
           )}

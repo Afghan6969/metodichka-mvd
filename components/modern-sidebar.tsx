@@ -52,11 +52,9 @@ export function ModernSidebar({ currentPage, onPageChange, onGlobalSearchOpen, i
         key={item.id}
         variant={isActive ? "secondary" : "ghost"}
         className={cn(
-          "w-full justify-start gap-4 h-12 text-left transition-all duration-300 font-medium rounded-xl",
-          isActive &&
-            "bg-gradient-to-r from-primary/10 to-accent/10 text-primary font-semibold shadow-sm border border-primary/20",
-          !isActive &&
-            "hover:bg-gradient-to-r hover:from-primary/5 hover:to-accent/5 hover:text-primary hover:shadow-sm",
+          "w-full justify-start gap-3 h-11 text-left transition-all duration-200 font-medium rounded-xl group",
+          isActive && "bg-primary text-primary-foreground shadow-sm",
+          !isActive && "hover:bg-muted text-muted-foreground hover:text-foreground",
         )}
         onClick={() => {
           onPageChange(item.id)
@@ -67,13 +65,13 @@ export function ModernSidebar({ currentPage, onPageChange, onGlobalSearchOpen, i
       >
         <Icon
           className={cn(
-            "h-5 w-5 transition-all duration-300",
-            isActive && "text-primary scale-110",
-            !isActive && "text-muted-foreground group-hover:text-primary",
+            "h-4 w-4 transition-all duration-200",
+            isActive && "text-primary-foreground",
+            !isActive && "text-muted-foreground group-hover:text-foreground",
           )}
         />
         <span className="flex-1 text-sm">{item.label}</span>
-        {(isActive || isHovered) && <ChevronRight className="h-4 w-4 opacity-60 transition-transform duration-200" />}
+        {(isActive || isHovered) && <ChevronRight className="h-3 w-3 opacity-50" />}
       </Button>
     )
   }
@@ -107,99 +105,87 @@ export function ModernSidebar({ currentPage, onPageChange, onGlobalSearchOpen, i
   return (
     <>
       {/* Mobile overlay */}
-      {isOpen && <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 lg:hidden" onClick={onClose} />}
+      {isOpen && <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden" onClick={onClose} />}
 
       {/* Sidebar */}
       <aside
         className={cn(
-          "modern-sidebar fixed left-0 top-0 h-full w-84 z-50 transform transition-all duration-300 lg:relative lg:translate-x-0 shadow-2xl",
+          "modern-sidebar fixed left-0 top-0 h-full w-80 z-50 transform transition-all duration-300 lg:relative lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div className="flex flex-col h-full">
-          {/* Header */}
-          <div className="p-8 border-b border-sidebar-border bg-gradient-to-r from-primary/5 to-accent/5">
+          <div className="p-6 border-b border-sidebar-border">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center shadow-lg">
-                  <span className="text-primary-foreground font-bold text-lg">МВД</span>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center">
+                  <span className="text-primary-foreground font-bold text-sm">МВД</span>
                 </div>
                 <div>
-                  <h2 className="font-bold text-xl text-sidebar-foreground">Методичка</h2>
-                  <p className="text-sm text-muted-foreground font-medium">МВД РП</p>
+                  <h2 className="font-bold text-lg text-sidebar-foreground">Методичка</h2>
+                  <p className="text-xs text-muted-foreground">МВД РП</p>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" onClick={onClose} className="lg:hidden rounded-xl">
-                <X className="h-5 w-5" />
+              <Button variant="ghost" size="icon" onClick={onClose} className="lg:hidden rounded-xl h-8 w-8">
+                <X className="h-4 w-4" />
               </Button>
             </div>
           </div>
 
-          {/* Search */}
-          <div className="p-6 border-b border-sidebar-border">
+          <div className="p-4 border-b border-sidebar-border">
             <Button
               variant="outline"
-              className="w-full justify-start gap-4 h-14 text-left bg-gradient-to-r from-background to-secondary/50 border-2 border-dashed border-primary/20 hover:border-primary/40 rounded-xl transition-all duration-300"
+              className="w-full justify-start gap-3 h-10 text-left border-dashed hover:bg-muted rounded-xl bg-transparent"
               onClick={onGlobalSearchOpen}
             >
-              <Search className="h-5 w-5 text-primary" />
-              <span className="text-muted-foreground font-medium">Поиск материалов...</span>
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <span className="text-muted-foreground text-sm">Поиск материалов...</span>
             </Button>
           </div>
 
-          {/* Navigation */}
-          <ScrollArea className="flex-1 px-4 py-6">
-            <nav className="space-y-3">
+          <ScrollArea className="flex-1 px-4 py-4">
+            <nav className="space-y-1">
               {/* Main items */}
               {menuItems.map(renderMenuItem)}
 
-              <div className="py-3">
-                <div className="h-px bg-gradient-to-r from-transparent via-sidebar-border to-transparent" />
+              <div className="py-2">
+                <div className="h-px bg-border" />
               </div>
 
               {/* ГУВД Section */}
               <div>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start gap-4 h-12 text-left font-bold text-sidebar-foreground hover:bg-primary/5 rounded-xl transition-all duration-300"
+                  className="w-full justify-start gap-3 h-10 text-left font-medium text-foreground hover:bg-muted rounded-xl"
                   onClick={() => toggleSection("guvd")}
                 >
-                  <Shield className="h-5 w-5 text-primary" />
-                  <span className="flex-1 text-base">ГУВД</span>
-                  {expandedSections.guvd ? (
-                    <ChevronDown className="h-4 w-4 text-primary" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4 text-primary" />
-                  )}
+                  <Shield className="h-4 w-4" />
+                  <span className="flex-1 text-sm">ГУВД</span>
+                  {expandedSections.guvd ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
                 </Button>
-                {expandedSections.guvd && <div className="ml-6 mt-2 space-y-2">{guvdItems.map(renderMenuItem)}</div>}
+                {expandedSections.guvd && <div className="ml-4 mt-1 space-y-1">{guvdItems.map(renderMenuItem)}</div>}
               </div>
 
               {/* ГИБДД Section */}
               <div>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start gap-4 h-12 text-left font-bold text-sidebar-foreground hover:bg-primary/5 rounded-xl transition-all duration-300"
+                  className="w-full justify-start gap-3 h-10 text-left font-medium text-foreground hover:bg-muted rounded-xl"
                   onClick={() => toggleSection("gibdd")}
                 >
-                  <Car className="h-5 w-5 text-primary" />
-                  <span className="flex-1 text-base">ГИБДД</span>
-                  {expandedSections.gibdd ? (
-                    <ChevronDown className="h-4 w-4 text-primary" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4 text-primary" />
-                  )}
+                  <Car className="h-4 w-4" />
+                  <span className="flex-1 text-sm">ГИБДД</span>
+                  {expandedSections.gibdd ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
                 </Button>
-                {expandedSections.gibdd && <div className="ml-6 mt-2 space-y-2">{gibddItems.map(renderMenuItem)}</div>}
+                {expandedSections.gibdd && <div className="ml-4 mt-1 space-y-1">{gibddItems.map(renderMenuItem)}</div>}
               </div>
             </nav>
           </ScrollArea>
 
-          {/* Footer */}
-          <div className="p-6 border-t border-sidebar-border bg-gradient-to-r from-primary/5 to-accent/5">
+          <div className="p-4 border-t border-sidebar-border">
             <div className="text-center">
-              <p className="text-sm font-semibold text-foreground">© 2025</p>
-              <p className="text-xs text-muted-foreground mt-1 font-medium">Версия 1.0</p>
+              <p className="text-xs font-medium text-foreground">© 2025</p>
+              <p className="text-xs text-muted-foreground">Версия 1.0</p>
             </div>
           </div>
         </div>

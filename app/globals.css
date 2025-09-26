@@ -2,70 +2,70 @@
 @import "tw-animate-css";
 
 :root {
-  /* Improved light theme colors for better contrast and readability */
-  --background: #ffffff;
-  --foreground: #0f172a;
+  /* Light theme - Sophisticated monochromatic palette */
+  --background: #fafafa;
+  --foreground: #0a0a0a;
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #0a0a0a;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #1e40af;
-  --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #e2e8f0;
-  --muted-foreground: #475569;
-  --accent: #f59e0b;
-  --accent-foreground: #0f172a;
-  --destructive: #dc2626;
-  --destructive-foreground: #ffffff;
-  --border: #d1d5db;
+  --popover-foreground: #0a0a0a;
+  --primary: #0a0a0a;
+  --primary-foreground: #fafafa;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #0a0a0a;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #e4e4e7;
+  --accent-foreground: #0a0a0a;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --border: #e4e4e7;
   --input: #ffffff;
-  --ring: rgba(30, 64, 175, 0.2);
-  --radius: 0.875rem;
-  --sidebar: #f8fafc;
-  --sidebar-foreground: #0f172a;
-  --sidebar-primary: #1e40af;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f59e0b;
-  --sidebar-accent-foreground: #0f172a;
-  --sidebar-border: #d1d5db;
+  --ring: rgba(10, 10, 10, 0.1);
+  --radius: 1rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0a0a0a;
+  --sidebar-primary: #0a0a0a;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #0a0a0a;
+  --sidebar-border: #e4e4e7;
 }
 
-/* Добавил темную тему */
 .dark {
-  --background: #0f172a;
-  --foreground: #f8fafc;
-  --card: #1e293b;
-  --card-foreground: #f8fafc;
-  --popover: #1e293b;
-  --popover-foreground: #f8fafc;
-  --primary: #3b82f6;
-  --primary-foreground: #ffffff;
-  --secondary: #334155;
-  --secondary-foreground: #f8fafc;
-  --muted: #475569;
-  --muted-foreground: #94a3b8;
-  --accent: #fbbf24;
-  --accent-foreground: #0f172a;
+  /* Dark theme - High contrast with grid patterns */
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #111111;
+  --card-foreground: #fafafa;
+  --popover: #111111;
+  --popover-foreground: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #0a0a0a;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #fafafa;
+  --muted: #1a1a1a;
+  --muted-foreground: #a1a1aa;
+  --accent: #262626;
+  --accent-foreground: #fafafa;
   --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --border: #334155;
-  --input: #1e293b;
-  --ring: rgba(59, 130, 246, 0.3);
-  --sidebar: #1e293b;
-  --sidebar-foreground: #f8fafc;
-  --sidebar-primary: #3b82f6;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #fbbf24;
-  --sidebar-accent-foreground: #0f172a;
-  --sidebar-border: #334155;
+  --destructive-foreground: #fafafa;
+  --border: #262626;
+  --input: #111111;
+  --ring: rgba(250, 250, 250, 0.1);
+  --sidebar: #111111;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #fafafa;
+  --sidebar-primary-foreground: #0a0a0a;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #262626;
 }
 
 @theme inline {
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-serif: "Playfair Display", Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-mono: "JetBrains Mono", "Fira Code", Consolas, "Liberation Mono", Menlo, monospace;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", Consolas, monospace;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -104,109 +104,110 @@
     @apply border-border outline-ring/50;
   }
 
-  /* Убрал градиент, добавил простой фон с поддержкой темной темы */
   body {
     @apply bg-background text-foreground font-sans;
     min-height: 100vh;
-    line-height: 1.7;
-    letter-spacing: -0.015em;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Обновил заголовки для работы с темной темой */
+  /* Modern typography system with consistent spacing */
   h1 {
-    @apply font-serif font-bold text-3xl md:text-4xl lg:text-5xl text-foreground;
+    @apply font-sans font-bold text-4xl md:text-5xl lg:text-6xl text-foreground;
     line-height: 1.1;
-    letter-spacing: -0.025em;
-  }
-
-  h2 {
-    @apply font-serif font-semibold text-2xl md:text-3xl lg:text-4xl text-foreground;
-    line-height: 1.2;
     letter-spacing: -0.02em;
   }
 
-  h3 {
-    @apply font-serif font-semibold text-xl md:text-2xl lg:text-3xl text-foreground;
-    line-height: 1.3;
+  h2 {
+    @apply font-sans font-semibold text-2xl md:text-3xl lg:text-4xl text-foreground;
+    line-height: 1.2;
     letter-spacing: -0.015em;
   }
 
+  h3 {
+    @apply font-sans font-medium text-xl md:text-2xl text-foreground;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
   h4 {
-    @apply font-sans font-semibold text-lg md:text-xl text-foreground;
+    @apply font-sans font-medium text-lg md:text-xl text-foreground;
     line-height: 1.4;
   }
 
   p {
-    @apply text-foreground text-base leading-relaxed;
-    margin-bottom: 1.25rem;
-    font-weight: 400;
+    @apply text-muted-foreground text-base leading-relaxed;
+    margin-bottom: 1rem;
   }
 
-  /* Обновил стили карточек для темной темы */
+  /* Sophisticated card system with subtle shadows */
   .modern-card {
-    @apply border border-border rounded-2xl p-8 shadow-lg bg-card text-card-foreground;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    @apply border border-border rounded-2xl p-8 bg-card text-card-foreground;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   }
 
   .modern-card:hover {
-    transform: translateY(-2px);
-    @apply shadow-xl border-primary/20;
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    @apply border-primary/20;
   }
 
-  /* Обновил стили сайдбара для темной темы */
+  /* Clean sidebar with minimal borders */
   .modern-sidebar {
     @apply border-r border-sidebar-border bg-sidebar text-sidebar-foreground;
+    backdrop-filter: blur(20px);
   }
 
-  /* Обновил стили навигации для темной темы */
+  /* Floating navigation with glass effect */
   .modern-nav {
-    @apply backdrop-blur-xl border-b border-border bg-background/95 text-foreground;
+    @apply backdrop-blur-xl border-b border-border bg-background/80 text-foreground;
     position: sticky;
     top: 0;
     z-index: 50;
   }
 
-  /* Обновил стили кнопок для темной темы */
+  /* Minimalist button system */
   .modern-button {
-    @apply font-medium transition-all duration-200 bg-primary text-primary-foreground;
-    border-radius: 0.75rem;
-    padding: 0.75rem 1.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    @apply font-medium transition-all duration-300 bg-primary text-primary-foreground;
+    border-radius: 1rem;
+    padding: 0.875rem 2rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   }
 
   .modern-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
 
-  /* Обновил акцентные элементы для темной темы */
-  .accent-gradient {
-    @apply text-accent;
+  /* Grid pattern for dark theme */
+  .dark body {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
   }
 
-  /* Добавил стили для лучшей читаемости текста в темной теме */
-  .dark .text-gray-600 {
-    @apply text-muted-foreground;
+  /* Hero section with dramatic overlay */
+  .hero-overlay {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 100%);
   }
 
-  .dark .text-gray-800 {
-    @apply text-foreground;
+  /* Smooth transitions for all interactive elements */
+  .interactive-element {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .dark .text-black {
-    @apply text-foreground;
+  .interactive-element:hover {
+    transform: translateY(-2px);
   }
 
-  .dark .bg-white {
-    @apply bg-card;
+  /* Typography improvements for better readability */
+  .text-balance {
+    text-wrap: balance;
   }
 
-  .dark .bg-gray-50 {
-    @apply bg-secondary/30;
-  }
-
-  .dark .bg-gray-100 {
-    @apply bg-secondary;
+  .text-pretty {
+    text-wrap: pretty;
   }
 }

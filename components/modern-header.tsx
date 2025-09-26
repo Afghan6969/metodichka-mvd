@@ -42,44 +42,44 @@ export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) 
   }
 
   return (
-    <header className="modern-nav px-8 py-6">
+    <header className="modern-nav px-6 py-4">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
-        <div className="flex items-center gap-6">
-          <Button variant="ghost" size="icon" onClick={onMenuClick} className="lg:hidden rounded-xl">
-            <Menu className="h-6 w-6" />
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={onMenuClick} className="lg:hidden rounded-xl h-9 w-9">
+            <Menu className="h-5 w-5" />
           </Button>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg overflow-hidden">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center shadow-sm overflow-hidden">
               <img src="/mvd-logo.jpg" alt="МВД Лого" className="w-full h-full object-cover" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Методичка МВД</h1>
-              <p className="text-sm text-muted-foreground font-medium">Образовательная платформа</p>
+              <h1 className="text-xl font-bold text-foreground">Методичка МВД</h1>
+              <p className="text-xs text-muted-foreground">Образовательная платформа</p>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
           <div className="relative hidden md:block">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Поиск по материалам..."
-              className="pl-12 w-96 h-12 rounded-xl border-2 border-primary/20 focus:border-primary/40 bg-background/50 backdrop-blur-sm font-medium"
+              className="pl-10 w-80 h-10 rounded-xl border bg-background font-medium text-sm"
               onClick={onSearchClick}
             />
           </div>
-          <Button variant="ghost" size="icon" onClick={onSearchClick} className="md:hidden rounded-xl">
-            <Search className="h-5 w-5" />
+          <Button variant="ghost" size="icon" onClick={onSearchClick} className="md:hidden rounded-xl h-9 w-9">
+            <Search className="h-4 w-4" />
           </Button>
 
           <Button
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            className="rounded-xl hover:bg-primary/10 transition-colors"
+            className="rounded-xl h-9 w-9 hover:bg-muted"
             aria-label={isDark ? "Переключить на светлую тему" : "Переключить на темную тему"}
           >
-            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </Button>
         </div>
       </div>
