@@ -10,7 +10,7 @@ export function GuvdPositionsPage() {
       category: "Руководящий состав",
       icon: Shield,
       color: "bg-blue border-border",
-      titleColor: "text-black",
+      titleColor: "text-foreground",
       positions: [
         { title: "Начальник ГУВД", abbr: "Нач. ГУВД", rank: "Генерал", level: "11 ранг" },
         { title: "Первый заместитель начальника ГУВД", abbr: "Пр. Зам. Нач.", rank: "Полковник", level: "10 ранг" },
@@ -38,7 +38,7 @@ export function GuvdPositionsPage() {
       category: "Старший состав",
       icon: Star,
       color: "bg-blue border-border",
-      titleColor: "text-black",
+      titleColor: "text-foreground",
       positions: [
         {
           title: "Начальник Отряда мобильного особого назначения / Начальник СОБРа",
@@ -60,35 +60,35 @@ export function GuvdPositionsPage() {
       category: "Отдел воздушного патрулирования",
       icon: Award,
       color: "bg-blue border-border",
-      titleColor: "text-black",
+      titleColor: "text-foreground",
       positions: [{ title: "Сотрудник ОВП", abbr: "ОВП", rank: "Лейтенант–Майор", level: "5-8 ранг" }],
     },
     {
       category: "Отряд мобильного особого назначения",
       icon: Shield,
       color: "bg-blue border-border",
-      titleColor: "text-black",
+      titleColor: "text-foreground",
       positions: [{ title: "Боец ОМОН", abbr: "ОМОН", rank: "Лейтенант–Капитан", level: "5-7 ранг" }],
     },
     {
       category: "Специальный отряд быстрого реагирования",
       icon: Shield,
       color: "bg-blue border-border",
-      titleColor: "text-black",
+      titleColor: "text-foreground",
       positions: [{ title: "Боец СОБРа", abbr: "СОБР", rank: "Лейтенант–Капитан", level: "5-7 ранг" }],
     },
     {
       category: "Патрульно-постовая служба",
       icon: Users,
       color: "bg-blue border-border",
-      titleColor: "text-black",
+      titleColor: "text-foreground",
       positions: [{ title: "Инспектор ППС", abbr: "ППС", rank: "Лейтенант", level: "3-7 ранг" }],
     },
     {
       category: "Полицейская академия",
       icon: Award,
       color: "bg-blue border-border",
-      titleColor: "text-black",
+      titleColor: "text-foreground",
       positions: [{ title: "Курсант ПА", abbr: "ПА", rank: "Рядовой–Сержант", level: "1-2 ранг" }],
     },
   ]
