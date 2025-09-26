@@ -22,28 +22,24 @@ export function GibddBindsPage() {
   }
 
   const BindItem = ({ bind, description }: { bind: string; description?: string }) => (
-    <div className="flex items-center justify-between p-3 bg-card rounded-lg border border-border animate-fade-in">
+    <div className="flex items-center justify-between p-3 bg-gray-700 rounded-lg border border-gray-600 animate-fade-in">
       <div className="flex-1">
-        <code className="text-sm font-mono text-foreground">{bind}</code>
-        {description && <p className="text-xs text-muted-foreground mt-1">{description}</p>}
+        <code className="text-sm font-mono text-gray-200">{bind}</code>
+        {description && <p className="text-xs text-gray-400 mt-1">{description}</p>}
       </div>
       <Button variant="ghost" size="sm" onClick={() => copyToClipboard(bind)} className="ml-2 h-8 w-8 p-0 btn-hover">
-        {copiedBind === bind ? (
-          <Check className="h-4 w-4 text-green-500" />
-        ) : (
-          <Copy className="h-4 w-4 text-muted-foreground" />
-        )}
+        {copiedBind === bind ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-gray-400" />}
       </Button>
     </div>
   )
 
   const SectionDivider = ({ title }: { title: string }) => (
     <div className="flex items-center gap-3 my-4">
-      <div className="h-px bg-border flex-1" />
-      <Badge variant="secondary" className="text-xs font-medium px-3 py-1">
+      <div className="h-px bg-gray-600 flex-1" />
+      <Badge variant="secondary" className="text-xs font-medium px-3 py-1 bg-gray-600 text-gray-200">
         {title}
       </Badge>
-      <div className="h-px bg-border flex-1" />
+      <div className="h-px bg-gray-600 flex-1" />
     </div>
   )
 
@@ -64,7 +60,7 @@ export function GibddBindsPage() {
       ],
     },
     {
-      title: "Проверка личности через фото и КПК",
+      title: "Проверка через фото и КПК",
       binds: [
         { bind: "bind [клавиша] do Мини-фотоаппарат и КПК в кармане." },
         { bind: "bind [клавиша] me достав фотоаппарат и КПК, сфотографировал человека" },
@@ -83,7 +79,7 @@ export function GibddBindsPage() {
       binds: [
         { bind: "bind [клавиша] do В руке сотрудника папка с протоколами и ручкой." },
         { bind: "bind [клавиша] me вытащил из папки бланк с рулеткой и оформил протокол задержания" },
-        { bind: "bind [клавиша] me протянул протокол и ручку задержанному" },
+        { bind: "bind [клавиша] up me протянул протокол и ручку задержанному" },
         { bind: "bind [клавиша] say подпись поставьте" },
         { bind: "bind [клавиша] n /me поставил подпись" },
         { bind: "bind [клавиша] me оторвал копию протокола и передал её гражданину" },
@@ -236,56 +232,56 @@ export function GibddBindsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-8 bg-background min-h-screen">
+    <div className="max-w-4xl mx-auto p-6 space-y-8 bg-gray-900 min-h-screen">
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-3">
-          <div className="p-3 bg-primary/20 rounded-lg">
-            <Keyboard className="h-8 w-8 text-primary" />
+          <div className="p-3 bg-blue-900 rounded-lg">
+            <Keyboard className="h-8 w-8 text-blue-300" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Бинды ГИБДД</h1>
-            <p className="text-muted-foreground">Готовые команды для сотрудников ГИБДД</p>
+            <h1 className="text-3xl font-bold text-white">Бинды ГИБДД</h1>
+            <p className="text-gray-400">Готовые команды для сотрудников ГИБДД</p>
           </div>
         </div>
       </div>
 
       <div className="flex justify-center">
         <div className="relative w-full max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
             type="text"
             placeholder="Поиск по биндам..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-10 h-10"
+            className="pl-10 pr-10 h-10 border-gray-600 bg-gray-700 text-white focus:border-blue-500 focus:ring-blue-700/50 placeholder-gray-400"
           />
           {searchQuery && (
             <Button
               variant="ghost"
               size="sm"
               onClick={clearSearch}
-              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
+              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-gray-600"
             >
-              <X className="h-4 w-4 text-muted-foreground" />
+              <X className="h-4 w-4 text-gray-400" />
             </Button>
           )}
         </div>
       </div>
 
       {searchQuery && (
-        <div className="text-center text-sm text-muted-foreground">Найдено разделов: {filteredSections.length}</div>
+        <div className="text-center text-sm text-gray-400">Найдено разделов: {filteredSections.length}</div>
       )}
 
-      <Card>
+      <Card className="border-gray-700 bg-gray-800">
         <CardHeader>
-          <CardTitle className="text-lg text-foreground flex items-center gap-2">
-            <Info className="h-5 w-5 text-primary" />
+          <CardTitle className="text-lg text-white flex items-center gap-2">
+            <Info className="h-5 w-5 text-blue-400" />
             Важные примечания
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 text-muted-foreground text-sm">
+        <CardContent className="space-y-4 text-gray-300 text-sm">
           <div className="flex items-start gap-2">
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline" className="text-xs border-gray-600 text-gray-200">
               UP
             </Badge>
             <p>
@@ -294,13 +290,13 @@ export function GibddBindsPage() {
             </p>
           </div>
           <div className="flex items-start gap-2">
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline" className="text-xs border-gray-600 text-gray-200">
               Интервал
             </Badge>
             <p>Интервал между биндами - не менее двух секунд.</p>
           </div>
           <div className="flex items-start gap-2">
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline" className="text-xs border-gray-600 text-gray-200">
               Лимит
             </Badge>
             <p>На одну клавишу не более трёх отыгровок.</p>
@@ -311,9 +307,9 @@ export function GibddBindsPage() {
       <div className="grid gap-6">
         {filteredSections.length > 0 ? (
           filteredSections.map((section, sectionIndex) => (
-            <Card key={sectionIndex}>
+            <Card key={sectionIndex} className="border-gray-700 bg-gray-800">
               <CardHeader>
-                <CardTitle className="text-lg text-foreground">{section.title}</CardTitle>
+                <CardTitle className="text-lg text-white">{section.title}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {section.binds.map((item, index) => (
@@ -330,21 +326,21 @@ export function GibddBindsPage() {
                       <SectionDivider title={index === 2 ? "Часть 2" : "Часть 3"} />
                     )}
                     {section.title === "Проверка тонировки" && index === 1 && (
-                      <div className="p-1 bg-card border border-border rounded-lg">
-                        <p className="text-sm text-muted-foreground">Проверка уровня тонировки через "TAB"</p>
+                      <div className="p-1 bg-gray-700 border border-gray-600 rounded-lg">
+                        <p className="text-sm text-gray-300">Проверка уровня тонировки через "TAB"</p>
                       </div>
                     )}
                     {section.title === "Мегафон: требование остановиться" && index === 2 && (
-                      <div className="p-1 bg-card border border-border rounded-lg">
-                        <p className="text-sm text-muted-foreground">
+                      <div className="p-1 bg-gray-700 border border-gray-600 rounded-lg">
+                        <p className="text-sm text-gray-300">
                           Перед применением меры наказания сотрудник должен быть уверен, что выдвинутое требование было
                           верно воспринято именно тем лицом, к которому оно адресовывалось.
                         </p>
                       </div>
                     )}
                     {section.title === "Посадка задержанного в служебный автомобиль" && index === 0 && (
-                      <div className="p-1 bg-card border border-border rounded-lg">
-                        <p className="text-sm text-muted-foreground">
+                      <div className="p-1 bg-gray-700 border border-gray-600 rounded-lg">
+                        <p className="text-sm text-gray-300">
                           При активном конвоировании (/arr), либо же после отыгровки сесть в автомобиль и прописать
                           /putpl id
                         </p>
@@ -356,24 +352,24 @@ export function GibddBindsPage() {
             </Card>
           ))
         ) : (
-          <Card>
+          <Card className="border-gray-700 bg-gray-800">
             <CardContent className="text-center py-8">
-              <p className="text-muted-foreground">Ничего не найдено по запросу "{searchQuery}"</p>
-              <p className="text-sm text-muted-foreground mt-2">Попробуйте изменить поисковый запрос</p>
+              <p className="text-gray-400">Ничего не найдено по запросу "{searchQuery}"</p>
+              <p className="text-sm text-gray-400 mt-2">Попробуйте изменить поисковый запрос</p>
             </CardContent>
           </Card>
         )}
       </div>
 
-      <footer className="mt-16 pt-8 border-t border-border">
+      <footer className="mt-16 pt-8 border-t border-gray-600">
         <div className="text-center">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-400">
             Разработано{" "}
             <a
               href="https://vk.com/id503251431"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 font-medium transition-colors"
+              className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
             >
               Poseidon_Wagner
             </a>
