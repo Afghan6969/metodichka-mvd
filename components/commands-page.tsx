@@ -52,9 +52,9 @@ export function CommandsPage() {
       category: "info",
       commands: [
         { command: "/find", description: "Список игроков во фракции онлайн" },
-        { command: "/skan [ID]", description: "Показывает сумму штрафов у гражданина (10.000+)" },
+        { command: "/skan [ID]", description: "Показывает сумму штрафов у гражданина" },
         { command: "/wanted", description: "Список всех игроков онлайн которые находятся в розыске" },
-        { command: "/fines", description: "Список игроков, имеющих штрафы" },
+        { command: "/fines", description: "Список игроков, имеющих штрафы (от 10.000 штрафов)" },
         { command: "/crimrec [ID]", description: "Показывает совершенные преступления игрока" },
         { command: "/paytime", description: "Время до начисления зарплаты" },
         { command: "Клавиша Ю", description: "Список сотрудников фракции", rankRequired: "9+" },
@@ -75,7 +75,7 @@ export function CommandsPage() {
         {
           command: "/arrest [ID]",
           description:
-            "Посадить игрока в КПЗ (Необходимо находиться на заднем дворе полиции, преступник должен быть в розыске и наручниках)",
+            "Посадить игрока в КПЗ (Необходимо находиться вблизи полицейского участка, преступник должен быть в розыске и в наручниках)",
         },
       ],
     },

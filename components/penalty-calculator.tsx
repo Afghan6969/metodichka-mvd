@@ -1584,7 +1584,7 @@ const PenaltyCalculator = () => {
           retraining: false,          
           alternatives: [
             {
-              name: "Арест 1-6 лет",
+              name: "Арест 1-6 лет + Штраф",
               fine: 100000,
               suspension: 0,
               arrest: 1,
