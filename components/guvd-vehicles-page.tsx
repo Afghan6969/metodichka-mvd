@@ -33,8 +33,8 @@ const vehicleImages: Record<string, string> = {
   "Volkswagen Polo": "https://i.imgur.com/249R8BH.png",
   "Audi A3": "https://i.imgur.com/bQc9yE9.png",
   "Kia Rio": "https://i.imgur.com/jHHZlaj.jpeg",
-  "Lexus IS 350": "https://i.imgur.com/9kPZDqN.png",
-  'Вертолет "Maverick"': "https://i.imgur.com/x3gs4HP.jpeg",
+  "Lexus IS 350": "https://i.imgur.com/x3gs4HP.jpeg",
+  'Вертолет "Maverick"': "https://i.imgur.com/WP05qBK.png",
 }
 
 export function GuvdVehiclesPage() {
@@ -187,31 +187,35 @@ export function GuvdVehiclesPage() {
           </CardContent>
         </Card>
 
-        {selectedImage && (
-          <div className="fixed inset-0 z-50 bg-black/80 flex justify-center items-center p-4">
-            <div className="relative max-w-4xl w-full bg-background border border-border rounded-lg shadow-lg p-6 animate-scale-in">
-              <button
-                className="absolute top-4 right-4 text-foreground hover:text-primary"
-                onClick={closeImageModal}
-              >
-                <X className="h-6 w-6" />
-              </button>
-              <div className="relative w-full h-[70vh] max-h-[800px]">
-                <Image
-                  src={selectedImage}
-                  alt="Увеличенное изображение ТС"
-                  fill
-                  className="object-contain rounded-md"
-                  sizes="(max-width: 768px) 100vw, 1200px"
-                  priority
-                />
-              </div>
-              <p className="text-center text-foreground mt-4 font-medium">
-                {Object.keys(vehicleImages).find((key) => vehicleImages[key] === selectedImage) || "Транспортное средство"}
-              </p>
-            </div>
-          </div>
-        )}
+{selectedImage && (
+  <div
+    className="fixed inset-0 z-50 bg-black/80 flex justify-center items-center p-4"
+    onClick={(e) => e.target === e.currentTarget && setSelectedImage(null)}
+  >
+    <div className="relative max-w-4xl w-full bg-background border border-border rounded-lg shadow-lg p-6 animate-scale-in">
+      <button
+        className="absolute top-3 right-3 p-4 rounded-full bg-background/90 hover:bg-primary/30 text-foreground hover:text-primary transition-all duration-200 z-50 focus:outline-none focus:ring-2 focus:ring-primary"
+        onClick={() => setSelectedImage(null)}
+        aria-label="Закрыть изображение"
+      >
+        <X className="h-7 w-7" />
+      </button>
+      <div className="relative w-full h-[70vh] max-h-[800px]">
+        <Image
+          src={selectedImage}
+          alt="Увеличенное изображение ТС"
+          fill
+          className="object-contain rounded-md"
+          sizes="(max-width: 768px) 100vw, 1200px"
+          priority
+        />
+      </div>
+      <p className="text-center text-foreground mt-4 font-medium">
+        {Object.keys(vehicleImages).find((key) => vehicleImages[key] === selectedImage) || "Транспортное средство"}
+      </p>
+    </div>
+  </div>
+)}
         <footer className="mt-16 pt-8 border-t border-border">
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
