@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -146,7 +147,18 @@ export function GibddGovWavePage() {
   return (
     <div className="flex-1 p-8 overflow-auto bg-background">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-foreground mb-8">Гос волна ГИБДД - УБ (Учебный батальон)</h1>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold text-foreground">Гос волна ГИБДД - УБ (Учебный батальон)</h1>
+          <a
+            href="https://province.status-journal.com/gov"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="h-12 px-4 text-base bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
+          >
+            Перейти на Гос Волну
+            <ExternalLink className="h-4 w-4" />
+          </a>
+        </div>
 
         <div className="space-y-6">
           <Card className="p-6 border border-border bg-card">
@@ -188,6 +200,11 @@ export function GibddGovWavePage() {
           <Card className="p-6 border-l-4 border-l-blue-600 bg-card">
             <h2 className="text-xl font-semibold text-foreground mb-4">Правила гос волны</h2>
             <div className="text-sm text-muted-foreground space-y-2">
+              <p>• Сообщения государственной волны (/gov) видны всем игрокам на сервере.</p>
+              <p>• Руководство по использованию государственной волны, а также расписание — закреплены в беседе VK — "Гос. волна".</p>
+              <p>• Эфирное время расставляется на сайте.</p>
+              <p>• В государственную волну запрещено писать что-либо, кроме новостей о предстоящих собеседованиях и мероприятиях организации.</p>
+              <p>• Организация вправе занять государственную волну на час и не более с момента первых сообщений, заканчивая последними.</p>
               <p>• Интервал между подачей сообщений должен быть не менее 10-ти минут.</p>
               <p>• Интервал между строчками должен быть не менее 3-х секунд.</p>
               <p>• Максимальное количество строк — 4 (четыре).</p>

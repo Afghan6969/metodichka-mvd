@@ -146,7 +146,18 @@ export function GuvdGovWavePage() {
   return (
     <div className="flex-1 p-8 overflow-auto bg-background">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-foreground mb-8">Гос волна ГУВД - ПА (Полицейская академия)</h1>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold text-foreground">Гос волна ГУВД - ПА (Полицейская академия)</h1>
+          <a
+            href="https://province.status-journal.com/gov"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="h-12 px-4 text-base bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
+          >
+            Перейти на Гос Волну
+            <ExternalLink className="h-4 w-4" />
+          </a>
+        </div>
 
         <div className="space-y-6">
           <Card className="p-6 border border-border bg-card">
