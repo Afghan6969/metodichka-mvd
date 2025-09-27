@@ -46,7 +46,7 @@ interface SidebarProps {
     | "gibdd-gov-wave"
     | "gibdd-binds"
     | "guvd-binds"
-    | "versions"
+    | "test"
   onPageChange: (page: SidebarProps["currentPage"]) => void
   onGlobalSearchOpen: () => void
 }

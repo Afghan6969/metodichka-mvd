@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -17,13 +18,14 @@ import { GuvdBindsPage } from "@/components/guvd-binds-page"
 import { AmmunitionPage } from "@/components/ammunition-page"
 import { TermsPage } from "@/components/terms-page"
 import { ResourcesPage } from "@/components/resources-page"
-import PenaltyCalculator from "@/components/penalty-calculator"
+import { PenaltyCalculator } from "@/components/penalty-calculator"
 import { GlobalSearch } from "@/components/global-search"
 import { VersionsPage } from "@/components/versions-page"
 import { Button } from "@/components/ui/button"
 import { Shield, ArrowRight } from "lucide-react"
 import { PositionsPage } from "@/components/positions-page"
 import { GuvdPositionsPage } from "@/components/guvd-positions-page"
+import GuvdExamplesPage from "@/components/test" // Изменено на дефолтный импорт
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState<
@@ -44,7 +46,7 @@ export default function Home() {
     | "gibdd-gov-wave"
     | "gibdd-binds"
     | "guvd-binds"
-    | "versions"
+    | "test"
   >("contents")
 
   const [isGlobalSearchOpen, setIsGlobalSearchOpen] = useState(false)
@@ -84,13 +86,12 @@ export default function Home() {
         return <GibddBindsPage />
       case "guvd-binds":
         return <GuvdBindsPage />
-      case "versions":
-        return <VersionsPage />
+      case "test":
+        return <GuvdExamplesPage />
       default:
         return (
           <div className="flex-1">
             <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-              {/* Background pattern */}
               <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/30 to-background"></div>
               <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=80 height=80 viewBox=0 0 80 80 xmlns=http://www.w3.org/2000/svg%3E%3Cg fill=none fillRule=evenodd%3E%3Cg fill=%23000000 fillOpacity=0.02%3E%3Cpath d=M0 0h80v80H0V0zm20 20v40h40V20H20zm20 35a15 15 0 1 1 0-30 15 15 0 0 1 0 30z/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
 

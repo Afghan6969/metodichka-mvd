@@ -85,6 +85,7 @@ export function ModernSidebar({ currentPage, onPageChange, onGlobalSearchOpen, i
     { id: "penalty-calculator", label: "Калькулятор штрафов", icon: Calculator },
     { id: "ammunition", label: "Амуниция", icon: Shield },
     { id: "terms", label: "Термины", icon: Book },
+    { id: "test", label: "Примеры ситуаций", icon: Book }, // Обновлено
     { id: "resources", label: "Ресурсы", icon: Folder },
   ]
 
