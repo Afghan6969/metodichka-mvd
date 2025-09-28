@@ -89,7 +89,7 @@ const PenaltyCalculator = () => {
         },
         "5.4": {
           article: "КоАП 5.4",
-          description: "Управление ТС с тонировкой более 30%",
+          description: "Управление ТС с тонировкой более 31%",
           fine: 20000,
           suspension: 0,
           arrest: 0,
@@ -2036,10 +2036,11 @@ const getAllViolations = () => {
                         {Object.entries(category.items).map(([violationKey, violation]) => (
                           <CommandItem
                             key={violationKey}
-                            value={`${categoryKey}.${violationKey}`}
+                            value={`${categoryKey}.${violationKey}|${violation.article}|${violation.description}`}
                             onSelect={(currentValue) => {
+                              const [key] = currentValue.split('|');
                               setSelectedViolations((prev) =>
-                                prev.includes(currentValue) ? prev.filter((item) => item !== currentValue) : [...prev, currentValue]
+                                prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key]
                               )
                               setOpen(false)
                             }}
