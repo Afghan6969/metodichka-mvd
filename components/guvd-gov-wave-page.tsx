@@ -56,8 +56,8 @@ export function GuvdGovWavePage() {
         <div className="max-w-md mx-auto mt-16">
           <Card className="p-8 bg-card shadow-xl border-border rounded-2xl">
             <div className="text-center mb-8">
-              <div className="mx-auto w-20 h-20 bg-blue-900 rounded-full flex items-center justify-center mb-6">
-                <Shield className="h-10 w-10 text-blue-300" />
+              <div className="mx-auto w-20 h-20 bg-primary rounded-full flex items-center justify-center mb-6">
+                <Shield className="h-10 w-10 text-primary-foreground" />
               </div>
               <h1 className="text-2xl font-bold text-foreground mb-2">ГУВД - Полицейская Академия</h1>
               <p className="text-muted-foreground">Авторизованный доступ к системе</p>
@@ -89,7 +89,7 @@ export function GuvdGovWavePage() {
 
                 <Button
                   onClick={handlePasswordSubmit}
-                  className="w-full h-14 text-base bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                  className="w-full h-14 text-base bg-primary hover:bg-primary/90 rounded-xl font-semibold text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200"
                 >
                   Войти в систему
                 </Button>

@@ -212,8 +212,8 @@ export function GuvdBindsPage() {
     <div className="max-w-4xl mx-auto p-6 space-y-8 bg-background min-h-screen">
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-3">
-          <div className="p-3 bg-blue-900 rounded-lg">
-            <Keyboard className="h-8 w-8 text-blue-300" />
+          <div className="p-3 bg-primary rounded-full flex items-center justify-center">
+            <Keyboard className="h-8 w-8 text-primary-foreground" />
           </div>
           <div>
             <h1 className="text-3xl font-bold text-foreground">Бинды ГИБДД</h1>

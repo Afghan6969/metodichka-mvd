@@ -174,8 +174,8 @@ export function TrainingPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center">
-          <Target className="h-6 w-6 text-white" />
+        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+          <Target className="h-6 w-6 text-primary-foreground" />
         </div>
         <div>
           <h1 className="text-3xl font-bold text-foreground">Тренировки сотрудников МВД</h1>

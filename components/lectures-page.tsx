@@ -295,8 +295,8 @@ say На этом лекция на тему "Первая медицинска�
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-emerald-600 rounded-lg flex items-center justify-center">
-          <GraduationCap className="h-6 w-6 text-white" />
+        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+          <GraduationCap className="h-6 w-6 text-primary-foreground" />
         </div>
         <div>
           <h1 className="text-3xl font-bold text-foreground">Лекции для сотрудников МВД</h1>
