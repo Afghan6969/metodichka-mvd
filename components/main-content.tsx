@@ -84,7 +84,7 @@ export function MainContent() {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-bold text-card-foreground">Калькулятор штрафов</h3>
+                      <h3 className="font-bold text-card-foreground">Калькулятор наказаний</h3>
                       <Badge variant="secondary" className="text-xs">
                         КоАП + УК
                       </Badge>

@@ -82,10 +82,11 @@ export function ModernSidebar({ currentPage, onPageChange, onGlobalSearchOpen, i
     { id: "training", label: "Тренировки", icon: Book },
     { id: "reports", label: "Доклады в рацию", icon: FileText },
     { id: "commands", label: "Команды", icon: Users },
-    { id: "penalty-calculator", label: "Калькулятор штрафов", icon: Calculator },
+    { id: "penalty-calculator", label: "Калькулятор наказаний", icon: Calculator },
+    { id: "generator-page", label: "Генератор отчётов", icon: Calculator },
     { id: "ammunition", label: "Амуниция", icon: Shield },
     { id: "terms", label: "Термины", icon: Book },
-    { id: "test", label: "Примеры ситуаций", icon: Book }, // Обновлено
+    { id: "test", label: "Примеры ситуаций", icon: Book },
     { id: "resources", label: "Ресурсы", icon: Folder },
   ]
 

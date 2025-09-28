@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -25,7 +24,8 @@ import { Button } from "@/components/ui/button"
 import { Shield, ArrowRight } from "lucide-react"
 import { PositionsPage } from "@/components/positions-page"
 import { GuvdPositionsPage } from "@/components/guvd-positions-page"
-import GuvdExamplesPage from "@/components/test" // Изменено на дефолтный импорт
+import GuvdExamplesPage from "@/components/test"
+import { GeneratorPage } from "@/components/generator-page"
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState<
@@ -47,6 +47,7 @@ export default function Home() {
     | "gibdd-binds"
     | "guvd-binds"
     | "test"
+    | "generator-page" // Add generator-page to the type
   >("contents")
 
   const [isGlobalSearchOpen, setIsGlobalSearchOpen] = useState(false)
@@ -88,6 +89,8 @@ export default function Home() {
         return <GuvdBindsPage />
       case "test":
         return <GuvdExamplesPage />
+      case "generator-page": // Add case for generator-page
+        return <GeneratorPage />
       default:
         return (
           <div className="flex-1">
@@ -132,7 +135,7 @@ export default function Home() {
                     className="border-2 border-border text-foreground hover:bg-muted font-medium px-10 py-5 text-lg rounded-2xl transition-all duration-300 hover:border-primary bg-transparent"
                     onClick={() => setCurrentPage("penalty-calculator")}
                   >
-                    Калькулятор штрафов
+                    Калькулятор наказаний
                   </Button>
                 </div>
               </div>
