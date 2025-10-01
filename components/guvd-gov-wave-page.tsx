@@ -267,7 +267,6 @@ export function GuvdGovWavePage() {
               <Card className="p-6 bg-card border border-border">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-foreground">Объявление (за 30 минут до начала)</h3>
-                  <CopyButton text={messages.announcement} />
                 </div>
                 <div className="bg-muted p-4 rounded font-mono text-sm text-foreground">
                   {messages.announcement.split("\\n").map((line, index) => (
@@ -282,7 +281,6 @@ export function GuvdGovWavePage() {
               <Card className="p-6 bg-card border border-border">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-foreground">Начало собеседования</h3>
-                  <CopyButton text={messages.start} />
                 </div>
                 <div className="bg-muted p-4 rounded font-mono text-sm text-foreground">
                   {messages.start.split("\\n").map((line, index) => (
@@ -297,7 +295,6 @@ export function GuvdGovWavePage() {
               <Card className="p-6 bg-card border border-border">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-foreground">Продолжение собеседования</h3>
-                  <CopyButton text={messages.continue} />
                 </div>
                 <div className="bg-muted p-4 rounded font-mono text-sm text-foreground">
                   {messages.continue.split("\\n").map((line, index) => (
@@ -312,7 +309,6 @@ export function GuvdGovWavePage() {
               <Card className="p-6 bg-card border border-border">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-foreground">Окончание собеседования</h3>
-                  <CopyButton text={messages.end} />
                 </div>
                 <div className="bg-muted p-4 rounded font-mono text-sm text-foreground">
                   {messages.end.split("\\n").map((line, index) => (

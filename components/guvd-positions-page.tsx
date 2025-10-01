@@ -41,7 +41,7 @@ export function GuvdPositionsPage() {
       titleColor: "text-foreground",
       positions: [
         {
-          title: "Начальник Отряда мобильного особого назначения / Начальник СОБРа",
+          title: "Начальник Отряда Мобильного Особого Назначения / Начальник Специального Отряда Быстрого Реагирования",
           abbr: "Нач. ОМОН / Нач. СОБР",
           rank: "Подполковник",
           level: "9 ранг",
@@ -68,7 +68,7 @@ export function GuvdPositionsPage() {
       icon: Shield,
       color: "bg-blue border-border",
       titleColor: "text-foreground",
-      positions: [{ title: "Боец ОМОН", abbr: "ОМОН", rank: "Лейтенант–Капитан", level: "5-7 ранг" }],
+      positions: [{ title: "Боец ОМОНа", abbr: "ОМОН", rank: "Лейтенант–Капитан", level: "5-7 ранг" }],
     },
     {
       category: "Специальный отряд быстрого реагирования",
@@ -82,7 +82,11 @@ export function GuvdPositionsPage() {
       icon: Users,
       color: "bg-blue border-border",
       titleColor: "text-foreground",
-      positions: [{ title: "Инспектор ППС", abbr: "ППС", rank: "Лейтенант", level: "3-7 ранг" }],
+      positions: [
+        { title: "Старший инспектор ППС", abbr: "Ст. Инсп. ППС", rank: "Старший Лейтенант–Капитан", level: "6-7 ранг" },
+        { title: "Инспектор ППС", abbr: "Инсп. ППС", rank: "Лейтенант", level: "5 ранг" },
+        { title: "Младший инспектор ППС", abbr: "Мл. Инсп. ППС", rank: "Старшина–Прапорщик", level: "3-4 ранг" },
+      ],
     },
     {
       category: "Полицейская академия",

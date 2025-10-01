@@ -44,7 +44,7 @@ export function MainContent() {
         <div>
           <h3 className="font-bold text-black-900 dark:text-black-200 mb-3 flex items-center gap-2">
             <TrendingUp className="h-4 w-4" />
-            Важное уведомление
+            Важное уточнение
           </h3>
           <div className="space-y-2 text-black-800 dark:text-black-300 text-sm">
             <p className="flex items-start gap-2">
@@ -62,6 +62,10 @@ export function MainContent() {
             <p className="flex items-start gap-2">
               <span className="text-black-700 mt-1">•</span>
               Администрация не несет ответственности за возможные ошибки в содержании
+            </p>
+            <p className="flex items-start gap-2">
+              <span className="text-black-700 mt-1">•</span>
+              При обнаружении неточности сообщите об этом разработчику
             </p>
           </div>
         </div>

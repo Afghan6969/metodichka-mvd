@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
@@ -69,7 +70,9 @@ const guvdPositions: DepartmentPositions = {
     { title: "Боец СОБРа", rank: "Лейтенант-Капитан", level: "5-7 ранг" },
   ],
   "Патрульно-постовая служба": [
-    { title: "Инспектор ППС", rank: "Лейтенант", level: "3-7 ранг" },
+    { title: "Старший инспектор ППС", rank: "Старший Лейтенант-Капитан", level: "6-7 ранг" },
+    { title: "Инспектор ППС", rank: "Лейтенант", level: "5 ранг" },
+    { title: "Младший инспектор ППС", rank: "Старшина-Прапорщик", level: "3-4 ранг" },
   ],
   "Полицейская академия": [
     { title: "Курсант ПА", rank: "Рядовой-Сержант", level: "1-2 ранг" },
@@ -278,7 +281,7 @@ export function GeneratorPage() {
     if (department === "GUVD") {
       requiredFields.push(leaderFio)
     }
-    if (reportType === "promotion" || reportType === "senior" || reportType === "reprimand") {
+    if (reportType === "promotion" || reportType === "reprimand" || reportType === "senior") {
       requiredFields.push(fromDate, toDate)
     }
     if (department === "GIBDD" && (reportType === "promotion" || reportType === "reprimand")) {

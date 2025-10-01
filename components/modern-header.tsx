@@ -54,7 +54,7 @@ export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) 
             </div>
             <div>
               <h1 className="text-xl font-bold text-foreground">Методичка МВД</h1>
-              <p className="text-xs text-muted-foreground">Образовательная платформа</p>
+              <p className="text-xs text-muted-foreground">Вспомогательная платформа</p>
             </div>
           </div>
         </div>
