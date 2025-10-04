@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useAuth } from "@/lib/auth-context"
 import { ModernSidebar } from "@/components/modern-sidebar"
 import { ModernHeader } from "@/components/modern-header"
 import { MainContent } from "@/components/main-content"
@@ -19,15 +20,16 @@ import { TermsPage } from "@/components/terms-page"
 import { ResourcesPage } from "@/components/resources-page"
 import { PenaltyCalculator } from "@/components/penalty-calculator"
 import { GlobalSearch } from "@/components/global-search"
-import { VersionsPage } from "@/components/versions-page"
 import { Button } from "@/components/ui/button"
 import { Shield, ArrowRight } from "lucide-react"
 import { PositionsPage } from "@/components/positions-page"
 import { GuvdPositionsPage } from "@/components/guvd-positions-page"
 import GuvdExamplesPage from "@/components/test"
 import { GeneratorPage } from "@/components/generator-page"
+import { UserManagementPage } from "@/components/user-management-page"
 
 export default function Home() {
+  const { currentUser } = useAuth()
   const [currentPage, setCurrentPage] = useState<
     | "contents"
     | "lectures"
@@ -47,7 +49,8 @@ export default function Home() {
     | "gibdd-binds"
     | "guvd-binds"
     | "test"
-    | "generator-page" // Add generator-page to the type
+    | "generator-page"
+    | "user-management"
   >("contents")
 
   const [isGlobalSearchOpen, setIsGlobalSearchOpen] = useState(false)
@@ -89,8 +92,10 @@ export default function Home() {
         return <GuvdBindsPage />
       case "test":
         return <GuvdExamplesPage />
-      case "generator-page": // Add case for generator-page
+      case "generator-page":
         return <GeneratorPage />
+      case "user-management":
+        return <UserManagementPage />
       default:
         return (
           <div className="flex-1">

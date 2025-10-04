@@ -6,6 +6,8 @@ import { Merriweather } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { AuthProvider } from "@/lib/auth-context"
+import { Toaster } from "react-hot-toast"
 import "./globals.css"
 
 const inter = Inter({
@@ -44,11 +46,14 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={`font-sans ${inter.variable} ${merriweather.variable} ${jetbrainsMono.variable} antialiased`}>
-        <ThemeToggle />
-        <Suspense fallback={null}>
-          {children}
-          <Analytics />
-        </Suspense>
+        <AuthProvider>
+          <ThemeToggle />
+          <Suspense fallback={null}>
+            {children}
+            <Analytics />
+          </Suspense>
+          <Toaster position="top-right" />
+        </AuthProvider>
       </body>
     </html>
   )

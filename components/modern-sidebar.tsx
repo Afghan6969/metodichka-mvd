@@ -17,8 +17,10 @@ import {
   X,
   ChevronRight,
   ChevronDown,
+  UserCog,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useAuth } from "@/lib/auth-context"
 
 interface ModernSidebarProps {
   currentPage: string
@@ -34,6 +36,7 @@ export function ModernSidebar({ currentPage, onPageChange, onGlobalSearchOpen, i
     guvd: true,
     gibdd: true,
   })
+  const { currentUser, hasAccess, canManageUsers } = useAuth()
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) => ({
@@ -42,39 +45,55 @@ export function ModernSidebar({ currentPage, onPageChange, onGlobalSearchOpen, i
     }))
   }
 
-  const renderMenuItem = (item: any) => {
-    const Icon = item.icon
-    const isActive = currentPage === item.id
-    const isHovered = hoveredItem === item.id
+const renderMenuItem = (item: any) => {
+  const Icon = item.icon
+  const isActive = currentPage === item.id
+  const isHovered = hoveredItem === item.id
 
-    return (
-      <Button
-        key={item.id}
-        variant={isActive ? "secondary" : "ghost"}
-        className={cn(
-          "w-full justify-start gap-3 h-11 text-left transition-all duration-200 font-medium rounded-xl group",
-          isActive && "bg-primary text-primary-foreground shadow-sm",
-          !isActive && "hover:bg-muted text-muted-foreground hover:text-foreground",
-        )}
-        onClick={() => {
-          onPageChange(item.id)
-          onClose()
-        }}
-        onMouseEnter={() => setHoveredItem(item.id)}
-        onMouseLeave={() => setHoveredItem(null)}
-      >
-        <Icon
-          className={cn(
-            "h-4 w-4 transition-all duration-200",
-            isActive && "text-primary-foreground",
-            !isActive && "text-muted-foreground group-hover:text-foreground",
-          )}
-        />
-        <span className="flex-1 text-sm">{item.label}</span>
-        {(isActive || isHovered) && <ChevronRight className="h-3 w-3 opacity-50" />}
-      </Button>
-    )
+  // Проверка доступа к защищенным страницам
+  const protectedPages = ["generator-page", "gibdd-gov-wave", "guvd-gov-wave"]
+  
+  if (protectedPages.includes(item.id)) {
+    // Для generator-page проверяем общий доступ
+    if (item.id === "generator-page") {
+      if (!hasAccess("generator-page")) {
+        return null
+      }
+    }
+    // Для gov-wave страниц проверяем конкретный доступ
+    else if (!hasAccess(item.id)) {
+      return null
+    }
   }
+
+  return (
+    <Button
+      key={item.id}
+      variant={isActive ? "secondary" : "ghost"}
+      className={cn(
+        "w-full justify-start gap-3 h-11 text-left transition-all duration-200 font-medium rounded-xl group",
+        isActive && "bg-primary text-primary-foreground shadow-sm",
+        !isActive && "hover:bg-muted text-muted-foreground hover:text-foreground",
+      )}
+      onClick={() => {
+        onPageChange(item.id)
+        onClose()
+      }}
+      onMouseEnter={() => setHoveredItem(item.id)}
+      onMouseLeave={() => setHoveredItem(null)}
+    >
+      <Icon
+        className={cn(
+          "h-4 w-4 transition-all duration-200",
+          isActive && "text-primary-foreground",
+          !isActive && "text-muted-foreground group-hover:text-foreground",
+        )}
+      />
+      <span className="flex-1 text-sm">{item.label}</span>
+      {(isActive || isHovered) && <ChevronRight className="h-3 w-3 opacity-50" />}
+    </Button>
+  )
+}
 
   const menuItems = [
     { id: "contents", label: "Главная", icon: BookOpen },
@@ -83,7 +102,7 @@ export function ModernSidebar({ currentPage, onPageChange, onGlobalSearchOpen, i
     { id: "reports", label: "Доклады в рацию", icon: FileText },
     { id: "commands", label: "Команды", icon: Users },
     { id: "penalty-calculator", label: "Калькулятор наказаний", icon: Calculator },
-    { id: "generator-page", label: "Генератор отчётов", icon: Calculator },
+    { id: "generator-page", label: "Генератор отчётов", icon: FileText },
     { id: "ammunition", label: "Амуниция", icon: Shield },
     { id: "terms", label: "Термины", icon: Book },
     { id: "test", label: "Примеры ситуаций", icon: Book },
@@ -106,10 +125,8 @@ export function ModernSidebar({ currentPage, onPageChange, onGlobalSearchOpen, i
 
   return (
     <>
-      {/* Mobile overlay */}
       {isOpen && <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden" onClick={onClose} />}
 
-      {/* Sidebar */}
       <aside
         className={cn(
           "modern-sidebar fixed left-0 top-0 h-full w-80 z-50 transform transition-all duration-300 lg:relative lg:translate-x-0",
@@ -147,14 +164,12 @@ export function ModernSidebar({ currentPage, onPageChange, onGlobalSearchOpen, i
 
           <ScrollArea className="flex-1 px-4 py-4">
             <nav className="space-y-1">
-              {/* Main items */}
               {menuItems.map(renderMenuItem)}
 
               <div className="py-2">
                 <div className="h-px bg-border" />
               </div>
 
-              {/* ГУВД Section */}
               <div>
                 <Button
                   variant="ghost"
@@ -168,7 +183,6 @@ export function ModernSidebar({ currentPage, onPageChange, onGlobalSearchOpen, i
                 {expandedSections.guvd && <div className="ml-4 mt-1 space-y-1">{guvdItems.map(renderMenuItem)}</div>}
               </div>
 
-              {/* ГИБДД Section */}
               <div>
                 <Button
                   variant="ghost"
@@ -181,6 +195,15 @@ export function ModernSidebar({ currentPage, onPageChange, onGlobalSearchOpen, i
                 </Button>
                 {expandedSections.gibdd && <div className="ml-4 mt-1 space-y-1">{gibddItems.map(renderMenuItem)}</div>}
               </div>
+
+              {currentUser && canManageUsers() && (
+                <>
+                  <div className="py-2">
+                    <div className="h-px bg-border" />
+                  </div>
+                  {renderMenuItem({ id: "user-management", label: "Управление пользователями", icon: UserCog })}
+                </>
+              )}
             </nav>
           </ScrollArea>
 

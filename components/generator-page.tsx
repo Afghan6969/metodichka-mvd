@@ -1,14 +1,12 @@
-
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Shield, FileText, Check, ChevronsUpDown, Trash2, AlertCircle, User } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Shield, FileText, Check, ChevronsUpDown, Trash2, AlertCircle } from "lucide-react"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { cn } from "@/lib/utils"
@@ -16,6 +14,7 @@ import { format } from "date-fns"
 import { ru } from "date-fns/locale"
 import { toast } from "react-hot-toast"
 import { motion, AnimatePresence } from "framer-motion"
+import { useAuth } from "@/lib/auth-context"
 
 interface Position {
   title: string
@@ -60,23 +59,15 @@ const guvdPositions: DepartmentPositions = {
       level: "9 ранг",
     },
   ],
-  "Отдел воздушного патрулирования": [
-    { title: "Сотрудник ОВП", rank: "Лейтенант-Майор", level: "5-8 ранг" },
-  ],
-  "Отряд мобильного особого назначения": [
-    { title: "Боец ОМОН", rank: "Лейтенант-Капитан", level: "5-7 ранг" },
-  ],
-  "Специальный отряд быстрого реагирования": [
-    { title: "Боец СОБРа", rank: "Лейтенант-Капитан", level: "5-7 ранг" },
-  ],
+  "Отдел воздушного патрулирования": [{ title: "Сотрудник ОВП", rank: "Лейтенант-Майор", level: "5-8 ранг" }],
+  "Отряд мобильного особого назначения": [{ title: "Боец ОМОН", rank: "Лейтенант-Капитан", level: "5-7 ранг" }],
+  "Специальный отряд быстрого реагирования": [{ title: "Боец СОБРа", rank: "Лейтенант-Капитан", level: "5-7 ранг" }],
   "Патрульно-постовая служба": [
     { title: "Старший инспектор ППС", rank: "Старший Лейтенант-Капитан", level: "6-7 ранг" },
     { title: "Инспектор ППС", rank: "Лейтенант", level: "5 ранг" },
     { title: "Младший инспектор ППС", rank: "Старшина-Прапорщик", level: "3-4 ранг" },
   ],
-  "Полицейская академия": [
-    { title: "Курсант ПА", rank: "Рядовой-Сержант", level: "1-2 ранг" },
-  ],
+  "Полицейская академия": [{ title: "Курсант ПА", rank: "Рядовой-Сержант", level: "1-2 ранг" }],
 }
 
 const gibddPositions: DepartmentPositions = {
@@ -112,18 +103,10 @@ const gibddPositions: DepartmentPositions = {
     { title: "Заместитель Начальника Учебного Батальона", rank: "Майор", level: "8 ранг" },
     { title: "Заместитель Начальника Мотобатальона", rank: "Майор", level: "8 ранг" },
   ],
-  "Мотобатальон": [
-    { title: "Инспектор МБ", rank: "Старший Лейтенант-Капитан", level: "6-7 ранг" },
-  ],
-  "Специализированный Батальон": [
-    { title: "Инспектор СБ", rank: "Прапорщик-Капитан", level: "4-7 ранг" },
-  ],
-  "Отдельный Батальон": [
-    { title: "Инспектор ОБ", rank: "Старшина-Капитан", level: "3-7 ранг" },
-  ],
-  "Учебный Батальон": [
-    { title: "Курсант УБ", rank: "Рядовой-Сержант", level: "1-2 ранг" },
-  ],
+  Мотобатальон: [{ title: "Инспектор МБ", rank: "Старший Лейтенант-Капитан", level: "6-7 ранг" }],
+  "Специализированный Батальон": [{ title: "Инспектор СБ", rank: "Прапорщик-Капитан", level: "4-7 ранг" }],
+  "Отдельный Батальон": [{ title: "Инспектор ОБ", rank: "Старшина-Капитан", level: "3-7 ранг" }],
+  "Учебный Батальон": [{ title: "Курсант УБ", rank: "Рядовой-Сержант", level: "1-2 ранг" }],
 }
 
 const rankHierarchy = [
@@ -143,7 +126,6 @@ const seniorCategories = ["Руководящий состав", "Старший
 const academyCategories = ["Полицейская академия", "Учебный Батальон"]
 const cities = ["Мирный", "Невский", "Приволжск"]
 
-// Map categories to department abbreviations for GUVD promotion reports
 const departmentAbbreviations: { [key: string]: string } = {
   "Патрульно-постовая служба": "ППС",
   "Полицейская академия": "ПА",
@@ -152,7 +134,6 @@ const departmentAbbreviations: { [key: string]: string } = {
   "Специальный отряд быстрого реагирования": "СОБР",
 }
 
-// Declension rules for nouns and departments
 const declensionRules = {
   Боец: { genitive: "Бойца", instrumental: "Бойцом" },
   Курсант: { genitive: "Курсанта", instrumental: "Курсантом" },
@@ -164,7 +145,7 @@ const declensionRules = {
 }
 
 const departmentDeclension = {
-  академия: { genitive: "ии", instrumental: "ией" },
+  академии: { genitive: "ии", instrumental: "ией" },
   отряда: { genitive: "отряда", instrumental: "отрядом" },
   службы: { genitive: "службы", instrumental: "службой" },
   отдела: { genitive: "отдела", instrumental: "отделом" },
@@ -188,11 +169,17 @@ const declinePosition = (position: string, isVrio: boolean, caseType: "genitive"
 
   const nounDeclension = declensionRules[mainNoun] || {
     genitive: !mainNoun.endsWith("а") && !mainNoun.endsWith("о") && !mainNoun.endsWith("е") ? mainNoun + "а" : mainNoun,
-    instrumental: !mainNoun.endsWith("а") && !mainNoun.endsWith("о") && !mainNoun.endsWith("е") ? mainNoun + "ом" : mainNoun,
+    instrumental:
+      !mainNoun.endsWith("а") && !mainNoun.endsWith("о") && !mainNoun.endsWith("е") ? mainNoun + "ом" : mainNoun,
   }
 
   let declinedDept = department
-  if (department && !["ОМОН", "СОБР", "ППС", "ОВП", "ПА", "ГУВД", "ГИБДД", "МБ", "СБ", "ОБ", "УБ"].some(abbr => department.includes(abbr))) {
+  if (
+    department &&
+    !["ОМОН", "СОБР", "ППС", "ОВП", "ПА", "ГУВД", "ГИБДД", "МБ", "СБ", "ОБ", "УБ"].some((abbr) =>
+      department.includes(abbr),
+    )
+  ) {
     for (const [key, declension] of Object.entries(departmentDeclension)) {
       if (department.endsWith(key)) {
         declinedDept = department.replace(new RegExp(`${key}$`), declension[caseType])
@@ -213,6 +200,7 @@ const toGenitiveCase = (position: string, isVrio: boolean) => declinePosition(po
 const toInstrumentalCase = (position: string, isVrio: boolean) => declinePosition(position, isVrio, "instrumental")
 
 export function GeneratorPage() {
+  const { currentUser, hasAccess } = useAuth()
   const [department, setDepartment] = useState<"GUVD" | "GIBDD" | null>(null)
   const [reportType, setReportType] = useState<"promotion" | "reprimand" | "senior" | null>(null)
   const [city, setCity] = useState("")
@@ -224,7 +212,9 @@ export function GeneratorPage() {
   const [newRank, setNewRank] = useState("")
   const [fromDate, setFromDate] = useState("")
   const [toDate, setToDate] = useState("")
-  const [requirements, setRequirements] = useState<{ req: string; quantity?: string; link: string }[]>([{ req: "", quantity: "", link: "" }])
+  const [requirements, setRequirements] = useState<{ req: string; quantity?: string; link: string }[]>([
+    { req: "", quantity: "", link: "" },
+  ])
   const [points, setPoints] = useState("")
   const [violation, setViolation] = useState("")
   const [paymentLink, setPaymentLink] = useState("")
@@ -238,23 +228,31 @@ export function GeneratorPage() {
   const [openPosition, setOpenPosition] = useState(false)
   const [openRank, setOpenRank] = useState(false)
   const [copied, setCopied] = useState(false)
-  const [password, setPassword] = useState("")
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [error, setError] = useState("")
 
   const positionsData = department === "GUVD" ? guvdPositions : gibddPositions
   const allPositions = Object.values(positionsData).flat()
 
-  const handlePasswordSubmit = () => {
-    if (password === "noadmin123") {
-      setIsAuthenticated(true)
-      setError("")
-    } else {
-      setError("Пароль неверный, обратитесь к руководству для получения доступа")
+  useEffect(() => {
+    if (currentUser) {
+      console.log("Current user:", currentUser)
+      console.log("Has access to generator-page:", hasAccess("generator-page", department || undefined, undefined))
+      if (
+        currentUser.role === "gibdd" ||
+        currentUser.role === "ss-gibdd" ||
+        currentUser.role === "moderator-gibdd"
+      ) {
+        setDepartment("GIBDD")
+      } else if (
+        currentUser.role === "guvd" ||
+        currentUser.role === "ss-guvd" ||
+        currentUser.role === "moderator-guvd"
+      ) {
+        setDepartment("GUVD")
+      }
+      // Для роли root департамент не устанавливается автоматически, пользователь выберет вручную
     }
-  }
+  }, [currentUser])
 
-  // Сброс звания при смене типа отчёта
   useEffect(() => {
     setRank("")
     setNewRank("")
@@ -275,7 +273,6 @@ export function GeneratorPage() {
     setHasFixedRank(false)
   }, [department])
 
-  // Валидация формы
   const isFormValid = useCallback(() => {
     const requiredFields = [city, fio, position, rank, signature]
     if (department === "GUVD") {
@@ -293,10 +290,28 @@ export function GeneratorPage() {
     if (reportType === "senior" && department === "GUVD") {
       requiredFields.push(onlineStats)
     }
-    return requiredFields.every(field => field.trim() !== "") && requirements.every(req => req.req.trim() !== "" && req.link.trim() !== "")
-  }, [city, leaderFio, fio, position, rank, signature, fromDate, toDate, points, violation, paymentLink, onlineStats, requirements, department, reportType])
+    return (
+      requiredFields.every((field) => field.trim() !== "") &&
+      requirements.every((req) => req.req.trim() !== "" && req.link.trim() !== "")
+    )
+  }, [
+    city,
+    leaderFio,
+    fio,
+    position,
+    rank,
+    signature,
+    fromDate,
+    toDate,
+    points,
+    violation,
+    paymentLink,
+    onlineStats,
+    requirements,
+    department,
+    reportType,
+  ])
 
-  // Сохранение и загрузка черновика
   const saveDraft = useCallback(() => {
     const draft = {
       department,
@@ -319,7 +334,25 @@ export function GeneratorPage() {
     }
     localStorage.setItem("reportDraft", JSON.stringify(draft))
     toast.success("Черновик сохранён!")
-  }, [department, reportType, city, leaderFio, fio, position, rank, newRank, fromDate, toDate, requirements, points, violation, paymentLink, onlineStats, signature, isVrio])
+  }, [
+    department,
+    reportType,
+    city,
+    leaderFio,
+    fio,
+    position,
+    rank,
+    newRank,
+    fromDate,
+    toDate,
+    requirements,
+    points,
+    violation,
+    paymentLink,
+    onlineStats,
+    signature,
+    isVrio,
+  ])
 
   const loadDraft = useCallback(() => {
     const draft = localStorage.getItem("reportDraft")
@@ -335,7 +368,9 @@ export function GeneratorPage() {
       setNewRank(parsed.newRank || "")
       setFromDate(parsed.fromDate || "")
       setToDate(parsed.toDate || "")
-      setRequirements(parsed.requirements || [{ req: "", quantity: "", link: "" }])
+      setRequirements(
+        parsed.requirements || [{ req: "", quantity: department === "GIBDD" ? "" : undefined, link: "" }],
+      )
       setPoints(parsed.points || "")
       setViolation(parsed.violation || "")
       setPaymentLink(parsed.paymentLink || "")
@@ -363,15 +398,13 @@ export function GeneratorPage() {
     } else {
       toast.error("Черновик не найден!")
     }
-  }, [allPositions, positionsData])
+  }, [allPositions, positionsData, department])
 
-  // Удаление черновика
   const deleteDraft = useCallback(() => {
     localStorage.removeItem("reportDraft")
     toast.success("Черновик удалён!")
   }, [])
 
-  // Очистка всей формы
   const clearForm = useCallback(() => {
     setCity("")
     setLeaderFio("")
@@ -395,54 +428,48 @@ export function GeneratorPage() {
   }, [department])
 
   const parseRanks = (rankString: string): string[] => {
-    console.log(`Parsing ranks for: ${rankString}`)
-    const normalizedRankString = rankString.replace("–", "-")
+    const normalizedRankString = rankString.replace("—", "-")
     if (normalizedRankString.includes("-")) {
-      const [start, end] = normalizedRankString.split("-").map(s => s.trim())
+      const [start, end] = normalizedRankString.split("-").map((s) => s.trim())
       const startIndex = rankHierarchy.indexOf(start)
       const endIndex = rankHierarchy.indexOf(end)
-      console.log(`Start: ${start}, End: ${end}, StartIndex: ${startIndex}, EndIndex: ${endIndex}`)
       if (startIndex !== -1 && endIndex !== -1 && startIndex <= endIndex) {
-        const ranks = rankHierarchy.slice(startIndex, endIndex + 1)
-        console.log(`Parsed ranks: ${ranks}`)
-        return ranks
-      } else {
-        console.log(`Invalid rank range: ${rankString}`)
+        return rankHierarchy.slice(startIndex, endIndex + 1)
       }
     }
-    const singleRank = [rankString.trim()]
-    console.log(`Single rank: ${singleRank}`)
-    return singleRank
+    return [rankString.trim()]
   }
 
-  const handlePositionChange = useCallback((value: string) => {
-    const selected = allPositions.find((p) => p.title === value)
-    if (selected) {
-      console.log(`Selected position: ${value}, rank: ${selected.rank}`)
-      setPosition(selected.title)
-      const ranks = parseRanks(selected.rank)
-      setPossibleRanks(ranks)
-      const isFixed = !selected.rank.includes("-")
-      setHasFixedRank(isFixed)
-      if (isFixed) {
-        setRank(selected.rank)
-      } else {
-        setRank("")
-      }
-      setNewRank("")
-      let cat = ""
-      for (const [category, pos] of Object.entries(positionsData)) {
-        if (pos.some((p) => p.title === value)) {
-          cat = category
-          break
+  const handlePositionChange = useCallback(
+    (value: string) => {
+      const selected = allPositions.find((p) => p.title === value)
+      if (selected) {
+        setPosition(selected.title)
+        const ranks = parseRanks(selected.rank)
+        setPossibleRanks(ranks)
+        const isFixed = !selected.rank.includes("-")
+        setHasFixedRank(isFixed)
+        if (isFixed) {
+          setRank(selected.rank)
+        } else {
+          setRank("")
         }
+        setNewRank("")
+        let cat = ""
+        for (const [category, pos] of Object.entries(positionsData)) {
+          if (pos.some((p) => p.title === value)) {
+            cat = category
+            break
+          }
+        }
+        setSelectedCategory(cat)
+        setOpenPosition(false)
+        setOpenCity(false)
+        setOpenRank(false)
       }
-      setSelectedCategory(cat)
-      setOpenPosition(false)
-      setOpenCity(false)
-      setOpenRank(false)
-    }
-  }, [allPositions, positionsData])
+    },
+    [allPositions, positionsData],
+  )
 
   const getNextRank = useCallback((currentRank: string) => {
     const currentIndex = rankHierarchy.indexOf(currentRank)
@@ -455,7 +482,6 @@ export function GeneratorPage() {
   useEffect(() => {
     if (rank && reportType === "promotion") {
       const nextRank = getNextRank(rank)
-      console.log(`Current rank: ${rank}, Next rank: ${nextRank}`)
       setNewRank(nextRank)
     } else {
       setNewRank("")
@@ -479,18 +505,21 @@ export function GeneratorPage() {
   }
 
   const copyReport = () => {
-    navigator.clipboard.writeText(generatedReport).then(() => {
-      setCopied(true)
-      toast.success("Отчёт скопирован!")
-      setTimeout(() => setCopied(false), 2000)
-    }).catch(() => {
-      toast.error("Ошибка при копировании!")
-    })
+    navigator.clipboard
+      .writeText(generatedReport)
+      .then(() => {
+        setCopied(true)
+        toast.success("Отчёт скопирован!")
+        setTimeout(() => setCopied(false), 2000)
+      })
+      .catch(() => {
+        toast.error("Ошибка при копировании!")
+      })
   }
 
   const generateReport = () => {
     if (!isFormValid()) {
-      toast.error("Пожалуйста, заполните все обязательные поля!")
+      toast.error("Пожалуйста, заполните все обязательные поля, включая департамент!")
       return
     }
     const currentDate = format(new Date(), "dd.MM.yyyy", { locale: ru })
@@ -500,13 +529,9 @@ export function GeneratorPage() {
     let template = ""
     let reqList = ""
     if (department === "GUVD") {
-      reqList = requirements
-        .map((r, i) => `${i + 1}. ${r.req} - ${r.link}`)
-        .join("\n")
+      reqList = requirements.map((r, i) => `${i + 1}. ${r.req} - ${r.link}`).join("\n")
     } else {
-      reqList = requirements
-        .map((r, i) => `${i + 1}. ${r.req} — ${r.quantity} — ${r.link}`)
-        .join("\n")
+      reqList = requirements.map((r, i) => `${i + 1}. ${r.req} – ${r.quantity} – ${r.link}`).join("\n")
     }
 
     if (department === "GUVD") {
@@ -517,7 +542,7 @@ export function GeneratorPage() {
 "${fio}"
 
 Рапорт о проделанной работе.
-Я, ${fio}, являющийся ${instrumentalPosition} подразделения ${deptAbbr}, находящийся в звании ${rank}, оставляю отчет о проделанной работе. В связи с выполнением мною всех необходимых нормативов и требований прошу повысить меня до звания ${newRank}.
+Я, ${fio}, являющийся ${instrumentalPosition} подразделения ${deptAbbr}, находящийся в звании ${rank}, оставляю отчет о проделанной работе. В связи с выполнением мной всех необходимых нормативов и требований прошу повысить меня до звания ${newRank}.
 С правилами подачи рапорта ознакомлен(-на).
 
 К рапорту прикладываю необходимый объём работы:
@@ -577,7 +602,7 @@ ${reqList}
 
 ${reqList}
 
-Также прикладываю подтверждение об оплате неустойки на счёт лидера — ${paymentLink}
+Также прикладываю подтверждение об оплате неустойки на счёт лидера – ${paymentLink}
 Подпись: ${signature}
 Дата: ${currentDate}`
       } else if (reportType === "senior") {
@@ -597,7 +622,8 @@ ${reqList}
     setGeneratedReport(template)
   }
 
-  if (!isAuthenticated) {
+  if (!currentUser || !hasAccess("generator-page", department || undefined, undefined)) {
+    console.log("Access denied for role:", currentUser?.role, "with department:", department)
     return (
       <div className="flex-1 p-8 overflow-auto bg-background min-h-screen">
         <div className="max-w-md mx-auto mt-16">
@@ -607,50 +633,41 @@ ${reqList}
                 <Shield className="h-10 w-10 text-primary-foreground" />
               </div>
               <h1 className="text-2xl font-bold text-foreground mb-2">Генератор отчётов</h1>
-              <p className="text-muted-foreground">Авторизованный доступ к системе</p>
+              <p className="text-muted-foreground">Требуется авторизация</p>
             </div>
-
             <div className="space-y-6">
-              {error && (
-                <Alert variant="destructive" className="border-red-800 bg-red-900/50">
-                  <AlertCircle className="h-4 w-4 text-red-400" />
-                  <AlertDescription className="text-red-300 text-sm">{error}</AlertDescription>
-                </Alert>
-              )}
-
-              <div className="space-y-4">
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input
-                    type="password"
-                    value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value)
-                      setError("")
-                    }}
-                    placeholder="Введите пароль доступа"
-                    onKeyPress={(e) => e.key === "Enter" && handlePasswordSubmit()}
-                    className="pl-12 h-14 text-base border-border focus:border-primary focus:ring-2 focus:ring-primary/50 rounded-xl bg-muted text-foreground placeholder-muted-foreground"
-                  />
-                </div>
-
-                <Button
-                  onClick={handlePasswordSubmit}
-                  className="w-full h-14 text-base bg-primary hover:bg-primary/90 rounded-xl font-semibold text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200"
-                >
-                  Войти в систему
-                </Button>
-              </div>
-
-              <div className="text-center pt-4 border-t border-border">
-                <p className="text-xs text-muted-foreground">Доступ предоставляется только авторизованному персоналу МВД РП</p>
-              </div>
+              <Alert className="border-border bg-muted">
+                <AlertCircle className="h-4 w-4 text-muted-foreground" />
+                <AlertDescription className="text-muted-foreground text-sm">
+                  Для доступа к генератору отчётов необходимо иметь роль ГИБДД, ГУВД, СС ГИБДД, СС ГУВД или root.
+                </AlertDescription>
+              </Alert>
             </div>
           </Card>
         </div>
       </div>
     )
   }
+
+  const getAvailableReportTypes = () => {
+    if (!currentUser) return []
+    if (
+      currentUser.role === "root" ||
+      currentUser.role === "moderator-gibdd" ||
+      currentUser.role === "moderator-guvd"
+    ) {
+      return ["promotion", "reprimand", "senior"]
+    }
+    if (currentUser.role === "ss-gibdd" || currentUser.role === "ss-guvd") {
+      return ["promotion", "reprimand", "senior"]
+    }
+    if (currentUser.role === "gibdd" || currentUser.role === "guvd") {
+      return ["promotion", "reprimand"]
+    }
+    return []
+  }
+
+  const availableReportTypes = getAvailableReportTypes()
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
@@ -669,75 +686,98 @@ ${reqList}
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-3 text-foreground dark:opacity-90 text-xl justify-center">
               <Shield className="h-5 w-5" />
-              Выбор департамента
+              Ваш департамент
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="flex justify-center gap-4">
-              <Button 
-                onClick={() => setDepartment("GUVD")} 
-                variant={department === "GUVD" ? "default" : "outline"}
-                className={cn(
-                  "w-32 transition-all duration-300 ease-in-out transform hover:scale-105",
-                  department === "GUVD" ? "bg-primary hover:bg-primary/90 shadow-lg" : "border-2 hover:bg-muted"
-                )}
-              >
-                ГУВД
-              </Button>
-              <Button 
-                onClick={() => setDepartment("GIBDD")} 
-                variant={department === "GIBDD" ? "default" : "outline"}
-                className={cn(
-                  "w-32 transition-all duration-300 ease-in-out transform hover:scale-105",
-                  department === "GIBDD" ? "bg-primary hover:bg-primary/90 shadow-lg" : "border-2 hover:bg-muted"
-                )}
-              >
-                ГИБДД
-              </Button>
-            </div>
+          <CardContent className="text-center">
+            {currentUser?.role === "root" ? (
+              <div className="flex flex-wrap justify-center gap-4">
+                <Button
+                  onClick={() => setDepartment("GUVD")}
+                  variant={department === "GUVD" ? "default" : "outline"}
+                  className={cn(
+                    "w-60 transition-all duration-300 ease-in-out transform hover:scale-105",
+                    department === "GUVD"
+                      ? "bg-primary hover:bg-primary/90 shadow-lg"
+                      : "border-2 hover:bg-muted",
+                  )}
+                >
+                  ГУВД
+                </Button>
+                <Button
+                  onClick={() => setDepartment("GIBDD")}
+                  variant={department === "GIBDD" ? "default" : "outline"}
+                  className={cn(
+                    "w-60 transition-all duration-300 ease-in-out transform hover:scale-105",
+                    department === "GIBDD"
+                      ? "bg-primary hover:bg-primary/90 shadow-lg"
+                      : "border-2 hover:bg-muted",
+                  )}
+                >
+                  ГИБДД
+                </Button>
+              </div>
+            ) : (
+              <>
+                <div className="text-2xl font-bold text-primary">{department || "Не определён"}</div>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Департамент определён автоматически на основе вашей роли
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
 
         {department && (
           <Card className="bg-blue border-border dark:bg-opacity-20 border-2 mx-auto w-full max-w-md">
             <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-3 text-foreground dark:opacity-90 text-xl justify-center">
+              <CardTitle className="flex items-center gap-3 text-foreground dark:opacity-90 text-xl">
                 <FileText className="h-5 w-5" />
                 Выбор типа отчёта
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap justify-center gap-4">
-                <Button
-                  onClick={() => setReportType("promotion")}
-                  variant={reportType === "promotion" ? "default" : "outline"}
-                  className={cn(
-                    "w-60 transition-all duration-300 ease-in-out transform hover:scale-105",
-                    reportType === "promotion" ? "bg-primary hover:bg-primary/90 shadow-lg" : "border-2 hover:bg-muted"
-                  )}
-                >
-                  Рапорт на повышение
-                </Button>
-                <Button
-                  onClick={() => setReportType("reprimand")}
-                  variant={reportType === "reprimand" ? "default" : "outline"}
-                  className={cn(
-                    "w-60 transition-all duration-300 ease-in-out transform hover:scale-105",
-                    reportType === "reprimand" ? "bg-primary hover:bg-primary/90 shadow-lg" : "border-2 hover:bg-muted"
-                  )}
-                >
-                  Рапорт на отработку выговора
-                </Button>
-                <Button
-                  onClick={() => setReportType("senior")}
-                  variant={reportType === "senior" ? "default" : "outline"}
-                  className={cn(
-                    "w-60 transition-all duration-300 ease-in-out transform hover:scale-105",
-                    reportType === "senior" ? "bg-primary hover:bg-primary/90 shadow-lg" : "border-2 hover:bg-muted"
-                  )}
-                >
-                  Отчёт старшего состава
-                </Button>
+                {availableReportTypes.includes("promotion") && (
+                  <Button
+                    onClick={() => setReportType("promotion")}
+                    variant={reportType === "promotion" ? "default" : "outline"}
+                    className={cn(
+                      "w-60 transition-all duration-300 ease-in-out transform hover:scale-105",
+                      reportType === "promotion"
+                        ? "bg-primary hover:bg-primary/90 shadow-lg"
+                        : "border-2 hover:bg-muted",
+                    )}
+                  >
+                    Рапорт на повышение
+                  </Button>
+                )}
+                {availableReportTypes.includes("reprimand") && (
+                  <Button
+                    onClick={() => setReportType("reprimand")}
+                    variant={reportType === "reprimand" ? "default" : "outline"}
+                    className={cn(
+                      "w-60 transition-all duration-300 ease-in-out transform hover:scale-105",
+                      reportType === "reprimand"
+                        ? "bg-primary hover:bg-primary/90 shadow-lg"
+                        : "border-2 hover:bg-muted",
+                    )}
+                  >
+                    Рапорт на отработку выговора
+                  </Button>
+                )}
+                {availableReportTypes.includes("senior") && (
+                  <Button
+                    onClick={() => setReportType("senior")}
+                    variant={reportType === "senior" ? "default" : "outline"}
+                    className={cn(
+                      "w-60 transition-all duration-300 ease-in-out transform hover:scale-105",
+                      reportType === "senior" ? "bg-primary hover:bg-primary/90 shadow-lg" : "border-2 hover:bg-muted",
+                    )}
+                  >
+                    Отчёт старшего состава
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -792,12 +832,7 @@ ${reqList}
                                       setOpenCity(false)
                                     }}
                                   >
-                                    <Check
-                                      className={cn(
-                                        "mr-2 h-4 w-4",
-                                        city === c ? "opacity-100" : "opacity-0"
-                                      )}
-                                    />
+                                    <Check className={cn("mr-2 h-4 w-4", city === c ? "opacity-100" : "opacity-0")} />
                                     {c}
                                   </CommandItem>
                                 ))}
@@ -850,7 +885,11 @@ ${reqList}
                             <CommandList className="max-h-[200px] overflow-y-auto">
                               <CommandGroup>
                                 {Object.entries(positionsData)
-                                  .filter(([category]) => reportType === "senior" ? seniorCategories.includes(category) : reportType !== "promotion" || !seniorCategories.includes(category))
+                                  .filter(([category]) =>
+                                    reportType === "senior"
+                                      ? seniorCategories.includes(category)
+                                      : reportType !== "promotion" || !seniorCategories.includes(category),
+                                  )
                                   .flatMap(([category, pos]) => pos)
                                   .map((p) => (
                                     <CommandItem
@@ -861,7 +900,7 @@ ${reqList}
                                       <Check
                                         className={cn(
                                           "mr-2 h-4 w-4",
-                                          position === p.title ? "opacity-100" : "opacity-0"
+                                          position === p.title ? "opacity-100" : "opacity-0",
                                         )}
                                       />
                                       {p.title} ({p.rank}, {p.level})
@@ -911,23 +950,21 @@ ${reqList}
                                       {possibleRanks
                                         .slice(
                                           0,
-                                          reportType === "promotion" && !academyCategories.includes(selectedCategory) ? -1 : undefined
+                                          reportType === "promotion" && !academyCategories.includes(selectedCategory)
+                                            ? -1
+                                            : undefined,
                                         )
                                         .map((r) => (
                                           <CommandItem
                                             key={r}
                                             value={r}
                                             onSelect={(value) => {
-                                              console.log(`Selected rank: ${value}`)
                                               setRank(value)
                                               setOpenRank(false)
                                             }}
                                           >
                                             <Check
-                                              className={cn(
-                                                "mr-2 h-4 w-4",
-                                                rank === r ? "opacity-100" : "opacity-0"
-                                              )}
+                                              className={cn("mr-2 h-4 w-4", rank === r ? "opacity-100" : "opacity-0")}
                                             />
                                             {r}
                                           </CommandItem>
@@ -943,23 +980,24 @@ ${reqList}
                     ) : (
                       <div className="flex-1">
                         <Label>Текущее звание</Label>
-                        <div className="text-sm text-foreground bg-muted p-2 rounded-md">{rank || "Звание не выбрано"}</div>
+                        <div className="text-sm text-foreground bg-muted p-2 rounded-md">
+                          {rank || "Звание не выбрано"}
+                        </div>
                       </div>
                     )}
                     {reportType === "promotion" && rank && (
                       <div className="flex-1">
                         <Label>Звание на повышение</Label>
-                        <div className="text-sm text-foreground bg-muted p-2 rounded-md">{newRank || "Нет следующего звания"}</div>
+                        <div className="text-sm text-foreground bg-muted p-2 rounded-md">
+                          {newRank || "Нет следующего звания"}
+                        </div>
                       </div>
                     )}
                   </div>
                 )}
                 {reportType === "senior" && (
                   <div>
-                    <Button
-                      variant={isVrio ? "default" : "outline"}
-                      onClick={() => setIsVrio(!isVrio)}
-                    >
+                    <Button variant={isVrio ? "default" : "outline"} onClick={() => setIsVrio(!isVrio)}>
                       ВрИО
                     </Button>
                   </div>
@@ -976,7 +1014,7 @@ ${reqList}
                     </div>
                   </>
                 )}
-                {(department === "GIBDD" && (reportType === "promotion" || reportType === "reprimand")) && (
+                {department === "GIBDD" && (reportType === "promotion" || reportType === "reprimand") && (
                   <div>
                     <Label htmlFor="points">Количество баллов</Label>
                     <Input id="points" value={points} onChange={(e) => setPoints(e.target.value)} />
@@ -985,7 +1023,7 @@ ${reqList}
                 {reportType === "reprimand" && department === "GIBDD" && (
                   <>
                     <div>
-                      <Label htmlFor="violation">Пункт нарушения (Пункт УД)</Label>
+                      <Label htmlFor="violation">Пункт нарушения (Пункт УГ)</Label>
                       <Input id="violation" value={violation} onChange={(e) => setViolation(e.target.value)} />
                     </div>
                     <div>
@@ -1035,7 +1073,7 @@ ${reqList}
                       </Button>
                     </div>
                   ))}
-                  <Button variant="outline" onClick={addRequirement} className="mt-2">
+                  <Button variant="outline" onClick={addRequirement} className="mt-2 bg-transparent">
                     Добавить требование
                   </Button>
                 </div>
@@ -1079,7 +1117,7 @@ ${reqList}
               </div>
               <Button
                 variant="outline"
-                className="mt-4"
+                className="mt-4 bg-transparent"
                 onClick={copyReport}
                 disabled={!generatedReport}
               >

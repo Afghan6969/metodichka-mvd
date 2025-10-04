@@ -1,14 +1,12 @@
-
 "use client"
 
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CopyButton } from "./copy-button"
-import { AlertCircle, ExternalLink, Shield, User } from "lucide-react"
+import { AlertCircle, ExternalLink, Shield } from "lucide-react"
+import { useAuth } from "@/lib/auth-context"
 
 const timeSlots = [
   "00:00-01:00",
@@ -38,20 +36,9 @@ const cities = [
 export function GibddGovWavePage() {
   const [selectedTime, setSelectedTime] = useState("")
   const [selectedCity, setSelectedCity] = useState("")
-  const [password, setPassword] = useState("")
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [error, setError] = useState("")
+  const { currentUser } = useAuth()
 
-  const handlePasswordSubmit = () => {
-    if (password === "gibdd2024") {
-      setIsAuthenticated(true)
-      setError("")
-    } else {
-      setError("Пароль неверный, обратитесь к руководству для получения доступа")
-    }
-  }
-
-  if (!isAuthenticated) {
+  if (!currentUser) {
     return (
       <div className="flex-1 p-8 overflow-auto bg-background min-h-screen">
         <div className="max-w-md mx-auto mt-16">
@@ -61,44 +48,16 @@ export function GibddGovWavePage() {
                 <Shield className="h-10 w-10 text-primary-foreground" />
               </div>
               <h1 className="text-2xl font-bold text-foreground mb-2">ГИБДД - Учебный Батальон</h1>
-              <p className="text-muted-foreground">Авторизованный доступ к системе</p>
+              <p className="text-muted-foreground">Требуется авторизация</p>
             </div>
 
             <div className="space-y-6">
-              {error && (
-                <Alert variant="destructive" className="border-red-800 bg-red-900/50">
-                  <AlertCircle className="h-4 w-4 text-red-400" />
-                  <AlertDescription className="text-red-300 text-sm">{error}</AlertDescription>
-                </Alert>
-              )}
-
-              <div className="space-y-4">
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input
-                    type="password"
-                    value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value)
-                      setError("")
-                    }}
-                    placeholder="Введите пароль доступа"
-                    onKeyPress={(e) => e.key === "Enter" && handlePasswordSubmit()}
-                    className="pl-12 h-14 text-base border-border focus:border-blue-500 focus:ring-2 focus:ring-blue-700/50 rounded-xl bg-muted text-foreground placeholder-muted-foreground"
-                  />
-                </div>
-
-                <Button
-                  onClick={handlePasswordSubmit}
-                  className="w-full h-14 text-base bg-primary hover:bg-primary/90 rounded-xl font-semibold text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200"
-                >
-                  Войти в систему
-                </Button>
-              </div>
-
-              <div className="text-center pt-4 border-t border-border">
-                <p className="text-xs text-muted-foreground">Доступ предоставляется только авторизованному персоналу ГИБДД</p>
-              </div>
+              <Alert className="border-border bg-muted">
+                <AlertCircle className="h-4 w-4 text-muted-foreground" />
+                <AlertDescription className="text-muted-foreground text-sm">
+                  Для доступа к гос волне ГИБДД необходимо войти в систему. Нажмите кнопку "Войти" в шапке сайта.
+                </AlertDescription>
+              </Alert>
             </div>
           </Card>
         </div>
@@ -120,25 +79,25 @@ export function GibddGovWavePage() {
     const tag = cityData ? `ГИБДД-${cityData.tag}` : "ГИБДД-Н"
 
     return {
-      announcement: 
+      announcement:
         `gov Уважаемые жители республики Провинция! Сегодня в ${interviewTime} пройдет собеседование в Учебный Батальон в ГИБДД г. ${city}.\\n` +
         `gov Требования к кандидатам: опрятный вид, юридическое образование, военный билет, мед. карта, полный пакет документов и прописка от 5 лет.\\n` +
         `gov Собеседование пройдет в здании Полицейского участка г. ${city}. Мы ждем именно Вас!`,
 
-      start: 
+      start:
         `gov Собеседование в Учебный Батальон ГИБДД г. ${city} начато!\\n` +
         `gov Требования к кандидатам: опрятный вид, юридическое образование, военный билет, мед. карта, полный пакет документов и прописка от 5 лет.\\n` +
         `gov Собеседование проходит в здании Полицейского участка г. ${city}. Мы ждем именно Вас!`,
 
-      continue: 
+      continue:
         `gov Собеседование в Учебный Батальон ГИБДД г. ${city} продолжается!\\n` +
         `gov Требования к кандидатам: опрятный вид, юридическое образование, военный билет, мед. карта, полный пакет документов и прописка от 5 лет.\\n` +
         `gov Собеседование проходит в здании Полицейского участка г. ${city}. Мы ждем именно Вас!`,
 
-      end: 
+      end:
         `gov Собеседование в Учебный Батальон ГИБДД г. ${city} окончено.\\n` +
         `gov На государственном портале республики открыты электронные заявления на трудоустройство в звании «Рядовой» и «Старшина».\\n` +
-        `gov Если у вас уже есть опыт в ГИБДД, вы можете оставить электронное заявление на восстановление в звании и должности.`
+        `gov Если у вас уже есть опыт в ГИБДД, вы можете оставить электронное заявление на восстановление в звании и должности.`,
     }
   }
 
@@ -201,10 +160,19 @@ export function GibddGovWavePage() {
             <h2 className="text-xl font-semibold text-foreground mb-4">Правила гос волны</h2>
             <div className="text-sm text-muted-foreground space-y-2">
               <p>• Сообщения государственной волны (/gov) видны всем игрокам на сервере.</p>
-              <p>• Руководство по использованию государственной волны, а также расписание — закреплены в беседе VK — "Гос. волна".</p>
+              <p>
+                • Руководство по использованию государственной волны, а также расписание — закреплены в беседе VK —
+                "Гос. волна".
+              </p>
               <p>• Эфирное время расставляется на сайте.</p>
-              <p>• В государственную волну запрещено писать что-либо, кроме новостей о предстоящих собеседованиях и мероприятиях организации.</p>
-              <p>• Организация вправе занять государственную волну на час и не более с момента первых сообщений, заканчивая последними.</p>
+              <p>
+                • В государственную волну запрещено писать что-либо, кроме новостей о предстоящих собеседованиях и
+                мероприятиях организации.
+              </p>
+              <p>
+                • Организация вправе занять государственную волну на час и не более с момента первых сообщений,
+                заканчивая последними.
+              </p>
               <p>• Интервал между подачей сообщений должен быть не менее 10-ти минут.</p>
               <p>• Интервал между строчками должен быть не менее 3-х секунд.</p>
               <p>• Максимальное количество строк — 4 (четыре).</p>
