@@ -1,11 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
 
 export async function POST(request: Request) {
   const { username, password } = await request.json();
 
-  // получаем именно SupabaseClient (await обязателен)
   const supabase = await createClient();
 
   const { data: user, error } = await supabase
@@ -18,8 +18,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-import bcrypt from 'bcryptjs';
-const isValidPassword = await bcrypt.compare(password, user.password_hash);
+  const isValidPassword = await bcrypt.compare(password, user.password_hash);
 
   if (!isValidPassword) {
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
