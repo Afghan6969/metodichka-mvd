@@ -1,99 +1,123 @@
-import { createClient } from '@/lib/supabase/server';
-import jwt from 'jsonwebtoken';
-import { NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
+import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import { createClient } from "@/lib/supabase/server";
 
-export async function POST(request: Request) {
+const VALID_ROLES = [
+  "root",
+  "gs-gibdd",
+  "pgs-gibdd",
+  "gs-guvd",
+  "pgs-guvd",
+  "ss-gibdd",
+  "ss-guvd",
+  "gibdd",
+  "guvd",
+  "none",
+];
+
+const normalizeRole = (role: unknown): string => {
+  if (!role) return "none";
+  const r = String(role).trim().toLowerCase().replace(/_/g, "-");
+  return VALID_ROLES.includes(r) ? r : "none";
+};
+
+const canManageUsersRole = (role: string) =>
+  ["root", "gs-gibdd", "pgs-gibdd", "gs-guvd", "pgs-guvd"].includes(role);
+
+export async function POST(req: NextRequest) {
   try {
-    const { userId, username, password, role } = await request.json();
-    console.log("[UpdateUser API] Request received:", { userId, username, role });
-    
-    const token = request.headers.get('cookie')?.match(/auth_token=([^;]+)/)?.[1];
+    const body = await req.json().catch(() => null);
+    if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
 
-    if (!token) {
-      return NextResponse.json({ error: 'No token' }, { status: 401 });
+    const { userId, username, password, role } = body;
+    if (!userId || !username) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+
+    const token = req.headers.get("cookie")?.match(/auth_token=([^;]+)/)?.[1];
+    if (!token) return NextResponse.json({ error: "No token" }, { status: 401 });
+
+    let decoded: any;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string; role?: string };
+    } catch (e) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string; username: string; role: string };
     const supabase = await createClient();
-    
-    const normalizedRole = ["root", "moderator-gibdd", "moderator-guvd", "ss-gibdd", "ss-guvd", "gibdd", "guvd", "none"].includes(role.toLowerCase()) ? role.toLowerCase() : "none";
 
-    // Проверка прав
-    const { data: currentUser } = await supabase
-      .from('users')
-      .select('id, nickname, role')
-      .eq('id', decoded.id)
-      .single();
+    const { data: currentUsers, error: userErr } = await supabase
+      .from("users")
+      .select("id, nickname, role")
+      .eq("id", decoded.id);
 
-    if (!currentUser || !['root', 'moderator-gibdd', 'moderator-guvd'].includes(currentUser.role)) {
-      console.error("[UpdateUser API] Unauthorized:", currentUser?.role);
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    if (userErr || !currentUsers || currentUsers.length === 0) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    // Проверка существующего пользователя
+    const currentUser = currentUsers[0];
+    if (!canManageUsersRole(String(currentUser.role))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    // check username unique (exclude target user)
     const { data: existingUser } = await supabase
-      .from('users')
-      .select('id')
-      .eq('username', username)
-      .neq('id', userId)
+      .from("users")
+      .select("id")
+      .eq("username", username)
+      .neq("id", userId)
       .maybeSingle();
 
     if (existingUser) {
-      console.log("[UpdateUser API] Username already exists:", username);
-      return NextResponse.json({ error: 'Username already exists' }, { status: 400 });
+      return NextResponse.json({ error: "Username already exists" }, { status: 400 });
     }
 
-    // Получение текущих данных пользователя
+    // fetch old data
     const { data: oldUserData } = await supabase
-      .from('users')
-      .select('nickname, username, role')
-      .eq('id', userId)
+      .from("users")
+      .select("nickname, username, role")
+      .eq("id", userId)
       .single();
 
     if (!oldUserData) {
-      console.error("[UpdateUser API] User not found:", userId);
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Обновление пользователя
-    const updates: { username: string; role: string; password_hash?: string } = {
-      username,
-      role: normalizedRole,
-    };
+    const normalizedRole = normalizeRole(role);
 
-    if (password) {
-      updates.password_hash = await bcrypt.hash(password, 10);
+    const updates: any = { username, role: normalizedRole };
+    if (password) updates.password_hash = await bcrypt.hash(password, 10);
+
+    const { error: updateErr } = await supabase.from("users").update(updates).eq("id", userId);
+    if (updateErr) {
+      console.error("[UpdateUser API] Update error:", updateErr);
+      return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
     }
 
-    const { error } = await supabase.from('users').update(updates).eq('id', userId);
-
-    if (error) {
-      console.error("[UpdateUser API] Error updating user:", error);
-      return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
-    }
-
-    // Логирование действия
+    // build structured log with previous state (helps rollback)
     const changes: string[] = [];
-    if (oldUserData.username !== username) changes.push(`логин: ${oldUserData.username} → ${username}`);
-    if (oldUserData.role !== normalizedRole) changes.push(`роль: ${oldUserData.role} → ${normalizedRole}`);
-    if (password) changes.push('пароль изменён');
+    if (oldUserData.username !== username) changes.push(`username: ${oldUserData.username} → ${username}`);
+    if (String(oldUserData.role) !== normalizedRole) changes.push(`role: ${oldUserData.role} → ${normalizedRole}`);
+    if (password) changes.push("password: changed");
 
-    await supabase.from('user_logs').insert([
+    await supabase.from("user_logs").insert([
       {
-        action: 'update_user',
+        action: "update_user",
         target_user_id: userId,
         target_user_nickname: oldUserData.nickname,
         performed_by_id: currentUser.id,
         performed_by_nickname: currentUser.nickname,
-        details: `Изменён пользователь ${oldUserData.nickname}: ${changes.join(', ')}`,
+        details: JSON.stringify({
+          nickname: oldUserData.nickname,
+          previous: { username: oldUserData.username, role: oldUserData.role },
+          next: { username, role: normalizedRole },
+          changes,
+        }),
       },
     ]);
 
-    console.log("[UpdateUser API] User updated successfully:", userId);
     return NextResponse.json({ success: true });
-  } catch (error: any) {
-    console.error("[UpdateUser API] Exception:", error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  } catch (err: any) {
+    console.error("[UpdateUser API] Exception:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
