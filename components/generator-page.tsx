@@ -239,13 +239,15 @@ export function GeneratorPage() {
       if (
         currentUser.role === "gibdd" ||
         currentUser.role === "ss-gibdd" ||
-        currentUser.role === "moderator-gibdd"
+        currentUser.role === "pgs-gibdd" ||
+        currentUser.role === "gs-gibdd"
       ) {
         setDepartment("GIBDD")
       } else if (
         currentUser.role === "guvd" ||
         currentUser.role === "ss-guvd" ||
-        currentUser.role === "moderator-guvd"
+        currentUser.role === "pgs-guvd" ||
+        currentUser.role === "gs-guvd"
       ) {
         setDepartment("GUVD")
       }
@@ -639,7 +641,7 @@ ${reqList}
               <Alert className="border-border bg-muted">
                 <AlertCircle className="h-4 w-4 text-muted-foreground" />
                 <AlertDescription className="text-muted-foreground text-sm">
-                  Для доступа к генератору отчётов необходимо иметь роль ГИБДД, ГУВД, СС ГИБДД, СС ГУВД или root.
+                  Для доступа к генератору отчётов необходимо иметь роль ГИБДД, ГУВД, СС ГИБДД, СС ГУВД, ПГС ГИБДД, ПГС ГУВД, ГС ГИБДД, ГС ГУВД или root.
                 </AlertDescription>
               </Alert>
             </div>
@@ -653,8 +655,10 @@ ${reqList}
     if (!currentUser) return []
     if (
       currentUser.role === "root" ||
-      currentUser.role === "moderator-gibdd" ||
-      currentUser.role === "moderator-guvd"
+      currentUser.role === "gs-gibdd" ||
+      currentUser.role === "gs-guvd" ||
+      currentUser.role === "pgs-gibdd" ||
+      currentUser.role === "pgs-guvd"
     ) {
       return ["promotion", "reprimand", "senior"]
     }

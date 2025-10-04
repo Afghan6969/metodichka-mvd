@@ -13,8 +13,11 @@ interface ModernHeaderProps {
 }
 
 const roleDisplayNames: Record<string, string> = {
-  "moderator-gibdd": "Модератор ГИБДД",
-  "moderator-guvd": "Модератор ГУВД",
+  root: "Владелец",
+  "gs-gibdd": "ГС ГИБДД",
+  "pgs-gibdd": "ПГС ГИБДД",
+  "gs-guvd": "ГС ГУВД",
+  "pgs-guvd": "ПГС ГУВД",
   "ss-gibdd": "СС ГИБДД",
   "ss-guvd": "СС ГУВД",
   gibdd: "ГИБДД",
@@ -58,6 +61,7 @@ export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) 
     <>
       <header className="modern-nav px-6 py-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
+          {/* Левая часть: Меню + Лого */}
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={onMenuClick} className="lg:hidden rounded-xl h-9 w-9">
               <Menu className="h-5 w-5" />
@@ -73,26 +77,31 @@ export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) 
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          {/* Центр: Поиск */}
+          <div className="relative hidden lg:block flex-1 max-w-md mx-8">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Поиск по материалам..."
+              className="pl-10 w-full h-10 rounded-xl border bg-background font-medium text-sm"
+              onClick={onSearchClick}
+            />
+          </div>
+
+          {/* Правая часть: Пользователь + Управление */}
+          <div className="flex items-center gap-3">
             {currentUser && (
-              <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-muted rounded-xl border border-border">
-                <User className="h-4 w-4 text-muted-foreground" />
+              <div className="hidden md:flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl border border-primary/20 shadow-sm hover:shadow-md transition-all">
+                <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center ring-2 ring-primary/30">
+                  <User className="h-4 w-4 text-primary" />
+                </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-foreground">{currentUser.nickname}</span>
-                  <span className="text-xs text-muted-foreground">{roleDisplayNames[currentUser.role]}</span>
+                  <span className="text-sm font-semibold text-foreground">{currentUser.nickname}</span>
+                  <span className="text-xs font-medium text-primary/80">{roleDisplayNames[currentUser.role] || currentUser.role}</span>
                 </div>
               </div>
             )}
 
-            <div className="relative hidden md:block">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Поиск по материалам..."
-                className="pl-10 w-80 h-10 rounded-xl border bg-background font-medium text-sm"
-                onClick={onSearchClick}
-              />
-            </div>
-            <Button variant="ghost" size="icon" onClick={onSearchClick} className="md:hidden rounded-xl h-9 w-9">
+            <Button variant="ghost" size="icon" onClick={onSearchClick} className="lg:hidden rounded-xl h-9 w-9">
               <Search className="h-4 w-4" />
             </Button>
 
