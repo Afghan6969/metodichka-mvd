@@ -1,139 +1,122 @@
-import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import { createClient } from '@supabase/supabase-js';
+import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import { createClient } from "@/lib/supabase/server"; // или путь, который у тебя используется для server-client
 
-// Создаём серверный клиент Supabase с service role key
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const VALID_ROLES = [
+  "root",
+  "gs-gibdd",
+  "pgs-gibdd",
+  "gs-guvd",
+  "pgs-guvd",
+  "ss-gibdd",
+  "ss-guvd",
+  "gibdd",
+  "guvd",
+  "none",
+];
+
+const normalizeRole = (role: unknown): string => {
+  if (!role) return "none";
+  const r = String(role).trim().toLowerCase().replace(/_/g, "-");
+  return VALID_ROLES.includes(r) ? r : "none";
+};
+
+const canManageUsersRole = (role: string) =>
+  ["root", "gs-gibdd", "pgs-gibdd", "gs-guvd", "pgs-guvd"].includes(role);
 
 export async function POST(req: NextRequest) {
-  console.log("[AddUser API] Request received");
-  
-  // Проверка переменных окружения
-if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY || !process.env.JWT_SECRET) {
-  console.error("[AddUser API] Missing environment variables");
-  return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
-}
-
   try {
-    let body;
-    try {
-      body = await req.json();
-    } catch (parseError) {
-      console.error("[AddUser API] Failed to parse request body:", parseError);
-      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
-    }
+    const body = await req.json().catch(() => null);
+    if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
 
     const { nickname, username, password, role } = body;
-    console.log("[AddUser API] Parsed body:", { nickname, username, role });
-
-    // Получаем JWT из куки
-    const token = req.headers.get('cookie')?.match(/auth_token=([^;]+)/)?.[1];
-    if (!token) {
-      console.error("[AddUser API] No token found");
-      return NextResponse.json({ error: 'No token' }, { status: 401 });
+    if (!nickname || !username || !password) {
+      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
-    // Декодируем токен
-    let decoded;
+    // get token from cookie (compatible with your current setup)
+    const token = req.headers.get("cookie")?.match(/auth_token=([^;]+)/)?.[1];
+    if (!token) return NextResponse.json({ error: "No token" }, { status: 401 });
+
+    let decoded: any;
     try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
-        id: string;
-        username: string;
-        role: string;
-      };
-    } catch (jwtError) {
-      console.error("[AddUser API] JWT verification failed:", jwtError);
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+      decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string; role?: string };
+    } catch (e) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
-    console.log("[AddUser API] Token decoded for user:", decoded.id);
+    const supabase = await createClient();
 
-    // Проверяем текущего пользователя
+    // load current user from DB (server-side check, more reliable than token only)
     const { data: currentUsers, error: userErr } = await supabase
-      .from('users')
-      .select('id, nickname, role')
-      .eq('id', decoded.id);
+      .from("users")
+      .select("id, nickname, role")
+      .eq("id", decoded.id);
 
     if (userErr || !currentUsers || currentUsers.length === 0) {
-      console.error("[AddUser API] Error fetching current user:", userErr);
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
     const currentUser = currentUsers[0];
-    console.log("[AddUser API] Current user:", currentUser.nickname, currentUser.role);
-
-    if (!['root', 'moderator-gibdd', 'moderator-guvd'].includes(currentUser.role)) {
-      console.error("[AddUser API] User lacks permissions:", currentUser.role);
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    if (!canManageUsersRole(String(currentUser.role))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Проверяем уникальность username
+    // unique username check
     const { data: existingUsers, error: existingErr } = await supabase
-      .from('users')
-      .select('id')
-      .eq('username', username);
+      .from("users")
+      .select("id")
+      .eq("username", username)
+      .limit(1);
 
     if (existingErr) {
-      console.error("[AddUser API] Error checking existing user:", existingErr);
-      return NextResponse.json({ error: 'Database error' }, { status: 500 });
+      console.error("[AddUser API] DB check error:", existingErr);
+      return NextResponse.json({ error: "DB error" }, { status: 500 });
+    }
+    if (existingUsers && existingUsers.length > 0) {
+      return NextResponse.json({ error: "Username already exists" }, { status: 400 });
     }
 
-if (existingUsers && existingUsers.length > 0) {
-  console.log("[AddUser API] Username already exists:", username);
-  return NextResponse.json({ error: 'Username already exists' }, { status: 400 });
-}
-
-    // Хэшируем пароль
+    // create user
     const passwordHash = await bcrypt.hash(password, 10);
+    const normalizedRole = normalizeRole(role);
 
-    // Нормализуем роль
-    const validRoles = ["root", "moderator-gibdd", "moderator-guvd", "ss-gibdd", "ss-guvd", "gibdd", "guvd", "none"];
-    const normalizedRole = role && validRoles.includes(role.toLowerCase()) ? role.toLowerCase() : "none";
-
-    console.log("[AddUser API] Creating user with role:", normalizedRole);
-
-    // Создаём пользователя
     const { data: newUsers, error: insertErr } = await supabase
-      .from('users')
-      .insert([{
-        nickname,
-        username,
-        password_hash: passwordHash,
-        role: normalizedRole,
-        created_by: currentUser.id,
-      }])
+      .from("users")
+      .insert([
+        {
+          nickname,
+          username,
+          password_hash: passwordHash,
+          role: normalizedRole,
+          created_by: currentUser.id,
+        },
+      ])
       .select();
 
     if (insertErr) {
-      console.error("[AddUser API] Error inserting user:", insertErr);
-      return NextResponse.json({ error: insertErr.message }, { status: 500 });
+      console.error("[AddUser API] Insert error:", insertErr);
+      return NextResponse.json({ error: insertErr.message || "Insert failed" }, { status: 500 });
     }
 
-    const newUser = newUsers?.[0];
-    console.log("[AddUser API] User created successfully:", newUser?.id);
+    const newUser = newUsers?.[0] ?? null;
 
-    // Добавляем лог
-    const { error: logErr } = await supabase.from('user_logs').insert([{
-      action: 'add_user',
-      target_user_id: newUser.id,
-      target_user_nickname: nickname,
-      performed_by_id: currentUser.id,
-      performed_by_nickname: currentUser.nickname,
-      details: `Добавлен пользователь ${nickname} с ролью ${normalizedRole}`,
-    }]);
-
-    if (logErr) {
-      console.error("[AddUser API] Error adding log:", logErr);
-    }
+    // structured log (helps UI parsing + rollback)
+    await supabase.from("user_logs").insert([
+      {
+        action: "add_user",
+        target_user_id: newUser?.id ?? null,
+        target_user_nickname: nickname,
+        performed_by_id: currentUser.id,
+        performed_by_nickname: currentUser.nickname,
+        details: JSON.stringify({ nickname, username, role: normalizedRole }),
+      },
+    ]);
 
     return NextResponse.json({ success: true, user: newUser });
-
   } catch (err: any) {
-    console.error("[AddUser API] Exception:", err.message || err);
-    return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 });
+    console.error("[AddUser API] Exception:", err);
+    return NextResponse.json({ error: err?.message || "Internal server error" }, { status: 500 });
   }
 }
