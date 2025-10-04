@@ -251,10 +251,10 @@ const handleAddUser = async (e: React.FormEvent) => {
       onChange={(e) => setNickname(e.target.value)}
       disabled={isLoading}
       placeholder="Имя_Фамилия"
-      className="bg-white text-gray-900 border-2 border-gray-500 rounded-lg text-lg py-3 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+      className="bg-white text-white-900 border-2 border-gray-500 rounded-lg text-lg py-3 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
     />
     <p className="text-xs text-muted-foreground mt-1">
-      Формат: Имя_Фамилия (например: Ivan_Ivanov)
+      Формат: Имя_Фамилия (например: Ivan_Ivano)
     </p>
   </div>
   <div>
@@ -265,7 +265,7 @@ const handleAddUser = async (e: React.FormEvent) => {
       onChange={(e) => setUsername(e.target.value)}
       disabled={isLoading}
       placeholder="login123"
-      className="bg-white text-gray-900 border-2 border-gray-500 rounded-lg text-lg py-3 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+      className="bg-white text-white-900 border-2 border-gray-500 rounded-lg text-lg py-3 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
     />
     <p className="text-xs text-muted-foreground mt-1">
       Минимум 3 символа
@@ -280,7 +280,7 @@ const handleAddUser = async (e: React.FormEvent) => {
       onChange={(e) => setPassword(e.target.value)}
       disabled={isLoading}
       placeholder="••••••"
-      className="bg-white text-gray-900 border-2 border-gray-500 rounded-lg text-lg py-3 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+      className="bg-white text-white-900 border-2 border-gray-500 rounded-lg text-lg py-3 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
     />
     <p className="text-xs text-muted-foreground mt-1">
       Минимум 6 символов
