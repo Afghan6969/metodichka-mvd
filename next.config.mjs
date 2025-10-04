@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone', // Добавьте эту строку
   eslint: {
     ignoreDuringBuilds: true,
   },
