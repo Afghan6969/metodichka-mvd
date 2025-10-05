@@ -94,7 +94,6 @@ export async function POST(req: NextRequest) {
         },
       ])
       .select();
-
     if (insertErr) {
       console.error("[AddUser API] Insert error:", insertErr);
       return NextResponse.json({ error: insertErr.message || "Insert failed" }, { status: 500 });
@@ -122,6 +121,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, user: newUser });
   } catch (err: any) {
     console.error("[AddUser API] Exception:", err);
-    return NextResponse.json({ error: err?.message || "Internal server error" }, { status: 500 });
   }
 }

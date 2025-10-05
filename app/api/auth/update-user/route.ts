@@ -123,6 +123,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (err: any) {
     console.error("[UpdateUser API] Exception:", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+
   }
 }
