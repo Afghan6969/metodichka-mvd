@@ -1,11 +1,12 @@
 "use client"
 
-import { Search, Menu, Moon, Sun, LogIn, LogOut, User } from "lucide-react"
+import { Search, Menu, LogIn, LogOut, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useAuth } from "@/lib/auth-context"
 import { LoginModal } from "@/components/login-modal"
+import { ThemeSwitcher } from "@/components/theme-switcher"
 
 interface ModernHeaderProps {
   onMenuClick: () => void
@@ -26,36 +27,8 @@ const roleDisplayNames: Record<string, string> = {
 }
 
 export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) {
-  const [isDark, setIsDark] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const { currentUser, logout } = useAuth()
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme")
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-
-    const shouldBeDark = savedTheme === "dark" || (!savedTheme && systemPrefersDark)
-    setIsDark(shouldBeDark)
-
-    if (shouldBeDark) {
-      document.documentElement.classList.add("dark")
-    } else {
-      document.documentElement.classList.remove("dark")
-    }
-  }, [])
-
-  const toggleTheme = () => {
-    const newTheme = !isDark
-    setIsDark(newTheme)
-
-    if (newTheme) {
-      document.documentElement.classList.add("dark")
-      localStorage.setItem("theme", "dark")
-    } else {
-      document.documentElement.classList.remove("dark")
-      localStorage.setItem("theme", "light")
-    }
-  }
 
   return (
     <>
@@ -105,15 +78,7 @@ export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) 
               <Search className="h-4 w-4" />
             </Button>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="rounded-xl h-9 w-9 hover:bg-muted"
-              aria-label={isDark ? "Переключить на светлую тему" : "Переключить на темную тему"}
-            >
-              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
+            <ThemeSwitcher />
 
             {currentUser ? (
               <Button

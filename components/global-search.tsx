@@ -544,7 +544,7 @@ export function GlobalSearch({ onResultClick, isOpen, onClose }: GlobalSearchPro
       className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-20 modal-overlay"
       onKeyDown={handleKeyDown}
     >
-      <Card className="w-full max-w-2xl mx-4 bg-background border-border shadow-xl modal-content">
+      <Card className="w-full max-w-2xl mx-4 bg-card border-border shadow-xl backdrop-blur-xl modal-content">
         <div className="p-4">
           <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />

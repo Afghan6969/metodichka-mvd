@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 export async function POST(request: Request) {
   try {
     const { userId } = await request.json();
-    console.log("[RemoveUser API] Request to deactivate user:", userId);
+    console.log("[RestoreUser API] Request to restore user:", userId);
     
     // Получаем текущего пользователя из токена
     const token = request.headers.get('cookie')?.match(/auth_token=([^;]+)/)?.[1];
@@ -32,18 +32,18 @@ export async function POST(request: Request) {
       .eq('id', userId)
       .single();
     
-    // Деактивируем пользователя вместо удаления
+    // Восстанавливаем пользователя
     const { error } = await supabase
       .from('users')
       .update({ 
-        status: 'deactivated',
-        deactivated_by: currentUserId,
-        deactivated_at: new Date().toISOString()
+        status: 'active',
+        deactivated_by: null,
+        deactivated_at: null
       })
       .eq('id', userId);
     
     if (error) {
-      console.error("[RemoveUser API] Error deactivating user:", error.message);
+      console.error("[RestoreUser API] Error restoring user:", error.message);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     
@@ -54,30 +54,30 @@ export async function POST(request: Request) {
     // Логируем действие
     const logData = {
       user_id: currentUserId,
-      action: 'deactivate',
+      action: 'activate',
       target_user_id: userId,
       target_user_nickname: targetUser?.nickname || targetUser?.username || 'Неизвестный',
       performed_by_id: currentUserId,
       performed_by_nickname: currentUserData?.nickname || currentUserData?.username || 'Неизвестный',
-      details: `Деактивирован пользователь ${targetUser?.nickname || targetUser?.username || userId}`,
+      details: `Восстановлен пользователь ${targetUser?.nickname || targetUser?.username || userId}`,
       ip_address: ip,
     };
     
-    console.log("[RemoveUser API] Inserting log:", logData);
+    console.log("[RestoreUser API] Inserting log:", logData);
     
     const { error: logError } = await supabase.from('user_logs').insert(logData);
     
     if (logError) {
-      console.error("[RemoveUser API] Error inserting log:", logError);
-      // Не блокируем деактивацию, если лог не записался
+      console.error("[RestoreUser API] Error inserting log:", logError);
+      // Не блокируем восстановление, если лог не записался
     } else {
-      console.log("[RemoveUser API] Log inserted successfully");
+      console.log("[RestoreUser API] Log inserted successfully");
     }
     
-    console.log("[RemoveUser API] User deactivated successfully:", userId);
+    console.log("[RestoreUser API] User restored successfully:", userId);
     return NextResponse.json({ success: true });
   } catch (err: any) {
-    console.error("[RemoveUser API] Exception:", err);
+    console.error("[RestoreUser API] Exception:", err);
     return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 });
   }
 }

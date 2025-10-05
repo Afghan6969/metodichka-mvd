@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { DatePicker } from "@/components/ui/date-picker"
 import { Shield, FileText, Check, ChevronsUpDown, Trash2, AlertCircle } from "lucide-react"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -134,7 +135,7 @@ const departmentAbbreviations: { [key: string]: string } = {
   "Специальный отряд быстрого реагирования": "СОБР",
 }
 
-const declensionRules = {
+const declensionRules: Record<string, { genitive: string; instrumental: string }> = {
   Боец: { genitive: "Бойца", instrumental: "Бойцом" },
   Курсант: { genitive: "Курсанта", instrumental: "Курсантом" },
   Инспектор: { genitive: "Инспектора", instrumental: "Инспектором" },
@@ -210,8 +211,8 @@ export function GeneratorPage() {
   const [selectedCategory, setSelectedCategory] = useState("")
   const [rank, setRank] = useState("")
   const [newRank, setNewRank] = useState("")
-  const [fromDate, setFromDate] = useState("")
-  const [toDate, setToDate] = useState("")
+  const [fromDate, setFromDate] = useState<Date | undefined>()
+  const [toDate, setToDate] = useState<Date | undefined>()
   const [requirements, setRequirements] = useState<{ req: string; quantity?: string; link: string }[]>([
     { req: "", quantity: "", link: "" },
   ])
@@ -281,7 +282,7 @@ export function GeneratorPage() {
       requiredFields.push(leaderFio)
     }
     if (reportType === "promotion" || reportType === "reprimand" || reportType === "senior") {
-      requiredFields.push(fromDate, toDate)
+      if (!fromDate || !toDate) return false
     }
     if (department === "GIBDD" && (reportType === "promotion" || reportType === "reprimand")) {
       requiredFields.push(points)
@@ -414,8 +415,8 @@ export function GeneratorPage() {
     setPosition("")
     setRank("")
     setNewRank("")
-    setFromDate("")
-    setToDate("")
+    setFromDate(undefined)
+    setToDate(undefined)
     setRequirements([{ req: "", quantity: department === "GIBDD" ? "" : undefined, link: "" }])
     setPoints("")
     setViolation("")
@@ -525,6 +526,8 @@ export function GeneratorPage() {
       return
     }
     const currentDate = format(new Date(), "dd.MM.yyyy", { locale: ru })
+    const formattedFromDate = fromDate ? format(fromDate, "dd.MM.yyyy", { locale: ru }) : ""
+    const formattedToDate = toDate ? format(toDate, "dd.MM.yyyy", { locale: ru }) : ""
     const displayPosition = toGenitiveCase(position, isVrio && reportType === "senior")
     const instrumentalPosition = toInstrumentalCase(position, isVrio && reportType === "senior")
     const deptAbbr = departmentAbbreviations[selectedCategory] || selectedCategory
@@ -574,7 +577,7 @@ ${reqList}
 "${fio}"
 
 Рапорт.
-Я, ${rank} ${fio}, являющийся ${instrumentalPosition}, оставляю рапорт и докладываю Вам о проделанной мною работе в период с ${fromDate} по ${toDate}.
+Я, ${rank} ${fio}, являющийся ${instrumentalPosition}, оставляю рапорт и докладываю Вам о проделанной мною работе в период с ${formattedFromDate} по ${formattedToDate}.
 
 ${reqList}
 
@@ -589,7 +592,7 @@ ${reqList}
 Начальнику ГИБДД по городу ${city}
 От ${displayPosition}, находящегося в звании ${rank}, ${fio}.
 
-Я, ${fio}, являющийся ${instrumentalPosition}, докладываю о состоянии несения службы и выполненной мной работе за период с ${fromDate} по ${toDate} и прошу рассмотреть моё заявление о повышении в звании до ${newRank}. За указанный период мною был выполнен следующий объём работы, а также набрано соответствующее количество баллов: ${points}
+Я, ${fio}, являющийся ${instrumentalPosition}, докладываю о состоянии несения службы и выполненной мной работе за период с ${formattedFromDate} по ${formattedToDate} и прошу рассмотреть моё заявление о повышении в звании до ${newRank}. За указанный период мною был выполнен следующий объём работы, а также набрано соответствующее количество баллов: ${points}
 
 ${reqList}
 
@@ -612,7 +615,7 @@ ${reqList}
 Начальнику ГИБДД по городу ${city}
 От ${displayPosition}, находящегося в звании ${rank}, ${fio}.
 
-Я, ${fio}, являющийся ${instrumentalPosition}, докладываю о состоянии несения службы и выполненной мной работе за промежуток времени с ${fromDate} по ${toDate}. За данный промежуток времени мною был выполнен следующий объём работ:
+Я, ${fio}, являющийся ${instrumentalPosition}, докладываю о состоянии несения службы и выполненной мной работе за промежуток времени с ${formattedFromDate} по ${formattedToDate}. За данный промежуток времени мною был выполнен следующий объём работ:
 
 ${reqList}
 
@@ -1009,12 +1012,12 @@ ${reqList}
                 {(reportType === "promotion" || reportType === "reprimand" || reportType === "senior") && (
                   <>
                     <div>
-                      <Label htmlFor="fromDate">Дата с (дд.мм.гггг)</Label>
-                      <Input id="fromDate" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+                      <Label htmlFor="fromDate">Дата с</Label>
+                      <DatePicker date={fromDate} onDateChange={setFromDate} placeholder="Выберите дату начала" />
                     </div>
                     <div>
-                      <Label htmlFor="toDate">Дата по (дд.мм.гггг)</Label>
-                      <Input id="toDate" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+                      <Label htmlFor="toDate">Дата по</Label>
+                      <DatePicker date={toDate} onDateChange={setToDate} placeholder="Выберите дату окончания" />
                     </div>
                   </>
                 )}

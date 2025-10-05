@@ -5,8 +5,8 @@ import { JetBrains_Mono } from "next/font/google"
 import { Merriweather } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { AuthProvider } from "@/lib/auth-context"
+import { ThemeProvider } from "@/lib/theme-context"
 import { Toaster } from "react-hot-toast"
 import "./globals.css"
 
@@ -46,14 +46,15 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={`font-sans ${inter.variable} ${merriweather.variable} ${jetbrainsMono.variable} antialiased`}>
-        <AuthProvider>
-          <ThemeToggle />
-          <Suspense fallback={null}>
-            {children}
-            <Analytics />
-          </Suspense>
-          <Toaster position="top-right" />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <Suspense fallback={null}>
+              {children}
+              <Analytics />
+            </Suspense>
+            <Toaster position="top-right" />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -17,12 +17,17 @@ export async function GET(request: Request) {
 
     const { data: user } = await supabase
       .from('users')
-      .select('id, nickname, username, role, created_at')
+      .select('id, nickname, username, role, status, created_at')
       .eq('id', decoded.id)
       .single();
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 401 });
+    }
+
+    // Проверяем, что пользователь не деактивирован
+    if (user.status === 'deactivated') {
+      return NextResponse.json({ error: 'Account deactivated' }, { status: 403 });
     }
 
     return NextResponse.json(user);

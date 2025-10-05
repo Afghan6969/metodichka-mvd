@@ -21,8 +21,15 @@ export interface User {
   nickname: string;
   username: string;
   role: UserRole;
+  status: "active" | "deactivated";
   created_at: string;
   created_by_user?: {
+    nickname: string;
+    role: UserRole;
+  };
+  deactivated_by?: string;
+  deactivated_at?: string;
+  deactivated_by_user?: {
     nickname: string;
     role: UserRole;
   };
@@ -37,6 +44,7 @@ export interface UserLog {
   performed_by_nickname: string;
   details: string;
   created_at: string;
+  ip_address?: string;
 }
 
 // ==== КОНТЕКСТ ====
@@ -48,6 +56,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   addUser: (nickname: string, username: string, password: string, role: UserRole) => Promise<boolean>;
   removeUser: (userId: string) => Promise<{ success: boolean; error?: string }>;
+  restoreUser: (userId: string) => Promise<{ success: boolean; error?: string }>;
   updateUser: (userId: string, username: string, password: string | undefined, role: UserRole) => Promise<boolean>;
   hasAccess: (page: string, department?: string, reportType?: string) => boolean;
   canManageUsers: () => boolean;
@@ -118,6 +127,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           created_by_user:created_by(
             nickname,
             role
+          ),
+          deactivated_by_user:deactivated_by(
+            nickname,
+            role
           )
         `
         )
@@ -133,11 +146,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         nickname: u.nickname,
         username: u.username,
         role: normalizeRole(u.role),
+        status: u.status || "active",
         created_at: u.created_at,
         created_by_user: u.created_by_user
           ? {
               nickname: u.created_by_user.nickname,
               role: normalizeRole(u.created_by_user.role),
+            }
+          : undefined,
+        deactivated_by: u.deactivated_by,
+        deactivated_at: u.deactivated_at,
+        deactivated_by_user: u.deactivated_by_user
+          ? {
+              nickname: u.deactivated_by_user.nickname,
+              role: normalizeRole(u.deactivated_by_user.role),
             }
           : undefined,
       }));
@@ -179,6 +201,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             nickname: user.nickname,
             username: user.username,
             role: normalizeRole(user.role),
+            status: user.status || "active",
             created_at: user.created_at,
           });
         }
@@ -211,6 +234,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         nickname: user.nickname,
         username: user.username,
         role: normalizeRole(user.role),
+        status: user.status || "active",
         created_at: user.created_at,
       });
       await refreshUsers();
@@ -258,11 +282,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // === УДАЛЕНИЕ ПОЛЬЗОВАТЕЛЯ ===
+  // === ДЕАКТИВАЦИЯ ПОЛЬЗОВАТЕЛЯ ===
   const removeUser = async (userId: string): Promise<{ success: boolean; error?: string }> => {
     try {
       if (!currentUser || !canManageUsers()) return { success: false, error: "Нет прав" };
-      if (currentUser.id === userId) return { success: false, error: "Нельзя удалить самого себя" };
+      if (currentUser.id === userId) return { success: false, error: "Нельзя деактивировать самого себя" };
 
       const res = await fetch("/api/auth/remove-user", {
         method: "POST",
@@ -270,13 +294,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ userId }),
         credentials: "include",
       });
-      if (!res.ok) return { success: false, error: "Ошибка при удалении" };
+      if (!res.ok) return { success: false, error: "Ошибка при деактивации" };
 
       await refreshUsers();
       await refreshUserLogs();
       return { success: true };
     } catch (err) {
       console.error("[Auth] removeUser error:", err);
+      return { success: false, error: "Неожиданная ошибка" };
+    }
+  };
+
+  // === ВОССТАНОВЛЕНИЕ ПОЛЬЗОВАТЕЛЯ ===
+  const restoreUser = async (userId: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      if (!currentUser || !canManageUsers()) return { success: false, error: "Нет прав" };
+
+      const res = await fetch("/api/auth/restore-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+        credentials: "include",
+      });
+      if (!res.ok) return { success: false, error: "Ошибка при восстановлении" };
+
+      await refreshUsers();
+      await refreshUserLogs();
+      return { success: true };
+    } catch (err) {
+      console.error("[Auth] restoreUser error:", err);
       return { success: false, error: "Неожиданная ошибка" };
     }
   };
@@ -297,7 +343,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!res.ok) return false;
 
       if (currentUser.id === userId)
-        setCurrentUser({ ...currentUser, username, role: normalizeRole(role) });
+        setCurrentUser({ ...currentUser, username, role: normalizeRole(role), status: currentUser.status });
 
       await refreshUsers();
       await refreshUserLogs();
@@ -343,6 +389,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         addUser,
         removeUser,
+        restoreUser,
         updateUser,
         hasAccess,
         canManageUsers,
