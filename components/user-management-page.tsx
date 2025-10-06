@@ -40,6 +40,7 @@ export function UserManagementPage() {
   
   // Editing states
   const [editingUserId, setEditingUserId] = useState<string | null>(null)
+  const [editNickname, setEditNickname] = useState("")
   const [editUsername, setEditUsername] = useState("")
   const [editPassword, setEditPassword] = useState("")
   const [editRole, setEditRole] = useState<UserRole>("none")
@@ -188,8 +189,9 @@ export function UserManagementPage() {
     }
   }
 
-  const startEditing = (userId: string, username: string, role: UserRole) => {
+  const startEditing = (userId: string, nickname: string, username: string, role: UserRole) => {
     setEditingUserId(userId)
+    setEditNickname(nickname)
     setEditUsername(username)
     setEditPassword("")
     setEditRole(role)
@@ -197,6 +199,7 @@ export function UserManagementPage() {
 
   const cancelEditing = () => {
     setEditingUserId(null)
+    setEditNickname("")
     setEditUsername("")
     setEditPassword("")
     setEditRole("none")
@@ -208,7 +211,7 @@ export function UserManagementPage() {
     setError("")
     setSuccess("")
     try {
-      const result = await updateUser(editingUserId, editUsername, editPassword || undefined, editRole)
+      const result = await updateUser(editingUserId, editNickname, editUsername, editPassword || undefined, editRole)
       if (result) {
         setSuccess("Пользователь успешно обновлён")
         cancelEditing()
@@ -457,16 +460,18 @@ export function UserManagementPage() {
                             isEditing={editingUserId === user.id}
                             isSelected={selectedUsers.includes(user.id)}
                             showDeactivated={showDeactivated}
+                            editNickname={editNickname}
                             editUsername={editUsername}
                             editPassword={editPassword}
                             editRole={editRole}
                             onToggleSelect={() => toggleUserSelection(user.id, user.role)}
-                            onStartEdit={() => startEditing(user.id, user.username, user.role)}
+                            onStartEdit={() => startEditing(user.id, user.nickname, user.username, user.role)}
                             onCancelEdit={cancelEditing}
                             onSaveEdit={saveEditing}
                             onViewHistory={() => openUserHistory(user.id)}
                             onDeactivate={() => handleRemoveUser(user.id, user.nickname)}
                             onRestore={() => handleRestoreUser(user.id, user.nickname)}
+                            onEditNicknameChange={setEditNickname}
                             onEditUsernameChange={setEditUsername}
                             onEditPasswordChange={setEditPassword}
                             onEditRoleChange={setEditRole}

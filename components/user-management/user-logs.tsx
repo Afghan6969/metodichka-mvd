@@ -44,6 +44,9 @@ const formatLogDetails = (details: string): string => {
     const parsed = JSON.parse(trimmed)
     if (parsed.changes && Array.isArray(parsed.changes) && parsed.changes.length > 0) {
       const russianChanges = parsed.changes.map((change: string) => {
+        if (change.includes("nickname:")) {
+          return change.replace("nickname:", "Никнейм:")
+        }
         if (change.includes("username:")) {
           return change.replace("username:", "Логин:")
         }

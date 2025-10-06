@@ -57,7 +57,7 @@ interface AuthContextType {
   addUser: (nickname: string, username: string, password: string, role: UserRole) => Promise<boolean>;
   removeUser: (userId: string) => Promise<{ success: boolean; error?: string }>;
   restoreUser: (userId: string) => Promise<{ success: boolean; error?: string }>;
-  updateUser: (userId: string, username: string, password: string | undefined, role: UserRole) => Promise<boolean>;
+  updateUser: (userId: string, nickname: string, username: string, password: string | undefined, role: UserRole) => Promise<boolean>;
   hasAccess: (page: string, department?: string, reportType?: string) => boolean;
   canManageUsers: () => boolean;
   refreshUsers: () => Promise<void>;
@@ -328,7 +328,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   // === ИЗМЕНЕНИЕ ПОЛЬЗОВАТЕЛЯ ===
-  const updateUser = async (userId: string, username: string, password: string | undefined, role: UserRole): Promise<boolean> => {
+  const updateUser = async (userId: string, nickname: string, username: string, password: string | undefined, role: UserRole): Promise<boolean> => {
     try {
       if (!currentUser || !canManageUsers()) return false;
       const valid = await verifyCurrentUserRole();
@@ -337,13 +337,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const res = await fetch("/api/auth/update-user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, username, password, role }),
+        body: JSON.stringify({ userId, nickname, username, password, role }),
         credentials: "include",
       });
       if (!res.ok) return false;
 
       if (currentUser.id === userId)
-        setCurrentUser({ ...currentUser, username, role: normalizeRole(role), status: currentUser.status });
+        setCurrentUser({ ...currentUser, nickname, username, role: normalizeRole(role), status: currentUser.status });
 
       await refreshUsers();
       await refreshUserLogs();

@@ -3,11 +3,11 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { JetBrains_Mono } from "next/font/google"
 import { Merriweather } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import { AuthProvider } from "@/lib/auth-context"
 import { ThemeProvider } from "@/lib/theme-context"
-import { Toaster } from "react-hot-toast"
+import { ToastProvider } from "@/components/toast-provider"
+import { AnalyticsProvider } from "@/components/analytics-provider"
 import "./globals.css"
 
 const inter = Inter({
@@ -50,9 +50,9 @@ export default function RootLayout({
           <AuthProvider>
             <Suspense fallback={null}>
               {children}
-              <Analytics />
+              <AnalyticsProvider />
             </Suspense>
-            <Toaster position="top-right" />
+            <ToastProvider />
           </AuthProvider>
         </ThemeProvider>
       </body>

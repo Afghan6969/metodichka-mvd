@@ -15,6 +15,7 @@ interface UserCardProps {
   isEditing: boolean
   isSelected: boolean
   showDeactivated: boolean
+  editNickname: string
   editUsername: string
   editPassword: string
   editRole: UserRole
@@ -25,6 +26,7 @@ interface UserCardProps {
   onViewHistory: () => void
   onDeactivate: () => void
   onRestore: () => void
+  onEditNicknameChange: (value: string) => void
   onEditUsernameChange: (value: string) => void
   onEditPasswordChange: (value: string) => void
   onEditRoleChange: (value: UserRole) => void
@@ -41,6 +43,7 @@ export function UserCard({
   isEditing,
   isSelected,
   showDeactivated,
+  editNickname,
   editUsername,
   editPassword,
   editRole,
@@ -51,6 +54,7 @@ export function UserCard({
   onViewHistory,
   onDeactivate,
   onRestore,
+  onEditNicknameChange,
   onEditUsernameChange,
   onEditPasswordChange,
   onEditRoleChange,
@@ -65,6 +69,18 @@ export function UserCard({
     <div className="p-4 border border-border rounded-xl hover:border-primary/50 hover:bg-muted/30 transition-all bg-card">
       {isEditing ? (
         <div className="space-y-4">
+          <div>
+            <Label htmlFor={`edit-nickname-${user.id}`} className="text-sm font-medium">
+              Никнейм
+            </Label>
+            <Input
+              id={`edit-nickname-${user.id}`}
+              value={editNickname}
+              onChange={(e) => onEditNicknameChange(e.target.value)}
+              disabled={isLoading}
+              className="mt-1 bg-background border-border rounded-lg text-base py-2.5"
+            />
+          </div>
           <div>
             <Label htmlFor={`edit-username-${user.id}`} className="text-sm font-medium">
               Логин

@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => null);
     if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
 
-    const { userId, username, password, role } = body;
+    const { userId, nickname, username, password, role } = body;
     if (!userId || !username) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
 
     const token = req.headers.get("cookie")?.match(/auth_token=([^;]+)/)?.[1];
@@ -85,6 +85,7 @@ export async function POST(req: NextRequest) {
     const normalizedRole = normalizeRole(role);
 
     const updates: any = { username, role: normalizedRole };
+    if (nickname) updates.nickname = nickname;
     if (password) updates.password_hash = await bcrypt.hash(password, 10);
 
     const { error: updateErr } = await supabase.from("users").update(updates).eq("id", userId);
@@ -95,6 +96,7 @@ export async function POST(req: NextRequest) {
 
     // build structured log with previous state (helps rollback)
     const changes: string[] = [];
+    if (nickname && oldUserData.nickname !== nickname) changes.push(`nickname: ${oldUserData.nickname} → ${nickname}`);
     if (oldUserData.username !== username) changes.push(`username: ${oldUserData.username} → ${username}`);
     if (String(oldUserData.role) !== normalizedRole) changes.push(`role: ${oldUserData.role} → ${normalizedRole}`);
     if (password) changes.push("password: changed");
