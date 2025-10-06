@@ -172,14 +172,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // === ОБНОВЛЕНИЕ ЛОГОВ ===
   const refreshUserLogs = async () => {
-    if (!currentUser || normalizeRole(currentUser.role) !== "root") {
+    if (!currentUser || !canManageUsers()) {
       setUserLogs(null);
       return;
     }
     try {
       const res = await fetch("/api/auth/user-logs", { credentials: "include" });
-      if (!res.ok) return;
+      if (!res.ok) {
+        console.error("[Auth] refreshUserLogs failed:", res.status);
+        setUserLogs([]);
+        return;
+      }
       const { data } = await res.json();
+      console.log("[Auth] refreshUserLogs success:", data?.length || 0, "records");
       setUserLogs(data || []);
     } catch (err) {
       console.error("[Auth] refreshUserLogs error:", err);
@@ -214,7 +219,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (currentUser && normalizeRole(currentUser.role) === "root") refreshUserLogs();
+    if (currentUser && canManageUsers()) refreshUserLogs();
     else setUserLogs(null);
   }, [currentUser]);
 
