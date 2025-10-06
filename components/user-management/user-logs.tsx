@@ -42,6 +42,13 @@ const formatLogDetails = (details: string): string => {
 
   try {
     const parsed = JSON.parse(trimmed)
+    
+    // Обработка отката
+    if (parsed.rollback_description) {
+      return parsed.rollback_description
+    }
+    
+    // Обработка обычных изменений
     if (parsed.changes && Array.isArray(parsed.changes) && parsed.changes.length > 0) {
       const russianChanges = parsed.changes.map((change: string) => {
         if (change.includes("nickname:")) {
