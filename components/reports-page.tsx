@@ -1,10 +1,10 @@
 "use client"
 
-import type React from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Radio, Info, MessageSquare, Phone, AlertTriangle } from "lucide-react"
 import { CopyButton } from "@/components/copy-button"
+import { Footer } from "@/components/footer"
 
 interface ReportCategory {
   id: string
@@ -250,21 +250,7 @@ export function ReportsPage() {
         ))}
       </div>
 
-      <footer className="mt-16 pt-8 border-t border-border">
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            Разработано{" "}
-            <a
-              href="https://vk.com/id503251431"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
-            >
-              Poseidon_Wagner
-            </a>
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

@@ -1,12 +1,12 @@
-"use client"
-
 import type React from "react"
 import { useState } from "react"
+
 import { Card, CardContent } from "@/components/ui/card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ChevronDown, ChevronRight, GraduationCap } from "lucide-react"
 import { CopyButton } from "@/components/copy-button"
 import { SearchBar } from "@/components/search-bar"
+import { Footer } from "@/components/footer"
 
 interface Lecture {
   id: string
@@ -355,21 +355,7 @@ say На этом лекция на тему "Первая медицинска�
         </div>
       )}
 
-      <footer className="mt-16 pt-8 border-t border-border">
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            Разработано{" "}
-            <a
-              href="https://vk.com/id503251431"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 font-medium transition-colors"
-            >
-              Poseidon_Wagner
-            </a>
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

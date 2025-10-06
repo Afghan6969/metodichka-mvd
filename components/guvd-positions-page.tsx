@@ -3,6 +3,7 @@
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Shield, Star, Award, Users } from "lucide-react"
+import { Footer } from "@/components/footer"
 
 export function GuvdPositionsPage() {
   const positions = [
@@ -149,21 +150,7 @@ export function GuvdPositionsPage() {
         })}
       </div>
 
-      <footer className="mt-16 pt-8 border-t border-border">
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            Разработано{" "}
-            <a
-              href="https://vk.com/id503251431"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 font-medium transition-colors"
-            >
-              Poseidon_Wagner
-            </a>
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

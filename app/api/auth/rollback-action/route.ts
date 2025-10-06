@@ -204,7 +204,7 @@ export async function POST(req: NextRequest) {
       }
 
       default:
-        return NextResponse.json({ error: "This action cannot be rolled back" }, { status: 400 });
+        return NextResponse.json({ error: "Данное действие нельзя откатить" }, { status: 400 });
     }
 
     if (!rollbackSuccess) {

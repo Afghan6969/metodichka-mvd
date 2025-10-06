@@ -1,9 +1,11 @@
 "use client"
 
 import { useState } from "react"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { SearchBar } from "@/components/search-bar"
 import { BookOpen } from "lucide-react"
+import { Footer } from "@/components/footer"
 
 export function TermsPage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -115,7 +117,6 @@ export function TermsPage() {
         <SearchBar
           onSearch={setSearchQuery}
           placeholder="Поиск терминов..."
-          className="bg-muted border-border text-foreground placeholder-muted-foreground focus:border-blue-500 focus:ring-blue-700/50"
         />
       </div>
 
@@ -138,21 +139,7 @@ export function TermsPage() {
         </div>
       )}
 
-      <footer className="mt-16 pt-8 border-t border-border">
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            Разработано{" "}
-            <a
-              href="https://vk.com/id503251431"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
-            >
-              Poseidon_Wagner
-            </a>
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

@@ -1,9 +1,9 @@
 "use client"
 
-import type React from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Shield, Zap, HandCoins as Handcuffs, Hammer, Sun as Gun, Target } from "lucide-react"
+import { Footer } from "@/components/footer"
 
 interface AmmunitionItem {
   name: string
@@ -237,21 +237,7 @@ return (
         </CardContent>
       </Card>
 
-      <footer className="mt-16 pt-8 border-t border-border">
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            Разработано{" "}
-            <a
-              href="https://vk.com/id503251431"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
-            >
-              Poseidon_Wagner
-            </a>
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

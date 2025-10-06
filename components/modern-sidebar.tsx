@@ -129,11 +129,11 @@ const renderMenuItem = (item: any) => {
 
       <aside
         className={cn(
-          "modern-sidebar fixed left-0 top-0 h-full w-80 z-50 transform transition-all duration-300 lg:relative lg:translate-x-0",
+          "modern-sidebar fixed left-0 top-0 h-screen w-80 z-50 transform transition-all duration-300 lg:sticky lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full min-h-0">
           <div className="p-6 border-b border-sidebar-border">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -162,8 +162,9 @@ const renderMenuItem = (item: any) => {
             </Button>
           </div>
 
-          <ScrollArea className="flex-1 px-4 py-4">
-            <nav className="space-y-1">
+          <ScrollArea className="flex-1 min-h-0">
+            <div className="px-4 py-4">
+              <nav className="space-y-1">
               {menuItems.map(renderMenuItem)}
 
               <div className="py-2">
@@ -205,6 +206,7 @@ const renderMenuItem = (item: any) => {
                 </>
               )}
             </nav>
+            </div>
           </ScrollArea>
 
           <div className="p-4 border-t border-sidebar-border">

@@ -106,16 +106,18 @@ export function GuvdGovWavePage() {
   return (
     <div className="flex-1 p-8 overflow-auto bg-background">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Гос волна ГУВД - ПА (Полицейская академия)</h1>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight">
+            Гос волна ГУВД - ПА (Полицейская академия)
+          </h1>
           <a
             href="https://province.status-journal.com/gov"
             target="_blank"
             rel="noopener noreferrer"
-            className="h-12 px-4 text-base bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
+            className="h-12 px-5 text-sm sm:text-base bg-white text-blue-600 hover:bg-blue-50 rounded-md font-medium shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center gap-2 border border-gray-200 hover:border-blue-300 whitespace-nowrap self-start sm:self-auto"
           >
             Перейти на Гос Волну
-            <ExternalLink className="h-4 w-4" />
+            <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
           </a>
         </div>
 
@@ -129,7 +131,7 @@ export function GuvdGovWavePage() {
                   <SelectTrigger className="h-12 border-border bg-muted text-foreground focus:ring-blue-700/50">
                     <SelectValue placeholder="Выберите время" />
                   </SelectTrigger>
-                  <SelectContent className="bg-muted text-foreground border-border">
+                  <SelectContent className="bg-popover border-border backdrop-blur-xl">
                     {timeSlots.map((slot) => (
                       <SelectItem key={slot} value={slot}>
                         {slot}
@@ -144,7 +146,7 @@ export function GuvdGovWavePage() {
                   <SelectTrigger className="h-12 border-border bg-muted text-foreground focus:ring-blue-700/50">
                     <SelectValue placeholder="Выберите город" />
                   </SelectTrigger>
-                  <SelectContent className="bg-muted text-foreground border-border">
+                  <SelectContent className="bg-popover border-border backdrop-blur-xl">
                     {cities.map((city) => (
                       <SelectItem key={city.name} value={city.name}>
                         {city.name}
@@ -305,17 +307,20 @@ export function GuvdGovWavePage() {
           </Card>
 
           <Card className="p-4 bg-muted border-border">
-            <div className="flex items-center justify-center gap-2 text-sm text-foreground">
-              <span>Разработчик:</span>
-              <a
-                href="https://vk.com/id503251431"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 font-medium"
-              >
-                Poseidon_Wagner
-                <ExternalLink className="h-3 w-3" />
-              </a>
+            <div className="flex flex-col items-center justify-center gap-1 text-sm text-foreground">
+              <p>Разработано для МВД Республики Провинция (РП)</p>
+              <div className="flex items-center gap-1">
+                <span>Разработчик:</span>
+                <a
+                  href="https://vk.com/id503251431"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 font-medium"
+                >
+                  Poseidon_Wagner
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
             </div>
           </Card>
         </div>

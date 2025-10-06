@@ -37,8 +37,9 @@ const vehicleImages: Record<string, string> = {
   'Вертолет "Maverick"': "https://i.imgur.com/WP05qBK.png",
 }
 
-export function GuvdVehiclesPage() {
+export default function GuvdVehiclesPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedCity, setSelectedCity] = useState<string>("Приволжск")
 
   const vehicleData: CityVehicles[] = [
     {
@@ -110,34 +111,50 @@ export function GuvdVehiclesPage() {
     return "bg-red-100 text-red-800"
   }
 
-  const openImageModal = (image: string) => {
-    setSelectedImage(image)
+  const openImageModal = (image: string | undefined) => {
+    if (image) setSelectedImage(image)
   }
 
   const closeImageModal = () => {
     setSelectedImage(null)
   }
 
+  // Получаем выбранный город или первый город по умолчанию
+  const currentCityData = vehicleData.find(city => city.city === selectedCity) || vehicleData[0]
+
   return (
     <div className="flex-1 p-8 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Автопарк ГУВД</h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mb-4">
             Транспортные средства, доступные сотрудникам ГУВД по рангам и должностям
           </p>
+          
+          <div className="flex flex-wrap gap-2 mt-4">
+            {vehicleData.map((city) => (
+              <Button
+                key={city.city}
+                variant={selectedCity === city.city ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCity(city.city)}
+                className="transition-all"
+              >
+                {city.city}
+              </Button>
+            ))}
+          </div>
         </div>
 
         <div className="grid gap-8">
-          {vehicleData.map((cityData) => (
-            <Card key={cityData.city} className="border-border">
-              <CardHeader className="bg-secondary/10">
-                <CardTitle className="text-xl text-primary">ГУВД г. {cityData.city}</CardTitle>
-                <CardDescription>Автопарк управления внутренних дел города {cityData.city}</CardDescription>
-              </CardHeader>
-              <CardContent className="p-6">
+          <Card key={currentCityData.city} className="border-border">
+            <CardHeader className="bg-secondary/10">
+              <CardTitle className="text-xl text-primary">ГУВД г. {currentCityData.city}</CardTitle>
+              <CardDescription>Автопарк управления внутренних дел города {currentCityData.city}</CardDescription>
+            </CardHeader>
+            <CardContent className="p-6">
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {cityData.vehicles.map((vehicle, index) => (
+                  {currentCityData.vehicles.map((vehicle, index) => (
                     <div
                       key={index}
                       className="flex flex-col justify-between h-full p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors"
@@ -170,7 +187,6 @@ export function GuvdVehiclesPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
         </div>
 
         <Card className="mt-8 border-primary/20 bg-primary/5">
@@ -187,39 +203,42 @@ export function GuvdVehiclesPage() {
           </CardContent>
         </Card>
 
-{selectedImage && (
-  <div
-    className="fixed inset-0 z-50 bg-black/80 flex justify-center items-center p-4"
-    onClick={(e) => e.target === e.currentTarget && setSelectedImage(null)}
-  >
-    <div className="relative max-w-4xl w-full bg-background border border-border rounded-lg shadow-lg p-6 animate-scale-in">
-      <button
-        className="absolute top-3 right-3 p-4 rounded-full bg-background/90 hover:bg-primary/30 text-foreground hover:text-primary transition-all duration-200 z-50 focus:outline-none focus:ring-2 focus:ring-primary"
-        onClick={() => setSelectedImage(null)}
-        aria-label="Закрыть изображение"
-      >
-        <X className="h-7 w-7" />
-      </button>
-      <div className="relative w-full h-[70vh] max-h-[800px]">
-        <Image
-          src={selectedImage}
-          alt="Увеличенное изображение ТС"
-          fill
-          className="object-contain rounded-md"
-          sizes="(max-width: 768px) 100vw, 1200px"
-          priority
-        />
-      </div>
-      <p className="text-center text-foreground mt-4 font-medium">
-        {Object.keys(vehicleImages).find((key) => vehicleImages[key] === selectedImage) || "Транспортное средство"}
-      </p>
-    </div>
-  </div>
-)}
+        {selectedImage && (
+          <div
+            className="fixed inset-0 z-50 bg-black/80 flex justify-center items-center p-4"
+            onClick={closeImageModal}
+          >
+            <div className="relative max-w-4xl w-full bg-background border border-border rounded-lg shadow-lg p-6 animate-scale-in">
+              <button
+                className="absolute top-3 right-3 p-4 rounded-full bg-background/90 hover:bg-primary/30 text-foreground hover:text-primary transition-all duration-200 z-50 focus:outline-none focus:ring-2 focus:ring-primary"
+                onClick={closeImageModal}
+                aria-label="Закрыть изображение"
+              >
+                <X className="h-7 w-7" />
+              </button>
+              <div className="relative w-full h-[70vh] max-h-[800px]">
+                <Image
+                  src={selectedImage}
+                  alt="Увеличенное изображение ТС"
+                  fill
+                  className="object-contain rounded-md"
+                  sizes="(max-width: 768px) 100vw, 1200px"
+                  priority
+                />
+              </div>
+              <p className="text-center text-foreground mt-4 font-medium">
+                {Object.keys(vehicleImages).find((key) => vehicleImages[key] === selectedImage) || "Транспортное средство"}
+              </p>
+            </div>
+          </div>
+        )}
+
         <footer className="mt-16 pt-8 border-t border-border">
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
-              Разработано{" "}
+              Разработано для МВД Республики Провинция (РП)
+              <br />
+              Разработчик:{" "}
               <a
                 href="https://vk.com/id503251431"
                 target="_blank"

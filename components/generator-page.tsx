@@ -16,6 +16,7 @@ import { ru } from "date-fns/locale"
 import { toast } from "react-hot-toast"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAuth } from "@/lib/auth-context"
+import { Footer } from "@/components/footer"
 
 interface Position {
   title: string
@@ -1135,21 +1136,7 @@ ${reqList}
         )}
       </div>
 
-      <footer className="mt-16 pt-8 border-t border-border">
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            Разработано{" "}
-            <a
-              href="https://vk.com/id503251431"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 font-medium transition-colors"
-            >
-              Poseidon_Wagner
-            </a>
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

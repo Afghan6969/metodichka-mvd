@@ -339,9 +339,12 @@ export function GuvdBindsPage() {
       </div>
 
       <footer className="mt-16 pt-8 border-t border-border">
-        <div className="text-center">
+        <div className="text-center space-y-2">
           <p className="text-sm text-muted-foreground">
-            Разработано{" "}
+            Разработано для МВД Республики Провинция (РП)
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Разработчик:{" "}
             <a
               href="https://vk.com/id503251431"
               target="_blank"

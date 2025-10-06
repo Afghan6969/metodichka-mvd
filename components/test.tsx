@@ -4,8 +4,9 @@ import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { ExternalLink, AlertCircle, Check, ChevronsUpDown } from "lucide-react"
+import { AlertCircle, Check, ChevronsUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Footer } from "@/components/footer"
 
 const punishments = [
   {
@@ -343,20 +344,7 @@ export default function GuvdExamplesPage() {
             ))}
           </div>
 
-          <Card className="p-4 bg-muted border-border">
-            <div className="flex items-center justify-center gap-2 text-sm text-foreground">
-              <span>Разработчик:</span>
-              <a
-                href="https://vk.com/id503251431"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 font-medium"
-              >
-                Poseidon_Wagner
-                <ExternalLink className="h-3 w-3" />
-              </a>
-            </div>
-          </Card>
+          <Footer />
         </div>
       </div>
     </div>

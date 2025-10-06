@@ -1,12 +1,13 @@
-"use client"
 
 import type React from "react"
 import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ChevronDown, ChevronRight, Target, Dumbbell, Zap, Clock } from "lucide-react"
-import { CopyButton } from "@/components/copy-button"
+import { Badge } from "@/components/ui/badge"
+import { Target, Clock, ChevronDown, ChevronRight, Zap, Dumbbell } from "lucide-react"
 import { SearchBar } from "@/components/search-bar"
+import { CopyButton } from "@/components/copy-button"
+import { Footer } from "@/components/footer"
 
 interface Training {
   id: string
@@ -274,22 +275,7 @@ export function TrainingPage() {
           <p className="text-muted-foreground">Тренировки не найдены по запросу "{searchQuery}"</p>
         </div>
       )}
-
-      <footer className="mt-16 pt-8 border-t border-border">
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            Разработано{" "}
-            <a
-              href="https://vk.com/id503251431"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 font-medium transition-colors"
-            >
-              Poseidon_Wagner
-            </a>
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

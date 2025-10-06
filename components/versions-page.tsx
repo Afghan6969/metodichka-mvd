@@ -3,6 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, GitBranch, Plus, Bug, Zap } from "lucide-react"
+import { Footer } from "@/components/footer"
 
 export function VersionsPage() {
   const versions = [
@@ -159,17 +160,7 @@ export function VersionsPage() {
 
         {/* Footer */}
         <div className="mt-16 pt-8 border-t border-border">
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground mb-2">Разработано для МВД Республики Провинция (РП)</p>
-            <a
-              href="https://vk.com/id503251431"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
-            >
-              Разработчик: Poseidon_Wagner
-            </a>
-          </div>
+          <Footer />
         </div>
       </div>
     </div>

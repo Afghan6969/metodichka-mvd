@@ -113,9 +113,16 @@ export async function POST(req: NextRequest) {
         performed_by_id: currentUser.id,
         performed_by_nickname: currentUser.nickname,
         details: JSON.stringify({
-          nickname: oldUserData.nickname,
-          previous: { username: oldUserData.username, role: oldUserData.role },
-          next: { username, role: normalizedRole },
+          previous: { 
+            nickname: oldUserData.nickname,
+            username: oldUserData.username, 
+            role: oldUserData.role 
+          },
+          next: { 
+            nickname: nickname || oldUserData.nickname,
+            username, 
+            role: normalizedRole 
+          },
           changes,
         }),
         ip_address: ip,

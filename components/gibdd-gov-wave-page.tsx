@@ -112,7 +112,7 @@ export function GibddGovWavePage() {
             href="https://province.status-journal.com/gov"
             target="_blank"
             rel="noopener noreferrer"
-            className="h-12 px-4 text-base bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
+            className="h-12 px-6 text-base bg-white text-blue-600 hover:bg-blue-50 rounded-md font-medium shadow-sm hover:shadow transition-all duration-200 flex items-center gap-2 border border-gray-200 hover:border-blue-300"
           >
             Перейти на Гос Волну
             <ExternalLink className="h-4 w-4" />
@@ -129,7 +129,7 @@ export function GibddGovWavePage() {
                   <SelectTrigger className="h-12 border-border bg-muted text-foreground focus:ring-blue-700/50">
                     <SelectValue placeholder="Выберите время" />
                   </SelectTrigger>
-                  <SelectContent className="bg-muted text-foreground border-border">
+                  <SelectContent className="bg-popover border-border backdrop-blur-xl">
                     {timeSlots.map((slot) => (
                       <SelectItem key={slot} value={slot}>
                         {slot}
@@ -144,7 +144,7 @@ export function GibddGovWavePage() {
                   <SelectTrigger className="h-12 border-border bg-muted text-foreground focus:ring-blue-700/50">
                     <SelectValue placeholder="Выберите город" />
                   </SelectTrigger>
-                  <SelectContent className="bg-muted text-foreground border-border">
+                  <SelectContent className="bg-popover border-border backdrop-blur-xl">
                     {cities.map((city) => (
                       <SelectItem key={city.name} value={city.name}>
                         {city.name}
@@ -305,17 +305,20 @@ export function GibddGovWavePage() {
           </Card>
 
           <Card className="p-4 bg-muted border-border">
-            <div className="flex items-center justify-center gap-2 text-sm text-foreground">
-              <span>Разработчик:</span>
-              <a
-                href="https://vk.com/id503251431"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 font-medium"
-              >
-                Poseidon_Wagner
-                <ExternalLink className="h-3 w-3" />
-              </a>
+            <div className="flex flex-col items-center justify-center gap-1 text-sm text-foreground">
+              <p>Разработано для МВД Республики Провинция (РП)</p>
+              <div className="flex items-center gap-1">
+                <span>Разработчик:</span>
+                <a
+                  href="https://vk.com/id503251431"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 font-medium"
+                >
+                  Poseidon_Wagner
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
             </div>
           </Card>
         </div>

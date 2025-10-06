@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Car, Truck, Plane, Bike, X, Eye } from "lucide-react"
@@ -36,7 +36,7 @@ const vehicleImages: Record<string, string> = {
   'Вертолет "Maverick"': "https://i.imgur.com/WP05qBK.png",
 }
 
-export default function GibddVehiclesPage() {
+export function GibddVehiclesPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [selectedCity, setSelectedCity] = useState<string>("Приволжск")
 
@@ -117,27 +117,12 @@ export default function GibddVehiclesPage() {
     setSelectedImage(null)
   }
 
+  // Получаем выбранный город или первый город по умолчанию
   const currentCityData = vehicleData.find(city => city.city === selectedCity) || vehicleData[0]
 
   return (
     <div className="flex-1 p-8 bg-background">
       <div className="max-w-6xl mx-auto">
-        <style jsx global>{`
-          .animate-scale-in {
-            animation: scale-in 0.3s ease-out;
-          }
-          @keyframes scale-in {
-            from {
-              transform: scale(0.8);
-              opacity: 0;
-            }
-            to {
-              transform: scale(1);
-              opacity: 1;
-            }
-          }
-        `}</style>
-        
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Автопарк ГИБДД</h1>
           <p className="text-muted-foreground mb-4">
@@ -163,9 +148,7 @@ export default function GibddVehiclesPage() {
           <Card key={currentCityData.city} className="border-border">
             <CardHeader className="bg-secondary/10">
               <CardTitle className="text-xl text-primary">ГИБДД г. {currentCityData.city}</CardTitle>
-              <CardDescription>
-                Автопарк Государственной инспекции безопасности дорожного движения города {currentCityData.city}
-              </CardDescription>
+              <CardDescription>Автопарк Государственной инспекции безопасности дорожного движения города {currentCityData.city}</CardDescription>
             </CardHeader>
             <CardContent className="p-6">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -250,11 +233,10 @@ export default function GibddVehiclesPage() {
         )}
 
         <footer className="mt-16 pt-8 border-t border-border">
-          <div className="text-center space-y-2">
+          <div className="text-center">
             <p className="text-sm text-muted-foreground">
               Разработано для МВД Республики Провинция (РП)
-            </p>
-            <p className="text-sm text-muted-foreground">
+              <br />
               Разработчик:{" "}
               <a
                 href="https://vk.com/id503251431"
@@ -268,6 +250,22 @@ export default function GibddVehiclesPage() {
           </div>
         </footer>
       </div>
+
+      <style jsx>{`
+        .animate-scale-in {
+          animation: scale-in 0.3s ease-out;
+        }
+        @keyframes scale-in {
+          from {
+            transform: scale(0.8);
+            opacity: 0;
+          }
+          to {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   )
 }
