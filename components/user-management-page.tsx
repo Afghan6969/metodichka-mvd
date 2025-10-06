@@ -562,7 +562,7 @@ export function UserManagementPage() {
 
         {/* History Dialog */}
         <Dialog open={isHistoryDialogOpen} onOpenChange={setIsHistoryDialogOpen}>
-          <DialogContent className="max-w-3xl bg-card">
+          <DialogContent className="max-w-3xl bg-card border-border backdrop-blur-xl">
             <DialogHeader>
               <DialogTitle>
                 История изменений: {users.find((u) => u.id === historyUserId)?.nickname || "Пользователь"}

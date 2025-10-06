@@ -193,7 +193,7 @@ export function UserLogs({ logs, actionDisplayNames, onRollback, showRollback = 
 
       {/* Диалог с подробной информацией */}
       <Dialog open={!!selectedLog} onOpenChange={() => setSelectedLog(null)}>
-        <DialogContent className="max-w-2xl bg-card">
+        <DialogContent className="max-w-2xl bg-card border-border backdrop-blur-xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <span className={`text-2xl ${getActionColor(selectedLog?.action || "")}`}>
