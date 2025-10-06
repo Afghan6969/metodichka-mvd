@@ -332,10 +332,12 @@ say На этом лекция на тему "Первая медицинска�
                     <CollapsibleContent>
                       <div className="mt-3 bg-muted/50 p-4 rounded-lg border border-border">
                         {lecture.content.split("\n").map((line, index) => (
-                          <div key={index} className="flex items-start gap-2 mb-2 last:mb-0">
+                          <div key={index} className="flex items-start gap-2 mb-1 last:mb-0 group">
                             <div className="flex-1 font-mono text-sm text-foreground">{line}</div>
                             {line.trim().startsWith("say ") && (
-                              <CopyButton text={line.trim()} className="flex-shrink-0 mt-0.5" />
+                              <div className="flex-shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <CopyButton text={line.trim()} />
+                              </div>
                             )}
                           </div>
                         ))}

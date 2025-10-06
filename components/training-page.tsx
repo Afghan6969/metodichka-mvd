@@ -212,10 +212,12 @@ export function TrainingPage() {
                     <CollapsibleContent>
                       <div className="mt-3 bg-muted/50 p-4 rounded-lg border border-border">
                         {training.content.map((line, index) => (
-                          <div key={index} className="flex items-start gap-2 mb-2 last:mb-0">
+                          <div key={index} className="flex items-start gap-2 mb-1 last:mb-0 group">
                             <div className="flex-1 font-mono text-sm text-foreground">{line}</div>
                             {line.trim().startsWith("say ") && (
-                              <CopyButton text={line.trim()} className="flex-shrink-0 mt-0.5" />
+                              <div className="flex-shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <CopyButton text={line.trim()} />
+                              </div>
                             )}
                           </div>
                         ))}
@@ -260,10 +262,14 @@ export function TrainingPage() {
             <span className="text-green-600 dark:text-green-400 text-lg">✅</span>
             <div className="w-full">
               <div className="flex items-start gap-2">
-                <div className="flex-1 font-mono text-sm text-foreground bg-background p-4 rounded-lg border border-border">
-                  say На этом наши тренировки подошли к концу!
+                <div className="w-full relative group">
+                  <div className="font-mono text-sm text-foreground bg-background p-4 rounded-lg border border-border">
+                    say На этом наши тренировки подошли к концу!
+                  </div>
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <CopyButton text="say На этом наши тренировки подошли к концу!" />
+                  </div>
                 </div>
-                <CopyButton text="say На этом наши тренировки подошли к концу!" className="flex-shrink-0 mt-4" />
               </div>
             </div>
           </div>
