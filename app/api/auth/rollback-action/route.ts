@@ -6,6 +6,20 @@ import { createClient as createServerClient } from '@supabase/supabase-js';
 const canManageUsersRole = (role: string) =>
   ["root", "gs-gibdd", "pgs-gibdd", "gs-guvd", "pgs-guvd"].includes(role);
 
+// Русские названия ролей
+const roleDisplayNames: Record<string, string> = {
+  root: "Владелец",
+  "gs-gibdd": "ГС ГИБДД",
+  "pgs-gibdd": "ПГС ГИБДД",
+  "gs-guvd": "ГС ГУВД",
+  "pgs-guvd": "ПГС ГУВД",
+  "ss-gibdd": "СС ГИБДД",
+  "ss-guvd": "СС ГУВД",
+  gibdd: "ГИБДД",
+  guvd: "ГУВД",
+  none: "Нет роли",
+};
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => null);
@@ -136,31 +150,52 @@ export async function POST(req: NextRequest) {
           const updates: any = {};
           const changes: string[] = [];
 
-          if (details.previous && details.next) {
-            if (details.previous.nickname && details.previous.nickname !== details.next.nickname) {
+          if (details.previous) {
+            // Никнейм
+            if (details.previous.nickname !== undefined && details.next && details.previous.nickname !== details.next.nickname) {
               updates.nickname = details.previous.nickname;
               changes.push(`Никнейм: ${details.next.nickname} → ${details.previous.nickname}`);
             }
-            if (details.previous.username && details.previous.username !== details.next.username) {
+            // Логин
+            if (details.previous.username !== undefined && details.next && details.previous.username !== details.next.username) {
               updates.username = details.previous.username;
               changes.push(`Логин: ${details.next.username} → ${details.previous.username}`);
             }
-            if (details.previous.role && details.previous.role !== details.next.role) {
+            // Роль
+            if (details.previous.role !== undefined && details.next && details.previous.role !== details.next.role) {
               updates.role = details.previous.role;
-              changes.push(`Роль: ${details.next.role} → ${details.previous.role}`);
+              const oldRoleName = roleDisplayNames[details.next.role] || details.next.role;
+              const newRoleName = roleDisplayNames[details.previous.role] || details.previous.role;
+              changes.push(`Роль: ${oldRoleName} → ${newRoleName}`);
             }
           }
 
-          if (Object.keys(updates).length > 0) {
-            const { error: updateError } = await supabase
-              .from("users")
-              .update(updates)
-              .eq("id", logData.target_user_id);
-
-            if (!updateError) {
-              rollbackDetails = `Откат изменения для ${logData.target_user_nickname}: ${changes.join(", ")}`;
-              rollbackSuccess = true;
+          // Пароль нельзя откатить (он хешируется и не сохраняется в логах)
+          if (details.changes && Array.isArray(details.changes)) {
+            const hasPasswordChange = details.changes.some((c: string) => c.includes("password"));
+            if (hasPasswordChange) {
+              changes.push("Пароль: изменён (откат невозможен)");
             }
+          }
+
+          if (Object.keys(updates).length > 0 || changes.length > 0) {
+            if (Object.keys(updates).length > 0) {
+              const { error: updateError } = await supabase
+                .from("users")
+                .update(updates)
+                .eq("id", logData.target_user_id);
+
+              if (updateError) {
+                console.error("[Rollback] Update error:", updateError);
+                break;
+              }
+            }
+
+            rollbackDetails = `Откат изменения для ${logData.target_user_nickname}: ${changes.join(", ")}`;
+            rollbackSuccess = true;
+          } else {
+            rollbackDetails = `Нет изменений для отката у ${logData.target_user_nickname}`;
+            rollbackSuccess = false;
           }
         } catch (e) {
           console.error("[Rollback] Failed to parse update_user details:", e);
