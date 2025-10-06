@@ -19,14 +19,32 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    // Проверяем права доступа (только те, кто может управлять пользователями)
-    const allowedRoles = ['root', 'gs-gibdd', 'pgs-gibdd', 'gs-guvd', 'pgs-guvd'];
-    if (!decoded.role || !allowedRoles.includes(decoded.role)) {
-      console.error('Insufficient permissions:', decoded.role);
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    const supabase = await createClient();
+
+    // Получаем актуальную роль из базы данных
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('role, status')
+      .eq('id', decoded.id)
+      .single();
+
+    if (userError || !userData) {
+      console.error('User not found:', userError);
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const supabase = await createClient();
+    // Проверяем статус пользователя
+    if (userData.status === 'deactivated') {
+      console.error('User is deactivated:', decoded.id);
+      return NextResponse.json({ error: 'Account deactivated' }, { status: 403 });
+    }
+
+    // Проверяем права доступа (только те, кто может управлять пользователями)
+    const allowedRoles = ['root', 'gs-gibdd', 'pgs-gibdd', 'gs-guvd', 'pgs-guvd'];
+    if (!userData.role || !allowedRoles.includes(userData.role)) {
+      console.error('Insufficient permissions:', userData.role);
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
     const { data, error } = await supabase
       .from('user_logs')
       .select('*')
