@@ -24,7 +24,7 @@ import {
 } from "@/components/user-management"
 
 export function UserManagementPage() {
-  const { currentUser, users, userLogs, addUser, removeUser, restoreUser, updateUser, canManageUsers } = useAuth()
+  const { currentUser, users, userLogs, addUser, removeUser, restoreUser, updateUser, canManageUsers, rollbackAction } = useAuth()
   
   // States
   const [error, setError] = useState("")
@@ -157,7 +157,6 @@ export function UserManagementPage() {
     } catch (err) {
       setError("Ошибка при деактивации пользователя")
     } finally {
-      setIsLoading(false)
       setIsDeleteDialogOpen(false)
       setUserToDelete(null)
     }
@@ -186,6 +185,24 @@ export function UserManagementPage() {
       setIsLoading(false)
       setIsRestoreDialogOpen(false)
       setUserToRestore(null)
+    }
+  }
+
+  const handleRollback = async (log: any) => {
+    setIsLoading(true)
+    setError("")
+    setSuccess("")
+    try {
+      const result = await rollbackAction(log.id)
+      if (result.success) {
+        setSuccess(result.message || "Действие успешно откачено")
+      } else {
+        setError(result.error || "Не удалось откатить действие")
+      }
+    } catch (err) {
+      setError("Ошибка при откате действия")
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -238,7 +255,7 @@ export function UserManagementPage() {
       const user = users.find((u) => u.id === userId)
       if (!user) continue
 
-      const result = await updateUser(userId, user.username, undefined, batchRole)
+      const result = await updateUser(userId, user.nickname, user.username, undefined, batchRole)
       if (result) successCount++
       else errorCount++
     }
@@ -521,7 +538,13 @@ export function UserManagementPage() {
                       </div>
                     ) : (
                       <>
-                        <UserLogs logs={currentLogs} actionDisplayNames={actionDisplayNames} currentUserRole={currentUser?.role} />
+                        <UserLogs 
+                          logs={currentLogs} 
+                          actionDisplayNames={actionDisplayNames} 
+                          currentUserRole={currentUser?.role}
+                          onRollback={handleRollback}
+                          showRollback={true}
+                        />
                         <Pagination
                           currentPage={currentPageLogs}
                           totalPages={totalLogPages}

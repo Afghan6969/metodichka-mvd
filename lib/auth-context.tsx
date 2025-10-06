@@ -62,6 +62,7 @@ interface AuthContextType {
   canManageUsers: () => boolean;
   refreshUsers: () => Promise<void>;
   verifyCurrentUserRole: () => Promise<boolean>;
+  rollbackAction: (logId: number) => Promise<{ success: boolean; message?: string; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -384,6 +385,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return ["root", "gs-gibdd", "pgs-gibdd", "gs-guvd", "pgs-guvd"].includes(role);
   };
 
+  // === ОТКАТ ДЕЙСТВИЯ ===
+  const rollbackAction = async (logId: number): Promise<{ success: boolean; message?: string; error?: string }> => {
+    try {
+      if (!currentUser || !canManageUsers()) {
+        return { success: false, error: "Недостаточно прав" };
+      }
+
+      const res = await fetch("/api/auth/rollback-action", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ logId }),
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        return { success: false, error: data.error || "Ошибка отката" };
+      }
+
+      await refreshUsers();
+      await refreshUserLogs();
+      return { success: true, message: data.message };
+    } catch (err) {
+      console.error("[Auth] rollbackAction error:", err);
+      return { success: false, error: "Неожиданная ошибка" };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -400,6 +430,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         canManageUsers,
         refreshUsers,
         verifyCurrentUserRole,
+        rollbackAction,
       }}
     >
       {isLoading ? <div className="flex items-center justify-center h-screen">Загрузка...</div> : children}
