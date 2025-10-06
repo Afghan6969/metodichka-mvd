@@ -36,7 +36,7 @@ export function ConfirmationDialogs({
     <>
       {/* Диалог деактивации */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={onDeleteCancel}>
-        <AlertDialogContent className="bg-card">
+        <AlertDialogContent className="bg-card border-border backdrop-blur-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Подтверждение деактивации</AlertDialogTitle>
             <AlertDialogDescription>
@@ -58,7 +58,7 @@ export function ConfirmationDialogs({
 
       {/* Диалог восстановления */}
       <AlertDialog open={isRestoreDialogOpen} onOpenChange={onRestoreCancel}>
-        <AlertDialogContent className="bg-card">
+        <AlertDialogContent className="bg-card border-border backdrop-blur-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Подтверждение восстановления</AlertDialogTitle>
             <AlertDialogDescription>

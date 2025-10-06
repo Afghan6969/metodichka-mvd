@@ -134,11 +134,21 @@ export async function POST(req: NextRequest) {
         try {
           const details = JSON.parse(logData.details);
           const updates: any = {};
+          const changes: string[] = [];
 
-          if (details.previous) {
-            if (details.previous.nickname) updates.nickname = details.previous.nickname;
-            if (details.previous.username) updates.username = details.previous.username;
-            if (details.previous.role) updates.role = details.previous.role;
+          if (details.previous && details.next) {
+            if (details.previous.nickname && details.previous.nickname !== details.next.nickname) {
+              updates.nickname = details.previous.nickname;
+              changes.push(`Никнейм: ${details.next.nickname} → ${details.previous.nickname}`);
+            }
+            if (details.previous.username && details.previous.username !== details.next.username) {
+              updates.username = details.previous.username;
+              changes.push(`Логин: ${details.next.username} → ${details.previous.username}`);
+            }
+            if (details.previous.role && details.previous.role !== details.next.role) {
+              updates.role = details.previous.role;
+              changes.push(`Роль: ${details.next.role} → ${details.previous.role}`);
+            }
           }
 
           if (Object.keys(updates).length > 0) {
@@ -148,8 +158,7 @@ export async function POST(req: NextRequest) {
               .eq("id", logData.target_user_id);
 
             if (!updateError) {
-              const changedFields = Object.keys(updates).join(", ");
-              rollbackDetails = `Откат изменения: восстановлены поля (${changedFields}) для ${logData.target_user_nickname}`;
+              rollbackDetails = `Откат изменения для ${logData.target_user_nickname}: ${changes.join(", ")}`;
               rollbackSuccess = true;
             }
           }
