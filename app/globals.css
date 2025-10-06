@@ -250,16 +250,15 @@
     text-wrap: pretty;
   }
 
-  /* Dialogs and popovers - непрозрачные */
+  /* Dialogs - полупрозрачные с размытием */
   [role="dialog"],
-  [role="alertdialog"],
-  [data-radix-popper-content-wrapper] {
+  [role="alertdialog"] {
     background: hsl(var(--card)) !important;
   }
 
-  /* Select content - непрозрачный */
-  [role="listbox"],
-  [data-radix-select-content] {
-    background: hsl(var(--popover)) !important;
+  /* Backdrop blur для всех элементов с этим классом */
+  .backdrop-blur-xl {
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
   }
 }

@@ -185,7 +185,7 @@ const PenaltyCalculator = () => {
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="w-full justify-between bg-transparent"
+              className="w-full justify-between h-12 border-border bg-muted text-foreground focus:ring-blue-700/50"
               onClick={() => setOpen(!open)}
             >
               {selectedViolations.length === 0 ? "Выберите статьи..." : `Выбрано статей: ${selectedViolations.length}`}
@@ -193,7 +193,7 @@ const PenaltyCalculator = () => {
             </Button>
 
             {open && (
-              <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-md shadow-lg">
+              <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-popover border border-border backdrop-blur-xl rounded-md shadow-lg">
                 <Command>
                   <CommandInput placeholder="Поиск статей..." />
                   <CommandEmpty>Статьи не найдены.</CommandEmpty>
@@ -265,7 +265,7 @@ const PenaltyCalculator = () => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-4 w-4 p-0 hover:bg-transparent"
+                            className="h-4 w-4 p-0 hover:h-12 border-border bg-muted text-foreground focus:ring-blue-700/50"
                             onClick={() => {
                               setSelectedViolations((prev) => prev.filter((v) => v !== violationKey))
                               setSelectedPenalties((prev) => {
@@ -337,10 +337,10 @@ const PenaltyCalculator = () => {
                                 }
                               }}
                             >
-                              <SelectTrigger className="text-xs bg-background border-gray-200">
+                              <SelectTrigger className="text-xs h-12 border-border bg-muted text-foreground focus:ring-blue-700/50">
                                 <SelectValue placeholder="Выбрать наказание" />
                               </SelectTrigger>
-                              <SelectContent>
+                              <SelectContent className="bg-popover border-border">
                                 <SelectItem value="default">Выбрать наказание</SelectItem>
                                 {violation.alternatives.map((alt) => (
                                   <SelectItem key={alt.name} value={alt.name}>
@@ -363,10 +363,10 @@ const PenaltyCalculator = () => {
                                   }))
                                 }
                               >
-                                <SelectTrigger className="text-xs bg-background border-gray-200">
+                                <SelectTrigger className="text-xs h-12 border-border bg-muted text-foreground focus:ring-blue-700/50">
                                   <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="bg-popover border-border">
                                   {Array.from(
                                     { length: (selectedAlt.fineRange.max - selectedAlt.fineRange.min) / 500 + 1 },
                                     (_, i) => {
@@ -396,10 +396,10 @@ const PenaltyCalculator = () => {
                                   }))
                                 }}
                               >
-                                <SelectTrigger className="text-xs bg-background border-gray-200">
+                                <SelectTrigger className="text-xs h-12 border-border bg-muted text-foreground focus:ring-blue-700/50">
                                   <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="bg-popover border-border">
                                   {Array.from(
                                     { length: ((selectedAlt?.arrestRange || violation.arrestRange)!.max - (selectedAlt?.arrestRange || violation.arrestRange)!.min) + 1 },
                                     (_, i) => {
@@ -432,7 +432,7 @@ const PenaltyCalculator = () => {
                               }))
                             }}
                           >
-                            <SelectTrigger className="text-xs bg-background border-gray-200">
+                            <SelectTrigger className="text-xs h-12 border-border bg-muted text-foreground focus:ring-blue-700/50">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -558,3 +558,6 @@ const PenaltyCalculator = () => {
 
 export { PenaltyCalculator }
 export default PenaltyCalculator
+
+
+

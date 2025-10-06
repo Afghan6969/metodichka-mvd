@@ -2,10 +2,8 @@
 
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { AlertCircle, Check, ChevronsUpDown } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { AlertCircle } from "lucide-react"
 import { Footer } from "@/components/footer"
 
 const punishments = [
@@ -131,8 +129,6 @@ const punishments = [
 export default function GuvdExamplesPage() {
   const [selectedPunishment, setSelectedPunishment] = useState("")
   const [selectedVariant, setSelectedVariant] = useState("")
-  const [openPunishment, setOpenPunishment] = useState(false)
-  const [openVariant, setOpenVariant] = useState(false)
 
   const selectedPunishmentData = punishments.find((p) => p.name === selectedPunishment)
   const selectedData = selectedPunishmentData?.variants
@@ -155,49 +151,21 @@ export default function GuvdExamplesPage() {
             <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2 text-muted-foreground">Выберите наказание</label>
-                <div className="relative w-full">
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={openPunishment}
-                    className="w-full justify-between bg-transparent text-foreground border-border"
-                    onClick={() => setOpenPunishment(!openPunishment)}
-                  >
-                    {selectedPunishment || "Выберите наказание..."}
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                  </Button>
-                  {openPunishment && (
-                    <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-muted border border-border rounded-md shadow-lg">
-                      <Command>
-                        <CommandInput placeholder="Поиск наказания..." />
-                        <CommandEmpty>Наказания не найдены.</CommandEmpty>
-                        <CommandList className="max-h-[200px] overflow-y-auto">
-                          <CommandGroup>
-                            {punishments.map((punishment) => (
-                              <CommandItem
-                                key={punishment.name}
-                                value={punishment.name}
-                                onSelect={() => {
-                                  setSelectedPunishment(punishment.name)
-                                  setSelectedVariant("")
-                                  setOpenPunishment(false)
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    selectedPunishment === punishment.name ? "opacity-100" : "opacity-0"
-                                  )}
-                                />
-                                {punishment.name}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </div>
-                  )}
-                </div>
+                <Select value={selectedPunishment} onValueChange={(value) => {
+                  setSelectedPunishment(value)
+                  setSelectedVariant("")
+                }}>
+                  <SelectTrigger className="h-12 border-border bg-muted text-foreground focus:ring-blue-700/50">
+                    <SelectValue placeholder="Выберите наказание" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover border-border backdrop-blur-xl">
+                    {punishments.map((punishment) => (
+                      <SelectItem key={punishment.name} value={punishment.name}>
+                        {punishment.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </Card>
@@ -208,48 +176,18 @@ export default function GuvdExamplesPage() {
               <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-2 text-muted-foreground">Выберите пример</label>
-                  <div className="relative w-full">
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={openVariant}
-                      className="w-full justify-between bg-transparent text-foreground border-border"
-                      onClick={() => setOpenVariant(!openVariant)}
-                    >
-                      {selectedVariant || "Выберите пример..."}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                    {openVariant && (
-                      <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-muted border border-border rounded-md shadow-lg">
-                        <Command>
-                          <CommandInput placeholder="Поиск примера..." />
-                          <CommandEmpty>Примеры не найдены.</CommandEmpty>
-                          <CommandList className="max-h-[200px] overflow-y-auto">
-                            <CommandGroup>
-                              {selectedPunishmentData.variants.map((variant) => (
-                                <CommandItem
-                                  key={variant.label}
-                                  value={variant.label}
-                                  onSelect={() => {
-                                    setSelectedVariant(variant.label)
-                                    setOpenVariant(false)
-                                  }}
-                                >
-                                  <Check
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      selectedVariant === variant.label ? "opacity-100" : "opacity-0"
-                                    )}
-                                  />
-                                  {variant.label}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </div>
-                    )}
-                  </div>
+                  <Select value={selectedVariant} onValueChange={setSelectedVariant}>
+                    <SelectTrigger className="h-12 border-border bg-muted text-foreground focus:ring-blue-700/50">
+                      <SelectValue placeholder="Выберите пример" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover border-border backdrop-blur-xl">
+                      {selectedPunishmentData.variants.map((variant) => (
+                        <SelectItem key={variant.label} value={variant.label}>
+                          {variant.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </Card>
