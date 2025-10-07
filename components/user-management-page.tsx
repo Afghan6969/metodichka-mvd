@@ -4,8 +4,9 @@ import React, { useState, useEffect } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Users, Trash2, AlertCircle, History, Loader2 } from "lucide-react"
+import { Users, Trash2, AlertCircle, History, Loader2, RefreshCw } from "lucide-react"
 import { useAuth, type UserRole } from "@/lib/auth-context"
+import { PageHeader } from "@/components/page-header"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -24,7 +25,7 @@ import {
 } from "@/components/user-management"
 
 export function UserManagementPage() {
-  const { currentUser, users, userLogs, addUser, removeUser, restoreUser, updateUser, canManageUsers, rollbackAction } = useAuth()
+  const { currentUser, users, userLogs, addUser, removeUser, restoreUser, updateUser, canManageUsers, rollbackAction, refreshUsers } = useAuth()
   
   // States
   const [error, setError] = useState("")
@@ -311,6 +312,12 @@ export function UserManagementPage() {
     )
   }
 
+  const handleRefresh = async () => {
+    setIsLoading(true)
+    await refreshUsers()
+    setIsLoading(false)
+  }
+
   // Filter and paginate users
   const filteredUsers = users.filter(
     (user) =>
@@ -359,13 +366,16 @@ export function UserManagementPage() {
   ).length
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={Users}
+        title="Управление пользователями"
+        description="Добавление, редактирование и управление пользователями системы"
+        badge={`${users.filter(u => u.status === 'active').length} активных`}
+      />
+
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Управление пользователями</h1>
-            <p className="text-muted-foreground mt-1">Добавление, редактирование и управление пользователями системы</p>
-          </div>
+        <div className="flex items-center justify-end">
           <AddUserForm
             onAddUser={handleAddUser}
             availableRoles={getAvailableRoles()}
@@ -399,6 +409,16 @@ export function UserManagementPage() {
                         Список пользователей
                       </CardTitle>
                       <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          onClick={handleRefresh}
+                          className="rounded-lg px-4 py-2"
+                          size="sm"
+                          disabled={isLoading}
+                          title="Обновить список"
+                        >
+                          <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                        </Button>
                         <Button
                           variant={!showDeactivated ? "default" : "outline"}
                           onClick={() => setShowDeactivated(false)}

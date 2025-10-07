@@ -21,7 +21,7 @@ import { ResourcesPage } from "@/components/resources-page"
 import { PenaltyCalculator } from "@/components/penalty-calculator"
 import { GlobalSearch } from "@/components/global-search"
 import { Button } from "@/components/ui/button"
-import { Shield, ArrowRight } from "lucide-react"
+import { Shield, ArrowRight, BookOpen, Target, Keyboard, Car, Award, AlertCircle } from "lucide-react"
 import { PositionsPage } from "@/components/positions-page"
 import { GuvdPositionsPage } from "@/components/guvd-positions-page"
 import GuvdExamplesPage from "@/components/test"
@@ -99,56 +99,113 @@ export default function Home() {
       default:
         return (
           <div className="flex-1">
-            <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/30 to-background"></div>
-              <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=80 height=80 viewBox=0 0 80 80 xmlns=http://www.w3.org/2000/svg%3E%3Cg fill=none fillRule=evenodd%3E%3Cg fill=%23000000 fillOpacity=0.02%3E%3Cpath d=M0 0h80v80H0V0zm20 20v40h40V20H20zm20 35a15 15 0 1 1 0-30 15 15 0 0 1 0 30z/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
+            <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=80 height=80 viewBox=0 0 80 80 xmlns=http://www.w3.org/2000/svg%3E%3Cg fill=none fillRule=evenodd%3E%3Cg fill=%23000000 fillOpacity=0.02%3E%3Cpath d=M0 0h80v80H0V0zm20 20v40h40V20H20zm20 35a15 15 0 1 1 0-30 15 15 0 0 1 0 30z/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
 
-              <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
-                <div className="mb-12">
-                  <div className="inline-flex items-center gap-6 mb-8">
-                    <div className="w-24 h-24 bg-primary rounded-3xl flex items-center justify-center shadow-2xl">
-                      <Shield className="h-12 w-12 text-primary-foreground" />
-                    </div>
-                    <div className="text-left">
-                      <h1 className="text-6xl font-bold text-foreground mb-2 text-balance">МВД РП</h1>
-                      <p className="text-muted-foreground text-2xl font-medium">Методические материалы</p>
+              <div className="relative z-10 max-w-7xl mx-auto px-6 py-16">
+                {/* Hero */}
+                <div className="text-center mb-20">
+                  <div className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-primary/10 rounded-2xl border-2 border-primary/30">
+                    <div className="police-beacon"></div>
+                    <Shield className="h-6 w-6 text-primary" />
+                    <span className="text-sm font-black uppercase tracking-widest text-primary">МВД РЕСПУБЛИКИ ПРОВИНЦИЯ</span>
+                  </div>
+                  
+                  <h1 className="mb-6 text-5xl lg:text-7xl font-black uppercase tracking-tight text-foreground">
+                    Методическое пособие МВД
+                  </h1>
+                  
+                  <p className="text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
+                    Полное руководство для сотрудников ГИБДД и ГУВД Республики Провинция.
+                    <br/>
+                    Лекции, тренировки, бинды, должности, транспорт и инструменты для работы.
+                  </p>
+
+                  {/* Important Notice */}
+                  <div className="max-w-3xl mx-auto mb-8">
+                    <div className="military-card bg-orange-500/10 border-orange-500/30">
+                      <div className="flex items-start gap-4 p-5">
+                        <AlertCircle className="h-6 w-6 text-orange-600 dark:text-orange-500 flex-shrink-0 mt-1" />
+                        <div className="text-left space-y-3">
+                          <h3 className="font-black text-lg text-orange-600 dark:text-orange-500 uppercase">Важное уточнение</h3>
+                          <div className="space-y-2 text-sm text-muted-foreground">
+                            <p>• Данная методичка может содержать неточности или устаревшую информацию</p>
+                            <p>• Материалы служат основой для изучения, но не являются окончательным источником</p>
+                            <p>• При возникновении спорных вопросов обращайтесь к актуальным регламентам</p>
+                            <p>• Администрация не несет ответственности за возможные ошибки в содержании</p>
+                            <p>• При обнаружении неточности сообщите об этом разработчику</p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="max-w-4xl mx-auto mb-16">
-                  <h2 className="text-3xl text-foreground mb-6 font-medium text-balance">
-                    Полная база знаний для сотрудников
-                  </h2>
-                  <p className="text-xl text-muted-foreground leading-relaxed text-pretty">
-                    Министерства внутренних дел Республики Провинции
-                  </p>
+                {/* Stats */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
+                  {[
+                    { icon: BookOpen, label: "Лекций", value: "15+" },
+                    { icon: Target, label: "Тренировок", value: "20+" },
+                    { icon: Keyboard, label: "Биндов", value: "50+" },
+                    { icon: Car, label: "Автомобилей", value: "30+" },
+                  ].map((stat, i) => (
+                    <div key={i} className="military-card text-center p-6 hover:scale-105 transition-transform">
+                      <stat.icon className="h-8 w-8 mx-auto mb-3 text-primary" />
+                      <div className="text-3xl font-black mb-1 text-foreground">{stat.value}</div>
+                      <div className="text-sm text-muted-foreground font-semibold uppercase tracking-wide">{stat.label}</div>
+                    </div>
+                  ))}
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                  <Button
-                    size="lg"
-                    className="modern-button group px-10 py-5 text-lg font-medium"
-                    onClick={() => setCurrentPage("lectures")}
-                  >
-                    Начать изучение
-                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-2 border-border text-foreground hover:bg-muted font-medium px-10 py-5 text-lg rounded-2xl transition-all duration-300 hover:border-primary bg-transparent"
-                    onClick={() => setCurrentPage("penalty-calculator")}
-                  >
-                    Калькулятор наказаний
-                  </Button>
-                </div>
-              </div>
-            </div>
+                {/* Feature Cards */}
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div className="military-card text-center group hover:shadow-xl transition-all">
+                    <div className="relative w-20 h-20 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
+                      <BookOpen className="h-10 w-10 text-primary-foreground" />
+                    </div>
+                    <h3 className="text-2xl font-black mb-4 uppercase tracking-wide text-foreground">ГИБДД</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Должности, автопарк, гос волна, бинды и материалы для ГИБДД
+                    </p>
+                  </div>
 
-            <div className="px-6 py-24 bg-muted/30">
-              <div className="max-w-7xl mx-auto">
-                <MainContent />
+                  <div className="military-card text-center group hover:shadow-xl transition-all">
+                    <div className="relative w-20 h-20 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
+                      <Shield className="h-10 w-10 text-primary-foreground" />
+                    </div>
+                    <h3 className="text-2xl font-black mb-4 uppercase tracking-wide text-foreground">ГУВД</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Должности, автопарк, гос волна, бинды и материалы для ГУВД
+                    </p>
+                  </div>
+
+                  <div className="military-card text-center group hover:shadow-xl transition-all">
+                    <div className="relative w-20 h-20 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
+                      <Award className="h-10 w-10 text-primary-foreground" />
+                    </div>
+                    <h3 className="text-2xl font-black mb-4 uppercase tracking-wide text-foreground">Инструменты</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Калькулятор штрафов, генератор отчётов, термины и ресурсы
+                    </p>
+                  </div>
+                </div>
+
+                {/* Developer Contact */}
+                <div className="mt-16 pt-8 border-t border-border/50">
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground">
+                      Разработчик:{" "}
+                      <a
+                        href="https://vk.com/id503251431"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:text-primary/80 font-bold transition-colors"
+                      >
+                        Poseidon_Wagner
+                      </a>
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

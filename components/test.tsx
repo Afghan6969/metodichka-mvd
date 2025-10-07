@@ -3,8 +3,8 @@
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { AlertCircle } from "lucide-react"
-import { Footer } from "@/components/footer"
+import { AlertCircle, BookOpen } from "lucide-react"
+import { PageHeader } from "@/components/page-header"
 
 const punishments = [
   {
@@ -136,18 +136,19 @@ export default function GuvdExamplesPage() {
     : selectedPunishmentData
 
   return (
-    <div className="flex-1 p-8 overflow-auto bg-background">
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={BookOpen}
+        title="Примеры ситуаций"
+        description="Типичные ситуации и порядок действий для новичков МВД"
+        badge={`${punishments.length} ситуаций`}
+      />
+
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-4">Примеры ситуаций и наказаний</h1>
-          <p className="text-muted-foreground text-lg">
-            Эта страница предназначена для новичков, чтобы ознакомиться с типичными ситуациями, с которыми могут столкнуться сотрудники МВД. Здесь представлены примеры действий в различных сценариях для лучшего понимания процессов.
-          </p>
-        </div>
 
         <div className="space-y-6">
-          <Card className="p-6 border border-border bg-card">
-            <h2 className="text-xl font-semibold text-foreground mb-4">Выбор ситуации/наказания</h2>
+          <Card className="military-card">
+            <h2 className="text-2xl font-black uppercase tracking-wide text-foreground mb-4">Выбор ситуации</h2>
             <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2 text-muted-foreground">Выберите наказание</label>
@@ -171,8 +172,8 @@ export default function GuvdExamplesPage() {
           </Card>
 
           {selectedPunishment && selectedPunishmentData?.variants && (
-            <Card className="p-6 border border-border bg-card">
-              <h2 className="text-xl font-semibold text-foreground mb-4">Выбор примера</h2>
+            <Card className="military-card">
+              <h2 className="text-2xl font-black uppercase tracking-wide text-foreground mb-4">Выбор примера</h2>
               <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-2 text-muted-foreground">Выберите пример</label>
@@ -196,7 +197,7 @@ export default function GuvdExamplesPage() {
           {selectedData && (
             <div className="space-y-4">
               <Card className="p-6 bg-card border border-border">
-                <h3 className="text-lg font-semibold text-foreground mb-4">Правильный порядок действий</h3>
+                <h3 className="text-xl font-black uppercase tracking-wide text-foreground mb-4">Порядок действий</h3>
                 <div className="bg-muted p-4 rounded font-mono text-sm text-foreground">
                   {selectedData.steps.split("\n").map((line, index) => {
                     const parts = line.split(' (см. ');
@@ -222,7 +223,7 @@ export default function GuvdExamplesPage() {
           )}
 
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-foreground">Важные уточнения</h2>
+            <h2 className="text-3xl font-black uppercase tracking-wide text-foreground">Важные уточнения</h2>
             {[
               {
                 title: "Окно у ТС",
@@ -281,8 +282,6 @@ export default function GuvdExamplesPage() {
               </Card>
             ))}
           </div>
-
-          <Footer />
         </div>
       </div>
     </div>

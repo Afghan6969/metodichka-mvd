@@ -1,65 +1,64 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 :root {
-  /* Light theme - Sophisticated monochromatic palette */
-  --background: #fafafa;
-  --foreground: #0a0a0a;
+  /* Light theme - Clean professional palette */
+  --background: #f8f9fa;
+  --foreground: #1a1a1a;
   --card: #ffffff;
-  --card-foreground: #0a0a0a;
+  --card-foreground: #1a1a1a;
   --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
-  --primary: #0a0a0a;
-  --primary-foreground: #fafafa;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #0a0a0a;
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
-  --accent: #e4e4e7;
-  --accent-foreground: #0a0a0a;
-  --destructive: #ef4444;
-  --destructive-foreground: #fafafa;
-  --border: #e4e4e7;
+  --popover-foreground: #1a1a1a;
+  --primary: #1e3a8a;
+  --primary-foreground: #ffffff;
+  --secondary: #e5e7eb;
+  --secondary-foreground: #1a1a1a;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --accent: #dbeafe;
+  --accent-foreground: #1e3a8a;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #d1d5db;
   --input: #ffffff;
-  --ring: rgba(10, 10, 10, 0.1);
+  --ring: #1e3a8a;
   --radius: 1rem;
   --sidebar: #ffffff;
-  --sidebar-foreground: #0a0a0a;
-  --sidebar-primary: #0a0a0a;
-  --sidebar-primary-foreground: #fafafa;
-  --sidebar-accent: #f4f4f5;
-  --sidebar-accent-foreground: #0a0a0a;
-  --sidebar-border: #e4e4e7;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #1e3a8a;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f3f4f6;
+  --sidebar-accent-foreground: #1a1a1a;
+  --sidebar-border: #e5e7eb;
 }
 
 .dark {
-  /* Dark theme - High contrast with grid patterns */
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --card: #111111;
-  --card-foreground: #fafafa;
-  --popover: #111111;
-  --popover-foreground: #fafafa;
-  --primary: #fafafa;
-  --primary-foreground: #0a0a0a;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #fafafa;
-  --muted: #1a1a1a;
-  --muted-foreground: #a1a1aa;
-  --accent: #262626;
-  --accent-foreground: #fafafa;
+  /* Dark theme - Professional dark palette */
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
+  --popover: #1e293b;
+  --popover-foreground: #f1f5f9;
+  --primary: #60a5fa;
+  --primary-foreground: #0f172a;
+  --secondary: #334155;
+  --secondary-foreground: #f1f5f9;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #1e40af;
+  --accent-foreground: #f1f5f9;
   --destructive: #ef4444;
-  --destructive-foreground: #fafafa;
-  --border: #262626;
-  --input: #111111;
-  --ring: rgba(250, 250, 250, 0.1);
-  --sidebar: #111111;
-  --sidebar-foreground: #fafafa;
-  --sidebar-primary: #fafafa;
-  --sidebar-primary-foreground: #0a0a0a;
-  --sidebar-accent: #1a1a1a;
-  --sidebar-accent-foreground: #fafafa;
-  --sidebar-border: #262626;
+  --destructive-foreground: #f1f5f9;
+  --border: #334155;
+  --input: #1e293b;
+  --ring: #60a5fa;
+  --sidebar: #1e293b;
+  --sidebar-foreground: #f1f5f9;
+  --sidebar-primary: #60a5fa;
+  --sidebar-primary-foreground: #0f172a;
+  --sidebar-accent: #334155;
+  --sidebar-accent-foreground: #f1f5f9;
+  --sidebar-border: #334155;
 }
 
 @theme inline {
@@ -143,44 +142,38 @@
     margin-bottom: 1rem;
   }
 
-  /* Sophisticated card system with subtle shadows */
+  /* Strict card system - no shadows, clean lines */
   .modern-card {
-    @apply border border-border rounded-2xl p-8 bg-card text-card-foreground;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    @apply border-2 border-border rounded-lg p-6 bg-card text-card-foreground;
+    transition: border-color 0.2s ease;
   }
 
   .modern-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    @apply border-primary/20;
+    @apply border-primary/40;
   }
 
-  /* Clean sidebar with minimal borders */
+  /* Clean sidebar - strict borders */
   .modern-sidebar {
-    @apply border-r border-sidebar-border bg-sidebar text-sidebar-foreground;
-    backdrop-filter: blur(20px);
+    @apply border-r-2 border-sidebar-border bg-sidebar text-sidebar-foreground;
   }
 
-  /* Floating navigation with glass effect */
+  /* Navigation - solid background, strict border */
   .modern-nav {
-    @apply backdrop-blur-xl border-b border-border bg-background/80 text-foreground;
+    @apply border-b-2 border-border bg-background text-foreground;
     position: sticky;
     top: 0;
     z-index: 50;
   }
 
-  /* Minimalist button system */
+  /* Minimalist button system - no shadows */
   .modern-button {
-    @apply font-medium transition-all duration-300 bg-primary text-primary-foreground;
-    border-radius: 1rem;
-    padding: 0.875rem 2rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    @apply font-semibold transition-colors duration-200 bg-primary text-primary-foreground;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
   }
 
   .modern-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    @apply bg-primary/90;
   }
 
   /* Grid pattern for dark theme */
@@ -190,12 +183,13 @@
     background-size: 50px 50px;
   }
 
-  /* МВД theme with smooth gradient background */
+  /* МВД theme - Красно-синий полицейский фон */
   .mvd {
     background: 
-      radial-gradient(circle at 20% 30%, rgba(30, 58, 138, 0.5) 0%, transparent 50%),
-      radial-gradient(circle at 80% 70%, rgba(153, 27, 27, 0.5) 0%, transparent 50%),
-      linear-gradient(135deg, #1e3a8a 0%, #7f1d1d 100%);
+      linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.8) 100%),
+      radial-gradient(circle at 15% 25%, rgba(220, 38, 38, 0.2) 0%, transparent 45%),
+      radial-gradient(circle at 85% 75%, rgba(59, 130, 246, 0.15) 0%, transparent 45%),
+      linear-gradient(135deg, #0a0a0f 0%, #0f0a0f 50%, #0a0f15 100%);
     background-attachment: fixed;
   }
 
@@ -205,21 +199,24 @@
     background: transparent !important;
   }
 
-  /* Gradient themes cards with backdrop blur */
+  /* Усиленное размытие для карточек МВД */
   .mvd .bg-card,
   .mvd [data-slot="sidebar-inner"] {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
   }
 
-  /* МВД theme sidebar gradient overlay */
+  /* МВД sidebar - красная полоса слева */
   .mvd [data-slot="sidebar-inner"]::before {
     content: "";
     position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(30, 58, 138, 0.4) 0%, rgba(124, 45, 18, 0.3) 50%, rgba(153, 27, 27, 0.4) 100%);
-    pointer-events: none;
-    z-index: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, #dc2626 0%, #f59e0b 50%, #dc2626 100%);
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+    z-index: 10;
   }
 
   .mvd [data-slot="sidebar-inner"] > * {
@@ -232,13 +229,116 @@
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 100%);
   }
 
-  /* Smooth transitions for all interactive elements */
+  /* Мощные анимации для интерактивных элементов */
   .interactive-element {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .interactive-element:hover {
     transform: translateY(-2px);
+  }
+
+  /* Анимация пульсации для primary элементов */
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 10px rgba(220, 38, 38, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+    }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  /* Анимация появления карточек */
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.4s ease-out;
+  }
+
+  /* Анимация границы */
+  @keyframes border-pulse {
+    0%, 100% {
+      border-color: rgba(220, 38, 38, 0.3);
+    }
+    50% {
+      border-color: rgba(220, 38, 38, 0.6);
+    }
+  }
+
+  .animate-border-pulse {
+    animation: border-pulse 2s ease-in-out infinite;
+  }
+
+  /* Анимация полицейского маячка - как на гос машинах */
+  @keyframes police-light {
+    0% {
+      background-position: 0% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
+  }
+
+  .police-divider {
+    height: 4px;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, 
+      #dc2626 0%,
+      #dc2626 10%,
+      #ef4444 20%,
+      #f87171 30%,
+      #3b82f6 50%,
+      #60a5fa 70%,
+      #93c5fd 80%,
+      #dc2626 90%,
+      #dc2626 100%
+    );
+    background-size: 200% 100%;
+    animation: police-light 3s linear infinite;
+    box-shadow: 
+      0 0 20px rgba(220, 38, 38, 0.5),
+      0 0 20px rgba(59, 130, 246, 0.5);
+  }
+
+  /* Военная карточка с анимацией */
+  .military-card {
+    @apply border-2 border-primary/30 rounded-2xl bg-card p-6;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .military-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #dc2626, #3b82f6, #dc2626, transparent);
+    transition: left 0.5s ease;
+  }
+
+  .military-card:hover::before {
+    left: 100%;
+  }
+
+  .military-card:hover {
+    @apply border-primary/60 shadow-xl shadow-primary/30;
+    transform: translateY(-4px) scale(1.01);
   }
 
   /* Typography improvements for better readability */

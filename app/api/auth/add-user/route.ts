@@ -78,9 +78,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Username already exists" }, { status: 400 });
     }
 
+    // Prevent root role assignment through the interface
+    const normalizedRole = normalizeRole(role);
+    if (normalizedRole === "root") {
+      return NextResponse.json({ error: "Cannot assign root role" }, { status: 403 });
+    }
+
     // create user
     const passwordHash = await bcrypt.hash(password, 10);
-    const normalizedRole = normalizeRole(role);
 
     const { data: newUsers, error: insertErr } = await supabase
       .from("users")

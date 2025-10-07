@@ -1,10 +1,11 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
-import { Radio, Info, MessageSquare, Phone, AlertTriangle } from "lucide-react"
+import { Radio, MessageSquare, Phone, AlertTriangle, Search, FileText } from "lucide-react"
 import { CopyButton } from "@/components/copy-button"
-import { Footer } from "@/components/footer"
+import { PageHeader } from "@/components/page-header"
+import { Input } from "@/components/ui/input"
 
 interface ReportCategory {
   id: string
@@ -22,9 +23,7 @@ interface ReportItem {
 }
 
 export function ReportsPage() {
-  const getItemIcon = (IconComponent: React.ComponentType<any>) => {
-    return <IconComponent className="h-5 w-5" />
-  }
+  const [searchQuery, setSearchQuery] = useState("")
 
   const reportCategories: ReportCategory[] = [
     {
@@ -147,110 +146,111 @@ export function ReportsPage() {
     },
   ]
 
+  const filteredCategories = reportCategories.filter((category) =>
+    category.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    category.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    category.reports.some(
+      (report) =>
+        report.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        report.command.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  )
+
+  const categoryIcons: Record<string, { icon: any; color: string }> = {
+    basic: { icon: MessageSquare, color: "from-primary to-primary/70" },
+    patrol: { icon: Radio, color: "from-accent to-accent/70" },
+    special: { icon: AlertTriangle, color: "from-primary to-accent" },
+  }
+
+  const categoryLabels = {
+    basic: "Базовые",
+    patrol: "Патрулирование",
+    special: "Специальные"
+  }
+
   return (
-    <div className="space-y-6 bg-background min-h-screen p-6">
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-          <Radio className="h-6 w-6 text-primary-foreground" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Доклады в рацию</h1>
-          <p className="text-muted-foreground">Стандартные фразы для радиосвязи сотрудников МВД</p>
-        </div>
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={FileText}
+        title="Доклады МВД"
+        description="Шаблоны докладов для различных ситуаций"
+        badge={`${filteredCategories.length} категорий`}
+      />
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary" />
+        <Input
+          type="text"
+          placeholder="Поиск докладов..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-12 h-14 text-base border-2 border-primary/30 rounded-xl bg-background/50 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
+        />
       </div>
 
-      {/* Информационная карточка */}
-      <Card className="border-border bg-card">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-foreground flex items-center gap-2 text-xl">
-            <Info className="h-5 w-5 text-blue-400" />
-            Важная информация о тегах
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3 text-sm">
-            <div className="flex items-start gap-2">
-              <span className="text-blue-400">•</span>
-              <p className="text-muted-foreground">
-                В тегах <code className="bg-muted text-foreground px-1 rounded">/r</code> указывайте свою должность, например:{" "}
-                <Badge className="bg-muted text-foreground border-border text-xs">
-                  [МБ]
+      {/* Reports Grid */}
+      <div className="space-y-6">
+        {filteredCategories.map((category) => {
+          const IconComponent = category.icon
+          const categoryType = categoryIcons[category.category]
+          
+          return (
+            <div key={category.id} className="military-card">
+              <div className="flex items-center gap-4 mb-6">
+                <div className={`w-14 h-14 bg-gradient-to-br ${categoryType.color} rounded-xl flex items-center justify-center border-2 border-primary/50 shadow-lg shadow-primary/20`}>
+                  <IconComponent className="h-7 w-7 text-primary-foreground" />
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-2xl font-black uppercase tracking-wide mb-1">{category.title}</h2>
+                  <p className="text-muted-foreground font-semibold">{category.description}</p>
+                </div>
+                <Badge variant="outline" className="border-accent/40 text-accent font-semibold">
+                  {categoryLabels[category.category]}
                 </Badge>
-                ,{" "}
-                <Badge className="bg-muted text-foreground border-border text-xs">
-                  [ОМОН]
-                </Badge>
-                ,{" "}
-                <Badge className="bg-muted text-foreground border-border text-xs">
-                  [СОБР]
-                </Badge>
-              </p>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-blue-400">•</span>
-              <p className="text-muted-foreground">
-                В тегах <code className="bg-muted text-foreground px-1 rounded">/ro</code> и{" "}
-                <code className="bg-muted text-foreground px-1 rounded">/d</code> указывайте свой город, например:{" "}
-                <Badge className="bg-muted text-foreground border-border text-xs">
-                  [ГИБДД-М]
-                </Badge>
-                ,{" "}
-                <Badge className="bg-muted text-foreground border-border text-xs">
-                  [ГУВД-М]
-                </Badge>
-              </p>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-blue-400">•</span>
-              <p className="text-muted-foreground">
-                <strong>Теги в рацию /r - не обязательны</strong>, но рекомендуются для лучшей координации
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Доклады */}
-      <div className="space-y-4">
-        {reportCategories.map((category) => (
-          <Card key={category.id} className="border-border bg-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-foreground flex items-center gap-2 text-xl">
-                {getItemIcon(category.icon)}
-                {category.title}
-              </CardTitle>
-              <CardDescription className="text-muted-foreground">{category.description}</CardDescription>
-            </CardHeader>
-            <CardContent>
+              </div>
+              
               <div className="space-y-3">
                 {category.reports.map((report, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
+                    className="flex items-start gap-4 p-5 rounded-xl border-2 border-primary/20 bg-muted/30 hover:bg-primary/5 transition-colors group"
                   >
-                    <div className="text-blue-400 mt-1">
-                      <Radio className="h-4 w-4" />
-                    </div>
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h4 className="font-medium text-foreground text-sm">{report.title}</h4>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <div className="flex-1 font-mono text-sm text-foreground bg-muted p-3 rounded border border-border">
+                      <h3 className="text-base font-black uppercase tracking-wide mb-3 text-foreground">
+                        {report.title}
+                      </h3>
+                      <div className="bg-background/80 p-4 rounded-lg border border-primary/30">
+                        <code className="font-mono text-sm text-foreground font-semibold leading-relaxed">
                           {report.command}
-                        </div>
-                        <CopyButton text={report.command} className="flex-shrink-0 mt-3" />
+                        </code>
                       </div>
+                      {report.description && (
+                        <p className="text-sm text-muted-foreground font-medium mt-3 leading-relaxed">
+                          {report.description}
+                        </p>
+                      )}
+                    </div>
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      <CopyButton text={report.command} />
                     </div>
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        ))}
+            </div>
+          )
+        })}
       </div>
 
-      <Footer />
+      {filteredCategories.length === 0 && searchQuery && (
+        <div className="text-center py-20">
+          <div className="w-20 h-20 bg-muted/30 rounded-3xl flex items-center justify-center mx-auto mb-4">
+            <Search className="h-10 w-10 text-muted-foreground" />
+          </div>
+          <p className="text-xl font-bold text-muted-foreground mb-2">Доклады не найдены</p>
+          <p className="text-muted-foreground">Попробуйте изменить поисковый запрос</p>
+        </div>
+      )}
     </div>
   )
 }

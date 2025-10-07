@@ -1,13 +1,11 @@
-
 import type React from "react"
 import { useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Badge } from "@/components/ui/badge"
-import { Target, Clock, ChevronDown, ChevronRight, Zap, Dumbbell } from "lucide-react"
-import { SearchBar } from "@/components/search-bar"
+import { Target, Clock, ChevronDown, ChevronRight, Zap, Dumbbell, Search } from "lucide-react"
 import { CopyButton } from "@/components/copy-button"
-import { Footer } from "@/components/footer"
+import { PageHeader } from "@/components/page-header"
+import { Input } from "@/components/ui/input"
 
 interface Training {
   id: string
@@ -172,116 +170,111 @@ export function TrainingPage() {
       (training.note && training.note.toLowerCase().includes(searchQuery.toLowerCase())),
   )
 
+  const categoryLabels = {
+    basic: "Базовые",
+    advanced: "Продвинутые",
+    special: "Специальные"
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-          <Target className="h-6 w-6 text-primary-foreground" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Тренировки сотрудников МВД</h1>
-          <p className="text-muted-foreground">Физическая подготовка согласно программе обучения</p>
-        </div>
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={Target}
+        title="Тренировки МВД"
+        description="Физическая подготовка согласно программе обучения"
+        badge={`${filteredTrainings.length} тренировок`}
+      />
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary" />
+        <Input
+          type="text"
+          placeholder="Поиск по тренировкам..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-12 h-14 text-base border-2 border-primary/30 rounded-xl bg-background/50 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
+        />
       </div>
 
-      <div className="mb-6">
-        <SearchBar onSearch={setSearchQuery} placeholder="Поиск тренировок..." />
-      </div>
-
-      {/* Все тренировки в одном списке */}
+      {/* Trainings Grid */}
       <div className="space-y-4">
         {filteredTrainings.map((training) => (
-          <Card key={training.id} className="border-border bg-card/50">
-            <CardContent className="p-0">
-              <div className="flex items-start gap-4 p-4">
-                <div className="text-primary mt-1">{getItemIcon(training.icon)}</div>
-                <div className="flex-1">
-                  <Collapsible open={openTrainings[training.id]} onOpenChange={() => toggleTraining(training.id)}>
-                    <CollapsibleTrigger className="w-full text-left">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="font-semibold text-foreground text-sm">{training.title}</h3>
-                        </div>
-                        {openTrainings[training.id] ? (
-                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                        ) : (
-                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                        )}
-                      </div>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <div className="mt-3 bg-muted/50 p-4 rounded-lg border border-border">
-                        {training.content.map((line, index) => (
-                          <div key={index} className="flex items-start gap-2 mb-1 last:mb-0 group">
-                            <div className="flex-1 font-mono text-sm text-foreground">{line}</div>
-                            {line.trim().startsWith("say ") && (
-                              <div className="flex-shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <CopyButton text={line.trim()} />
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      {training.note && (
-                        <div className="mt-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-                          <p className="text-black-800 dark:text-black-200 text-sm">
-                            <strong>Уточнение:</strong> {training.note}
-                          </p>
-                        </div>
+          <div 
+            key={training.id} 
+            className="military-card"
+          >
+            <Collapsible open={openTrainings[training.id]} onOpenChange={() => toggleTraining(training.id)}>
+              <CollapsibleTrigger className="w-full">
+                <div className="flex items-center justify-between p-6 hover:bg-primary/5 rounded-xl transition-colors">
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className="w-12 h-12 bg-gradient-to-br from-accent to-accent/70 rounded-xl flex items-center justify-center border-2 border-accent/50 shadow-lg shadow-accent/20">
+                      {training.icon === Dumbbell ? (
+                        <Dumbbell className="h-6 w-6 text-accent-foreground" />
+                      ) : (
+                        <Zap className="h-6 w-6 text-accent-foreground" />
                       )}
-                    </CollapsibleContent>
-                  </Collapsible>
+                    </div>
+                    <div className="text-left flex-1">
+                      <h3 className="text-lg font-black uppercase tracking-wide mb-1">{training.title}</h3>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="border-accent/40 text-accent font-semibold">
+                          {categoryLabels[training.category]}
+                        </Badge>
+                        <Badge variant="outline" className="border-primary/40 text-primary font-semibold">
+                          <Clock className="h-3 w-3 mr-1" />
+                          {training.duration}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                  {openTrainings[training.id] ? (
+                    <ChevronDown className="h-6 w-6 text-primary" />
+                  ) : (
+                    <ChevronRight className="h-6 w-6 text-primary" />
+                  )}
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CollapsibleTrigger>
+              
+              <CollapsibleContent>
+                <div className="px-6 pb-6">
+                  <div className="mt-4 bg-muted/30 p-6 rounded-xl border-2 border-primary/20">
+                    <div className="space-y-2">
+                      {training.content.map((line, index) => (
+                        <div key={index} className="flex items-start gap-3 group hover:bg-primary/5 p-2 rounded-lg transition-colors">
+                          <div className="flex-1 font-mono text-sm text-foreground leading-relaxed">{line}</div>
+                          {line.trim().startsWith("say ") && (
+                            <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <CopyButton text={line.trim()} />
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    {training.note && (
+                      <div className="mt-4 p-4 bg-accent/10 border-2 border-accent/30 rounded-xl">
+                        <p className="text-sm font-semibold">
+                          <span className="text-accent font-black uppercase">Уточнение:</span> {training.note}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
         ))}
       </div>
 
-      {/* Информационная карточка */}
-      <Card className="border-border bg-card/50">
-        <CardContent className="p-4">
-          <div className="flex items-start gap-3">
-            <Clock className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="text-foreground font-medium text-sm leading-relaxed">
-                Примерное время на проведение каждой из тренировок - 1 минута.
-              </p>
-              <p className="text-muted-foreground text-xs mt-1">
-                Время может варьироваться в зависимости от сложности упражнения.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Завершающая карточка */}
-      <Card className="border-green-200 dark:border-green-800 bg-green-50/30 dark:bg-green-900/20">
-        <CardContent className="p-6">
-          <div className="flex items-start gap-3">
-            <span className="text-green-600 dark:text-green-400 text-lg">✅</span>
-            <div className="w-full">
-              <div className="flex items-start gap-2">
-                <div className="w-full relative group">
-                  <div className="font-mono text-sm text-foreground bg-background p-4 rounded-lg border border-border">
-                    say На этом наши тренировки подошли к концу!
-                  </div>
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <CopyButton text="say На этом наши тренировки подошли к концу!" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       {filteredTrainings.length === 0 && searchQuery && (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Тренировки не найдены по запросу "{searchQuery}"</p>
+        <div className="text-center py-20">
+          <div className="w-20 h-20 bg-muted/30 rounded-3xl flex items-center justify-center mx-auto mb-4">
+            <Search className="h-10 w-10 text-muted-foreground" />
+          </div>
+          <p className="text-xl font-bold text-muted-foreground mb-2">Тренировки не найдены</p>
+          <p className="text-muted-foreground">Попробуйте изменить поисковый запрос</p>
         </div>
       )}
-      <Footer />
     </div>
   )
 }

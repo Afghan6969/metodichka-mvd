@@ -66,7 +66,7 @@ export function UserCard({
   getRoleBadgeVariant,
 }: UserCardProps) {
   return (
-    <div className="p-4 border border-border rounded-xl hover:border-primary/50 hover:bg-muted/30 transition-all bg-card">
+    <div className="military-card animate-slide-up group relative overflow-hidden">
       {isEditing ? (
         <div className="space-y-4">
           <div>
@@ -78,7 +78,7 @@ export function UserCard({
               value={editNickname}
               onChange={(e) => onEditNicknameChange(e.target.value)}
               disabled={isLoading}
-              className="mt-1 bg-background border-border rounded-lg text-base py-2.5"
+              className="mt-1 bg-background/50 border-2 border-primary/30 rounded text-base py-2.5 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
             />
           </div>
           <div>
@@ -90,7 +90,7 @@ export function UserCard({
               value={editUsername}
               onChange={(e) => onEditUsernameChange(e.target.value)}
               disabled={isLoading}
-              className="mt-1 bg-background border-border rounded-lg text-base py-2.5"
+              className="mt-1 bg-background/50 border-2 border-primary/30 rounded text-base py-2.5 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
             />
           </div>
           <div>
@@ -104,7 +104,7 @@ export function UserCard({
               onChange={(e) => onEditPasswordChange(e.target.value)}
               placeholder="Не трогайте, чтобы не сменить пароль"
               disabled={isLoading}
-              className="mt-1 bg-background border-border rounded-lg text-base py-2.5"
+              className="mt-1 bg-background/50 border-2 border-primary/30 rounded text-base py-2.5 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
             />
             <p className="text-xs text-muted-foreground mt-1">Оставьте пустым, если не хотите менять пароль</p>
           </div>
@@ -117,7 +117,7 @@ export function UserCard({
                 <SelectValue placeholder="Выберите роль" />
               </SelectTrigger>
               <SelectContent className="bg-popover border-border backdrop-blur-xl">
-                {availableRoles.map((r) => (
+                {availableRoles.filter(r => r !== "root").map((r) => (
                   <SelectItem key={r} value={r}>
                     {roleDisplayNames[r]}
                   </SelectItem>
@@ -129,7 +129,7 @@ export function UserCard({
             <Button
               size="sm"
               onClick={onSaveEdit}
-              className="flex-1 bg-primary hover:bg-primary/90 rounded-lg py-2.5"
+              className="flex-1 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 rounded py-2.5 font-bold uppercase tracking-wide shadow-lg shadow-primary/30"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -143,7 +143,7 @@ export function UserCard({
               size="sm"
               variant="outline"
               onClick={onCancelEdit}
-              className="flex-1 border-border rounded-lg py-2.5 hover:bg-muted"
+              className="flex-1 border-2 border-primary/40 rounded py-2.5 hover:bg-primary/10 font-bold uppercase tracking-wide"
               disabled={isLoading}
             >
               <X className="h-4 w-4 mr-2" />
@@ -208,27 +208,27 @@ export function UserCard({
                   variant="outline"
                   size="icon"
                   onClick={onStartEdit}
-                  className="h-9 w-9 border-border rounded-lg hover:bg-muted"
+                  className="h-10 w-10 border-2 border-primary/40 rounded hover:bg-primary/10 hover:border-primary transition-all"
                   disabled={isLoading || !canEdit}
                   title="Редактировать"
                 >
-                  <Edit2 className="h-4 w-4" />
+                  <Edit2 className="h-4 w-4 text-primary" />
                 </Button>
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={onViewHistory}
-                  className="h-9 w-9 border-border rounded-lg hover:bg-muted"
+                  className="h-10 w-10 border-2 border-accent/40 rounded hover:bg-accent/10 hover:border-accent transition-all"
                   disabled={isLoading}
                   title="История изменений"
                 >
-                  <History className="h-4 w-4" />
+                  <History className="h-4 w-4 text-accent" />
                 </Button>
                 <Button
                   variant="destructive"
                   size="icon"
                   onClick={onDeactivate}
-                  className="h-9 w-9 rounded-lg"
+                  className="h-10 w-10 rounded bg-gradient-to-br from-destructive to-destructive/80 hover:from-destructive/90 hover:to-destructive/70 shadow-lg shadow-destructive/30"
                   disabled={isLoading || !canDelete}
                   title="Деактивировать"
                 >

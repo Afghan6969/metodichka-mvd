@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { CopyButton } from "@/components/copy-button" // Added missing import
+import { CopyButton } from "@/components/copy-button"
+import { PageHeader } from "@/components/page-header"
 
 export function GuvdBindsPage() {
   const [copiedBind, setCopiedBind] = useState<string | null>(null)
@@ -209,18 +210,15 @@ export function GuvdBindsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-8 bg-background min-h-screen">
-      <div className="text-center space-y-4">
-        <div className="flex items-center justify-center gap-3">
-          <div className="p-3 bg-primary rounded-full flex items-center justify-center">
-            <Keyboard className="h-8 w-8 text-primary-foreground" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Бинды ГИБДД</h1>
-            <p className="text-muted-foreground">Готовые команды для сотрудников ГИБДД</p>
-          </div>
-        </div>
-      </div>
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={Keyboard}
+        title="Бинды ГУВД"
+        description="Готовые команды для сотрудников ГУВД"
+        badge={`${bindSections.reduce((sum, s) => sum + s.binds.length, 0)} биндов`}
+      />
+
+      <div className="max-w-4xl mx-auto">
 
       <div className="flex justify-center">
         <div className="relative w-full max-w-md">
@@ -356,6 +354,7 @@ export function GuvdBindsPage() {
           </p>
         </div>
       </footer>
+      </div>
     </div>
   )
 }

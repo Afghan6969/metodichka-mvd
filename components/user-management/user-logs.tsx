@@ -174,7 +174,7 @@ export function UserLogs({ logs, actionDisplayNames, onRollback, showRollback = 
                   <span className="text-xs">Подробнее</span>
                 </Button>
               )}
-              {showRollback && onRollback && log.action !== "rollback" && (
+              {showRollback && onRollback && log.action !== "rollback" && log.action !== "login" && log.action !== "logout" && (
                 <Button
                   variant="ghost"
                   size="sm"

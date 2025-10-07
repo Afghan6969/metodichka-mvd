@@ -16,7 +16,7 @@ import { ru } from "date-fns/locale"
 import { toast } from "react-hot-toast"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { useAuth } from "@/lib/auth-context"
-import { Footer } from "@/components/footer"
+import { PageHeader } from "@/components/page-header"
 
 interface Position {
   title: string
@@ -203,7 +203,7 @@ const toInstrumentalCase = (position: string, isVrio: boolean) => declinePositio
 
 export function GeneratorPage() {
   const { currentUser, hasAccess } = useAuth()
-  const [department, setDepartment] = useState<"GUVD" | "GIBDD" | null>(null)
+  const [department, setDepartment] = useState<"ГУВД" | "ГИБДД" | null>(null)
   const [reportType, setReportType] = useState<"promotion" | "reprimand" | "senior" | null>(null)
   const [city, setCity] = useState("")
   const [leaderFio, setLeaderFio] = useState("")
@@ -231,7 +231,7 @@ export function GeneratorPage() {
   const [openRank, setOpenRank] = useState(false)
   const [copied, setCopied] = useState(false)
 
-  const positionsData = department === "GUVD" ? guvdPositions : gibddPositions
+  const positionsData = department === "ГУВД" ? guvdPositions : gibddPositions
   const allPositions = Object.values(positionsData).flat()
 
   useEffect(() => {
@@ -244,14 +244,14 @@ export function GeneratorPage() {
         currentUser.role === "pgs-gibdd" ||
         currentUser.role === "gs-gibdd"
       ) {
-        setDepartment("GIBDD")
+        setDepartment("ГИБДД")
       } else if (
         currentUser.role === "guvd" ||
         currentUser.role === "ss-guvd" ||
         currentUser.role === "pgs-guvd" ||
         currentUser.role === "gs-guvd"
       ) {
-        setDepartment("GUVD")
+        setDepartment("ГУВД")
       }
       // Для роли root департамент не устанавливается автоматически, пользователь выберет вручную
     }
@@ -279,19 +279,19 @@ export function GeneratorPage() {
 
   const isFormValid = useCallback(() => {
     const requiredFields = [city, fio, position, rank, signature]
-    if (department === "GUVD") {
+    if (department === "ГУВД") {
       requiredFields.push(leaderFio)
     }
     if (reportType === "promotion" || reportType === "reprimand" || reportType === "senior") {
       if (!fromDate || !toDate) return false
     }
-    if (department === "GIBDD" && (reportType === "promotion" || reportType === "reprimand")) {
+    if (department === "ГИБДД" && (reportType === "promotion" || reportType === "reprimand")) {
       requiredFields.push(points)
     }
-    if (reportType === "reprimand" && department === "GIBDD") {
+    if (reportType === "reprimand" && department === "ГИБДД") {
       requiredFields.push(violation, paymentLink)
     }
-    if (reportType === "senior" && department === "GUVD") {
+    if (reportType === "senior" && department === "ГУВД") {
       requiredFields.push(onlineStats)
     }
     return (
@@ -373,7 +373,7 @@ export function GeneratorPage() {
       setFromDate(parsed.fromDate || "")
       setToDate(parsed.toDate || "")
       setRequirements(
-        parsed.requirements || [{ req: "", quantity: department === "GIBDD" ? "" : undefined, link: "" }],
+        parsed.requirements || [{ req: "", quantity: department === "ГИБДД" ? "" : undefined, link: "" }],
       )
       setPoints(parsed.points || "")
       setViolation(parsed.violation || "")
@@ -418,7 +418,7 @@ export function GeneratorPage() {
     setNewRank("")
     setFromDate(undefined)
     setToDate(undefined)
-    setRequirements([{ req: "", quantity: department === "GIBDD" ? "" : undefined, link: "" }])
+    setRequirements([{ req: "", quantity: department === "ГИБДД" ? "" : undefined, link: "" }])
     setPoints("")
     setViolation("")
     setPaymentLink("")
@@ -493,7 +493,7 @@ export function GeneratorPage() {
   }, [rank, reportType, getNextRank])
 
   const addRequirement = () => {
-    setRequirements([...requirements, { req: "", quantity: department === "GIBDD" ? "" : undefined, link: "" }])
+    setRequirements([...requirements, { req: "", quantity: department === "ГИБДД" ? "" : undefined, link: "" }])
   }
 
   const removeRequirement = (index: number) => {
@@ -534,13 +534,13 @@ export function GeneratorPage() {
     const deptAbbr = departmentAbbreviations[selectedCategory] || selectedCategory
     let template = ""
     let reqList = ""
-    if (department === "GUVD") {
+    if (department === "ГУВД") {
       reqList = requirements.map((r, i) => `${i + 1}. ${r.req} - ${r.link}`).join("\n")
     } else {
       reqList = requirements.map((r, i) => `${i + 1}. ${r.req} – ${r.quantity} – ${r.link}`).join("\n")
     }
 
-    if (department === "GUVD") {
+    if (department === "ГУВД") {
       if (reportType === "promotion") {
         template = `Начальнику ГУВД по г. ${city}
 Генерал-майору ${leaderFio}
@@ -587,7 +587,7 @@ ${reqList}
 Дата: ${currentDate}
 Подпись: ${signature}`
       }
-    } else if (department === "GIBDD") {
+    } else if (department === "ГИБДД") {
       if (reportType === "promotion") {
         template = `Генералу Республики Провинция
 Начальнику ГИБДД по городу ${city}
@@ -678,19 +678,24 @@ ${reqList}
   const availableReportTypes = getAvailableReportTypes()
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-          <FileText className="h-6 w-6 text-primary-foreground" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Генератор отчётов</h1>
-          <p className="text-muted-foreground">Генератор рапортов для ГУВД и ГИБДД МВД РП</p>
-        </div>
-      </div>
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={FileText}
+        title="Генератор отчётов"
+        description="Генератор рапортов для ГУВД и ГИБДД МВД РП"
+        badge={department ? department : undefined}
+      />
+
+      {/* Important Notice */}
+      <Alert className="military-card bg-yellow-500/10 border-yellow-500/30 max-w-4xl mx-auto">
+        <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-500" />
+        <AlertDescription className="text-sm text-muted-foreground">
+          <span className="font-bold text-yellow-600 dark:text-yellow-500">Внимание:</span> Генератор может выдавать неверные склонения в должностях и званиях. Проверяйте текст перед использованием.
+        </AlertDescription>
+      </Alert>
 
       <div className="grid gap-6 md:grid-cols-1">
-        <Card className="bg-blue border-border dark:bg-opacity-20 border-2 mx-auto w-full max-w-md">
+        <Card className="military-card mx-auto w-full max-w-md">
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-3 text-foreground dark:opacity-90 text-xl justify-center">
               <Shield className="h-5 w-5" />
@@ -701,11 +706,11 @@ ${reqList}
             {currentUser?.role === "root" ? (
               <div className="flex flex-wrap justify-center gap-4">
                 <Button
-                  onClick={() => setDepartment("GUVD")}
-                  variant={department === "GUVD" ? "default" : "outline"}
+                  onClick={() => setDepartment("ГУВД")}
+                  variant={department === "ГУВД" ? "default" : "outline"}
                   className={cn(
                     "w-60 transition-all duration-300 ease-in-out transform hover:scale-105",
-                    department === "GUVD"
+                    department === "ГУВД"
                       ? "bg-primary hover:bg-primary/90 shadow-lg"
                       : "border-2 hover:bg-muted",
                   )}
@@ -713,11 +718,11 @@ ${reqList}
                   ГУВД
                 </Button>
                 <Button
-                  onClick={() => setDepartment("GIBDD")}
-                  variant={department === "GIBDD" ? "default" : "outline"}
+                  onClick={() => setDepartment("ГИБДД")}
+                  variant={department === "ГИБДД" ? "default" : "outline"}
                   className={cn(
                     "w-60 transition-all duration-300 ease-in-out transform hover:scale-105",
-                    department === "GIBDD"
+                    department === "ГИБДД"
                       ? "bg-primary hover:bg-primary/90 shadow-lg"
                       : "border-2 hover:bg-muted",
                   )}
@@ -737,7 +742,7 @@ ${reqList}
         </Card>
 
         {department && (
-          <Card className="bg-blue border-border dark:bg-opacity-20 border-2 mx-auto w-full max-w-md">
+          <Card className="military-card mx-auto w-full max-w-md">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-3 text-foreground dark:opacity-90 text-xl">
                 <FileText className="h-5 w-5" />
@@ -792,7 +797,7 @@ ${reqList}
         )}
 
         {department && reportType && (
-          <Card className="bg-blue border-border dark:bg-opacity-20 border-2 md:col-span-1">
+          <Card className="military-card md:col-span-1">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-3 text-foreground dark:opacity-90 text-xl">
                 <FileText className="h-5 w-5" />
@@ -852,7 +857,7 @@ ${reqList}
                     </AnimatePresence>
                   </div>
                 </div>
-                {department === "GUVD" && (
+                {department === "ГУВД" && (
                   <div>
                     <Label htmlFor="leaderFio">ФИО лидера</Label>
                     <Input id="leaderFio" value={leaderFio} onChange={(e) => setLeaderFio(e.target.value)} />
@@ -1022,13 +1027,13 @@ ${reqList}
                     </div>
                   </>
                 )}
-                {department === "GIBDD" && (reportType === "promotion" || reportType === "reprimand") && (
+                {department === "ГИБДД" && (reportType === "promotion" || reportType === "reprimand") && (
                   <div>
                     <Label htmlFor="points">Количество баллов</Label>
                     <Input id="points" value={points} onChange={(e) => setPoints(e.target.value)} />
                   </div>
                 )}
-                {reportType === "reprimand" && department === "GIBDD" && (
+                {reportType === "reprimand" && department === "ГИБДД" && (
                   <>
                     <div>
                       <Label htmlFor="violation">Пункт нарушения (Пункт УГ)</Label>
@@ -1040,7 +1045,7 @@ ${reqList}
                     </div>
                   </>
                 )}
-                {reportType === "senior" && department === "GUVD" && (
+                {reportType === "senior" && department === "ГУВД" && (
                   <div>
                     <Label htmlFor="onlineStats">Статистика онлайна за неделю</Label>
                     <Input id="onlineStats" value={onlineStats} onChange={(e) => setOnlineStats(e.target.value)} />
@@ -1056,7 +1061,7 @@ ${reqList}
                         onChange={(e) => updateRequirement(index, "req", e.target.value)}
                         className="w-full md:w-125"
                       />
-                      {department === "GIBDD" && (
+                      {department === "ГИБДД" && (
                         <Input
                           placeholder="Количество"
                           value={req.quantity || ""}
@@ -1112,7 +1117,7 @@ ${reqList}
         )}
 
         {generatedReport && (
-          <Card className="bg-blue border-border dark:bg-opacity-20 border-2 md:col-span-1">
+          <Card className="military-card md:col-span-1">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-3 text-foreground dark:opacity-90 text-xl">
                 <FileText className="h-5 w-5" />
@@ -1135,8 +1140,6 @@ ${reqList}
           </Card>
         )}
       </div>
-
-      <Footer />
     </div>
   )
 }

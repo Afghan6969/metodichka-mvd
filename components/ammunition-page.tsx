@@ -3,7 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Shield, Zap, HandCoins as Handcuffs, Hammer, Sun as Gun, Target } from "lucide-react"
-import { Footer } from "@/components/footer"
+import { PageHeader } from "@/components/page-header"
 
 interface AmmunitionItem {
   name: string
@@ -83,21 +83,16 @@ export function AmmunitionPage() {
   const specialItems = ammunitionData.filter((item) => item.category === "special")
 
 return (
-    <div className="space-y-6 bg-background min-h-screen p-6">
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-          <Shield className="h-6 w-6 text-primary-foreground" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Амуниция сотрудников полиции</h1>
-          <p className="text-muted-foreground">
-            Обязательная и дополнительная экипировка согласно пункту 2.7 регламента
-          </p>
-        </div>
-      </div>
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={Shield}
+        title="Амуниция МВД"
+        description="Обязательная и дополнительная экипировка согласно пункту 2.7 регламента"
+        badge={`${ammunitionData.length} предметов`}
+      />
 
       {/* Базовая экипировка */}
-      <Card className="border-border bg-card">
+      <Card className="military-card">
         <CardHeader className="pb-4">
           <CardTitle className="text-foreground flex items-center gap-2 text-xl">
             <Shield className="h-5 w-5 text-green-400" />
@@ -132,7 +127,7 @@ return (
       </Card>
 
       {/* Табельное оружие */}
-      <Card className="border-border bg-card">
+      <Card className="military-card">
         <CardHeader className="pb-4">
           <CardTitle className="text-foreground flex items-center gap-2 text-xl">
             <Gun className="h-5 w-5 text-yellow-400" />
@@ -167,7 +162,7 @@ return (
       </Card>
 
       {/* Специальное оружие */}
-      <Card className="border-border bg-card">
+      <Card className="military-card">
         <CardHeader className="pb-4">
           <CardTitle className="text-foreground flex items-center gap-2 text-xl">
             <Target className="h-5 w-5 text-red-400" />
@@ -200,7 +195,7 @@ return (
       </Card>
 
       {/* Примечания */}
-      <Card className="border-border bg-card">
+      <Card className="military-card">
         <CardHeader className="pb-4">
           <CardTitle className="text-foreground text-xl">
             Пункт 2.7 - Обязательная экипировка
@@ -237,7 +232,6 @@ return (
         </CardContent>
       </Card>
 
-      <Footer />
     </div>
   )
 }

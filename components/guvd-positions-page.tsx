@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Shield, Star, Award, Users } from "lucide-react"
-import { Footer } from "@/components/footer"
+import { PageHeader } from "@/components/page-header"
 
 export function GuvdPositionsPage() {
   const positions = [
@@ -98,25 +98,24 @@ export function GuvdPositionsPage() {
     },
   ]
 
+  const totalPositions = positions.reduce((sum, section) => sum + section.positions.length, 0)
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-          <Shield className="h-6 w-6 text-primary-foreground" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Должности ГУВД</h1>
-          <p className="text-muted-foreground">Структура должностей и званий ГУВД МВД РП</p>
-        </div>
-      </div>
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={Shield}
+        title="Должности ГУВД"
+        description="Структура должностей и званий ГУВД МВД РП"
+        badge={`${totalPositions} должностей`}
+      />
 
       <div className="grid gap-6">
         {positions.map((section, index) => {
           const Icon = section.icon
           return (
-            <Card key={index} className={`${section.color} dark:bg-opacity-20 border-2`}>
+            <Card key={index} className="military-card">
               <CardHeader className="pb-4">
-                <CardTitle className={`flex items-center gap-3 ${section.titleColor} dark:opacity-90 text-xl`}>
+                <CardTitle className="flex items-center gap-3 text-foreground text-2xl font-black uppercase tracking-wide">
                   <Icon className="h-5 w-5" />
                   {section.category}
                 </CardTitle>
@@ -150,7 +149,8 @@ export function GuvdPositionsPage() {
         })}
       </div>
 
-      <Footer />
+      
     </div>
   )
 }
+

@@ -5,8 +5,9 @@ import { Card } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CopyButton } from "./copy-button"
-import { AlertCircle, ExternalLink, Shield } from "lucide-react"
+import { AlertCircle, ExternalLink, Shield, Radio } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
+import { PageHeader } from "@/components/page-header"
 
 const timeSlots = [
   "00:00-01:00",
@@ -104,25 +105,29 @@ export function GuvdGovWavePage() {
   const messages = selectedTime && selectedCity ? generateMessages(selectedTime, selectedCity) : null
 
   return (
-    <div className="flex-1 p-8 overflow-auto bg-background">
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={Radio}
+        title="Гос волна ГУВД"
+        description="Полицейская академия - генерация сообщений для собеседования"
+      />
+
+      <div className="flex justify-end mb-4">
+        <a
+          href="https://province.status-journal.com/gov"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="h-12 px-6 text-base bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl font-bold shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
+        >
+          Перейти на Гос Волну
+          <ExternalLink className="h-4 w-4" />
+        </a>
+      </div>
+
       <div className="max-w-4xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight">
-            Гос волна ГУВД - ПА (Полицейская академия)
-          </h1>
-          <a
-            href="https://province.status-journal.com/gov"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="h-12 px-5 text-sm sm:text-base bg-white text-blue-600 hover:bg-blue-50 rounded-md font-medium shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center gap-2 border border-gray-200 hover:border-blue-300 whitespace-nowrap self-start sm:self-auto"
-          >
-            Перейти на Гос Волну
-            <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
-          </a>
-        </div>
 
         <div className="space-y-6">
-          <Card className="p-6 border border-border bg-card">
+          <Card className="military-card">
             <h2 className="text-xl font-semibold text-foreground mb-4">Настройки собеседования</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>

@@ -4,8 +4,9 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Car, Truck, Plane, X, Eye } from "lucide-react"
+import { Car, Truck, Plane, X, Eye, Shield } from "lucide-react"
 import Image from "next/image"
+import { PageHeader } from "@/components/page-header"
 
 interface Vehicle {
   name: string
@@ -121,17 +122,35 @@ export default function GuvdVehiclesPage() {
 
   // Получаем выбранный город или первый город по умолчанию
   const currentCityData = vehicleData.find(city => city.city === selectedCity) || vehicleData[0]
+  const totalVehicles = vehicleData.reduce((sum, city) => sum + city.vehicles.length, 0)
 
   return (
-    <div className="flex-1 p-8 bg-background">
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={Shield}
+        title="Автопарк ГУВД"
+        description="Транспортные средства для сотрудников ГУВД"
+        badge={`${totalVehicles} авто`}
+      />
+
       <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Автопарк ГУВД</h1>
-          <p className="text-muted-foreground mb-4">
-            Транспортные средства, доступные сотрудникам ГУВД по рангам и должностям
-          </p>
-          
-          <div className="flex flex-wrap gap-2 mt-4">
+        <style jsx>{`
+          .animate-scale-in {
+            animation: scale-in 0.3s ease-out;
+          }
+          @keyframes scale-in {
+            from {
+              transform: scale(0.8);
+              opacity: 0;
+            }
+            to {
+              transform: scale(1);
+              opacity: 1;
+            }
+          }
+        `}</style>
+
+          <div className="flex flex-wrap gap-2 mb-6">
             {vehicleData.map((city) => (
               <Button
                 key={city.city}
@@ -144,7 +163,6 @@ export default function GuvdVehiclesPage() {
               </Button>
             ))}
           </div>
-        </div>
 
         <div className="grid gap-8">
           <Card key={currentCityData.city} className="border-border">
@@ -251,22 +269,6 @@ export default function GuvdVehiclesPage() {
           </div>
         </footer>
       </div>
-
-      <style jsx>{`
-        .animate-scale-in {
-          animation: scale-in 0.3s ease-out;
-        }
-        @keyframes scale-in {
-          from {
-            transform: scale(0.8);
-            opacity: 0;
-          }
-          to {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-      `}</style>
     </div>
   )
 }

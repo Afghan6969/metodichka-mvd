@@ -209,12 +209,6 @@ const renderMenuItem = (item: any) => {
             </div>
           </ScrollArea>
 
-          <div className="p-4 border-t border-sidebar-border">
-            <div className="text-center">
-              <p className="text-xs font-medium text-foreground">© 2025</p>
-              <p className="text-xs text-muted-foreground">Версия 1.0</p>
-            </div>
-          </div>
         </div>
       </aside>
     </>

@@ -11,7 +11,8 @@ import { Check, ChevronsUpDown, Calculator, Star, GraduationCap, X, DollarSign, 
 import { cn } from "@/lib/utils"
 import { koapViolations } from "./koap-violations"
 import { ukViolations } from "./uk-violations"
-import { Footer } from "@/components/footer"
+import { PageHeader } from "@/components/page-header"
+import type { Violation, ViolationCategory, PenaltyTotals, Alternative } from "./types"
 
 const PenaltyCalculator = () => {
   const [selectedViolations, setSelectedViolations] = useState<string[]>([])
@@ -151,15 +152,16 @@ const PenaltyCalculator = () => {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calculator className="h-5 w-5" />
-          Калькулятор штрафов и наказаний
-        </CardTitle>
-        <CardDescription>Выберите статьи нарушений для расчета общего размера наказания</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={Calculator}
+        title="Калькулятор наказаний"
+        description="Расчёт штрафов, ареста и лишения прав по КоАП и УК"
+        badge={`${selectedViolations.length} статей`}
+      />
+
+      <Card className="military-card">
+        <CardContent className="space-y-6 pt-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">Выбор статей</h3>
@@ -551,8 +553,8 @@ const PenaltyCalculator = () => {
           </>
         )}
       </CardContent>
-      <Footer />
     </Card>
+    </div>
   )
 }
 

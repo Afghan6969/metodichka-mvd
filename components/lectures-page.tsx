@@ -3,10 +3,11 @@ import { useState } from "react"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ChevronDown, ChevronRight, GraduationCap } from "lucide-react"
+import { ChevronDown, ChevronRight, GraduationCap, BookOpen, Search } from "lucide-react"
 import { CopyButton } from "@/components/copy-button"
-import { SearchBar } from "@/components/search-bar"
-import { Footer } from "@/components/footer"
+import { PageHeader } from "@/components/page-header"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
 
 interface Lecture {
   id: string
@@ -292,72 +293,99 @@ say На этом лекция на тему "Первая медицинска�
       lecture.content.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
+  const categoryLabels = {
+    basic: "Базовые",
+    advanced: "Продвинутые",
+    special: "Специальные"
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-          <GraduationCap className="h-6 w-6 text-primary-foreground" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Лекции для сотрудников МВД</h1>
-          <p className="text-muted-foreground">Теоретическая подготовка и изучение регламента</p>
-        </div>
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={GraduationCap}
+        title="Лекции МВД"
+        description="Теоретическая подготовка и изучение регламента службы"
+        badge={`${filteredLectures.length} лекций`}
+      />
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary" />
+        <Input
+          type="text"
+          placeholder="Поиск по лекциям..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-12 h-14 text-base border-2 border-primary/30 rounded-xl bg-background/50 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
+        />
       </div>
 
-      <div className="mb-6">
-        <SearchBar onSearch={setSearchQuery} placeholder="Поиск лекций..." />
-      </div>
-
-      {/* Все лекции в одном списке */}
+      {/* Lectures Grid */}
       <div className="space-y-4">
         {filteredLectures.map((lecture) => (
-          <Card key={lecture.id} className="border-border bg-card/50">
-            <CardContent className="p-0">
-              <div className="flex items-start gap-4 p-4">
-                <div className="text-primary mt-1">{getItemIcon(lecture.icon)}</div>
-                <div className="flex-1">
-                  <Collapsible open={openLectures[lecture.id]} onOpenChange={() => toggleLecture(lecture.id)}>
-                    <CollapsibleTrigger className="w-full text-left">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="font-semibold text-foreground text-sm">{lecture.title}</h3>
-                        </div>
-                        {openLectures[lecture.id] ? (
-                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                        ) : (
-                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                        )}
-                      </div>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <div className="mt-3 bg-muted/50 p-4 rounded-lg border border-border">
-                        {lecture.content.split("\n").map((line, index) => (
-                          <div key={index} className="flex items-start gap-2 mb-1 last:mb-0 group">
-                            <div className="flex-1 font-mono text-sm text-foreground">{line}</div>
-                            {line.trim().startsWith("say ") && (
-                              <div className="flex-shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <CopyButton text={line.trim()} />
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
+          <div 
+            key={lecture.id} 
+            className="military-card"
+          >
+            <Collapsible open={openLectures[lecture.id]} onOpenChange={() => toggleLecture(lecture.id)}>
+              <CollapsibleTrigger className="w-full">
+                <div className="flex items-center justify-between p-6 hover:bg-primary/5 rounded-xl transition-colors">
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/70 rounded-xl flex items-center justify-center border-2 border-primary/50 shadow-lg shadow-primary/20">
+                      <BookOpen className="h-6 w-6 text-primary-foreground" />
+                    </div>
+                    <div className="text-left flex-1">
+                      <h3 className="text-lg font-black uppercase tracking-wide mb-1">{lecture.title}</h3>
+                      <Badge variant="outline" className="border-accent/40 text-accent font-semibold">
+                        {categoryLabels[lecture.category]}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="text-sm text-muted-foreground font-semibold">
+                      {lecture.content.split("\n").length} строк
+                    </div>
+                    {openLectures[lecture.id] ? (
+                      <ChevronDown className="h-6 w-6 text-primary" />
+                    ) : (
+                      <ChevronRight className="h-6 w-6 text-primary" />
+                    )}
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CollapsibleTrigger>
+              
+              <CollapsibleContent>
+                <div className="px-6 pb-6">
+                  <div className="mt-4 bg-muted/30 p-6 rounded-xl border-2 border-primary/20">
+                    <div className="space-y-2">
+                      {lecture.content.split("\n").map((line, index) => (
+                        <div key={index} className="flex items-start gap-3 group hover:bg-primary/5 p-2 rounded-lg transition-colors">
+                          <div className="flex-1 font-mono text-sm text-foreground leading-relaxed">{line}</div>
+                          {line.trim().startsWith("say ") && (
+                            <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <CopyButton text={line.trim()} />
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
         ))}
       </div>
 
       {filteredLectures.length === 0 && searchQuery && (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Лекции не найдены по запросу "{searchQuery}"</p>
+        <div className="text-center py-20">
+          <div className="w-20 h-20 bg-muted/30 rounded-3xl flex items-center justify-center mx-auto mb-4">
+            <Search className="h-10 w-10 text-muted-foreground" />
+          </div>
+          <p className="text-xl font-bold text-muted-foreground mb-2">Лекции не найдены</p>
+          <p className="text-muted-foreground">Попробуйте изменить поисковый запрос</p>
         </div>
       )}
-
-      <Footer />
     </div>
   )
 }

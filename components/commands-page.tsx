@@ -1,10 +1,11 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
-import { Radio, Terminal, Shield, Users, AlertTriangle, Crown } from "lucide-react"
+import { Radio, Terminal, Shield, Users, AlertTriangle, Crown, Search } from "lucide-react"
 import { CopyButton } from "@/components/copy-button"
-import { Footer } from "@/components/footer"
+import { PageHeader } from "@/components/page-header"
+import { Input } from "@/components/ui/input"
 
 interface CommandCategory {
   id: string
@@ -13,7 +14,6 @@ interface CommandCategory {
   icon: React.ComponentType<any>
   commands: CommandItem[]
   category: "radio" | "info" | "arrest" | "admin" | "special"
-  rankRequired?: string
 }
 
 interface CommandItem {
@@ -23,9 +23,7 @@ interface CommandItem {
 }
 
 export function CommandsPage() {
-  const getItemIcon = (IconComponent: React.ComponentType<any>) => {
-    return <IconComponent className="h-5 w-5" />
-  }
+  const [searchQuery, setSearchQuery] = useState("")
 
   const commandCategories: CommandCategory[] = [
     {
@@ -136,254 +134,105 @@ export function CommandsPage() {
     },
   ]
 
-  const radioCommands = commandCategories.filter((cat) => cat.category === "radio")
-  const infoCommands = commandCategories.filter((cat) => cat.category === "info")
-  const arrestCommands = commandCategories.filter((cat) => cat.category === "arrest")
-  const adminCommands = commandCategories.filter((cat) => cat.category === "admin")
-  const specialCommands = commandCategories.filter((cat) => cat.category === "special")
+  const filteredCategories = commandCategories.filter((category) =>
+    category.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    category.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    category.commands.some(
+      (cmd) =>
+        cmd.command.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        cmd.description.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  )
+
+  const categoryIcons: Record<string, { icon: any; color: string }> = {
+    radio: { icon: Radio, color: "from-accent to-accent/70" },
+    info: { icon: Terminal, color: "from-primary to-primary/70" },
+    arrest: { icon: Shield, color: "from-accent to-accent/70" },
+    admin: { icon: Users, color: "from-primary to-primary/70" },
+    special: { icon: Crown, color: "from-accent to-primary" },
+  }
 
   return (
-    <div className="space-y-6 bg-background min-h-screen p-6">
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-          <Terminal className="h-6 w-6 text-primary-foreground" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Команды сотрудников МВД</h1>
-          <p className="text-muted-foreground">Полный список игровых команд и их описание</p>
-        </div>
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={Terminal}
+        title="Команды МВД"
+        description="Полный список игровых команд и их описание"
+        badge={`${filteredCategories.length} категорий`}
+      />
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary" />
+        <Input
+          type="text"
+          placeholder="Поиск команд..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-12 h-14 text-base border-2 border-primary/30 rounded-xl bg-background/50 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
+        />
       </div>
 
-      {/* Команды рации */}
-      <Card className="border-border bg-card">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-foreground flex items-center gap-2 text-xl">
-            <Radio className="h-5 w-5 text-blue-400" />
-            Команды рации
-          </CardTitle>
-          <CardDescription className="text-muted-foreground">Радиосвязь между сотрудниками и фракциями</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {radioCommands[0].commands.map((command, index) => (
-              <div
-                key={index}
-                className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
-              >
-                <div className="text-blue-400 mt-1">
-                  <Radio className="h-4 w-4" />
+      {/* Commands Grid */}
+      <div className="space-y-6">
+        {filteredCategories.map((category) => {
+          const iconData = categoryIcons[category.category]
+          const IconComponent = iconData.icon
+          
+          return (
+            <div key={category.id} className="military-card">
+              <div className="flex items-center gap-4 mb-6">
+                <div className={`w-14 h-14 bg-gradient-to-br ${iconData.color} rounded-xl flex items-center justify-center border-2 border-primary/50 shadow-lg shadow-primary/20`}>
+                  <IconComponent className="h-7 w-7 text-primary-foreground" />
                 </div>
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <code className="font-mono text-sm bg-muted text-foreground px-2 py-1 rounded">{command.command}</code>
-                    {command.rankRequired && (
-                      <Badge className="bg-muted text-foreground border-border text-xs">
-                        {command.rankRequired}
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="text-sm text-muted-foreground">{command.description}</p>
+                  <h2 className="text-2xl font-black uppercase tracking-wide mb-1">{category.title}</h2>
+                  <p className="text-muted-foreground font-semibold">{category.description}</p>
                 </div>
-                <CopyButton text={command.command} className="flex-shrink-0 mt-1" />
+                <Badge variant="outline" className="border-accent/40 text-accent font-semibold">
+                  {category.commands.length} команд
+                </Badge>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Информационные команды */}
-      <Card className="border-border bg-card">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-foreground flex items-center gap-2 text-xl">
-            <Terminal className="h-5 w-5 text-green-400" />
-            Информационные команды
-          </CardTitle>
-          <CardDescription className="text-muted-foreground">Получение данных и статистики</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {infoCommands[0].commands.map((command, index) => (
-              <div
-                key={index}
-                className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
-              >
-                <div className="text-green-400 mt-1">
-                  <Terminal className="h-4 w-4" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <code className="font-mono text-sm bg-muted text-foreground px-2 py-1 rounded">{command.command}</code>
-                    {command.rankRequired && (
-                      <Badge className="bg-muted text-foreground border-border text-xs">
-                        {command.rankRequired}
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="text-sm text-muted-foreground">{command.description}</p>
-                </div>
-                <CopyButton text={command.command} className="flex-shrink-0 mt-1" />
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Команды задержания */}
-      <Card className="border-border bg-card">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-foreground flex items-center gap-2 text-xl">
-            <Shield className="h-5 w-5 text-yellow-400" />
-            Команды задержания
-          </CardTitle>
-          <CardDescription className="text-muted-foreground">Задержание и конвоирование преступников</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {arrestCommands[0].commands.map((command, index) => (
-              <div
-                key={index}
-                className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
-              >
-                <div className="text-yellow-400 mt-1">
-                  <Shield className="h-4 w-4" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <code className="font-mono text-sm bg-muted text-foreground px-2 py-1 rounded">{command.command}</code>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{command.description}</p>
-                </div>
-                <CopyButton text={command.command} className="flex-shrink-0 mt-1" />
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Административные команды */}
-      <Card className="border-border bg-card">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-foreground flex items-center gap-2 text-xl">
-            <Users className="h-5 w-5 text-orange-400" />
-            Административные команды
-          </CardTitle>
-          <CardDescription className="text-muted-foreground">Управление розыском, штрафами и персоналом</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {adminCommands[0].commands.map((command, index) => (
-              <div
-                key={index}
-                className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
-              >
-                <div className="text-orange-400 mt-1">
-                  <Users className="h-4 w-4" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <code className="font-mono text-sm bg-muted text-foreground px-2 py-1 rounded">{command.command}</code>
-                    {command.rankRequired && (
-                      <Badge className="bg-muted text-foreground border-border text-xs">
-                        {command.rankRequired}
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="text-sm text-muted-foreground">{command.description}</p>
-                </div>
-                <CopyButton text={command.command} className="flex-shrink-0 mt-1" />
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Специальные команды */}
-      <Card className="border-border bg-card">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-foreground flex items-center gap-2 text-xl">
-            <AlertTriangle className="h-5 w-5 text-red-400" />
-            Специальные команды
-          </CardTitle>
-          <CardDescription className="text-muted-foreground">Команды ГИБДД и высшего руководства</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            {specialCommands.map((category) => (
-              <div key={category.id} className="space-y-3">
-                <h3 className="font-semibold text-foreground flex items-center gap-2">
-                  {getItemIcon(category.icon)}
-                  {category.title}
-                </h3>
-                <div className="space-y-2">
-                  {category.commands.map((command, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
-                    >
-                      <div className="text-red-400 mt-1">{getItemIcon(category.icon)}</div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <code className="font-mono text-sm bg-muted text-foreground px-2 py-1 rounded">{command.command}</code>
-                          {command.rankRequired && (
-                            <Badge className="bg-muted text-foreground border-border text-xs">
-                              {command.rankRequired}
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground">{command.description}</p>
+              
+              <div className="space-y-3">
+                {category.commands.map((command, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-4 p-4 rounded-xl border-2 border-primary/20 bg-muted/30 hover:bg-primary/5 transition-colors group"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <code className="font-mono text-sm bg-background/80 text-foreground px-3 py-1.5 rounded-lg border border-primary/30 font-semibold">
+                          {command.command}
+                        </code>
+                        {command.rankRequired && (
+                          <Badge variant="outline" className="border-primary/40 text-primary font-semibold">
+                            Ранг {command.rankRequired}
+                          </Badge>
+                        )}
                       </div>
-                      <CopyButton text={command.command} className="flex-shrink-0 mt-1" />
+                      <p className="text-sm text-muted-foreground font-medium leading-relaxed">{command.description}</p>
                     </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Анимации */}
-      <Card className="border-border bg-card">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-foreground flex items-center gap-2 text-xl">
-            <Users className="h-5 w-5 text-purple-400" />
-            Анимации
-          </CardTitle>
-          <CardDescription className="text-muted-foreground">Команды для воспроизведения анимаций</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm">
-              <div className="text-purple-400 mt-1">
-                <Users className="h-4 w-4" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <code className="font-mono text-sm bg-muted text-foreground px-2 py-1 rounded">/animarmy [1-9]</code>
-                </div>
-                <p className="text-sm text-muted-foreground mb-3">Вызов анимации</p>
-                <div className="bg-muted border border-border p-4 rounded-lg">
-                  <h4 className="font-semibold text-foreground mb-2">Список анимаций:</h4>
-                  <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-                    <div>1. Отжимания</div>
-                    <div>2. Приседания</div>
-                    <div>3. Воинское приветствие</div>
-                    <div>4. Стойка смирно</div>
-                    <div>5. Строевой шаг</div>
-                    <div>6. Поворот кругом</div>
-                    <div>7. Поворот налево</div>
-                    <div>8. Поворот направо</div>
-                    <div className="col-span-2">9. Упражнение "полтора"</div>
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      <CopyButton text={command.command} />
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
-              <CopyButton text="/animarmy [1-9]" className="flex-shrink-0 mt-1" />
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          )
+        })}
+      </div>
 
-      <Footer />
+      {filteredCategories.length === 0 && searchQuery && (
+        <div className="text-center py-20">
+          <div className="w-20 h-20 bg-muted/30 rounded-3xl flex items-center justify-center mx-auto mb-4">
+            <Search className="h-10 w-10 text-muted-foreground" />
+          </div>
+          <p className="text-xl font-bold text-muted-foreground mb-2">Команды не найдены</p>
+          <p className="text-muted-foreground">Попробуйте изменить поисковый запрос</p>
+        </div>
+      )}
     </div>
   )
 }

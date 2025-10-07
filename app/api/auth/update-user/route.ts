@@ -83,6 +83,11 @@ export async function POST(req: NextRequest) {
     }
 
     const normalizedRole = normalizeRole(role);
+    
+    // Prevent root role assignment through the interface
+    if (normalizedRole === "root") {
+      return NextResponse.json({ error: "Cannot assign root role" }, { status: 403 });
+    }
 
     const updates: any = { username, role: normalizedRole };
     if (nickname) updates.nickname = nickname;

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Car, Truck, Plane, Bike, X, Eye } from "lucide-react"
 import Image from "next/image"
+import { PageHeader } from "@/components/page-header"
 
 interface Vehicle {
   name: string
@@ -119,8 +120,17 @@ export default function GibddVehiclesPage() {
 
   const currentCityData = vehicleData.find(city => city.city === selectedCity) || vehicleData[0]
 
+  const totalVehicles = vehicleData.reduce((sum, city) => sum + city.vehicles.length, 0)
+
   return (
-    <div className="flex-1 p-8 bg-background">
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={Car}
+        title="Автопарк ГИБДД"
+        description="Транспортные средства для сотрудников ГИБДД"
+        badge={`${totalVehicles} авто`}
+      />
+
       <div className="max-w-6xl mx-auto">
         <style jsx global>{`
           .animate-scale-in {
@@ -138,13 +148,7 @@ export default function GibddVehiclesPage() {
           }
         `}</style>
         
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Автопарк ГИБДД</h1>
-          <p className="text-muted-foreground mb-4">
-            Транспортные средства, доступные сотрудникам ГИБДД по рангам и должностям
-          </p>
-          
-          <div className="flex flex-wrap gap-2 mt-4">
+          <div className="flex flex-wrap gap-2 mb-6">
             {vehicleData.map((city) => (
               <Button
                 key={city.city}
@@ -157,7 +161,6 @@ export default function GibddVehiclesPage() {
               </Button>
             ))}
           </div>
-        </div>
 
         <div className="grid gap-8">
           <Card key={currentCityData.city} className="border-border">

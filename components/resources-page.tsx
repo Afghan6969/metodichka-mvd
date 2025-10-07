@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ExternalLink, FileText, Scale, Shield, Users, AlertTriangle, Book, Camera } from "lucide-react"
-import { Footer } from "@/components/footer"
+import { PageHeader } from "@/components/page-header"
 
 export function ResourcesPage() {
   const resources = [
@@ -81,23 +81,18 @@ export function ResourcesPage() {
   const categories = ["Законодательство", "Правила организаций", "Специальные документы"]
 
   return (
-    <div className="space-y-6 bg-background min-h-screen p-6">
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-          <ExternalLink className="h-6 w-6 text-primary-foreground" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Информационные ресурсы</h1>
-          <p className="text-muted-foreground">
-            Официальные документы и правила Республики Провинция для сотрудников МВД
-          </p>
-        </div>
-      </div>
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={ExternalLink}
+        title="Ресурсы МВД"
+        description="Официальные документы и правила Республики Провинция"
+        badge={`${resources.length} ресурсов`}
+      />
 
       {categories.map((category) => (
-        <Card key={category} className="border-border bg-card">
+        <Card key={category} className="military-card">
           <CardHeader className="pb-4">
-            <CardTitle className="text-foreground text-xl">{category}</CardTitle>
+            <CardTitle className="text-foreground text-2xl font-black uppercase tracking-wide">{category}</CardTitle>
             <CardDescription className="text-muted-foreground">Документы категории "{category}"</CardDescription>
           </CardHeader>
           <CardContent>
@@ -132,7 +127,6 @@ export function ResourcesPage() {
         </Card>
       ))}
 
-      <Footer />
     </div>
   )
 }

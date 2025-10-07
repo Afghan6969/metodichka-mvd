@@ -40,21 +40,23 @@ export function AddUserForm({ onAddUser, availableRoles, roleDisplayNames, isLoa
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-primary hover:bg-primary/90 rounded-lg">
-          <UserPlus className="h-4 w-4 mr-2" />
+        <Button className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 rounded font-black uppercase tracking-widest shadow-lg shadow-primary/30 h-11 px-6 animate-pulse-glow">
+          <UserPlus className="h-5 w-5 mr-2" />
           Добавить пользователя
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] bg-card">
+      <DialogContent className="sm:max-w-[500px] bg-card border-2 border-primary/30 backdrop-blur-xl shadow-2xl shadow-primary/20 animate-slide-up">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold flex items-center gap-2">
-            <UserPlus className="h-5 w-5" />
-            Добавить пользователя
-          </DialogTitle>
-          <DialogDescription>Создайте нового пользователя в системе</DialogDescription>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/70 rounded flex items-center justify-center border-2 border-primary/50 shadow-lg shadow-primary/30">
+              <UserPlus className="h-6 w-6 text-primary-foreground" />
+            </div>
+            <DialogTitle className="text-2xl font-black uppercase tracking-widest">Добавить пользователя</DialogTitle>
+          </div>
+          <DialogDescription className="font-semibold uppercase tracking-wide text-primary">Создание нового пользователя МВД</DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+          <div className="space-y-2">
             <Label htmlFor="nickname" className="text-sm font-medium">
               Никнейм
             </Label>
@@ -64,11 +66,11 @@ export function AddUserForm({ onAddUser, availableRoles, roleDisplayNames, isLoa
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               disabled={isLoading}
-              className="mt-1 bg-background border-border"
+              className="bg-background/50 border-2 border-primary/30 rounded h-12 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
               required
             />
           </div>
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="username" className="text-sm font-medium">
               Логин
             </Label>
@@ -78,11 +80,11 @@ export function AddUserForm({ onAddUser, availableRoles, roleDisplayNames, isLoa
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               disabled={isLoading}
-              className="mt-1 bg-background border-border"
+              className="bg-background/50 border-2 border-primary/30 rounded h-12 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
               required
             />
           </div>
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="password" className="text-sm font-medium">
               Пароль
             </Label>
@@ -93,20 +95,20 @@ export function AddUserForm({ onAddUser, availableRoles, roleDisplayNames, isLoa
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
-              className="mt-1 bg-background border-border"
+              className="bg-background/50 border-2 border-primary/30 rounded h-12 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
               required
             />
           </div>
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="role" className="text-sm font-medium">
               Роль
             </Label>
             <Select value={role} onValueChange={(value) => setRole(value as UserRole)} disabled={isLoading}>
-              <SelectTrigger id="role" className="mt-1 bg-background border-border">
+              <SelectTrigger id="role" className="bg-background/50 border-2 border-primary/30 rounded h-12 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20">
                 <SelectValue placeholder="Выберите роль" />
               </SelectTrigger>
               <SelectContent className="bg-popover border-border backdrop-blur-xl">
-                {availableRoles.map((r) => (
+                {availableRoles.filter(r => r !== "root").map((r) => (
                   <SelectItem key={r} value={r}>
                     {roleDisplayNames[r]}
                   </SelectItem>
@@ -115,29 +117,30 @@ export function AddUserForm({ onAddUser, availableRoles, roleDisplayNames, isLoa
             </Select>
           </div>
         </form>
-        <DialogFooter className="mt-6">
+        <DialogFooter className="mt-6 gap-2">
           <Button
             type="button"
             variant="outline"
             onClick={() => setIsOpen(false)}
             disabled={isLoading}
+            className="rounded border-2 border-primary/40 hover:bg-primary/10 font-bold uppercase tracking-wide h-12"
           >
             Отмена
           </Button>
           <Button
             type="button"
             onClick={handleSubmit}
-            className="bg-primary hover:bg-primary/90"
+            className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 rounded font-black uppercase tracking-widest shadow-lg shadow-primary/30 h-12"
             disabled={isLoading || !nickname.trim() || !username.trim() || !password.trim() || role === "none"}
           >
             {isLoading ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
                 Добавление...
               </>
             ) : (
               <>
-                <UserPlus className="h-4 w-4 mr-2" />
+                <UserPlus className="h-5 w-5 mr-2" />
                 Добавить
               </>
             )}

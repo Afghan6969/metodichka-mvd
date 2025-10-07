@@ -1,11 +1,10 @@
 "use client"
 
 import { useState } from "react"
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { SearchBar } from "@/components/search-bar"
-import { BookOpen } from "lucide-react"
-import { Footer } from "@/components/footer"
+import { Input } from "@/components/ui/input"
+import { BookOpen, Search } from "lucide-react"
+import { PageHeader } from "@/components/page-header"
 
 export function TermsPage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -102,29 +101,31 @@ export function TermsPage() {
   )
 
   return (
-    <div className="space-y-6 bg-background min-h-screen p-6">
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-          <BookOpen className="h-6 w-6 text-primary-foreground" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Термины и определения</h1>
-          <p className="text-muted-foreground">Основные понятия и определения для сотрудников МВД</p>
-        </div>
-      </div>
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={BookOpen}
+        title="Термины МВД"
+        description="Основные понятия и определения для сотрудников МВД"
+        badge={`${filteredTerms.length} терминов`}
+      />
 
-      <div className="mb-6">
-        <SearchBar
-          onSearch={setSearchQuery}
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary" />
+        <Input
+          type="text"
           placeholder="Поиск терминов..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-12 h-14 text-base border-2 border-primary/30 rounded-xl bg-background/50 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
       </div>
 
       <div className="space-y-4">
         {filteredTerms.map((item, index) => (
-          <Card key={index} className="border-border bg-card">
+          <Card key={index} className="military-card">
             <CardHeader className="pb-3">
-              <CardTitle className="text-foreground text-xl">{item.term}</CardTitle>
+              <CardTitle className="text-foreground text-2xl font-black uppercase tracking-wide">{item.term}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground leading-relaxed">{item.definition}</p>
@@ -134,12 +135,14 @@ export function TermsPage() {
       </div>
 
       {filteredTerms.length === 0 && searchQuery && (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Термины не найдены по запросу "{searchQuery}"</p>
+        <div className="text-center py-20">
+          <div className="w-20 h-20 bg-muted/30 rounded-3xl flex items-center justify-center mx-auto mb-4">
+            <Search className="h-10 w-10 text-muted-foreground" />
+          </div>
+          <p className="text-xl font-bold text-muted-foreground mb-2">Термины не найдены</p>
+          <p className="text-muted-foreground">Попробуйте изменить поисковый запрос</p>
         </div>
       )}
-
-      <Footer />
     </div>
   )
 }
