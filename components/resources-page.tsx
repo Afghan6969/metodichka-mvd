@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ExternalLink, FileText, Scale, Shield, Users, AlertTriangle, Book, Camera } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
@@ -82,7 +83,7 @@ export function ResourcesPage() {
 
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
-      <PageHeader 
+      <PageHeader
         icon={ExternalLink}
         title="Ресурсы МВД"
         description="Официальные документы и правила Республики Провинция"
@@ -90,12 +91,12 @@ export function ResourcesPage() {
       />
 
       {categories.map((category) => (
-        <Card key={category} className="military-card">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-foreground text-2xl font-black uppercase tracking-wide">{category}</CardTitle>
-            <CardDescription className="text-muted-foreground">Документы категории "{category}"</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <div key={category} className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+          <div className="p-6 border-b border-white/10">
+            <h2 className="text-2xl font-black uppercase tracking-wide text-white group-hover:text-blue-200 transition-colors">{category}</h2>
+            <p className="text-blue-200/80 text-sm mt-1">Документы категории "{category}"</p>
+          </div>
+          <div className="p-6">
             <div className="space-y-3">
               {resources
                 .filter((resource) => resource.category === category)
@@ -105,26 +106,28 @@ export function ResourcesPage() {
                     href={resource.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm hover:shadow-md transition-shadow group"
+                    className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/8 hover:border-white/20 transition-all duration-200 group/link"
                   >
-                    <div className="text-blue-400 group-hover:text-blue-300 transition-colors mt-1">
-                      {resource.icon}
+                    <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-400/30 mt-1 group-hover/link:bg-blue-500/30 group-hover/link:border-blue-400/50 transition-all duration-200">
+                      <div className="text-blue-300 group-hover/link:text-blue-200 transition-colors">
+                        {React.cloneElement(resource.icon, { className: "h-5 w-5" })}
+                      </div>
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-foreground group-hover:text-blue-400 transition-colors mb-2">
+                      <h3 className="text-lg font-bold text-white group-hover/link:text-blue-200 transition-colors mb-2">
                         {resource.title}
                       </h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-3">{resource.description}</p>
-                      <div className="flex items-center gap-1 text-blue-400 text-sm">
-                        <span>Открыть на форуме</span>
-                        <ExternalLink className="h-3 w-3" />
+                      <p className="text-blue-100/90 text-sm leading-relaxed mb-3">{resource.description}</p>
+                      <div className="flex items-center gap-2 text-blue-300 text-sm hover:text-blue-200 transition-colors">
+                        <span className="font-medium">Открыть на форуме</span>
+                        <ExternalLink className="h-4 w-4" />
                       </div>
                     </div>
                   </a>
                 ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       ))}
 
     </div>

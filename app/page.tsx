@@ -149,42 +149,42 @@ export default function Home() {
                     { icon: Keyboard, label: "Биндов", value: "50+" },
                     { icon: Car, label: "Автомобилей", value: "30+" },
                   ].map((stat, i) => (
-                    <div key={i} className="military-card text-center p-6 hover:scale-105 transition-transform">
-                      <stat.icon className="h-8 w-8 mx-auto mb-3 text-primary" />
-                      <div className="text-3xl font-black mb-1 text-foreground">{stat.value}</div>
-                      <div className="text-sm text-muted-foreground font-semibold uppercase tracking-wide">{stat.label}</div>
+                    <div key={i} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl text-center p-6 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                      <stat.icon className="h-8 w-8 mx-auto mb-3 text-blue-300" />
+                      <div className="text-3xl font-black mb-1 text-white">{stat.value}</div>
+                      <div className="text-sm text-blue-200/80 font-semibold uppercase tracking-wide">{stat.label}</div>
                     </div>
                   ))}
                 </div>
 
                 {/* Feature Cards */}
                 <div className="grid md:grid-cols-3 gap-6">
-                  <div className="military-card text-center group hover:shadow-xl transition-all">
-                    <div className="relative w-20 h-20 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
-                      <BookOpen className="h-10 w-10 text-primary-foreground" />
+                  <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl text-center group hover:shadow-2xl transition-all duration-300 p-8 hover:scale-105">
+                    <div className="relative w-20 h-20 bg-gradient-to-br from-blue-500/80 to-blue-600/60 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
+                      <BookOpen className="h-10 w-10 text-white" />
                     </div>
-                    <h3 className="text-2xl font-black mb-4 uppercase tracking-wide text-foreground">ГИБДД</h3>
-                    <p className="text-muted-foreground leading-relaxed">
+                    <h3 className="text-2xl font-black mb-4 uppercase tracking-wide text-white">ГИБДД</h3>
+                    <p className="text-blue-100/80 leading-relaxed">
                       Должности, автопарк, гос волна, бинды и материалы для ГИБДД
                     </p>
                   </div>
 
-                  <div className="military-card text-center group hover:shadow-xl transition-all">
-                    <div className="relative w-20 h-20 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
-                      <Shield className="h-10 w-10 text-primary-foreground" />
+                  <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl text-center group hover:shadow-2xl transition-all duration-300 p-8 hover:scale-105">
+                    <div className="relative w-20 h-20 bg-gradient-to-br from-red-500/80 to-red-600/60 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
+                      <Shield className="h-10 w-10 text-white" />
                     </div>
-                    <h3 className="text-2xl font-black mb-4 uppercase tracking-wide text-foreground">ГУВД</h3>
-                    <p className="text-muted-foreground leading-relaxed">
+                    <h3 className="text-2xl font-black mb-4 uppercase tracking-wide text-white">ГУВД</h3>
+                    <p className="text-red-100/80 leading-relaxed">
                       Должности, автопарк, гос волна, бинды и материалы для ГУВД
                     </p>
                   </div>
 
-                  <div className="military-card text-center group hover:shadow-xl transition-all">
-                    <div className="relative w-20 h-20 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
-                      <Award className="h-10 w-10 text-primary-foreground" />
+                  <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl text-center group hover:shadow-2xl transition-all duration-300 p-8 hover:scale-105">
+                    <div className="relative w-20 h-20 bg-gradient-to-br from-purple-500/80 to-purple-600/60 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
+                      <Award className="h-10 w-10 text-white" />
                     </div>
-                    <h3 className="text-2xl font-black mb-4 uppercase tracking-wide text-foreground">Инструменты</h3>
-                    <p className="text-muted-foreground leading-relaxed">
+                    <h3 className="text-2xl font-black mb-4 uppercase tracking-wide text-white">Инструменты</h3>
+                    <p className="text-purple-100/80 leading-relaxed">
                       Калькулятор штрафов, генератор отчётов, термины и ресурсы
                     </p>
                   </div>

@@ -157,9 +157,9 @@ export function ReportsPage() {
   )
 
   const categoryIcons: Record<string, { icon: any; color: string }> = {
-    basic: { icon: MessageSquare, color: "from-primary to-primary/70" },
-    patrol: { icon: Radio, color: "from-accent to-accent/70" },
-    special: { icon: AlertTriangle, color: "from-primary to-accent" },
+    basic: { icon: MessageSquare, color: "from-blue-500/80 to-blue-600/60" },
+    patrol: { icon: Radio, color: "from-green-500/80 to-green-600/60" },
+    special: { icon: AlertTriangle, color: "from-red-500/80 to-red-600/60" },
   }
 
   const categoryLabels = {
@@ -179,13 +179,17 @@ export function ReportsPage() {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary" />
+        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
+          <div className="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center border border-blue-400/30">
+            <Search className="h-4 w-4 text-blue-300" />
+          </div>
+        </div>
         <Input
           type="text"
           placeholder="Поиск докладов..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-12 h-14 text-base border-2 border-primary/30 rounded-xl bg-background/50 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
+          className="pl-12 h-14 text-base border-2 border-blue-400/30 rounded-xl bg-white/5 backdrop-blur-sm font-semibold focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 text-white placeholder:text-blue-300/60"
         />
       </div>
 
@@ -194,44 +198,44 @@ export function ReportsPage() {
         {filteredCategories.map((category) => {
           const IconComponent = category.icon
           const categoryType = categoryIcons[category.category]
-          
+
           return (
-            <div key={category.id} className="military-card">
-              <div className="flex items-center gap-4 mb-6">
-                <div className={`w-14 h-14 bg-gradient-to-br ${categoryType.color} rounded-xl flex items-center justify-center border-2 border-primary/50 shadow-lg shadow-primary/20`}>
-                  <IconComponent className="h-7 w-7 text-primary-foreground" />
+            <div key={category.id} className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+              <div className="flex items-center gap-4 p-6 border-b border-white/10">
+                <div className={`w-14 h-14 bg-gradient-to-br ${categoryType.color} rounded-xl flex items-center justify-center border border-blue-400/30 shadow-lg group-hover:shadow-blue-500/20 transition-all duration-300`}>
+                  <IconComponent className="h-7 w-7 text-white" />
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-2xl font-black uppercase tracking-wide mb-1">{category.title}</h2>
-                  <p className="text-muted-foreground font-semibold">{category.description}</p>
+                  <h2 className="text-2xl font-bold uppercase tracking-wide mb-1 text-white group-hover:text-blue-200 transition-colors">{category.title}</h2>
+                  <p className="text-blue-200/80 font-medium">{category.description}</p>
                 </div>
-                <Badge variant="outline" className="border-accent/40 text-accent font-semibold">
+                <Badge variant="outline" className="border-blue-400/40 text-blue-300 font-semibold bg-blue-500/10">
                   {categoryLabels[category.category]}
                 </Badge>
               </div>
-              
-              <div className="space-y-3">
+
+              <div className="space-y-2 p-6">
                 {category.reports.map((report, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-4 p-5 rounded-xl border-2 border-primary/20 bg-muted/30 hover:bg-primary/5 transition-colors group"
+                    className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/8 transition-colors group"
                   >
                     <div className="flex-1">
-                      <h3 className="text-base font-black uppercase tracking-wide mb-3 text-foreground">
+                      <h3 className="text-base font-bold uppercase tracking-wide mb-2 text-blue-100 group-hover:text-white transition-colors">
                         {report.title}
                       </h3>
-                      <div className="bg-background/80 p-4 rounded-lg border border-primary/30">
-                        <code className="font-mono text-sm text-foreground font-semibold leading-relaxed">
+                      <div className="bg-white/10 p-3 rounded-lg border border-blue-400/20">
+                        <code className="font-mono text-sm text-blue-100 font-semibold leading-relaxed">
                           {report.command}
                         </code>
                       </div>
                       {report.description && (
-                        <p className="text-sm text-muted-foreground font-medium mt-3 leading-relaxed">
+                        <p className="text-sm text-blue-200/80 font-medium mt-2 leading-relaxed">
                           {report.description}
                         </p>
                       )}
                     </div>
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="opacity-60 group-hover:opacity-100 transition-opacity">
                       <CopyButton text={report.command} />
                     </div>
                   </div>
@@ -244,11 +248,11 @@ export function ReportsPage() {
 
       {filteredCategories.length === 0 && searchQuery && (
         <div className="text-center py-20">
-          <div className="w-20 h-20 bg-muted/30 rounded-3xl flex items-center justify-center mx-auto mb-4">
-            <Search className="h-10 w-10 text-muted-foreground" />
+          <div className="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-3xl flex items-center justify-center mx-auto mb-4 border border-white/20">
+            <Search className="h-10 w-10 text-blue-300" />
           </div>
-          <p className="text-xl font-bold text-muted-foreground mb-2">Доклады не найдены</p>
-          <p className="text-muted-foreground">Попробуйте изменить поисковый запрос</p>
+          <p className="text-xl font-bold text-white mb-2">Доклады не найдены</p>
+          <p className="text-blue-200/80">Попробуйте изменить поисковый запрос</p>
         </div>
       )}
     </div>

@@ -137,7 +137,7 @@ export default function GuvdExamplesPage() {
 
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
-      <PageHeader 
+      <PageHeader
         icon={BookOpen}
         title="Примеры ситуаций"
         description="Типичные ситуации и порядок действий для новичков МВД"
@@ -147,83 +147,97 @@ export default function GuvdExamplesPage() {
       <div className="max-w-4xl mx-auto">
 
         <div className="space-y-6">
-          <Card className="military-card">
-            <h2 className="text-2xl font-black uppercase tracking-wide text-foreground mb-4">Выбор ситуации</h2>
-            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-2 text-muted-foreground">Выберите наказание</label>
-                <Select value={selectedPunishment} onValueChange={(value) => {
-                  setSelectedPunishment(value)
-                  setSelectedVariant("")
-                }}>
-                  <SelectTrigger className="h-12 border-border bg-muted text-foreground focus:ring-blue-700/50">
-                    <SelectValue placeholder="Выберите наказание" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover border-border backdrop-blur-xl">
-                    {punishments.map((punishment) => (
-                      <SelectItem key={punishment.name} value={punishment.name}>
-                        {punishment.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+          <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+            <div className="p-6 border-b border-white/10">
+              <h2 className="text-2xl font-black uppercase tracking-wide text-white">Выбор ситуации</h2>
             </div>
-          </Card>
-
-          {selectedPunishment && selectedPunishmentData?.variants && (
-            <Card className="military-card">
-              <h2 className="text-2xl font-black uppercase tracking-wide text-foreground mb-4">Выбор примера</h2>
+            <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-muted-foreground">Выберите пример</label>
-                  <Select value={selectedVariant} onValueChange={setSelectedVariant}>
-                    <SelectTrigger className="h-12 border-border bg-muted text-foreground focus:ring-blue-700/50">
-                      <SelectValue placeholder="Выберите пример" />
+                  <label className="block text-sm font-medium mb-3 text-blue-200/90">Выберите наказание</label>
+                  <Select value={selectedPunishment} onValueChange={(value) => {
+                    setSelectedPunishment(value)
+                    setSelectedVariant("")
+                  }}>
+                    <SelectTrigger className="h-12 border-blue-400/30 bg-white/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
+                      <SelectValue placeholder="Выберите наказание" />
                     </SelectTrigger>
-                    <SelectContent className="bg-popover border-border backdrop-blur-xl">
-                      {selectedPunishmentData.variants.map((variant) => (
-                        <SelectItem key={variant.label} value={variant.label}>
-                          {variant.label}
+                    <SelectContent className="bg-white/10 backdrop-blur-sm border-white/20">
+                      {punishments.map((punishment) => (
+                        <SelectItem key={punishment.name} value={punishment.name} className="hover:bg-white/10 text-white focus:bg-blue-500/20 focus:text-blue-100">
+                          {punishment.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
               </div>
-            </Card>
+            </div>
+          </div>
+
+          {selectedPunishment && selectedPunishmentData?.variants && (
+            <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+              <div className="p-6 border-b border-white/10">
+                <h2 className="text-2xl font-black uppercase tracking-wide text-white">Выбор примера</h2>
+              </div>
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-3 text-blue-200/90">Выберите пример</label>
+                    <Select value={selectedVariant} onValueChange={setSelectedVariant}>
+                      <SelectTrigger className="h-12 border-blue-400/30 bg-white/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
+                        <SelectValue placeholder="Выберите пример" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white/10 backdrop-blur-sm border-white/20">
+                        {selectedPunishmentData.variants.map((variant) => (
+                          <SelectItem key={variant.label} value={variant.label} className="hover:bg-white/10 text-white focus:bg-blue-500/20 focus:text-blue-100">
+                            {variant.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
 
           {selectedData && (
             <div className="space-y-4">
-              <Card className="p-6 bg-card border border-border">
-                <h3 className="text-xl font-black uppercase tracking-wide text-foreground mb-4">Порядок действий</h3>
-                <div className="bg-muted p-4 rounded font-mono text-sm text-foreground">
-                  {selectedData.steps.split("\n").map((line, index) => {
-                    const parts = line.split(' (см. ');
-                    if (parts.length > 1) {
-                      const main = parts[0];
-                      const ref = ' (см. ' + parts[1];
-                      return (
-                        <div key={index} className="mb-2 last:mb-0">
-                          {main}<span className="text-muted-foreground text-xs">{ref}</span>
-                        </div>
-                      );
-                    } else {
-                      return (
-                        <div key={index} className="mb-2 last:mb-0">
-                          {line}
-                        </div>
-                      );
-                    }
-                  })}
+              <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+                <div className="p-6 border-b border-white/10">
+                  <h3 className="text-xl font-black uppercase tracking-wide text-white">Порядок действий</h3>
                 </div>
-              </Card>
+                <div className="p-6">
+                  <div className="bg-white/10 p-4 rounded-xl border border-white/20">
+                    <div className="font-mono text-sm text-blue-100/90 leading-relaxed">
+                      {selectedData.steps.split("\n").map((line, index) => {
+                        const parts = line.split(' (см. ');
+                        if (parts.length > 1) {
+                          const main = parts[0];
+                          const ref = ' (см. ' + parts[1];
+                          return (
+                            <div key={index} className="mb-2 last:mb-0">
+                              {main}<span className="text-blue-200/60 text-xs">{ref}</span>
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div key={index} className="mb-2 last:mb-0">
+                              {line}
+                            </div>
+                          );
+                        }
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
           <div className="space-y-6">
-            <h2 className="text-3xl font-black uppercase tracking-wide text-foreground">Важные уточнения</h2>
+            <h2 className="text-3xl font-black uppercase tracking-wide text-white">Важные уточнения</h2>
             {[
               {
                 title: "Окно у ТС",
@@ -265,21 +279,26 @@ export default function GuvdExamplesPage() {
                 ],
               },
             ].map((section, index) => (
-              <Card
+              <div
                 key={index}
-                className="relative p-6 bg-card border-2 border-l-4 border-l-blue-600 rounded-xl shadow-md overflow-hidden transition-transform hover:scale-[1.01] group"
+                className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden"
               >
-                <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-400/30 rounded-xl transition-all duration-300 pointer-events-none"></div>
-                <div className="flex items-center gap-2 mb-4">
-                  <AlertCircle className="h-5 w-5 text-blue-600" />
-                  <h3 className="text-lg font-semibold text-foreground">Важное уточнение №{index + 1}. {section.title}</h3>
+                <div className="p-6 border-b border-white/10">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center border border-blue-400/30">
+                      <AlertCircle className="h-5 w-5 text-blue-300" />
+                    </div>
+                    <h3 className="text-lg font-bold text-white">Важное уточнение №{index + 1}. {section.title}</h3>
+                  </div>
                 </div>
-                <div className="text-sm text-muted-foreground space-y-2">
-                  {section.content.map((item, i) => (
-                    <p key={i} dangerouslySetInnerHTML={{ __html: item }} />
-                  ))}
+                <div className="p-6">
+                  <div className="text-sm text-blue-100/90 space-y-2">
+                    {section.content.map((item, i) => (
+                      <p key={i} dangerouslySetInnerHTML={{ __html: item }} />
+                    ))}
+                  </div>
                 </div>
-              </Card>
+              </div>
             ))}
           </div>
         </div>

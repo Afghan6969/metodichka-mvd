@@ -40,24 +40,24 @@ export function AddUserForm({ onAddUser, availableRoles, roleDisplayNames, isLoa
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 rounded font-black uppercase tracking-widest shadow-lg shadow-primary/30 h-11 px-6 animate-pulse-glow">
+        <Button className="bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/40 text-blue-100 hover:text-blue-50 transition-all h-11 px-6">
           <UserPlus className="h-5 w-5 mr-2" />
           Добавить пользователя
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] bg-card border-2 border-primary/30 backdrop-blur-xl shadow-2xl shadow-primary/20 animate-slide-up">
+      <DialogContent className="sm:max-w-[500px] bg-white/10 border border-white/20 backdrop-blur-xl">
         <DialogHeader>
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/70 rounded flex items-center justify-center border-2 border-primary/50 shadow-lg shadow-primary/30">
-              <UserPlus className="h-6 w-6 text-primary-foreground" />
+            <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center border border-blue-400/30">
+              <UserPlus className="h-6 w-6 text-blue-300" />
             </div>
-            <DialogTitle className="text-2xl font-black uppercase tracking-widest">Добавить пользователя</DialogTitle>
+            <DialogTitle className="text-2xl font-bold text-white">Добавить пользователя</DialogTitle>
           </div>
-          <DialogDescription className="font-semibold uppercase tracking-wide text-primary">Создание нового пользователя МВД</DialogDescription>
+          <DialogDescription className="text-blue-200/80">Создание нового пользователя МВД</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="nickname" className="text-sm font-medium">
+            <Label htmlFor="nickname" className="text-sm font-medium text-white">
               Никнейм
             </Label>
             <Input
@@ -66,12 +66,12 @@ export function AddUserForm({ onAddUser, availableRoles, roleDisplayNames, isLoa
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               disabled={isLoading}
-              className="bg-background/50 border-2 border-primary/30 rounded h-12 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
+              className="bg-white/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="username" className="text-sm font-medium">
+            <Label htmlFor="username" className="text-sm font-medium text-white">
               Логин
             </Label>
             <Input
@@ -80,12 +80,12 @@ export function AddUserForm({ onAddUser, availableRoles, roleDisplayNames, isLoa
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               disabled={isLoading}
-              className="bg-background/50 border-2 border-primary/30 rounded h-12 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
+              className="bg-white/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-sm font-medium">
+            <Label htmlFor="password" className="text-sm font-medium text-white">
               Пароль
             </Label>
             <Input
@@ -95,19 +95,19 @@ export function AddUserForm({ onAddUser, availableRoles, roleDisplayNames, isLoa
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
-              className="bg-background/50 border-2 border-primary/30 rounded h-12 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
+              className="bg-white/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="role" className="text-sm font-medium">
+            <Label htmlFor="role" className="text-sm font-medium text-white">
               Роль
             </Label>
             <Select value={role} onValueChange={(value) => setRole(value as UserRole)} disabled={isLoading}>
-              <SelectTrigger id="role" className="bg-background/50 border-2 border-primary/30 rounded h-12 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20">
+              <SelectTrigger id="role" className="bg-white/5 border-white/15 text-white">
                 <SelectValue placeholder="Выберите роль" />
               </SelectTrigger>
-              <SelectContent className="bg-popover border-border backdrop-blur-xl">
+              <SelectContent className="bg-white/10 border-white/20 backdrop-blur-xl">
                 {availableRoles.filter(r => r !== "root").map((r) => (
                   <SelectItem key={r} value={r}>
                     {roleDisplayNames[r]}
@@ -123,14 +123,14 @@ export function AddUserForm({ onAddUser, availableRoles, roleDisplayNames, isLoa
             variant="outline"
             onClick={() => setIsOpen(false)}
             disabled={isLoading}
-            className="rounded border-2 border-primary/40 hover:bg-primary/10 font-bold uppercase tracking-wide h-12"
+            className="border-blue-400/40 text-blue-200 hover:bg-blue-500/10 hover:text-blue-100"
           >
             Отмена
           </Button>
           <Button
             type="button"
             onClick={handleSubmit}
-            className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 rounded font-black uppercase tracking-widest shadow-lg shadow-primary/30 h-12"
+            className="bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/40 text-blue-100 hover:text-blue-50"
             disabled={isLoading || !nickname.trim() || !username.trim() || !password.trim() || role === "none"}
           >
             {isLoading ? (

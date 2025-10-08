@@ -16,9 +16,15 @@ export function ThemeSwitcher() {
   const { theme, setTheme, currentTheme } = useTheme()
 
   const themeIcons: Record<ThemeName, string> = {
-    light: "☀️",
     dark: "🌙",
     mvd: "🚔",
+    "police-blue": "🔵",
+    "police-red": "🔴",
+    "police-rainbow": "🌈",
+    "police-dual": "🚨",
+    "police-corners": "📐",
+    "police-sides": "📏",
+    "police-cross": "✚",
   }
 
   return (

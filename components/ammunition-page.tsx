@@ -82,9 +82,9 @@ export function AmmunitionPage() {
   const weaponItems = ammunitionData.filter((item) => item.category === "weapon")
   const specialItems = ammunitionData.filter((item) => item.category === "special")
 
-return (
+  return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
-      <PageHeader 
+      <PageHeader
         icon={Shield}
         title="Амуниция МВД"
         description="Обязательная и дополнительная экипировка согласно пункту 2.7 регламента"
@@ -92,127 +92,137 @@ return (
       />
 
       {/* Базовая экипировка */}
-      <Card className="military-card">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-foreground flex items-center gap-2 text-xl">
-            <Shield className="h-5 w-5 text-green-400" />
-            Базовая экипировка
-          </CardTitle>
-          <CardDescription className="text-muted-foreground">Обязательная экипировка для всех сотрудников полиции</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+        <div className="flex items-center gap-3 p-6 border-b border-white/10">
+          <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center border border-green-400/30">
+            <Shield className="h-5 w-5 text-green-300" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-white">Базовая экипировка</h2>
+            <p className="text-blue-200/80 text-sm">Обязательная экипировка для всех сотрудников полиции</p>
+          </div>
+        </div>
+        <div className="p-6">
           <div className="grid gap-4 md:grid-cols-2">
             {basicItems.map((item, index) => (
               <div
                 key={index}
-                className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
+                className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/8 transition-colors"
               >
-                <div className="text-green-400 mt-1">{getItemIcon(item.icon)}</div>
+                <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center border border-green-400/30 mt-1">
+                  <item.icon className="h-5 w-5 text-green-300" />
+                </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-semibold text-foreground text-sm">{item.name}</h3>
+                    <h3 className="font-bold text-white text-sm">{item.name}</h3>
                     {item.required && (
-                      <Badge className="bg-muted text-foreground border-border text-xs">
+                      <Badge className="border-green-400/40 text-green-300 bg-green-500/10 text-xs">
                         Обязательно
                       </Badge>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground mb-2">{item.description}</p>
-                  <p className="text-xs text-muted-foreground font-medium">{item.availability}</p>
+                  <p className="text-sm text-blue-100/90 mb-2">{item.description}</p>
+                  <p className="text-xs text-blue-200/70 font-medium">{item.availability}</p>
                 </div>
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Табельное оружие */}
-      <Card className="military-card">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-foreground flex items-center gap-2 text-xl">
-            <Gun className="h-5 w-5 text-yellow-400" />
-            Табельное оружие
-          </CardTitle>
-          <CardDescription className="text-muted-foreground">Огнестрельное оружие по званиям и должностям</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+        <div className="flex items-center gap-3 p-6 border-b border-white/10">
+          <div className="w-10 h-10 bg-yellow-500/20 rounded-xl flex items-center justify-center border border-yellow-400/30">
+            <Gun className="h-5 w-5 text-yellow-300" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-white">Табельное оружие</h2>
+            <p className="text-blue-200/80 text-sm">Огнестрельное оружие по званиям и должностям</p>
+          </div>
+        </div>
+        <div className="p-6">
           <div className="grid gap-4">
             {weaponItems.map((item, index) => (
               <div
                 key={index}
-                className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
+                className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/8 transition-colors"
               >
-                <div className="text-yellow-400 mt-1">{getItemIcon(item.icon)}</div>
+                <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center border border-yellow-400/30 mt-1">
+                  <item.icon className="h-5 w-5 text-yellow-300" />
+                </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-semibold text-foreground text-sm">{item.name}</h3>
+                    <h3 className="font-bold text-white text-sm">{item.name}</h3>
                     {item.required && (
-                      <Badge className="bg-muted text-foreground border-border text-xs">
+                      <Badge className="border-yellow-400/40 text-yellow-300 bg-yellow-500/10 text-xs">
                         Обязательно
                       </Badge>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground mb-2">{item.description}</p>
-                  <p className="text-xs text-muted-foreground font-medium">{item.availability}</p>
+                  <p className="text-sm text-blue-100/90 mb-2">{item.description}</p>
+                  <p className="text-xs text-blue-200/70 font-medium">{item.availability}</p>
                 </div>
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Специальное оружие */}
-      <Card className="military-card">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-foreground flex items-center gap-2 text-xl">
-            <Target className="h-5 w-5 text-red-400" />
-            Специальное оружие
-          </CardTitle>
-          <CardDescription className="text-muted-foreground">Оружие для специальных подразделений и высших званий</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+        <div className="flex items-center gap-3 p-6 border-b border-white/10">
+          <div className="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center border border-red-400/30">
+            <Target className="h-5 w-5 text-red-300" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-white">Специальное оружие</h2>
+            <p className="text-blue-200/80 text-sm">Оружие для специальных подразделений и высших званий</p>
+          </div>
+        </div>
+        <div className="p-6">
           <div className="grid gap-4">
             {specialItems.map((item, index) => (
               <div
                 key={index}
-                className="flex items-start gap-4 p-4 rounded-lg border border-border bg-muted shadow-sm"
+                className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/8 transition-colors"
               >
-                <div className="text-red-400 mt-1">{getItemIcon(item.icon)}</div>
+                <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center border border-red-400/30 mt-1">
+                  <item.icon className="h-5 w-5 text-red-300" />
+                </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-semibold text-foreground text-sm">{item.name}</h3>
-                    <Badge className="bg-muted text-foreground border-border text-xs">
+                    <h3 className="font-bold text-white text-sm">{item.name}</h3>
+                    <Badge className="border-red-400/40 text-red-300 bg-red-500/10 text-xs">
                       ОМОН/СОБР
                     </Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-2">{item.description}</p>
-                  <p className="text-xs text-muted-foreground font-medium">{item.availability}</p>
+                  <p className="text-sm text-blue-100/90 mb-2">{item.description}</p>
+                  <p className="text-xs text-blue-200/70 font-medium">{item.availability}</p>
                 </div>
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Примечания */}
-      <Card className="military-card">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-foreground text-xl">
-            Пункт 2.7 - Обязательная экипировка
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+        <div className="p-6 border-b border-white/10">
+          <h2 className="text-xl font-bold text-white">Пункт 2.7 - Обязательная экипировка</h2>
+        </div>
+        <div className="p-6">
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              <strong>
+            <p className="text-sm text-blue-100/90">
+              <span className="font-bold text-white">
                 Сотрудник полиции, при нахождении на смене обязан иметь при себе необходимую амуницию, доступную ему по
                 званию и должности.
-              </strong>
+              </span>
             </p>
 
-            <div className="bg-muted border border-border p-4 rounded-lg">
-              <h4 className="font-semibold text-foreground mb-3">Обязательный минимум:</h4>
-              <ul className="space-y-1 text-sm text-muted-foreground">
+            <div className="bg-white/10 p-4 rounded-xl border border-white/20">
+              <h4 className="font-bold text-white mb-3">Обязательный минимум:</h4>
+              <ul className="space-y-1 text-sm text-blue-100/90">
                 <li>• Наручники</li>
                 <li>• Полицейская дубинка</li>
                 <li>• Бронежилет</li>
@@ -222,15 +232,15 @@ return (
               </ul>
             </div>
 
-            <div className="bg-muted border border-border p-4 rounded-lg">
-              <p className="text-sm text-muted-foreground">
-                <strong>Примечание:</strong> Табельное оружие разрешено использовать для тренировок независимо от звания
+            <div className="bg-white/10 p-4 rounded-xl border border-white/20">
+              <p className="text-sm text-blue-100/90">
+                <span className="font-bold text-white">Примечание:</span> Табельное оружие разрешено использовать для тренировок независимо от звания
                 сотрудника.
               </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
     </div>
   )

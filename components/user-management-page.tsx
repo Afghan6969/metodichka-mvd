@@ -1,7 +1,9 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { format } from "date-fns"
+import { ru } from "date-fns/locale"
+import { Card, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Users, Trash2, AlertCircle, History, Loader2, RefreshCw } from "lucide-react"
@@ -85,10 +87,17 @@ export function UserManagementPage() {
   if (!currentUser || !canManageUsers()) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Alert variant="destructive" className="max-w-md">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>У вас нет доступа к этой странице</AlertDescription>
-        </Alert>
+        <div className="bg-red-500/10 border border-red-400/40 rounded-3xl p-8 max-w-md">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center border border-red-400/30">
+              <AlertCircle className="h-6 w-6 text-red-300" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-red-300">Доступ запрещён</h3>
+              <p className="text-sm text-red-200/80">У вас нет прав доступа к этой странице</p>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
@@ -339,10 +348,30 @@ export function UserManagementPage() {
   const filteredLogs =
     userLogs
       ?.filter(
-        (log) =>
-          (actionFilter === "all" || log.action === actionFilter) &&
-          (log.target_user_nickname.toLowerCase().includes(logSearch.toLowerCase()) ||
-            log.performed_by_nickname.toLowerCase().includes(logSearch.toLowerCase()))
+        (log) => {
+          // Фильтр по действию
+          if (actionFilter !== "all" && log.action !== actionFilter) {
+            return false
+          }
+
+          // Поиск по тексту (действие, пользователь, дата)
+          if (logSearch.trim()) {
+            const searchLower = logSearch.toLowerCase()
+            const actionName = actionDisplayNames[log.action]?.toLowerCase() || log.action.toLowerCase()
+            const targetUser = log.target_user_nickname.toLowerCase()
+            const performedBy = log.performed_by_nickname.toLowerCase()
+            const logDate = format(new Date(log.created_at), "dd MMMM yyyy", { locale: ru }).toLowerCase()
+
+            return (
+              actionName.includes(searchLower) ||
+              targetUser.includes(searchLower) ||
+              performedBy.includes(searchLower) ||
+              logDate.includes(searchLower)
+            )
+          }
+
+          return true
+        }
       )
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) || []
 
@@ -385,34 +414,46 @@ export function UserManagementPage() {
         </div>
 
         {(error || success) && (
-          <Alert variant={error ? "destructive" : "default"} className="animate-in fade-in slide-in-from-top-2">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error || success}</AlertDescription>
-          </Alert>
+          <div className={`p-4 rounded-xl border ${error ? 'bg-red-500/10 border-red-400/40 text-red-300' : 'bg-green-500/10 border-green-400/40 text-green-300'}`}>
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-4 w-4" />
+              <span>{error || success}</span>
+            </div>
+          </div>
         )}
 
         <UserStats totalUsers={totalUsers} gibddUsers={gibddUsers} guvdUsers={guvdUsers} />
 
         <div className="space-y-6">
             <Tabs defaultValue="users" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="users">Пользователи</TabsTrigger>
-                <TabsTrigger value="logs">Журнал изменений</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 bg-white/8 border border-white/15 h-12">
+                <TabsTrigger
+                  value="users"
+                  className="data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-100 data-[state=active]:border-blue-400/40 text-blue-200 hover:bg-blue-500/10 hover:text-blue-100 transition-all duration-200 font-medium"
+                >
+                  Пользователи
+                </TabsTrigger>
+                <TabsTrigger
+                  value="logs"
+                  className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-100 data-[state=active]:border-purple-400/40 text-purple-200 hover:bg-purple-500/10 hover:text-purple-100 transition-all duration-200 font-medium"
+                >
+                  Журнал изменений
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="users" className="space-y-4 mt-6">
-                <Card className="border-border shadow-sm">
-                  <CardHeader className="pb-4">
+                <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+                  <div className="p-6 border-b border-white/10">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl font-bold flex items-center gap-2">
-                        <Users className="h-5 w-5" />
+                      <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                        <Users className="h-5 w-5 text-blue-300" />
                         Список пользователей
-                      </CardTitle>
+                      </h2>
                       <div className="flex gap-2">
                         <Button
                           variant="outline"
                           onClick={handleRefresh}
-                          className="rounded-lg px-4 py-2"
+                          className="border-blue-400/30 bg-blue-500/10 hover:bg-blue-500/20 hover:border-blue-400/50 text-blue-300"
                           size="sm"
                           disabled={isLoading}
                           title="Обновить список"
@@ -422,7 +463,7 @@ export function UserManagementPage() {
                         <Button
                           variant={!showDeactivated ? "default" : "outline"}
                           onClick={() => setShowDeactivated(false)}
-                          className="rounded-lg px-4 py-2"
+                          className={!showDeactivated ? "bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/40 text-blue-100 hover:text-blue-50" : "border-blue-400/40 text-blue-200 hover:bg-blue-500/10 hover:text-blue-100"}
                           size="sm"
                         >
                           Активные
@@ -430,15 +471,15 @@ export function UserManagementPage() {
                         <Button
                           variant={showDeactivated ? "default" : "outline"}
                           onClick={() => setShowDeactivated(true)}
-                          className="rounded-lg px-4 py-2"
+                          className={showDeactivated ? "bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/40 text-blue-100 hover:text-blue-50" : "border-blue-400/40 text-blue-200 hover:bg-blue-500/10 hover:text-blue-100"}
                           size="sm"
                         >
                           Деактивированные
                         </Button>
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                  </div>
+                  <div className="p-6 space-y-4">
                     <UserFilters
                       userSearch={userSearch}
                       onUserSearchChange={setUserSearch}
@@ -447,13 +488,13 @@ export function UserManagementPage() {
                     />
 
                     {selectedUsers.length > 0 && (
-                      <div className="p-4 bg-muted/30 rounded-lg flex flex-wrap gap-4 items-center">
-                        <span className="text-sm text-foreground">Выбрано: {selectedUsers.length}</span>
+                      <div className="p-4 bg-white/8 border border-white/15 rounded-xl flex flex-wrap gap-4 items-center">
+                        <span className="text-sm text-blue-200">Выбрано: {selectedUsers.length}</span>
                         <Select value={batchRole} onValueChange={(value) => setBatchRole(value as UserRole)}>
-                          <SelectTrigger className="w-[200px] bg-background border-border">
+                          <SelectTrigger className="w-[200px] bg-white/5 border-white/15 text-white">
                             <SelectValue placeholder="Изменить роль" />
                           </SelectTrigger>
-                          <SelectContent className="bg-popover border-border backdrop-blur-xl">
+                          <SelectContent className="bg-white/10 border-white/20 backdrop-blur-xl">
                             {getAvailableRoles().map((r) => (
                               <SelectItem key={r} value={r}>
                                 {roleDisplayNames[r]}
@@ -463,7 +504,7 @@ export function UserManagementPage() {
                         </Select>
                         <Button
                           onClick={handleBatchRoleChange}
-                          className="bg-primary hover:bg-primary/90 rounded-lg"
+                          className="bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/40 text-blue-100 hover:text-blue-50"
                           disabled={isLoading || !batchRole || batchRole === "none"}
                           size="sm"
                         >
@@ -473,7 +514,7 @@ export function UserManagementPage() {
                         <Button
                           onClick={handleBatchDeactivate}
                           variant="destructive"
-                          className="rounded-lg"
+                          className="bg-red-500/20 hover:bg-red-500/30 border-red-400/40 text-red-300 hover:text-red-200"
                           disabled={isLoading}
                           size="sm"
                         >
@@ -485,7 +526,7 @@ export function UserManagementPage() {
 
                     <div className="space-y-4">
                       {currentUsers.length === 0 ? (
-                        <div className="text-center py-12 text-muted-foreground">
+                        <div className="text-center py-12 text-blue-200/80">
                           <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
                           <p className="text-sm">Пользователи не найдены</p>
                         </div>
@@ -530,19 +571,19 @@ export function UserManagementPage() {
                       itemsPerPage={itemsPerPage}
                       totalItems={filteredUsers.length}
                     />
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               </TabsContent>
 
               <TabsContent value="logs" className="space-y-4 mt-6">
-                <Card className="border-border shadow-sm">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-xl font-bold flex items-center gap-2">
-                      <History className="h-5 w-5" />
+                <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+                  <div className="p-6 border-b border-white/10">
+                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                      <History className="h-5 w-5 text-purple-300" />
                       Журнал изменений
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                    </h2>
+                  </div>
+                  <div className="p-6 space-y-4">
                     <LogFilters
                       logSearch={logSearch}
                       onLogSearchChange={setLogSearch}
@@ -552,7 +593,7 @@ export function UserManagementPage() {
                     />
 
                     {userLogs === null ? (
-                      <div className="text-center py-12 text-muted-foreground">
+                      <div className="text-center py-12 text-blue-200/80">
                         <Loader2 className="h-12 w-12 mx-auto mb-4 opacity-50 animate-spin" />
                         <p className="text-sm">Загрузка логов...</p>
                       </div>
@@ -574,24 +615,24 @@ export function UserManagementPage() {
                         />
                       </>
                     )}
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               </TabsContent>
             </Tabs>
         </div>
 
         {/* History Dialog */}
         <Dialog open={isHistoryDialogOpen} onOpenChange={setIsHistoryDialogOpen}>
-          <DialogContent className="max-w-3xl bg-card border-border backdrop-blur-xl">
+          <DialogContent className="max-w-3xl bg-white/10 border border-white/20 backdrop-blur-xl">
             <DialogHeader>
-              <DialogTitle>
+              <DialogTitle className="text-white">
                 История изменений: {users.find((u) => u.id === historyUserId)?.nickname || "Пользователь"}
               </DialogTitle>
-              <DialogDescription>Логи действий, связанных с этим пользователем</DialogDescription>
+              <DialogDescription className="text-blue-200/80">Логи действий, связанных с этим пользователем</DialogDescription>
             </DialogHeader>
             <div className="space-y-3 max-h-[60vh] overflow-y-auto">
               {userHistoryLogs.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
+                <div className="text-center py-12 text-blue-200/80">
                   <History className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <p className="text-sm">Записи не найдены</p>
                 </div>
@@ -600,7 +641,7 @@ export function UserManagementPage() {
               )}
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsHistoryDialogOpen(false)}>
+              <Button variant="outline" onClick={() => setIsHistoryDialogOpen(false)} className="border-blue-400/40 text-blue-200 hover:bg-blue-500/10 hover:text-blue-100">
                 Закрыть
               </Button>
             </DialogFooter>

@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react"
 
 interface PaginationProps {
   currentPage: number
@@ -24,17 +24,27 @@ export function Pagination({
   if (totalPages <= 1) return null
 
   return (
-    <div className="flex items-center justify-between pt-4 border-t border-border">
-      <div className="text-sm text-muted-foreground">
+    <div className="flex items-center justify-between pt-4 border-t border-white/10">
+      <div className="text-sm text-blue-200/80">
         Показано {startItem}-{endItem} из {totalItems}
       </div>
       <div className="flex items-center gap-2">
         <Button
           variant="outline"
           size="sm"
+          onClick={() => onPageChange(1)}
+          disabled={currentPage === 1}
+          className="h-8 px-3 border-blue-400/30 bg-blue-500/10 hover:bg-blue-500/20 hover:border-blue-400/50 text-blue-300"
+        >
+          <ChevronsLeft className="h-4 w-4 mr-1" />
+          Первая
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="h-8 px-3 rounded-lg"
+          className="h-8 px-3 border-blue-400/30 bg-blue-500/10 hover:bg-blue-500/20 hover:border-blue-400/50 text-blue-300"
         >
           <ChevronLeft className="h-4 w-4 mr-1" />
           Назад
@@ -58,7 +68,10 @@ export function Pagination({
                 variant={currentPage === pageNum ? "default" : "outline"}
                 size="sm"
                 onClick={() => onPageChange(pageNum)}
-                className="h-8 w-8 p-0 rounded-lg"
+                className={`h-8 w-8 p-0 ${currentPage === pageNum
+                  ? "bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/40 text-blue-100"
+                  : "border-blue-400/30 bg-blue-500/10 hover:bg-blue-500/20 hover:border-blue-400/50 text-blue-300"
+                }`}
               >
                 {pageNum}
               </Button>
@@ -70,10 +83,20 @@ export function Pagination({
           size="sm"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="h-8 px-3 rounded-lg"
+          className="h-8 px-3 border-blue-400/30 bg-blue-500/10 hover:bg-blue-500/20 hover:border-blue-400/50 text-blue-300"
         >
           Вперёд
           <ChevronRight className="h-4 w-4 ml-1" />
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(totalPages)}
+          disabled={currentPage === totalPages}
+          className="h-8 px-3 border-blue-400/30 bg-blue-500/10 hover:bg-blue-500/20 hover:border-blue-400/50 text-blue-300"
+        >
+          Последняя
+          <ChevronsRight className="h-4 w-4 ml-1" />
         </Button>
       </div>
     </div>

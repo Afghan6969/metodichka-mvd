@@ -42,12 +42,12 @@ const formatLogDetails = (details: string): string => {
 
   try {
     const parsed = JSON.parse(trimmed)
-    
+
     // Обработка отката
     if (parsed.rollback_description) {
       return parsed.rollback_description
     }
-    
+
     // Обработка обычных изменений
     if (parsed.changes && Array.isArray(parsed.changes) && parsed.changes.length > 0) {
       const russianChanges = parsed.changes.map((change: string) => {
@@ -72,6 +72,22 @@ const formatLogDetails = (details: string): string => {
       })
       return "Изменено: " + russianChanges.join(", ")
     }
+
+    // Обработка JSON объектов пользователей
+    if (parsed.nickname && parsed.username && parsed.role) {
+      return `Пользователь: ${parsed.nickname} (${parsed.username}), Роль: ${roleDisplayNames[parsed.role] || parsed.role}`
+    }
+
+    // Обработка массива пользователей
+    if (Array.isArray(parsed)) {
+      if (parsed.length > 0 && parsed[0].nickname && parsed[0].username && parsed[0].role) {
+        const users = parsed.map((user: any) =>
+          `${user.nickname} (${user.username}) - ${roleDisplayNames[user.role] || user.role}`
+        )
+        return `Пользователи: ${users.join(", ")}`
+      }
+    }
+
     return details
   } catch {
     return details
@@ -105,29 +121,29 @@ export function UserLogs({ logs, actionDisplayNames, onRollback, showRollback = 
   const getActionColor = (action: string) => {
     switch (action) {
       case "add_user":
-        return "text-green-600"
+        return "text-green-400"
       case "remove_user":
       case "deactivate":
-        return "text-red-600"
+        return "text-red-400"
       case "update_user":
-        return "text-blue-600"
+        return "text-blue-400"
       case "activate":
-        return "text-emerald-600"
+        return "text-emerald-400"
       case "rollback":
-        return "text-orange-600"
+        return "text-orange-400"
       case "login":
-        return "text-green-500"
+        return "text-green-300"
       case "logout":
-        return "text-gray-500"
+        return "text-gray-400"
       default:
-        return "text-muted-foreground"
+        return "text-blue-300"
     }
   }
 
   if (logs.length === 0) {
     return (
-      <div className="p-8 text-center text-muted-foreground">
-        <p>Логи не найдены</p>
+      <div className="text-center py-12 text-blue-200/80">
+        <p className="text-sm">Логи не найдены</p>
       </div>
     )
   }
@@ -138,54 +154,56 @@ export function UserLogs({ logs, actionDisplayNames, onRollback, showRollback = 
         {logs.map((log) => (
           <div
             key={log.id}
-            className="flex items-start gap-4 p-4 rounded-xl border border-border bg-card hover:bg-muted/20 transition-colors"
+            className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl p-6 group hover:bg-white/12 hover:border-white/25 transition-all duration-300"
           >
-            <div className={`text-2xl ${getActionColor(log.action)}`}>{getActionIcon(log.action)}</div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap mb-1.5">
-                <Badge variant="outline" className="text-xs font-medium px-2 py-1">
-                  {actionDisplayNames[log.action] || log.action}
-                </Badge>
-                <span className="text-sm font-medium text-foreground">{log.target_user_nickname}</span>
+            <div className="flex items-start gap-4">
+              <div className={`text-2xl ${getActionColor(log.action)}`}>{getActionIcon(log.action)}</div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap mb-2">
+                  <Badge variant="outline" className="border-blue-400/40 text-blue-300 bg-blue-500/10 text-xs">
+                    {actionDisplayNames[log.action] || log.action}
+                  </Badge>
+                  <span className="text-sm font-medium text-white">{log.target_user_nickname}</span>
+                </div>
+                <p className="text-sm text-blue-200/80 mb-3 break-words">{formatLogDetails(log.details)}</p>
+                <div className="flex items-center gap-3 text-xs text-blue-200/80">
+                  <span className="flex items-center gap-1">
+                    <span className="font-medium">Кто:</span>
+                    <span className="text-white">{log.performed_by_nickname}</span>
+                  </span>
+                  <span>•</span>
+                  <span className="flex items-center gap-1">
+                    <span className="font-medium">Когда:</span>
+                    <span className="text-white">{format(new Date(log.created_at), "dd MMMM yyyy, HH:mm:ss", { locale: ru })}</span>
+                  </span>
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-2 break-words">{formatLogDetails(log.details)}</p>
-              <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <span className="font-medium">Кто:</span>
-                  <span className="text-foreground">{log.performed_by_nickname}</span>
-                </span>
-                <span>•</span>
-                <span className="flex items-center gap-1">
-                  <span className="font-medium">Когда:</span>
-                  <span className="text-foreground">{format(new Date(log.created_at), "dd MMMM yyyy, HH:mm:ss", { locale: ru })}</span>
-                </span>
+              <div className="flex gap-2 shrink-0">
+                {showDetails && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedLog(log)}
+                    className="border-blue-400/30 bg-blue-500/10 hover:bg-blue-500/20 hover:border-blue-400/50 text-blue-300 h-8 px-3"
+                    title="Подробная информация"
+                  >
+                    <Info className="h-4 w-4 mr-1" />
+                    <span className="text-xs">Подробнее</span>
+                  </Button>
+                )}
+                {showRollback && onRollback && log.action !== "rollback" && log.action !== "login" && log.action !== "logout" && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onRollback(log)}
+                    className="border-orange-400/30 bg-orange-500/10 hover:bg-orange-500/20 hover:border-orange-400/50 text-orange-300 h-8 px-3"
+                    title="Откатить действие"
+                  >
+                    <RotateCcw className="h-4 w-4 mr-1" />
+                    <span className="text-xs">Откат</span>
+                  </Button>
+                )}
               </div>
-            </div>
-            <div className="flex gap-2 shrink-0">
-              {showDetails && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSelectedLog(log)}
-                  className="h-8 px-3 rounded-lg"
-                  title="Подробная информация"
-                >
-                  <Info className="h-4 w-4 mr-1" />
-                  <span className="text-xs">Подробнее</span>
-                </Button>
-              )}
-              {showRollback && onRollback && log.action !== "rollback" && log.action !== "login" && log.action !== "logout" && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onRollback(log)}
-                  className="h-8 px-3 rounded-lg"
-                  title="Откатить действие"
-                >
-                  <RotateCcw className="h-4 w-4 mr-1" />
-                  <span className="text-xs">Откат</span>
-                </Button>
-              )}
             </div>
           </div>
         ))}
@@ -193,15 +211,15 @@ export function UserLogs({ logs, actionDisplayNames, onRollback, showRollback = 
 
       {/* Диалог с подробной информацией */}
       <Dialog open={!!selectedLog} onOpenChange={() => setSelectedLog(null)}>
-        <DialogContent className="max-w-2xl bg-card border-border backdrop-blur-xl">
+        <DialogContent className="max-w-2xl bg-white/10 border border-white/20 backdrop-blur-xl">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-2 text-white">
               <span className={`text-2xl ${getActionColor(selectedLog?.action || "")}`}>
                 {getActionIcon(selectedLog?.action || "")}
               </span>
               Подробная информация о записи
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-blue-200/80">
               Полная информация о действии в системе
             </DialogDescription>
           </DialogHeader>
@@ -209,47 +227,47 @@ export function UserLogs({ logs, actionDisplayNames, onRollback, showRollback = 
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-1">Действие</p>
-                  <Badge variant="outline" className="text-xs font-medium">
+                  <p className="text-sm font-medium text-blue-200/80 mb-1">Действие</p>
+                  <Badge variant="outline" className="border-blue-400/40 text-blue-300 bg-blue-500/10 text-xs">
                     {actionDisplayNames[selectedLog.action] || selectedLog.action}
                   </Badge>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-1">ID записи</p>
-                  <p className="text-sm font-mono text-foreground">#{selectedLog.id}</p>
+                  <p className="text-sm font-medium text-blue-200/80 mb-1">ID записи</p>
+                  <p className="text-sm font-mono text-white">#{selectedLog.id}</p>
                 </div>
               </div>
 
               <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Цель действия</p>
-                <p className="text-sm text-foreground">{selectedLog.target_user_nickname}</p>
-                <p className="text-xs font-mono text-muted-foreground mt-1">{selectedLog.target_user_id}</p>
+                <p className="text-sm font-medium text-blue-200/80 mb-1">Цель действия</p>
+                <p className="text-sm text-white">{selectedLog.target_user_nickname}</p>
+                <p className="text-xs font-mono text-blue-200/80 mt-1">{selectedLog.target_user_id}</p>
               </div>
 
               <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Исполнитель</p>
-                <p className="text-sm text-foreground">{selectedLog.performed_by_nickname}</p>
-                <p className="text-xs font-mono text-muted-foreground mt-1">{selectedLog.performed_by_id}</p>
+                <p className="text-sm font-medium text-blue-200/80 mb-1">Исполнитель</p>
+                <p className="text-sm text-white">{selectedLog.performed_by_nickname}</p>
+                <p className="text-xs font-mono text-blue-200/80 mt-1">{selectedLog.performed_by_id}</p>
               </div>
 
               <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Дата и время</p>
-                <p className="text-sm text-foreground">
+                <p className="text-sm font-medium text-blue-200/80 mb-1">Дата и время</p>
+                <p className="text-sm text-white">
                   {format(new Date(selectedLog.created_at), "dd MMMM yyyy, HH:mm:ss", { locale: ru })}
                 </p>
               </div>
 
               {selectedLog.ip_address && currentUserRole === "root" && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-1">IP адрес</p>
-                  <p className="text-sm font-mono text-foreground">{selectedLog.ip_address}</p>
+                  <p className="text-sm font-medium text-blue-200/80 mb-1">IP адрес</p>
+                  <p className="text-sm font-mono text-white">{selectedLog.ip_address}</p>
                 </div>
               )}
 
               <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Детали</p>
-                <div className="p-3 bg-muted/30 rounded-lg">
-                  <p className="text-sm text-foreground break-words">{formatLogDetails(selectedLog.details)}</p>
+                <p className="text-sm font-medium text-blue-200/80 mb-1">Детали</p>
+                <div className="p-3 bg-white/8 border border-white/15 rounded-xl">
+                  <p className="text-sm text-white break-words">{formatLogDetails(selectedLog.details)}</p>
                 </div>
               </div>
             </div>

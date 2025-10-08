@@ -679,7 +679,7 @@ ${reqList}
 
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
-      <PageHeader 
+      <PageHeader
         icon={FileText}
         title="Генератор отчётов"
         description="Генератор рапортов для ГУВД и ГИБДД МВД РП"
@@ -687,22 +687,20 @@ ${reqList}
       />
 
       {/* Important Notice */}
-      <Alert className="military-card bg-yellow-500/10 border-yellow-500/30 max-w-4xl mx-auto">
-        <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-500" />
-        <AlertDescription className="text-sm text-muted-foreground">
-          <span className="font-bold text-yellow-600 dark:text-yellow-500">Внимание:</span> Генератор может выдавать неверные склонения в должностях и званиях. Проверяйте текст перед использованием.
-        </AlertDescription>
-      </Alert>
+      <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center border border-yellow-400/30">
+            <AlertCircle className="h-5 w-5 text-yellow-300" />
+          </div>
+          <div className="text-sm text-blue-200/90">
+            <span className="font-bold text-yellow-300">Внимание:</span> Генератор может выдавать неверные склонения в должностях и званиях. Проверяйте текст перед использованием.
+          </div>
+        </div>
+      </div>
 
       <div className="grid gap-6 md:grid-cols-1">
-        <Card className="military-card mx-auto w-full max-w-md">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-3 text-foreground dark:opacity-90 text-xl justify-center">
-              <Shield className="h-5 w-5" />
-              Ваш департамент
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-center">
+        <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl p-8 group hover:bg-white/12 hover:border-white/25 transition-all duration-300">
+          <div className="text-center">
             {currentUser?.role === "root" ? (
               <div className="flex flex-wrap justify-center gap-4">
                 <Button
@@ -732,24 +730,24 @@ ${reqList}
               </div>
             ) : (
               <>
-                <div className="text-2xl font-bold text-primary">{department || "Не определён"}</div>
-                <p className="text-sm text-muted-foreground mt-2">
+                <div className="text-2xl font-bold text-white">{department || "Не определён"}</div>
+                <p className="text-sm text-blue-200/80 mt-2">
                   Департамент определён автоматически на основе вашей роли
                 </p>
               </>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {department && (
-          <Card className="military-card mx-auto w-full max-w-md">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-3 text-foreground dark:opacity-90 text-xl">
-                <FileText className="h-5 w-5" />
-                Выбор типа отчёта
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+          <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl p-8 group hover:bg-white/12 hover:border-white/25 transition-all duration-300">
+            <div className="text-center">
+              <div className="flex items-center gap-3 mb-6 justify-center">
+                <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center border border-blue-400/30">
+                  <FileText className="h-5 w-5 text-blue-300" />
+                </div>
+                <h3 className="text-xl font-bold text-white">Выбор типа отчёта</h3>
+              </div>
               <div className="flex flex-wrap justify-center gap-4">
                 {availableReportTypes.includes("promotion") && (
                   <Button
@@ -792,28 +790,28 @@ ${reqList}
                   </Button>
                 )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         {department && reportType && (
-          <Card className="military-card md:col-span-1">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-3 text-foreground dark:opacity-90 text-xl">
-                <FileText className="h-5 w-5" />
-                Форма для заполнения
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+          <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+            <div className="flex items-center gap-3 p-6 border-b border-white/10">
+              <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center border border-green-400/30">
+                <FileText className="h-5 w-5 text-green-300" />
+              </div>
+              <h3 className="text-xl font-bold text-white">Форма для заполнения</h3>
+            </div>
+            <div className="p-8">
+              <div className="space-y-6">
                 <div>
-                  <Label htmlFor="city">Город</Label>
+                  <Label htmlFor="city" className="text-sm font-medium text-blue-200/90 mb-2 block">Город</Label>
                   <div className="relative w-full">
                     <Button
                       variant="outline"
                       role="combobox"
                       aria-expanded={openCity}
-                      className="w-full justify-between bg-transparent text-foreground border-border"
+                      className="w-full justify-between bg-white/5 border-blue-400/30 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
                       onClick={() => {
                         setOpenCity(!openCity)
                         setOpenPosition(false)
@@ -826,14 +824,15 @@ ${reqList}
                     <AnimatePresence>
                       {openCity && (
                         <motion.div
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="absolute top-full left-0 right-0 z-50 mt-1 bg-muted border border-border rounded-md shadow-lg"
+                          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                          transition={{ duration: 0.15, ease: "easeOut" }}
+                          className="absolute top-full left-0 right-0 z-50 mt-1 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg"
                         >
                           <Command>
-                            <CommandInput placeholder="Поиск города..." />
-                            <CommandEmpty>Города не найдены.</CommandEmpty>
+                            <CommandInput placeholder="Поиск города..." className="bg-white/5 border-white/10 text-white placeholder:text-blue-200/60" />
+                            <CommandEmpty className="text-blue-200/60">Города не найдены.</CommandEmpty>
                             <CommandList className="max-h-[200px] overflow-y-auto">
                               <CommandGroup>
                                 {cities.map((c) => (
@@ -844,8 +843,9 @@ ${reqList}
                                       setCity(c)
                                       setOpenCity(false)
                                     }}
+                                    className="hover:bg-white/10 text-white data-[selected]:text-blue-200 data-[selected]:bg-transparent"
                                   >
-                                    <Check className={cn("mr-2 h-4 w-4", city === c ? "opacity-100" : "opacity-0")} />
+                                    <Check className={cn("mr-2 h-4 w-4", city === c ? "opacity-100 text-blue-300" : "opacity-0")} />
                                     {c}
                                   </CommandItem>
                                 ))}
@@ -859,22 +859,22 @@ ${reqList}
                 </div>
                 {department === "ГУВД" && (
                   <div>
-                    <Label htmlFor="leaderFio">ФИО лидера</Label>
-                    <Input id="leaderFio" value={leaderFio} onChange={(e) => setLeaderFio(e.target.value)} />
+                    <Label htmlFor="leaderFio" className="text-sm font-medium text-blue-200/90 mb-2 block">ФИО лидера</Label>
+                    <Input id="leaderFio" value={leaderFio} onChange={(e) => setLeaderFio(e.target.value)} className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                   </div>
                 )}
                 <div>
-                  <Label htmlFor="fio">Ваше ФИО</Label>
-                  <Input id="fio" value={fio} onChange={(e) => setFio(e.target.value)} />
+                  <Label htmlFor="fio" className="text-sm font-medium text-blue-200/90 mb-2 block">Ваше ФИО</Label>
+                  <Input id="fio" value={fio} onChange={(e) => setFio(e.target.value)} className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                 </div>
                 <div>
-                  <Label htmlFor="position">Должность</Label>
+                  <Label htmlFor="position" className="text-sm font-medium text-blue-200/90 mb-2 block">Должность</Label>
                   <div className="relative w-full">
                     <Button
                       variant="outline"
                       role="combobox"
                       aria-expanded={openPosition}
-                      className="w-full justify-between bg-transparent text-foreground border-border"
+                      className="w-full justify-between bg-white/5 border-blue-400/30 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
                       onClick={() => {
                         setOpenPosition(!openPosition)
                         setOpenCity(false)
@@ -887,14 +887,15 @@ ${reqList}
                     <AnimatePresence>
                       {openPosition && (
                         <motion.div
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="absolute top-full left-0 right-0 z-50 mt-1 bg-muted border border-border rounded-md shadow-lg"
+                          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                          transition={{ duration: 0.15, ease: "easeOut" }}
+                          className="absolute top-full left-0 right-0 z-50 mt-1 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg"
                         >
                           <Command>
-                            <CommandInput placeholder="Поиск должности..." />
-                            <CommandEmpty>Должности не найдены.</CommandEmpty>
+                            <CommandInput placeholder="Поиск должности..." className="bg-white/5 border-white/10 text-white placeholder:text-blue-200/60" />
+                            <CommandEmpty className="text-blue-200/60">Должности не найдены.</CommandEmpty>
                             <CommandList className="max-h-[200px] overflow-y-auto">
                               <CommandGroup>
                                 {Object.entries(positionsData)
@@ -909,11 +910,12 @@ ${reqList}
                                       key={p.title}
                                       value={p.title}
                                       onSelect={() => handlePositionChange(p.title)}
+                                      className="hover:bg-white/10 text-white data-[selected]:text-blue-200 data-[selected]:bg-transparent"
                                     >
                                       <Check
                                         className={cn(
                                           "mr-2 h-4 w-4",
-                                          position === p.title ? "opacity-100" : "opacity-0",
+                                          position === p.title ? "opacity-100 text-blue-300" : "opacity-0",
                                         )}
                                       />
                                       {p.title} ({p.rank}, {p.level})
@@ -931,13 +933,13 @@ ${reqList}
                   <div className="flex items-center gap-4">
                     {!hasFixedRank && possibleRanks.length > 0 ? (
                       <div className="flex-1">
-                        <Label htmlFor="rank">Текущее звание</Label>
+                        <Label htmlFor="rank" className="text-sm font-medium text-blue-200/90 mb-2 block">Текущее звание</Label>
                         <div className="relative w-full">
                           <Button
                             variant="outline"
                             role="combobox"
                             aria-expanded={openRank}
-                            className="w-full justify-between bg-transparent text-foreground border-border"
+                            className="w-full justify-between bg-white/5 border-blue-400/30 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
                             onClick={() => {
                               setOpenRank(!openRank)
                               setOpenCity(false)
@@ -950,14 +952,15 @@ ${reqList}
                           <AnimatePresence>
                             {openRank && (
                               <motion.div
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="absolute top-full left-0 right-0 z-50 mt-1 bg-muted border border-border rounded-md shadow-lg"
+                                initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                transition={{ duration: 0.15, ease: "easeOut" }}
+                                className="absolute top-full left-0 right-0 z-50 mt-1 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg"
                               >
                                 <Command>
-                                  <CommandInput placeholder="Поиск звания..." />
-                                  <CommandEmpty>Звания не найдены.</CommandEmpty>
+                                  <CommandInput placeholder="Поиск..." className="bg-white/5 border-white/10 text-white placeholder:text-blue-200/60" />
+                                  <CommandEmpty className="text-blue-200/60">Звания не найдены.</CommandEmpty>
                                   <CommandList className="max-h-[200px] overflow-y-auto">
                                     <CommandGroup>
                                       {possibleRanks
@@ -975,9 +978,10 @@ ${reqList}
                                               setRank(value)
                                               setOpenRank(false)
                                             }}
+                                            className="hover:bg-white/10 text-white data-[selected]:text-blue-200 data-[selected]:bg-transparent"
                                           >
                                             <Check
-                                              className={cn("mr-2 h-4 w-4", rank === r ? "opacity-100" : "opacity-0")}
+                                              className={cn("mr-2 h-4 w-4", rank === r ? "opacity-100 text-blue-300" : "opacity-0")}
                                             />
                                             {r}
                                           </CommandItem>
@@ -992,16 +996,16 @@ ${reqList}
                       </div>
                     ) : (
                       <div className="flex-1">
-                        <Label>Текущее звание</Label>
-                        <div className="text-sm text-foreground bg-muted p-2 rounded-md">
+                        <Label className="text-sm font-medium text-blue-200/90 mb-2 block">Текущее звание</Label>
+                        <div className="text-sm text-blue-100 bg-white/10 p-3 rounded-lg border border-blue-400/20">
                           {rank || "Звание не выбрано"}
                         </div>
                       </div>
                     )}
                     {reportType === "promotion" && rank && (
                       <div className="flex-1">
-                        <Label>Звание на повышение</Label>
-                        <div className="text-sm text-foreground bg-muted p-2 rounded-md">
+                        <Label className="text-sm font-medium text-blue-200/90 mb-2 block">Звание на повышение</Label>
+                        <div className="text-sm text-green-300 bg-green-500/10 p-3 rounded-lg border border-green-400/20">
                           {newRank || "Нет следующего звания"}
                         </div>
                       </div>
@@ -1009,8 +1013,12 @@ ${reqList}
                   </div>
                 )}
                 {reportType === "senior" && (
-                  <div>
-                    <Button variant={isVrio ? "default" : "outline"} onClick={() => setIsVrio(!isVrio)}>
+                  <div className="flex justify-center">
+                    <Button
+                      variant={isVrio ? "default" : "outline"}
+                      onClick={() => setIsVrio(!isVrio)}
+                      className={isVrio ? "bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border-blue-400/40" : "border-blue-400/40 text-blue-300 hover:bg-blue-500/10"}
+                    >
                       ВрИО
                     </Button>
                   </div>
@@ -1018,126 +1026,128 @@ ${reqList}
                 {(reportType === "promotion" || reportType === "reprimand" || reportType === "senior") && (
                   <>
                     <div>
-                      <Label htmlFor="fromDate">Дата с</Label>
+                      <Label htmlFor="fromDate" className="text-sm font-medium text-blue-200/90 mb-2 block">Дата с</Label>
                       <DatePicker date={fromDate} onDateChange={setFromDate} placeholder="Выберите дату начала" />
                     </div>
                     <div>
-                      <Label htmlFor="toDate">Дата по</Label>
+                      <Label htmlFor="toDate" className="text-sm font-medium text-blue-200/90 mb-2 block">Дата по</Label>
                       <DatePicker date={toDate} onDateChange={setToDate} placeholder="Выберите дату окончания" />
                     </div>
                   </>
                 )}
                 {department === "ГИБДД" && (reportType === "promotion" || reportType === "reprimand") && (
                   <div>
-                    <Label htmlFor="points">Количество баллов</Label>
-                    <Input id="points" value={points} onChange={(e) => setPoints(e.target.value)} />
+                    <Label htmlFor="points" className="text-sm font-medium text-blue-200/90 mb-2 block">Количество баллов</Label>
+                    <Input id="points" value={points} onChange={(e) => setPoints(e.target.value)} className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                   </div>
                 )}
                 {reportType === "reprimand" && department === "ГИБДД" && (
                   <>
                     <div>
-                      <Label htmlFor="violation">Пункт нарушения (Пункт УГ)</Label>
-                      <Input id="violation" value={violation} onChange={(e) => setViolation(e.target.value)} />
+                      <Label htmlFor="violation" className="text-sm font-medium text-blue-200/90 mb-2 block">Пункт нарушения (Пункт УГ)</Label>
+                      <Input id="violation" value={violation} onChange={(e) => setViolation(e.target.value)} className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                     </div>
                     <div>
-                      <Label htmlFor="paymentLink">Ссылка на оплату неустойки</Label>
-                      <Input id="paymentLink" value={paymentLink} onChange={(e) => setPaymentLink(e.target.value)} />
+                      <Label htmlFor="paymentLink" className="text-sm font-medium text-blue-200/90 mb-2 block">Ссылка на оплату неустойки</Label>
+                      <Input id="paymentLink" value={paymentLink} onChange={(e) => setPaymentLink(e.target.value)} className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                     </div>
                   </>
                 )}
                 {reportType === "senior" && department === "ГУВД" && (
                   <div>
-                    <Label htmlFor="onlineStats">Статистика онлайна за неделю</Label>
-                    <Input id="onlineStats" value={onlineStats} onChange={(e) => setOnlineStats(e.target.value)} />
+                    <Label htmlFor="onlineStats" className="text-sm font-medium text-blue-200/90 mb-2 block">Статистика онлайна за неделю</Label>
+                    <Input id="onlineStats" value={onlineStats} onChange={(e) => setOnlineStats(e.target.value)} className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                   </div>
                 )}
                 <div>
-                  <Label>Требования/Задачи</Label>
+                  <Label className="text-sm font-medium text-blue-200/90 mb-2 block">Требования/Задачи</Label>
                   {requirements.map((req, index) => (
                     <div key={index} className="flex gap-2 mt-2 items-center">
                       <Input
                         placeholder="Название задачи/требования"
                         value={req.req}
                         onChange={(e) => updateRequirement(index, "req", e.target.value)}
-                        className="w-full md:w-125"
+                        className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
                       />
                       {department === "ГИБДД" && (
                         <Input
                           placeholder="Количество"
                           value={req.quantity || ""}
                           onChange={(e) => updateRequirement(index, "quantity", e.target.value)}
-                          className="w-full md:w-40"
+                          className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 w-20"
                         />
                       )}
                       <Input
                         placeholder="Ссылка"
                         value={req.link}
                         onChange={(e) => updateRequirement(index, "link", e.target.value)}
-                        className="flex-1"
+                        className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
                       />
                       <Button
                         variant="destructive"
                         size="icon"
                         onClick={() => removeRequirement(index)}
                         disabled={requirements.length === 1}
-                        className="h-8 w-8"
+                        className="h-10 w-10 bg-red-500/20 hover:bg-red-500/30 text-red-300 border-red-400/40"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   ))}
-                  <Button variant="outline" onClick={addRequirement} className="mt-2 bg-transparent">
+                  <Button variant="outline" onClick={addRequirement} className="mt-2 border-blue-400/40 text-blue-300 hover:bg-blue-500/10">
                     Добавить требование
                   </Button>
                 </div>
                 <div>
-                  <Label htmlFor="signature">Подпись</Label>
-                  <Input id="signature" value={signature} onChange={(e) => setSignature(e.target.value)} />
+                  <Label htmlFor="signature" className="text-sm font-medium text-blue-200/90 mb-2 block">Подпись</Label>
+                  <Input id="signature" value={signature} onChange={(e) => setSignature(e.target.value)} className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                 </div>
-                <div className="flex gap-2 flex-wrap">
-                  <Button onClick={generateReport} disabled={!isFormValid()}>
+                <div className="flex gap-3 flex-wrap pt-4 border-t border-white/20">
+                  <Button onClick={generateReport} disabled={!isFormValid()} className="bg-green-500/20 hover:bg-green-500/30 text-green-300 border-green-400/40">
                     Сгенерировать отчёт
                   </Button>
-                  <Button variant="outline" onClick={saveDraft}>
+                  <Button variant="outline" onClick={saveDraft} className="border-blue-400/40 text-blue-300 hover:bg-blue-500/10">
                     Сохранить черновик
                   </Button>
-                  <Button variant="outline" onClick={loadDraft}>
+                  <Button variant="outline" onClick={loadDraft} className="border-blue-400/40 text-blue-300 hover:bg-blue-500/10">
                     Загрузить черновик
                   </Button>
-                  <Button variant="destructive" onClick={deleteDraft}>
+                  <Button variant="destructive" onClick={deleteDraft} className="bg-red-500/20 hover:bg-red-500/30 text-red-300 border-red-400/40">
                     Удалить черновик
                   </Button>
-                  <Button variant="destructive" onClick={clearForm}>
+                  <Button variant="destructive" onClick={clearForm} className="bg-red-500/20 hover:bg-red-500/30 text-red-300 border-red-400/40">
                     Очистить всё
                   </Button>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         {generatedReport && (
-          <Card className="military-card md:col-span-1">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-3 text-foreground dark:opacity-90 text-xl">
-                <FileText className="h-5 w-5" />
-                Сгенерированный отчёт
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="bg-muted p-4 rounded font-mono text-sm text-foreground whitespace-pre-wrap">
-                {generatedReport}
+          <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+            <div className="flex items-center gap-3 p-6 border-b border-white/10">
+              <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center border border-purple-400/30">
+                <FileText className="h-5 w-5 text-purple-300" />
+              </div>
+              <h3 className="text-xl font-bold text-white">Сгенерированный отчёт</h3>
+            </div>
+            <div className="p-8">
+              <div className="bg-white/10 p-4 rounded-xl border border-white/20">
+                <pre className="font-mono text-sm text-blue-100 whitespace-pre-wrap leading-relaxed">
+                  {generatedReport}
+                </pre>
               </div>
               <Button
                 variant="outline"
-                className="mt-4 bg-transparent"
+                className="mt-4 border-blue-400/40 text-blue-300 hover:bg-blue-500/10"
                 onClick={copyReport}
                 disabled={!generatedReport}
               >
                 {copied ? "Скопировано!" : "Скопировать"}
               </Button>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
       </div>
     </div>

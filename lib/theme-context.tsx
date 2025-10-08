@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 
-export type ThemeName = "light" | "dark" | "mvd"
+export type ThemeName = "police-sides"
 
 export interface Theme {
   name: ThemeName
@@ -38,73 +38,9 @@ export interface Theme {
 }
 
 export const themes: Record<ThemeName, Theme> = {
-  light: {
-    name: "light",
-    displayName: "Светлая",
-    colors: {
-      background: "#f5f5f5",
-      foreground: "#1a1a1a",
-      card: "#ffffff",
-      "card-foreground": "#1a1a1a",
-      popover: "#ffffff",
-      "popover-foreground": "#1a1a1a",
-      primary: "#dc2626",
-      "primary-foreground": "#ffffff",
-      secondary: "#e5e7eb",
-      "secondary-foreground": "#1a1a1a",
-      muted: "#f3f4f6",
-      "muted-foreground": "#6b7280",
-      accent: "#1e40af",
-      "accent-foreground": "#ffffff",
-      destructive: "#dc2626",
-      "destructive-foreground": "#ffffff",
-      border: "#d1d5db",
-      input: "#ffffff",
-      ring: "#dc2626",
-      sidebar: "#1a1a1a",
-      "sidebar-foreground": "#f5f5f5",
-      "sidebar-primary": "#dc2626",
-      "sidebar-primary-foreground": "#ffffff",
-      "sidebar-accent": "#1e40af",
-      "sidebar-accent-foreground": "#ffffff",
-      "sidebar-border": "#404040",
-    },
-  },
-  dark: {
-    name: "dark",
-    displayName: "Тёмная",
-    colors: {
-      background: "#0a0a0a",
-      foreground: "#f5f5f5",
-      card: "#1a1a1a",
-      "card-foreground": "#f5f5f5",
-      popover: "#1a1a1a",
-      "popover-foreground": "#f5f5f5",
-      primary: "#dc2626",
-      "primary-foreground": "#ffffff",
-      secondary: "#262626",
-      "secondary-foreground": "#f5f5f5",
-      muted: "#1f1f1f",
-      "muted-foreground": "#a3a3a3",
-      accent: "#2563eb",
-      "accent-foreground": "#ffffff",
-      destructive: "#ef4444",
-      "destructive-foreground": "#ffffff",
-      border: "#404040",
-      input: "#1a1a1a",
-      ring: "#dc2626",
-      sidebar: "#0f0f0f",
-      "sidebar-foreground": "#f5f5f5",
-      "sidebar-primary": "#dc2626",
-      "sidebar-primary-foreground": "#ffffff",
-      "sidebar-accent": "#2563eb",
-      "sidebar-accent-foreground": "#ffffff",
-      "sidebar-border": "#333333",
-    },
-  },
-  mvd: {
-    name: "mvd",
-    displayName: "МВД",
+  "police-sides": {
+    name: "police-sides",
+    displayName: "Боковые вспышки",
     colors: {
       background: "transparent",
       foreground: "#f8fafc",
@@ -114,7 +50,7 @@ export const themes: Record<ThemeName, Theme> = {
       "popover-foreground": "#f8fafc",
       primary: "#dc2626",
       "primary-foreground": "#ffffff",
-      secondary: "rgba(30, 58, 138, 0.8)",
+      secondary: "rgba(59, 130, 246, 0.8)",
       "secondary-foreground": "#dbeafe",
       muted: "rgba(30, 30, 30, 0.7)",
       "muted-foreground": "#a8a8a8",
@@ -145,13 +81,13 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeName>("mvd")
+  const [theme, setThemeState] = useState<ThemeName>("police-sides")
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-    // Всегда используем только МВД тему
-    setThemeState("mvd")
+    // Всегда используем только Боковые вспышки
+    setThemeState("police-sides")
   }, [])
 
   useEffect(() => {
@@ -161,12 +97,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const currentTheme = themes[theme]
 
     // Удаляем все классы тем
-    root.classList.remove("dark", "mvd")
-    
-    // Добавляем класс текущей темы (кроме light - это по умолчанию)
-    if (theme !== "light") {
-      root.classList.add(theme)
-    }
+    root.classList.remove("police-sides")
+
+    // Добавляем класс текущей темы
+    root.classList.add(theme)
 
     // Применяем CSS переменные напрямую
     Object.entries(currentTheme.colors).forEach(([key, value]) => {

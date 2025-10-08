@@ -28,23 +28,25 @@ export function DatePicker({ date, onDateChange, placeholder = "Выберите
         <Button
           variant={"outline"}
           className={cn(
-            "w-full justify-start text-left font-normal",
-            !date && "text-muted-foreground"
+            "w-full justify-start text-left font-normal bg-white/5 border-blue-400/30 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200",
+            !date && "text-blue-200/60"
           )}
           disabled={disabled}
         >
-          <CalendarIcon className="mr-2 h-4 w-4" />
+          <CalendarIcon className="mr-2 h-4 w-4 text-blue-300" />
           {date ? format(date, "dd.MM.yyyy", { locale: ru }) : <span>{placeholder}</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 bg-popover border-border" align="start">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={onDateChange}
-          initialFocus
-          locale={ru}
-        />
+      <PopoverContent className="w-auto p-0 bg-white/10 backdrop-blur-sm border-white/20 shadow-xl" align="start">
+        <div className="animate-in fade-in-0 zoom-in-95 duration-200">
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={onDateChange}
+            initialFocus
+            locale={ru}
+          />
+        </div>
       </PopoverContent>
     </Popover>
   )

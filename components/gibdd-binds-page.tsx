@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Copy, Check, Keyboard, Search, X, Info } from "lucide-react"
+import { Copy, Check, Keyboard, Search, X, Info, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -24,27 +24,29 @@ export function GibddBindsPage() {
   }
 
   const BindItem = ({ bind, description }: { bind: string; description?: string }) => (
-    <div className="flex items-start gap-4 p-3 rounded-lg border border-border bg-muted shadow-sm hover:bg-gray-700/50 transition-all duration-200">
-      <div className="text-blue-400 mt-1">
-        <Keyboard className="h-4 w-4" />
+    <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/8 transition-colors">
+      <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-400/30 mt-1">
+        <Keyboard className="h-4 w-4 text-blue-300" />
       </div>
       <div className="flex-1">
         <div className="flex items-center gap-2 mb-2">
-          <code className="font-mono text-sm text-foreground">{bind}</code>
+          <code className="font-mono text-sm bg-white/10 text-blue-100 px-3 py-1.5 rounded-lg border border-blue-400/20">{bind}</code>
         </div>
-        {description && <p className="text-xs text-muted-foreground mt-1">{description}</p>}
+        {description && <p className="text-xs text-blue-200/80 mt-1">{description}</p>}
       </div>
-      <CopyButton text={bind} className="flex-shrink-0 mt-3" />
+      <div className="opacity-60 hover:opacity-100 transition-opacity">
+        <CopyButton text={bind} />
+      </div>
     </div>
   )
 
   const SectionDivider = ({ title }: { title: string }) => (
     <div className="flex items-center gap-3 my-4">
-      <div className="h-px bg-border flex-1" />
-      <Badge variant="secondary" className="text-xs font-medium px-3 py-1 bg-muted text-foreground">
+      <div className="h-px bg-white/20 flex-1" />
+      <Badge variant="outline" className="border-blue-400/40 text-blue-300 bg-blue-500/10 text-xs font-medium px-3 py-1">
         {title}
       </Badge>
-      <div className="h-px bg-border flex-1" />
+      <div className="h-px bg-white/20 flex-1" />
     </div>
   )
 
@@ -139,7 +141,7 @@ export function GibddBindsPage() {
         { bind: "bind [клавиша] me достав тауметр из кармана, сделал замер светопропускаемости стекла" },
         {
           bind: "bind [клавиша] do Прибор показал, что уровень тонировки выше допустимого по ГОСТу.",
-          description: "Если тонировка более 31%",
+          description: "Если тонировка более 31%"
         },
         { bind: "bind [клавиша] do Прибор показал, что светопропускаемость в норме." },
       ],
@@ -239,7 +241,7 @@ export function GibddBindsPage() {
 
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
-      <PageHeader 
+      <PageHeader
         icon={Keyboard}
         title="Бинды ГИБДД"
         description="Готовые команды для сотрудников ГИБДД"
@@ -247,141 +249,144 @@ export function GibddBindsPage() {
       />
 
       <div className="max-w-4xl mx-auto">
+        <div className="flex justify-center">
+          <div className="relative w-full max-w-md">
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
+              <div className="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center border border-blue-400/30">
+                <Search className="h-4 w-4 text-blue-300" />
+              </div>
+            </div>
+            <Input
+              type="text"
+              placeholder="Поиск по биндам..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 pr-12 h-14 border-blue-400/30 bg-white/5 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+            />
+            {searchQuery && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearSearch}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-red-500/20 hover:text-red-300"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        </div>
 
-      <div className="flex justify-center">
-        <div className="relative w-full max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Поиск по биндам..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-10 h-10 border-border bg-muted text-foreground focus:border-blue-500 focus:ring-blue-700/50 placeholder-muted-foreground"
-          />
-          {searchQuery && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearSearch}
-              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-muted"
-            >
-              <X className="h-4 w-4 text-muted-foreground" />
-            </Button>
+        {searchQuery && (
+          <div className="text-center text-sm text-blue-200/80 mt-2">Найдено разделов: {filteredSections.length}</div>
+        )}
+
+        <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden mt-6">
+          <div className="p-6 border-b border-white/10">
+            <h2 className="text-xl font-bold text-white">Важные примечания</h2>
+          </div>
+          <div className="p-6">
+            <div className="space-y-4 text-sm text-blue-100/90">
+              <div className="flex items-start gap-3">
+                <Badge className="border-blue-400/40 text-blue-300 bg-blue-500/10 text-xs mt-0.5">
+                  UP
+                </Badge>
+                <p>Клавиши где присутствуют "up", нужно зажимать на 1-2 секунды, после того как отпустите - сработает отыгровка "up".</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <Badge className="border-purple-400/40 text-purple-300 bg-purple-500/10 text-xs mt-0.5">
+                  Интервал
+                </Badge>
+                <p>Интервал между биндами - не менее двух секунд.</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <Badge className="border-green-400/40 text-green-300 bg-green-500/10 text-xs mt-0.5">
+                  Лимит
+                </Badge>
+                <p>На одну клавишу не более трёх отыгровок.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-6 mt-6">
+          {filteredSections.length > 0 ? (
+            filteredSections.map((section, sectionIndex) => (
+              <div key={sectionIndex} className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+                <div className="p-6 border-b border-white/10">
+                  <h2 className="text-xl font-bold text-white">{section.title}</h2>
+                </div>
+                <div className="p-6">
+                  <div className="space-y-3">
+                    {section.binds.map((item, index) => (
+                      <div key={index}>
+                        <BindItem bind={item.bind} description={item.description} />
+                        {section.title === "Протокол задержания" && (index === 2 || index === 5) && (
+                          <SectionDivider title={index === 2 ? "Часть 2" : "Часть 3"} />
+                        )}
+                        {section.title === "Штраф" && index === 2 && <SectionDivider title="Часть 2" />}
+                        {section.title === "Разбитие стекла и доставание гражданина" && index === 2 && (
+                          <SectionDivider title="Часть 2" />
+                        )}
+                        {section.title === "Оформление ДТП" && (index === 2 || index === 4) && (
+                          <SectionDivider title={index === 2 ? "Часть 2" : "Часть 3"} />
+                        )}
+                        {section.title === "Проверка тонировки" && index === 1 && (
+                          <div className="bg-white/10 p-3 rounded-lg border border-white/20 mt-3">
+                            <p className="text-sm text-blue-100/90">Проверка уровня тонировки через "TAB"</p>
+                          </div>
+                        )}
+                        {section.title === "Мегафон: требование остановиться" && index === 2 && (
+                          <div className="bg-white/10 p-3 rounded-lg border border-white/20 mt-3">
+                            <p className="text-sm text-blue-100/90">
+                              Перед применением меры наказания сотрудник должен быть уверен, что выдвинутое требование было
+                              верно воспринято именно тем лицом, к которому оно адресовывалось.
+                            </p>
+                          </div>
+                        )}
+                        {section.title === "Посадка задержанного в служебный автомобиль" && index === 0 && (
+                          <div className="bg-white/10 p-3 rounded-lg border border-white/20 mt-3">
+                            <p className="text-sm text-blue-100/90">
+                              При активном конвоировании (/arr), либо же после отыгровки сесть в автомобиль и прописать
+                              /putpl id
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+              <div className="p-8 text-center">
+                <div className="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-3xl flex items-center justify-center mx-auto mb-4 border border-white/20">
+                  <Search className="h-10 w-10 text-blue-300" />
+                </div>
+                <p className="text-xl font-bold text-white mb-2">Бинды не найдены</p>
+                <p className="text-blue-200/80">Попробуйте изменить поисковый запрос</p>
+              </div>
+            </div>
           )}
         </div>
-      </div>
 
-      {searchQuery && (
-        <div className="text-center text-sm text-muted-foreground">Найдено разделов: {filteredSections.length}</div>
-      )}
-
-      <Card className="border-border bg-card">
-        <CardHeader>
-          <CardTitle className="text-lg text-foreground flex items-center gap-2">
-            <Info className="h-5 w-5 text-blue-400" />
-            Важные примечания
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 text-muted-foreground text-sm">
-          <div className="flex items-start gap-2">
-            <Badge variant="outline" className="text-xs border-border text-foreground">
-              UP
-            </Badge>
-            <p>
-              Клавиши где присутствуют "up", нужно зажимать на 1-2 секунды, после того как отпустите - сработает
-              отыгровка "up".
-            </p>
+        <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl p-6 group hover:bg-white/12 hover:border-white/25 transition-all duration-300 mt-16">
+          <div className="flex flex-col items-center justify-center gap-2 text-sm text-blue-100/90">
+            <p className="font-medium">Разработано для МВД Республики Провинция (РП)</p>
+            <div className="flex items-center gap-2">
+              <span>Разработчик:</span>
+              <a
+                href="https://vk.com/id503251431"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-blue-300 hover:text-blue-200 font-medium transition-colors"
+              >
+                Poseidon_Wagner
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
           </div>
-          <div className="flex items-start gap-2">
-            <Badge variant="outline" className="text-xs border-border text-foreground">
-              Интервал
-            </Badge>
-            <p>Интервал между биндами - не менее двух секунд.</p>
-          </div>
-          <div className="flex items-start gap-2">
-            <Badge variant="outline" className="text-xs border-border text-foreground">
-              Лимит
-            </Badge>
-            <p>На одну клавишу не более трёх отыгровок.</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid gap-6">
-        {filteredSections.length > 0 ? (
-          filteredSections.map((section, sectionIndex) => (
-            <Card key={sectionIndex} className="border-border bg-card">
-              <CardHeader>
-                <CardTitle className="text-lg text-foreground">{section.title}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {section.binds.map((item, index) => (
-                  <div key={index}>
-                    <BindItem bind={item.bind} description={item.description} />
-                    {section.title === "Протокол задержания" && (index === 2 || index === 5) && (
-                      <SectionDivider title={index === 2 ? "Часть 2" : "Часть 3"} />
-                    )}
-                    {section.title === "Штраф" && index === 2 && <SectionDivider title="Часть 2" />}
-                    {section.title === "Разбитие стекла и доставание гражданина" && index === 2 && (
-                      <SectionDivider title="Часть 2" />
-                    )}
-                    {section.title === "Оформление ДТП" && (index === 2 || index === 4) && (
-                      <SectionDivider title={index === 2 ? "Часть 2" : "Часть 3"} />
-                    )}
-                    {section.title === "Проверка тонировки" && index === 1 && (
-                      <div className="p-1 bg-muted border border-border rounded-lg">
-                        <p className="text-sm text-foreground">Проверка уровня тонировки через "TAB"</p>
-                      </div>
-                    )}
-                    {section.title === "Мегафон: требование остановиться" && index === 2 && (
-                      <div className="p-1 bg-muted border border-border rounded-lg">
-                        <p className="text-sm text-foreground">
-                          Перед применением меры наказания сотрудник должен быть уверен, что выдвинутое требование было
-                          верно воспринято именно тем лицом, к которому оно адресовывалось.
-                        </p>
-                      </div>
-                    )}
-                    {section.title === "Посадка задержанного в служебный автомобиль" && index === 0 && (
-                      <div className="p-1 bg-muted border border-border rounded-lg">
-                        <p className="text-sm text-foreground">
-                          При активном конвоировании (/arr), либо же после отыгровки сесть в автомобиль и прописать
-                          /putpl id
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          ))
-        ) : (
-          <Card className="border-border bg-card">
-            <CardContent className="text-center py-8">
-              <p className="text-muted-foreground">Ничего не найдено по запросу "{searchQuery}"</p>
-              <p className="text-sm text-muted-foreground mt-2">Попробуйте изменить поисковый запрос</p>
-            </CardContent>
-          </Card>
-        )}
-      </div>
-
-      <footer className="mt-16 pt-8 border-t border-border">
-        <div className="text-center space-y-2">
-          <p className="text-sm text-muted-foreground">
-            Разработано для МВД Республики Провинция (РП)
-          </p>
-          <p className="text-sm text-muted-foreground">
-            Разработчик:{" "}
-            <a
-              href="https://vk.com/id503251431"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
-            >
-              Poseidon_Wagner
-            </a>
-          </p>
         </div>
-      </footer>
       </div>
     </div>
   )

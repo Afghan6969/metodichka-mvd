@@ -31,8 +31,8 @@ export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) 
 
   return (
     <>
-      <header className="modern-nav px-4 py-3 border-b-2 border-primary/20 bg-gradient-to-r from-primary/5 via-accent/5 to-background relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/10 to-transparent opacity-30"></div>
+      <header className="modern-nav px-4 py-3 border-b-2 border-primary/30 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/5 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/15 via-accent/15 to-transparent opacity-40"></div>
         <div className="flex items-center justify-between max-w-7xl mx-auto relative z-10">
           {/* Левая часть: Меню + Лого */}
           <div className="flex items-center gap-3">
@@ -46,10 +46,6 @@ export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) 
               </div>
               <div>
                 <h1 className="text-base font-black text-foreground uppercase tracking-widest">Методичка МВД</h1>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-primary font-bold uppercase tracking-wider">Министерство</span>
-                  <span className="text-xs text-accent font-bold uppercase tracking-wider">Внутренних Дел</span>
-                </div>
               </div>
             </div>
           </div>
@@ -67,45 +63,41 @@ export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) 
           {/* Правая часть: Пользователь + Управление */}
           <div className="flex items-center gap-3">
             {currentUser && (
-              <div className="hidden md:flex items-center gap-3 px-4 py-2.5 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-2xl border-2 border-primary/40 shadow-xl shadow-primary/20 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 opacity-50"></div>
-                <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-accent to-primary flex items-center justify-center border-2 border-primary/60 shadow-lg animate-pulse-glow">
-                  <User className="h-5 w-5 text-primary-foreground" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
+              <div className="hidden md:flex items-center gap-3 px-3 py-2 bg-gradient-to-r from-primary/20 via-accent/15 to-primary/15 rounded-xl border border-primary/30 shadow-lg relative">
+                <div className="relative w-8 h-8 rounded-lg bg-gradient-to-br from-primary/80 to-accent/60 flex items-center justify-center border border-primary/50 shadow-md">
+                  <User className="h-4 w-4 text-primary-foreground" />
                 </div>
-                <div className="flex flex-col relative z-10">
-                  <span className="text-sm font-black text-foreground uppercase tracking-wider">{currentUser.nickname}</span>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent animate-pulse"></div>
-                    <span className="text-xs font-bold text-primary uppercase tracking-widest">{roleDisplayNames[currentUser.role] || currentUser.role}</span>
-                  </div>
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold text-foreground uppercase tracking-wider">{currentUser.nickname}</span>
+                  <span className="text-xs text-primary/80 font-medium">{roleDisplayNames[currentUser.role] || currentUser.role}</span>
                 </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    console.log('Logout clicked');
+                    logout();
+                  }}
+                  className="ml-2 p-1 h-8 w-8 rounded-md hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all duration-200"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
               </div>
             )}
 
-            <Button variant="ghost" size="icon" onClick={onSearchClick} className="lg:hidden rounded-xl h-11 w-11 hover:bg-primary/20 border-2 border-primary/30 shadow-lg">
-              <Search className="h-5 w-5 text-primary" />
+            <Button variant="ghost" size="icon" onClick={onSearchClick} className="lg:hidden rounded-xl h-10 w-10 hover:bg-primary/20 border border-primary/30 shadow-md">
+              <Search className="h-4 w-4 text-primary" />
             </Button>
 
-            {currentUser ? (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={logout}
-                className="rounded-xl h-11 px-5 border-2 border-primary/50 hover:bg-primary/10 bg-transparent font-black uppercase tracking-wider shadow-lg hover:shadow-xl transition-all hover:scale-105"
-              >
-                <LogOut className="h-5 w-5 mr-2 text-primary" />
-                <span className="hidden sm:inline bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Выйти</span>
-              </Button>
-            ) : (
+            {!currentUser && (
               <Button
                 variant="default"
                 size="sm"
                 onClick={() => setIsLoginModalOpen(true)}
-                className="rounded-xl h-11 px-6 bg-gradient-to-r from-primary via-accent to-primary hover:from-primary/90 hover:via-accent/90 hover:to-primary/90 font-black uppercase tracking-widest shadow-xl shadow-primary/40 animate-pulse-glow transition-all hover:scale-105"
+                className="rounded-xl h-10 px-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-200"
               >
-                <LogIn className="h-5 w-5 mr-2" />
-                <span className="hidden sm:inline">Войти</span>
+                <LogIn className="h-4 w-4 mr-2" />
+                Войти
               </Button>
             )}
           </div>

@@ -187,64 +187,78 @@ export function TrainingPage() {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary" />
+        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
+          <div className="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center border border-blue-400/30">
+            <Search className="h-4 w-4 text-blue-300" />
+          </div>
+        </div>
         <Input
           type="text"
           placeholder="Поиск по тренировкам..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-12 h-14 text-base border-2 border-primary/30 rounded-xl bg-background/50 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
+          className="pl-12 h-14 text-base border-2 border-blue-400/30 rounded-xl bg-white/5 backdrop-blur-sm font-semibold focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 text-white placeholder:text-blue-300/60"
         />
       </div>
 
       {/* Trainings Grid */}
       <div className="space-y-4">
         {filteredTrainings.map((training) => (
-          <div 
-            key={training.id} 
-            className="military-card"
+          <div
+            key={training.id}
+            className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden"
           >
             <Collapsible open={openTrainings[training.id]} onOpenChange={() => toggleTraining(training.id)}>
               <CollapsibleTrigger className="w-full">
-                <div className="flex items-center justify-between p-6 hover:bg-primary/5 rounded-xl transition-colors">
+                <div className="flex items-center justify-between p-6 hover:bg-white/5 transition-colors">
                   <div className="flex items-center gap-4 flex-1">
-                    <div className="w-12 h-12 bg-gradient-to-br from-accent to-accent/70 rounded-xl flex items-center justify-center border-2 border-accent/50 shadow-lg shadow-accent/20">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500/80 to-blue-600/60 rounded-2xl flex items-center justify-center border border-blue-400/30 shadow-lg group-hover:shadow-blue-500/20 transition-all duration-300">
                       {training.icon === Dumbbell ? (
-                        <Dumbbell className="h-6 w-6 text-accent-foreground" />
+                        <Dumbbell className="h-6 w-6 text-white" />
                       ) : (
-                        <Zap className="h-6 w-6 text-accent-foreground" />
+                        <Zap className="h-6 w-6 text-white" />
                       )}
                     </div>
                     <div className="text-left flex-1">
-                      <h3 className="text-lg font-black uppercase tracking-wide mb-1">{training.title}</h3>
+                      <h3 className="text-lg font-bold uppercase tracking-wide mb-2 text-white group-hover:text-blue-200 transition-colors">{training.title}</h3>
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="border-accent/40 text-accent font-semibold">
+                        <Badge variant="outline" className="border-blue-400/40 text-blue-300 font-semibold bg-blue-500/10">
                           {categoryLabels[training.category]}
                         </Badge>
-                        <Badge variant="outline" className="border-primary/40 text-primary font-semibold">
+                        <Badge variant="outline" className="border-blue-400/40 text-blue-300 font-semibold bg-blue-500/10">
                           <Clock className="h-3 w-3 mr-1" />
                           {training.duration}
                         </Badge>
                       </div>
                     </div>
                   </div>
-                  {openTrainings[training.id] ? (
-                    <ChevronDown className="h-6 w-6 text-primary" />
-                  ) : (
-                    <ChevronRight className="h-6 w-6 text-primary" />
-                  )}
+                  <div className="flex items-center gap-3">
+                    <div className="text-sm text-blue-300/80 font-medium">
+                    {training.content.length} {training.content.length % 10 === 1 && training.content.length % 100 !== 11
+  ? 'команда'
+  : training.content.length % 10 >= 2 && training.content.length % 10 <= 4 && (training.content.length % 100 < 10 || training.content.length % 100 >= 20)
+  ? 'команды'
+  : 'команд'}                    </div>
+                    <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-400/30 group-hover:bg-blue-500/30 transition-colors">
+                      {openTrainings[training.id] ? (
+                        <ChevronDown className="h-5 w-5 text-blue-300" />
+                      ) : (
+                        <ChevronRight className="h-5 w-5 text-blue-300" />
+                      )}
+                    </div>
+                  </div>
                 </div>
               </CollapsibleTrigger>
-              
+
               <CollapsibleContent>
                 <div className="px-6 pb-6">
-                  <div className="mt-4 bg-muted/30 p-6 rounded-xl border-2 border-primary/20">
+                  <div className="mt-4 bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-sm">
                     <div className="space-y-2">
                       {training.content.map((line, index) => (
-                        <div key={index} className="flex items-start gap-3 group hover:bg-primary/5 p-2 rounded-lg transition-colors">
-                          <div className="flex-1 font-mono text-sm text-foreground leading-relaxed">{line}</div>
+                        <div key={index} className="flex items-start gap-3 group hover:bg-white/5 p-2 rounded-lg transition-colors">
+                          <div className="flex-1 font-mono text-sm text-blue-100/90 leading-relaxed">{line}</div>
                           {line.trim().startsWith("say ") && (
-                            <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
                               <CopyButton text={line.trim()} />
                             </div>
                           )}
@@ -252,9 +266,9 @@ export function TrainingPage() {
                       ))}
                     </div>
                     {training.note && (
-                      <div className="mt-4 p-4 bg-accent/10 border-2 border-accent/30 rounded-xl">
+                      <div className="mt-4 p-4 bg-blue-500/10 border border-blue-400/20 rounded-xl">
                         <p className="text-sm font-semibold">
-                          <span className="text-accent font-black uppercase">Уточнение:</span> {training.note}
+                          <span className="text-blue-300 font-black uppercase">Уточнение:</span> {training.note}
                         </p>
                       </div>
                     )}
@@ -268,11 +282,11 @@ export function TrainingPage() {
 
       {filteredTrainings.length === 0 && searchQuery && (
         <div className="text-center py-20">
-          <div className="w-20 h-20 bg-muted/30 rounded-3xl flex items-center justify-center mx-auto mb-4">
-            <Search className="h-10 w-10 text-muted-foreground" />
+          <div className="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-3xl flex items-center justify-center mx-auto mb-4 border border-white/20">
+            <Search className="h-10 w-10 text-blue-300" />
           </div>
-          <p className="text-xl font-bold text-muted-foreground mb-2">Тренировки не найдены</p>
-          <p className="text-muted-foreground">Попробуйте изменить поисковый запрос</p>
+          <p className="text-xl font-bold text-white mb-2">Тренировки не найдены</p>
+          <p className="text-blue-200/80">Попробуйте изменить поисковый запрос</p>
         </div>
       )}
     </div>

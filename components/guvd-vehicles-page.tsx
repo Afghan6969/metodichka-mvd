@@ -126,7 +126,7 @@ export default function GuvdVehiclesPage() {
 
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
-      <PageHeader 
+      <PageHeader
         icon={Shield}
         title="Автопарк ГУВД"
         description="Транспортные средства для сотрудников ГУВД"
@@ -134,140 +134,111 @@ export default function GuvdVehiclesPage() {
       />
 
       <div className="max-w-6xl mx-auto">
-        <style jsx>{`
-          .animate-scale-in {
-            animation: scale-in 0.3s ease-out;
-          }
-          @keyframes scale-in {
-            from {
-              transform: scale(0.8);
-              opacity: 0;
-            }
-            to {
-              transform: scale(1);
-              opacity: 1;
-            }
-          }
-        `}</style>
-
-          <div className="flex flex-wrap gap-2 mb-6">
-            {vehicleData.map((city) => (
-              <Button
-                key={city.city}
-                variant={selectedCity === city.city ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCity(city.city)}
-                className="transition-all"
-              >
-                {city.city}
-              </Button>
-            ))}
-          </div>
-
-        <div className="grid gap-8">
-          <Card key={currentCityData.city} className="border-border">
-            <CardHeader className="bg-secondary/10">
-              <CardTitle className="text-xl text-primary">ГУВД г. {currentCityData.city}</CardTitle>
-              <CardDescription>Автопарк управления внутренних дел города {currentCityData.city}</CardDescription>
-            </CardHeader>
-            <CardContent className="p-6">
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {currentCityData.vehicles.map((vehicle, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col justify-between h-full p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="text-primary mt-1">{getVehicleIcon(vehicle.type)}</div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-sm text-foreground truncate">{vehicle.name}</h3>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Badge className={getRankColor(vehicle.rank)}>{vehicle.rank}</Badge>
-                          </div>
-                          {vehicle.special && (
-                            <p className="text-xs text-muted-foreground mt-2 italic">{vehicle.special}</p>
-                          )}
-                        </div>
-                      </div>
-                      {vehicle.image && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="mt-4 w-full"
-                          onClick={() => openImageModal(vehicle.image)}
-                        >
-                          <Eye className="h-3 w-3 mr-1" />
-                          Показать изображение
-                        </Button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+        <div className="flex flex-wrap gap-2 mb-6">
+          {vehicleData.map((city) => (
+            <Button
+              key={city.city}
+              variant={selectedCity === city.city ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedCity(city.city)}
+              className={selectedCity === city.city ? "bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border-blue-400/40" : "border-blue-400/40 text-blue-300 hover:bg-blue-500/10"}
+            >
+              {city.city}
+            </Button>
+          ))}
         </div>
 
-        <Card className="mt-8 border-primary/20 bg-primary/5">
-          <CardHeader>
-            <CardTitle className="text-primary">Примечания</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+        <div className="grid gap-8">
+          <div key={currentCityData.city} className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+            <div className="p-6 border-b border-white/10">
+              <h2 className="text-xl font-bold text-white">ГУВД г. {currentCityData.city}</h2>
+              <p className="text-blue-200/80 text-sm mt-1">Автопарк управления внутренних дел города {currentCityData.city}</p>
+            </div>
+            <div className="p-6">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {currentCityData.vehicles.map((vehicle, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col justify-between h-full p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/8 hover:border-white/20 transition-all duration-200"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-400/30 mt-1">
+                        <div className="text-blue-300">{getVehicleIcon(vehicle.type)}</div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-white text-sm truncate">{vehicle.name}</h3>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Badge className="border-blue-400/40 text-blue-300 bg-blue-500/10 text-xs">
+                            {vehicle.rank}
+                          </Badge>
+                        </div>
+                        {vehicle.special && (
+                          <p className="text-xs text-blue-200/80 mt-2 italic">{vehicle.special}</p>
+                        )}
+                      </div>
+                    </div>
+                    {vehicle.image && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="mt-4 w-full border-blue-400/40 text-blue-300 hover:bg-blue-500/10"
+                        onClick={() => openImageModal(vehicle.image)}
+                      >
+                        <Eye className="h-3 w-3 mr-1" />
+                        Показать изображение
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+          <div className="p-6 border-b border-white/10">
+            <h2 className="text-xl font-bold text-white">Примечания</h2>
+          </div>
+          <div className="p-6">
+            <ul className="space-y-2 text-sm text-blue-100/90">
               <li>• Доступ к транспортным средствам осуществляется согласно рангу сотрудника</li>
               <li>• Специальные транспортные средства предназначены для конкретных подразделений</li>
               <li>• Вертолет доступен только сотрудникам высшего руководящего состава</li>
               <li>• Использование транспорта должно быть обосновано служебной необходимостью</li>
             </ul>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {selectedImage && (
           <div
             className="fixed inset-0 z-50 bg-black/80 flex justify-center items-center p-4"
             onClick={closeImageModal}
           >
-            <div className="relative max-w-4xl w-full bg-background border border-border rounded-lg shadow-lg p-6 animate-scale-in">
+            <div className="relative max-w-4xl w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-xl p-6">
               <button
-                className="absolute top-3 right-3 p-4 rounded-full bg-background/90 hover:bg-primary/30 text-foreground hover:text-primary transition-all duration-200 z-50 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="absolute top-3 right-3 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white hover:text-blue-300 transition-all duration-200 z-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 onClick={closeImageModal}
                 aria-label="Закрыть изображение"
               >
-                <X className="h-7 w-7" />
+                <X className="h-5 w-5" />
               </button>
               <div className="relative w-full h-[70vh] max-h-[800px]">
                 <Image
                   src={selectedImage}
                   alt="Увеличенное изображение ТС"
                   fill
-                  className="object-contain rounded-md"
+                  className="object-contain rounded-lg"
                   sizes="(max-width: 768px) 100vw, 1200px"
                   priority
                 />
               </div>
-              <p className="text-center text-foreground mt-4 font-medium">
+              <p className="text-center text-white mt-4 font-medium">
                 {Object.keys(vehicleImages).find((key) => vehicleImages[key] === selectedImage) || "Транспортное средство"}
               </p>
             </div>
           </div>
         )}
 
-        <footer className="mt-16 pt-8 border-t border-border">
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground">
-              Разработано для МВД Республики Провинция (РП)
-              <br />
-              Разработчик:{" "}
-              <a
-                href="https://vk.com/id503251431"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:text-primary/80 font-medium transition-colors"
-              >
-                Poseidon_Wagner
-              </a>
-            </p>
-          </div>
-        </footer>
       </div>
     </div>
   )

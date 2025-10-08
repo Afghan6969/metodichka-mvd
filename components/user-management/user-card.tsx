@@ -66,11 +66,11 @@ export function UserCard({
   getRoleBadgeVariant,
 }: UserCardProps) {
   return (
-    <div className="military-card animate-slide-up group relative overflow-hidden">
+    <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
       {isEditing ? (
-        <div className="space-y-4">
+        <div className="p-6 space-y-4">
           <div>
-            <Label htmlFor={`edit-nickname-${user.id}`} className="text-sm font-medium">
+            <Label htmlFor={`edit-nickname-${user.id}`} className="text-sm font-medium text-white">
               Никнейм
             </Label>
             <Input
@@ -78,11 +78,11 @@ export function UserCard({
               value={editNickname}
               onChange={(e) => onEditNicknameChange(e.target.value)}
               disabled={isLoading}
-              className="mt-1 bg-background/50 border-2 border-primary/30 rounded text-base py-2.5 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
+              className="mt-1 bg-white/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
             />
           </div>
           <div>
-            <Label htmlFor={`edit-username-${user.id}`} className="text-sm font-medium">
+            <Label htmlFor={`edit-username-${user.id}`} className="text-sm font-medium text-white">
               Логин
             </Label>
             <Input
@@ -90,11 +90,11 @@ export function UserCard({
               value={editUsername}
               onChange={(e) => onEditUsernameChange(e.target.value)}
               disabled={isLoading}
-              className="mt-1 bg-background/50 border-2 border-primary/30 rounded text-base py-2.5 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
+              className="mt-1 bg-white/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
             />
           </div>
           <div>
-            <Label htmlFor={`edit-password-${user.id}`} className="text-sm font-medium">
+            <Label htmlFor={`edit-password-${user.id}`} className="text-sm font-medium text-white">
               Новый пароль
             </Label>
             <Input
@@ -104,19 +104,19 @@ export function UserCard({
               onChange={(e) => onEditPasswordChange(e.target.value)}
               placeholder="Не трогайте, чтобы не сменить пароль"
               disabled={isLoading}
-              className="mt-1 bg-background/50 border-2 border-primary/30 rounded text-base py-2.5 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20"
+              className="mt-1 bg-white/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
             />
-            <p className="text-xs text-muted-foreground mt-1">Оставьте пустым, если не хотите менять пароль</p>
+            <p className="text-xs text-blue-200/80 mt-1">Оставьте пустым, если не хотите менять пароль</p>
           </div>
           <div>
-            <Label htmlFor={`edit-role-${user.id}`} className="text-sm font-medium">
+            <Label htmlFor={`edit-role-${user.id}`} className="text-sm font-medium text-white">
               Роль
             </Label>
             <Select value={editRole} onValueChange={(value) => onEditRoleChange(value as UserRole)} disabled={isLoading}>
-              <SelectTrigger id={`edit-role-${user.id}`} className="mt-1 bg-background border-border">
+              <SelectTrigger id={`edit-role-${user.id}`} className="mt-1 bg-white/5 border-white/15 text-white">
                 <SelectValue placeholder="Выберите роль" />
               </SelectTrigger>
-              <SelectContent className="bg-popover border-border backdrop-blur-xl">
+              <SelectContent className="bg-white/10 border-white/20 backdrop-blur-xl">
                 {availableRoles.filter(r => r !== "root").map((r) => (
                   <SelectItem key={r} value={r}>
                     {roleDisplayNames[r]}
@@ -129,7 +129,7 @@ export function UserCard({
             <Button
               size="sm"
               onClick={onSaveEdit}
-              className="flex-1 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 rounded py-2.5 font-bold uppercase tracking-wide shadow-lg shadow-primary/30"
+              className="flex-1 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/40 text-blue-100 hover:text-blue-50 transition-all"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -143,7 +143,7 @@ export function UserCard({
               size="sm"
               variant="outline"
               onClick={onCancelEdit}
-              className="flex-1 border-2 border-primary/40 rounded py-2.5 hover:bg-primary/10 font-bold uppercase tracking-wide"
+              className="flex-1 border-blue-400/40 text-blue-200 hover:bg-blue-500/10 hover:text-blue-100"
               disabled={isLoading}
             >
               <X className="h-4 w-4 mr-2" />
@@ -152,113 +152,115 @@ export function UserCard({
           </div>
         </div>
       ) : (
-        <div className="flex items-start gap-4">
-          <input
-            type="checkbox"
-            checked={isSelected}
-            onChange={onToggleSelect}
-            className="mt-2 h-4 w-4 text-primary border-border rounded focus:ring-primary"
-            disabled={!canDelete || isLoading}
-          />
-          <div className="flex-1 space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <UserCog className="h-5 w-5 text-primary" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-lg font-semibold text-foreground">{user.nickname}</h3>
-                  <Badge variant={getRoleBadgeVariant(user.role)} className="text-xs font-medium px-2 py-1">
-                    {roleDisplayNames[user.role] || user.role}
-                  </Badge>
+        <div className="p-6">
+          <div className="flex items-start gap-4">
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={onToggleSelect}
+              className="mt-2 h-4 w-4 text-blue-400 border-white/20 rounded focus:ring-blue-400"
+              disabled={!canDelete || isLoading}
+            />
+            <div className="flex-1 space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-400/30">
+                  <UserCog className="h-5 w-5 text-blue-300" />
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Логин: <span className="font-mono">{user.username}</span>
-                </p>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="text-lg font-semibold text-white">{user.nickname}</h3>
+                    <Badge variant={getRoleBadgeVariant(user.role)} className="border-blue-400/40 text-blue-300 bg-blue-500/10">
+                      {roleDisplayNames[user.role] || user.role}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-blue-200/80">
+                    Логин: <span className="font-mono">{user.username}</span>
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="pl-12 space-y-1 text-xs text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <span className="font-medium">Создан:</span>
-                <span>{format(new Date(user.created_at), "dd MMMM yyyy, HH:mm", { locale: ru })}</span>
-              </div>
-              {user.created_by_user && (
+              <div className="text-xs text-blue-200/80 space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium">Добавил:</span>
-                  <span>{user.created_by_user.nickname}</span>
-                  <Badge variant="outline" className="text-xs py-0.5 px-2">
-                    {roleDisplayNames[user.created_by_user.role]}
-                  </Badge>
+                  <span className="font-medium">Создан:</span>
+                  <span>{format(new Date(user.created_at), "dd MMMM yyyy, HH:mm", { locale: ru })}</span>
                 </div>
-              )}
-              {user.status === "deactivated" && user.deactivated_by_user && user.deactivated_at && (
-                <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
-                  <span className="font-medium">Деактивирован:</span>
-                  <span>{format(new Date(user.deactivated_at), "dd MMMM yyyy, HH:mm", { locale: ru })}</span>
-                  <span>•</span>
-                  <span>{user.deactivated_by_user.nickname}</span>
-                </div>
+                {user.created_by_user && (
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">Добавил:</span>
+                    <span>{user.created_by_user.nickname}</span>
+                    <Badge variant="outline" className="border-blue-400/40 text-blue-300 bg-blue-500/10 text-xs">
+                      {roleDisplayNames[user.created_by_user.role]}
+                    </Badge>
+                  </div>
+                )}
+                {user.status === "deactivated" && user.deactivated_by_user && user.deactivated_at && (
+                  <div className="flex items-center gap-2 text-red-300">
+                    <span className="font-medium">Деактивирован:</span>
+                    <span>{format(new Date(user.deactivated_at), "dd MMMM yyyy, HH:mm", { locale: ru })}</span>
+                    <span>•</span>
+                    <span>{user.deactivated_by_user.nickname}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex gap-2 flex-shrink-0">
+              {!showDeactivated ? (
+                <>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={onStartEdit}
+                    className="h-10 w-10 border-blue-400/30 bg-blue-500/10 hover:bg-blue-500/20 hover:border-blue-400/50 text-blue-300"
+                    disabled={isLoading || !canEdit}
+                    title="Редактировать"
+                  >
+                    <Edit2 className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={onViewHistory}
+                    className="h-10 w-10 border-purple-400/30 bg-purple-500/10 hover:bg-purple-500/20 hover:border-purple-400/50 text-purple-300"
+                    disabled={isLoading}
+                    title="История изменений"
+                  >
+                    <History className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={onDeactivate}
+                    className="h-10 w-10 bg-red-500/20 hover:bg-red-500/30 border-red-400/40 text-red-300 hover:text-red-200"
+                    disabled={isLoading || !canDelete}
+                    title="Деактивировать"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={onViewHistory}
+                    className="h-9 w-9 border-blue-400/30 bg-blue-500/10 hover:bg-blue-500/20 hover:border-blue-400/50 text-blue-300"
+                    disabled={isLoading}
+                    title="История изменений"
+                  >
+                    <History className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={onRestore}
+                    className="h-9 w-9 border-green-400/30 bg-green-500/10 hover:bg-green-500/20 hover:border-green-400/50 text-green-300"
+                    disabled={isLoading}
+                    title="Восстановить"
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                  </Button>
+                </>
               )}
             </div>
-          </div>
-          <div className="flex gap-2 flex-shrink-0">
-            {!showDeactivated ? (
-              <>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={onStartEdit}
-                  className="h-10 w-10 border-2 border-primary/40 rounded hover:bg-primary/10 hover:border-primary transition-all"
-                  disabled={isLoading || !canEdit}
-                  title="Редактировать"
-                >
-                  <Edit2 className="h-4 w-4 text-primary" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={onViewHistory}
-                  className="h-10 w-10 border-2 border-accent/40 rounded hover:bg-accent/10 hover:border-accent transition-all"
-                  disabled={isLoading}
-                  title="История изменений"
-                >
-                  <History className="h-4 w-4 text-accent" />
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  onClick={onDeactivate}
-                  className="h-10 w-10 rounded bg-gradient-to-br from-destructive to-destructive/80 hover:from-destructive/90 hover:to-destructive/70 shadow-lg shadow-destructive/30"
-                  disabled={isLoading || !canDelete}
-                  title="Деактивировать"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={onViewHistory}
-                  className="h-9 w-9 border-border rounded-lg hover:bg-muted"
-                  disabled={isLoading}
-                  title="История изменений"
-                >
-                  <History className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={onRestore}
-                  className="h-9 w-9 border-border rounded-lg hover:bg-muted text-green-600 hover:text-green-700"
-                  disabled={isLoading}
-                  title="Восстановить"
-                >
-                  <RotateCcw className="h-4 w-4" />
-                </Button>
-              </>
-            )}
           </div>
         </div>
       )}

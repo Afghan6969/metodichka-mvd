@@ -206,22 +206,427 @@
     -webkit-backdrop-filter: blur(20px) saturate(180%);
   }
 
-  /* МВД sidebar - красная полоса слева */
-  .mvd [data-slot="sidebar-inner"]::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: linear-gradient(180deg, #dc2626 0%, #f59e0b 50%, #dc2626 100%);
-    box-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
-    z-index: 10;
+  /* Полицейский синий маячок */
+  .police-blue {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.8) 100%),
+      radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(30, 64, 175, 0.2) 0%, transparent 50%),
+      linear-gradient(135deg, #0a0a0f 0%, #0f0a1a 50%, #0a0f1f 100%);
+    background-attachment: fixed;
+    position: relative;
   }
 
-  .mvd [data-slot="sidebar-inner"] > * {
-    position: relative;
+  /* Усиленная анимация полицейского синего маячка */
+  .police-blue::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      linear-gradient(45deg,
+        transparent 0%,
+        rgba(59, 130, 246, 0.15) 25%,
+        rgba(30, 64, 175, 0.1) 50%,
+        rgba(59, 130, 246, 0.15) 75%,
+        transparent 100%
+      );
+    background-size: 200% 200%;
+    animation: police-blue-light 2s ease-in-out infinite;
+    pointer-events: none;
     z-index: 1;
+  }
+
+  @keyframes police-blue-light {
+    0%, 100% {
+      background-position: 0% 0%;
+      opacity: 0.3;
+    }
+    50% {
+      background-position: 100% 100%;
+      opacity: 0.7;
+    }
+  }
+
+  /* Полицейский красный маячок - ОСНОВНЫЕ ЦВЕТА */
+  .police-red {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.9) 100%),
+      radial-gradient(circle at 30% 20%, rgba(220, 38, 38, 0.4) 0%, transparent 60%),
+      radial-gradient(circle at 70% 80%, rgba(153, 27, 27, 0.3) 0%, transparent 60%),
+      linear-gradient(135deg, #0f0a0a 0%, #1f0a0a 50%, #0f0a0a 100%);
+    background-attachment: fixed;
+    position: relative;
+  }
+  .police-red::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      linear-gradient(45deg,
+        transparent 0%,
+        rgba(220, 38, 38, 0.15) 25%,
+        rgba(153, 27, 27, 0.1) 50%,
+        rgba(220, 38, 38, 0.15) 75%,
+        transparent 100%
+      );
+    background-size: 200% 200%;
+    animation: police-red-light 1.5s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes police-red-light {
+    0%, 100% {
+      background-position: 0% 0%;
+      opacity: 0.3;
+    }
+    50% {
+      background-position: 100% 100%;
+      opacity: 0.7;
+    }
+  }
+
+  /* Двойной полицейский маячок - КРАСНЫЙ + СИНИЙ одновременно */
+  .police-dual {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.9) 100%),
+      radial-gradient(circle at 20% 30%, rgba(220, 38, 38, 0.4) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.4) 0%, transparent 50%),
+      radial-gradient(circle at 50% 20%, rgba(220, 38, 38, 0.3) 0%, transparent 40%),
+      radial-gradient(circle at 50% 80%, rgba(59, 130, 246, 0.3) 0%, transparent 40%),
+      linear-gradient(135deg, #0a0a0f 0%, #0f0a1a 50%, #0a0f0f 100%);
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  /* Плавная анимация двойного маячка - КРАСНЫЙ + СИНИЙ */
+  .police-dual::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(circle at 25% 25%, rgba(220, 38, 38, 0.3) 0%, transparent 70%),
+      radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.3) 0%, transparent 70%),
+      radial-gradient(circle at 75% 25%, rgba(220, 38, 38, 0.25) 0%, transparent 60%),
+      radial-gradient(circle at 25% 75%, rgba(59, 130, 246, 0.25) 0%, transparent 60%);
+    background-size: 100% 100%;
+    animation: police-dual-flow 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes police-dual-flow {
+    0% {
+      opacity: 0.3;
+    }
+    25% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 0.6;
+    }
+    75% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0.3;
+    }
+  }
+
+  /* Угловые вспышки - КРАСНЫЙ + СИНИЙ по углам */
+  .police-corners {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.9) 100%),
+      radial-gradient(circle at 15% 15%, rgba(220, 38, 38, 0.4) 0%, transparent 60%),
+      radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.4) 0%, transparent 60%),
+      radial-gradient(circle at 15% 85%, rgba(59, 130, 246, 0.4) 0%, transparent 60%),
+      radial-gradient(circle at 85% 85%, rgba(220, 38, 38, 0.4) 0%, transparent 60%),
+      linear-gradient(135deg, #0a0a0f 0%, #0f0a1a 50%, #0a0f0f 100%);
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  .police-corners::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(circle at 15% 15%, rgba(220, 38, 38, 0.3) 0%, transparent 70%),
+      radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.3) 0%, transparent 70%),
+      radial-gradient(circle at 15% 85%, rgba(59, 130, 246, 0.3) 0%, transparent 70%),
+      radial-gradient(circle at 85% 85%, rgba(220, 38, 38, 0.3) 0%, transparent 70%);
+    background-size: 100% 100%;
+    animation: police-corners-flow 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes police-corners-flow {
+    0% {
+      opacity: 0.3;
+    }
+    25% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 0.6;
+    }
+    75% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0.3;
+    }
+  }
+
+  /* Боковые вспышки - КРАСНЫЙ + СИНИЙ по бокам */
+  .police-sides {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.9) 100%),
+      radial-gradient(ellipse at 10% 50%, rgba(220, 38, 38, 0.4) 0%, transparent 70%),
+      radial-gradient(ellipse at 90% 50%, rgba(59, 130, 246, 0.4) 0%, transparent 70%),
+      linear-gradient(135deg, #0a0a0f 0%, #0f0a1a 50%, #0a0f0f 100%);
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  .police-sides::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(ellipse at 10% 50%, rgba(220, 38, 38, 0.3) 0%, transparent 70%),
+      radial-gradient(ellipse at 90% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+    background-size: 100% 100%;
+    animation: police-sides-flow 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes police-sides-flow {
+    0% {
+      opacity: 0.3;
+    }
+    25% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 0.6;
+    }
+    75% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0.3;
+    }
+  }
+
+  /* Крестовые вспышки - КРАСНЫЙ + СИНИЙ крест-накрест */
+  .police-cross {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.9) 100%),
+      radial-gradient(circle at 50% 20%, rgba(220, 38, 38, 0.4) 0%, transparent 60%),
+      radial-gradient(circle at 50% 80%, rgba(59, 130, 246, 0.4) 0%, transparent 60%),
+      radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.4) 0%, transparent 60%),
+      radial-gradient(circle at 80% 50%, rgba(220, 38, 38, 0.4) 0%, transparent 60%),
+      linear-gradient(135deg, #0a0a0f 0%, #0f0a1a 50%, #0a0f0f 100%);
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  .police-cross::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(circle at 50% 20%, rgba(220, 38, 38, 0.3) 0%, transparent 70%),
+      radial-gradient(circle at 50% 80%, rgba(59, 130, 246, 0.3) 0%, transparent 70%),
+      radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 70%),
+      radial-gradient(circle at 80% 50%, rgba(220, 38, 38, 0.3) 0%, transparent 70%);
+    background-size: 100% 100%;
+    animation: police-cross-flow 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes police-cross-flow {
+    0% {
+      opacity: 0.3;
+    }
+    25% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 0.6;
+    }
+    75% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0.3;
+    }
+  }
+
+  /* Общие стили для полицейских тем */
+  .police-blue body,
+  .police-blue main,
+  .police-blue [data-slot="sidebar-inset"],
+  .police-red body,
+  .police-red main,
+  .police-red [data-slot="sidebar-inset"],
+  .police-rainbow body,
+  .police-rainbow main,
+  .police-rainbow [data-slot="sidebar-inset"],
+  .police-dual body,
+  .police-dual main,
+  .police-dual [data-slot="sidebar-inset"],
+  .police-corners body,
+  .police-corners main,
+  .police-corners [data-slot="sidebar-inset"],
+  .police-sides body,
+  .police-sides main,
+  .police-sides [data-slot="sidebar-inset"],
+  .police-cross body,
+  .police-cross main,
+  .police-cross [data-slot="sidebar-inset"] {
+    background: transparent !important;
+  }
+
+  /* Усиленное размытие для карточек всех полицейских тем */
+  .police-blue .bg-card,
+  .police-blue [data-slot="sidebar-inner"],
+  .police-red .bg-card,
+  .police-red [data-slot="sidebar-inner"],
+  .police-rainbow .bg-card,
+  .police-rainbow [data-slot="sidebar-inner"],
+  .police-dual .bg-card,
+  .police-dual [data-slot="sidebar-inner"],
+  .police-corners .bg-card,
+  .police-corners [data-slot="sidebar-inner"],
+  .police-sides .bg-card,
+  .police-sides [data-slot="sidebar-inner"],
+  .police-cross .bg-card,
+  .police-cross [data-slot="sidebar-inner"] {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+
+  /* Улучшенный стиль сайдбара для полицейских тем */
+  .police-blue .modern-sidebar,
+  .police-red .modern-sidebar,
+  .police-rainbow .modern-sidebar,
+  .police-dual .modern-sidebar,
+  .police-corners .modern-sidebar,
+  .police-sides .modern-sidebar,
+  .police-cross .modern-sidebar {
+    background: rgba(5, 5, 5, 0.95) !important;
+    backdrop-filter: blur(15px) saturate(150%);
+    -webkit-backdrop-filter: blur(15px) saturate(150%);
+  }
+
+  /* Специальный акцент для активных элементов в сайдбаре */
+  .police-blue .modern-sidebar .bg-primary,
+  .police-red .modern-sidebar .bg-primary,
+  .police-rainbow .modern-sidebar .bg-primary,
+  .police-dual .modern-sidebar .bg-primary,
+  .police-corners .modern-sidebar .bg-primary,
+  .police-sides .modern-sidebar .bg-primary,
+  .police-cross .modern-sidebar .bg-primary {
+    background: var(--primary) !important;
+    box-shadow: 0 0 15px var(--primary);
+    animation: sidebar-primary-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes sidebar-primary-pulse {
+    0%, 100% {
+      box-shadow: 0 0 15px var(--primary);
+    }
+    50% {
+      box-shadow: 0 0 25px var(--primary);
+    }
+  }
+
+  /* Hover эффекты для элементов сайдбара */
+  .police-blue .modern-sidebar button:hover,
+  .police-red .modern-sidebar button:hover,
+  .police-rainbow .modern-sidebar button:hover,
+  .police-dual .modern-sidebar button:hover,
+  .police-corners .modern-sidebar button:hover,
+  .police-sides .modern-sidebar button:hover,
+  .police-cross .modern-sidebar button:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+
+  /* Прозрачный сайдбар для всех тем - УСИЛЕННЫЕ СТИЛИ */
+  .dark .modern-sidebar,
+  .mvd .modern-sidebar,
+  .police-blue .modern-sidebar,
+  .police-red .modern-sidebar,
+  .police-rainbow .modern-sidebar,
+  .police-dual .modern-sidebar,
+  .police-corners .modern-sidebar,
+  .police-sides .modern-sidebar,
+  .police-cross .modern-sidebar {
+    background: rgba(5, 5, 5, 0.95) !important;
+    backdrop-filter: blur(15px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(15px) saturate(150%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  /* Полностью прозрачный фон сайдбара */
+  .dark .modern-sidebar > div,
+  .mvd .modern-sidebar > div,
+  .police-blue .modern-sidebar > div,
+  .police-red .modern-sidebar > div,
+  .police-rainbow .modern-sidebar > div,
+  .police-dual .modern-sidebar > div,
+  .police-corners .modern-sidebar > div,
+  .police-sides .modern-sidebar > div,
+  .police-cross .modern-sidebar > div {
+    background: transparent !important;
+  }
+
+  /* Стиль логотипа МВД в сайдбаре */
+  .dark .modern-sidebar .bg-primary,
+  .mvd .modern-sidebar .bg-primary {
+    background: var(--primary) !important;
+    animation: sidebar-logo-glow 3s ease-in-out infinite;
+  }
+
+  @keyframes sidebar-logo-glow {
+    0%, 100% {
+      box-shadow: 0 0 10px var(--primary);
+    }
+    50% {
+      box-shadow: 0 0 20px var(--primary);
+    }
+  }
+
+  /* Hover эффекты для обычных тем */
+  .dark .modern-sidebar button:hover,
+  .mvd .modern-sidebar button:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid var(--accent);
   }
 
   /* Hero section with dramatic overlay */
@@ -236,6 +641,7 @@
 
   .interactive-element:hover {
     transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   }
 
   /* Анимация пульсации для primary элементов */
@@ -295,7 +701,7 @@
   .police-divider {
     height: 4px;
     border-radius: 9999px;
-    background: linear-gradient(90deg, 
+    background: linear-gradient(90deg,
       #dc2626 0%,
       #dc2626 10%,
       #ef4444 20%,
@@ -308,7 +714,7 @@
     );
     background-size: 200% 100%;
     animation: police-light 3s linear infinite;
-    box-shadow: 
+    box-shadow:
       0 0 20px rgba(220, 38, 38, 0.5),
       0 0 20px rgba(59, 130, 246, 0.5);
   }
