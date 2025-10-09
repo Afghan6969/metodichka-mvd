@@ -121,7 +121,7 @@ export function TermsPage() {
           placeholder="Поиск терминов..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-12 h-14 text-base border-2 border-blue-400/30 rounded-xl bg-white/5 backdrop-blur-sm font-semibold focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 text-white placeholder:text-blue-200/60"
+          className="pl-12 h-14 text-base border-2 border-blue-400/30 rounded-xl bg-black/5 backdrop-blur-sm font-semibold focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 text-white placeholder:text-blue-200/60"
         />
       </div>
 

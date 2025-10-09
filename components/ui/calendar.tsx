@@ -70,7 +70,7 @@ function Calendar({
           defaultClassNames.dropdowns,
         ),
         dropdown_root: cn(
-          'relative has-focus:border-ring border border-white/20 shadow-xs has-focus:ring-blue-400/50 has-focus:ring-[3px] rounded-md bg-white/5',
+          'relative has-focus:border-ring border border-white/20 shadow-xs has-focus:ring-blue-400/50 has-focus:ring-[3px] rounded-md bg-black/5',
           defaultClassNames.dropdown_root,
         ),
         dropdown: cn(

@@ -106,7 +106,7 @@ export function ResourcesPage() {
                     href={resource.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/8 hover:border-white/20 transition-all duration-200 group/link"
+                    className="flex items-start gap-4 p-4 rounded-xl bg-black/5 border border-white/10 hover:bg-white/8 hover:border-white/20 transition-all duration-200 group/link"
                   >
                     <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-400/30 mt-1 group-hover/link:bg-blue-500/30 group-hover/link:border-blue-400/50 transition-all duration-200">
                       <div className="text-blue-300 group-hover/link:text-blue-200 transition-colors">

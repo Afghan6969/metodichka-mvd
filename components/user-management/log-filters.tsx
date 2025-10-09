@@ -33,7 +33,7 @@ export function LogFilters({
             placeholder="Поиск по действию, пользователю или дате (например: 15 октября 2024)..."
             value={logSearch}
             onChange={(e) => onLogSearchChange(e.target.value)}
-            className="pl-10 bg-white/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+            className="pl-10 bg-black/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
           />
         </div>
       </div>
@@ -42,7 +42,7 @@ export function LogFilters({
           Фильтр по действию
         </Label>
         <Select value={actionFilter} onValueChange={onActionFilterChange}>
-          <SelectTrigger id="action-filter" className="bg-white/5 border-white/15 text-white">
+          <SelectTrigger id="action-filter" className="bg-black/5 border-white/15 text-white">
             <SelectValue placeholder="Выберите действие" />
           </SelectTrigger>
           <SelectContent className="bg-white/10 border-white/20 backdrop-blur-xl">

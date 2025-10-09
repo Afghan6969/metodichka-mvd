@@ -159,7 +159,7 @@ export default function GuvdExamplesPage() {
                     setSelectedPunishment(value)
                     setSelectedVariant("")
                   }}>
-                    <SelectTrigger className="h-12 border-blue-400/30 bg-white/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
+                    <SelectTrigger className="h-12 border-blue-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
                       <SelectValue placeholder="Выберите наказание" />
                     </SelectTrigger>
                     <SelectContent className="bg-white/10 backdrop-blur-sm border-white/20">
@@ -185,7 +185,7 @@ export default function GuvdExamplesPage() {
                   <div>
                     <label className="block text-sm font-medium mb-3 text-blue-200/90">Выберите пример</label>
                     <Select value={selectedVariant} onValueChange={setSelectedVariant}>
-                      <SelectTrigger className="h-12 border-blue-400/30 bg-white/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
+                      <SelectTrigger className="h-12 border-blue-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
                         <SelectValue placeholder="Выберите пример" />
                       </SelectTrigger>
                       <SelectContent className="bg-white/10 backdrop-blur-sm border-white/20">

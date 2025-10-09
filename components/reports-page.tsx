@@ -189,7 +189,7 @@ export function ReportsPage() {
           placeholder="Поиск докладов..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-12 h-14 text-base border-2 border-blue-400/30 rounded-xl bg-white/5 backdrop-blur-sm font-semibold focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 text-white placeholder:text-blue-300/60"
+          className="pl-12 h-14 text-base border-2 border-blue-400/30 rounded-xl bg-black/5 backdrop-blur-sm font-semibold focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 text-white placeholder:text-blue-300/60"
         />
       </div>
 
@@ -218,7 +218,7 @@ export function ReportsPage() {
                 {category.reports.map((report, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/8 transition-colors group"
+                    className="flex items-start gap-4 p-4 rounded-xl bg-black/5 border border-white/10 hover:bg-white/8 transition-colors group"
                   >
                     <div className="flex-1">
                       <h3 className="text-base font-bold uppercase tracking-wide mb-2 text-blue-100 group-hover:text-white transition-colors">

@@ -66,7 +66,7 @@ export function AddUserForm({ onAddUser, availableRoles, roleDisplayNames, isLoa
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               disabled={isLoading}
-              className="bg-white/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+              className="bg-black/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
               required
             />
           </div>
@@ -80,7 +80,7 @@ export function AddUserForm({ onAddUser, availableRoles, roleDisplayNames, isLoa
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               disabled={isLoading}
-              className="bg-white/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+              className="bg-black/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
               required
             />
           </div>
@@ -95,7 +95,7 @@ export function AddUserForm({ onAddUser, availableRoles, roleDisplayNames, isLoa
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
-              className="bg-white/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+              className="bg-black/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
               required
             />
           </div>
@@ -104,7 +104,7 @@ export function AddUserForm({ onAddUser, availableRoles, roleDisplayNames, isLoa
               Роль
             </Label>
             <Select value={role} onValueChange={(value) => setRole(value as UserRole)} disabled={isLoading}>
-              <SelectTrigger id="role" className="bg-white/5 border-white/15 text-white">
+              <SelectTrigger id="role" className="bg-black/5 border-white/15 text-white">
                 <SelectValue placeholder="Выберите роль" />
               </SelectTrigger>
               <SelectContent className="bg-white/10 border-white/20 backdrop-blur-xl">

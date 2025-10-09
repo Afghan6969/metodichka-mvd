@@ -78,7 +78,7 @@ export function UserCard({
               value={editNickname}
               onChange={(e) => onEditNicknameChange(e.target.value)}
               disabled={isLoading}
-              className="mt-1 bg-white/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+              className="mt-1 bg-black/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
             />
           </div>
           <div>
@@ -90,7 +90,7 @@ export function UserCard({
               value={editUsername}
               onChange={(e) => onEditUsernameChange(e.target.value)}
               disabled={isLoading}
-              className="mt-1 bg-white/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+              className="mt-1 bg-black/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
             />
           </div>
           <div>
@@ -104,7 +104,7 @@ export function UserCard({
               onChange={(e) => onEditPasswordChange(e.target.value)}
               placeholder="Не трогайте, чтобы не сменить пароль"
               disabled={isLoading}
-              className="mt-1 bg-white/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+              className="mt-1 bg-black/5 border-white/15 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
             />
             <p className="text-xs text-blue-200/80 mt-1">Оставьте пустым, если не хотите менять пароль</p>
           </div>
@@ -113,7 +113,7 @@ export function UserCard({
               Роль
             </Label>
             <Select value={editRole} onValueChange={(value) => onEditRoleChange(value as UserRole)} disabled={isLoading}>
-              <SelectTrigger id={`edit-role-${user.id}`} className="mt-1 bg-white/5 border-white/15 text-white">
+              <SelectTrigger id={`edit-role-${user.id}`} className="mt-1 bg-black/5 border-white/15 text-white">
                 <SelectValue placeholder="Выберите роль" />
               </SelectTrigger>
               <SelectContent className="bg-white/10 border-white/20 backdrop-blur-xl">

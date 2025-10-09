@@ -28,7 +28,7 @@ export function DatePicker({ date, onDateChange, placeholder = "Выберите
         <Button
           variant={"outline"}
           className={cn(
-            "w-full justify-start text-left font-normal bg-white/5 border-blue-400/30 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200",
+            "w-full justify-start text-left font-normal bg-black/5 border-blue-400/30 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200",
             !date && "text-blue-200/60"
           )}
           disabled={disabled}

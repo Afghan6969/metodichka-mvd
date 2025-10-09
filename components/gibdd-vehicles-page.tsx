@@ -157,7 +157,7 @@ export default function GibddVehiclesPage() {
                 {currentCityData.vehicles.map((vehicle, index) => (
                   <div
                     key={index}
-                    className="flex flex-col justify-between h-full p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/8 hover:border-white/20 transition-all duration-200"
+                    className="flex flex-col justify-between h-full p-4 rounded-xl bg-black/5 border border-white/10 hover:bg-white/8 hover:border-white/20 transition-all duration-200"
                   >
                     <div className="flex items-start gap-3">
                       <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-400/30 mt-1">

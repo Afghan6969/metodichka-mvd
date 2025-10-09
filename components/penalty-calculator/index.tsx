@@ -194,7 +194,7 @@ const PenaltyCalculator = () => {
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="w-full justify-between h-14 border-blue-400/30 bg-white/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
+              className="w-full justify-between h-14 border-blue-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
               onClick={() => setOpen(!open)}
             >
               <div className="flex items-center gap-3">
@@ -211,7 +211,7 @@ const PenaltyCalculator = () => {
             {open && (
               <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg">
                 <Command>
-                  <CommandInput placeholder="Поиск статей..." className="bg-white/5 border-white/10 text-white placeholder:text-blue-200/60" />
+                  <CommandInput placeholder="Поиск статей..." className="bg-black/5 border-white/10 text-white placeholder:text-blue-200/60" />
                   <CommandEmpty className="text-blue-200/60">Статьи не найдены.</CommandEmpty>
                   <CommandList className="max-h-[300px] overflow-y-auto">
                     {Object.entries(violations).map(([categoryKey, category]) => (
@@ -354,7 +354,7 @@ const PenaltyCalculator = () => {
                                 }
                               }}
                             >
-                              <SelectTrigger className="text-xs h-8 border-blue-400/30 bg-white/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
+                              <SelectTrigger className="text-xs h-8 border-blue-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
                                 <SelectValue placeholder="Выбрать наказание" />
                               </SelectTrigger>
                               <SelectContent className="bg-white/10 backdrop-blur-sm border-white/20">
@@ -380,7 +380,7 @@ const PenaltyCalculator = () => {
                                   }))
                                 }
                               >
-                                <SelectTrigger className="text-xs h-8 border-blue-400/30 bg-white/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
+                                <SelectTrigger className="text-xs h-8 border-blue-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="bg-white/10 backdrop-blur-sm border-white/20">
@@ -413,7 +413,7 @@ const PenaltyCalculator = () => {
                                   }))
                                 }}
                               >
-                                <SelectTrigger className="text-xs h-8 border-blue-400/30 bg-white/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
+                                <SelectTrigger className="text-xs h-8 border-blue-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="bg-white/10 backdrop-blur-sm border-white/20">
@@ -449,7 +449,7 @@ const PenaltyCalculator = () => {
                               }))
                             }}
                           >
-                            <SelectTrigger className="text-xs h-8 border-blue-400/30 bg-white/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
+                            <SelectTrigger className="text-xs h-8 border-blue-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent className="bg-white/10 backdrop-blur-sm border-white/20">
@@ -537,7 +537,7 @@ const PenaltyCalculator = () => {
               <h3 className="text-lg font-medium text-white">Детализация наказаний</h3>
               <div className="space-y-3">
                 {alternatives.map((alt, index) => (
-                  <div key={index} className="bg-white/5 p-4 rounded-xl border border-white/10">
+                  <div key={index} className="bg-black/5 p-4 rounded-xl border border-white/10">
                     <div className="font-bold text-white mb-2">{alt.name}</div>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div className="text-green-300">Штраф: {alt.fine.toLocaleString()} ₽</div>

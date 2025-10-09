@@ -811,7 +811,7 @@ ${reqList}
                       variant="outline"
                       role="combobox"
                       aria-expanded={openCity}
-                      className="w-full justify-between bg-white/5 border-blue-400/30 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
+                      className="w-full justify-between bg-black/5 border-blue-400/30 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
                       onClick={() => {
                         setOpenCity(!openCity)
                         setOpenPosition(false)
@@ -831,7 +831,7 @@ ${reqList}
                           className="absolute top-full left-0 right-0 z-50 mt-1 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg"
                         >
                           <Command>
-                            <CommandInput placeholder="Поиск города..." className="bg-white/5 border-white/10 text-white placeholder:text-blue-200/60" />
+                            <CommandInput placeholder="Поиск города..." className="bg-black/5 border-white/10 text-white placeholder:text-blue-200/60" />
                             <CommandEmpty className="text-blue-200/60">Города не найдены.</CommandEmpty>
                             <CommandList className="max-h-[200px] overflow-y-auto">
                               <CommandGroup>
@@ -860,12 +860,12 @@ ${reqList}
                 {department === "ГУВД" && (
                   <div>
                     <Label htmlFor="leaderFio" className="text-sm font-medium text-blue-200/90 mb-2 block">ФИО лидера</Label>
-                    <Input id="leaderFio" value={leaderFio} onChange={(e) => setLeaderFio(e.target.value)} className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
+                    <Input id="leaderFio" value={leaderFio} onChange={(e) => setLeaderFio(e.target.value)} className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                   </div>
                 )}
                 <div>
                   <Label htmlFor="fio" className="text-sm font-medium text-blue-200/90 mb-2 block">Ваше ФИО</Label>
-                  <Input id="fio" value={fio} onChange={(e) => setFio(e.target.value)} className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
+                  <Input id="fio" value={fio} onChange={(e) => setFio(e.target.value)} className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                 </div>
                 <div>
                   <Label htmlFor="position" className="text-sm font-medium text-blue-200/90 mb-2 block">Должность</Label>
@@ -874,7 +874,7 @@ ${reqList}
                       variant="outline"
                       role="combobox"
                       aria-expanded={openPosition}
-                      className="w-full justify-between bg-white/5 border-blue-400/30 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
+                      className="w-full justify-between bg-black/5 border-blue-400/30 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
                       onClick={() => {
                         setOpenPosition(!openPosition)
                         setOpenCity(false)
@@ -894,7 +894,7 @@ ${reqList}
                           className="absolute top-full left-0 right-0 z-50 mt-1 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg"
                         >
                           <Command>
-                            <CommandInput placeholder="Поиск должности..." className="bg-white/5 border-white/10 text-white placeholder:text-blue-200/60" />
+                            <CommandInput placeholder="Поиск должности..." className="bg-black/5 border-white/10 text-white placeholder:text-blue-200/60" />
                             <CommandEmpty className="text-blue-200/60">Должности не найдены.</CommandEmpty>
                             <CommandList className="max-h-[200px] overflow-y-auto">
                               <CommandGroup>
@@ -939,7 +939,7 @@ ${reqList}
                             variant="outline"
                             role="combobox"
                             aria-expanded={openRank}
-                            className="w-full justify-between bg-white/5 border-blue-400/30 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
+                            className="w-full justify-between bg-black/5 border-blue-400/30 text-white hover:bg-black/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
                             onClick={() => {
                               setOpenRank(!openRank)
                               setOpenCity(false)
@@ -959,7 +959,7 @@ ${reqList}
                                 className="absolute top-full left-0 right-0 z-50 mt-1 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg"
                               >
                                 <Command>
-                                  <CommandInput placeholder="Поиск..." className="bg-white/5 border-white/10 text-white placeholder:text-blue-200/60" />
+                                  <CommandInput placeholder="Поиск..." className="bg-black/5 border-white/10 text-white placeholder:text-blue-200/60" />
                                   <CommandEmpty className="text-blue-200/60">Звания не найдены.</CommandEmpty>
                                   <CommandList className="max-h-[200px] overflow-y-auto">
                                     <CommandGroup>
@@ -1038,25 +1038,25 @@ ${reqList}
                 {department === "ГИБДД" && (reportType === "promotion" || reportType === "reprimand") && (
                   <div>
                     <Label htmlFor="points" className="text-sm font-medium text-blue-200/90 mb-2 block">Количество баллов</Label>
-                    <Input id="points" value={points} onChange={(e) => setPoints(e.target.value)} className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
+                    <Input id="points" value={points} onChange={(e) => setPoints(e.target.value)} className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                   </div>
                 )}
                 {reportType === "reprimand" && department === "ГИБДД" && (
                   <>
                     <div>
                       <Label htmlFor="violation" className="text-sm font-medium text-blue-200/90 mb-2 block">Пункт нарушения (Пункт УГ)</Label>
-                      <Input id="violation" value={violation} onChange={(e) => setViolation(e.target.value)} className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
+                      <Input id="violation" value={violation} onChange={(e) => setViolation(e.target.value)} className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                     </div>
                     <div>
                       <Label htmlFor="paymentLink" className="text-sm font-medium text-blue-200/90 mb-2 block">Ссылка на оплату неустойки</Label>
-                      <Input id="paymentLink" value={paymentLink} onChange={(e) => setPaymentLink(e.target.value)} className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
+                      <Input id="paymentLink" value={paymentLink} onChange={(e) => setPaymentLink(e.target.value)} className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                     </div>
                   </>
                 )}
                 {reportType === "senior" && department === "ГУВД" && (
                   <div>
                     <Label htmlFor="onlineStats" className="text-sm font-medium text-blue-200/90 mb-2 block">Статистика онлайна за неделю</Label>
-                    <Input id="onlineStats" value={onlineStats} onChange={(e) => setOnlineStats(e.target.value)} className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
+                    <Input id="onlineStats" value={onlineStats} onChange={(e) => setOnlineStats(e.target.value)} className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                   </div>
                 )}
                 <div>
@@ -1067,21 +1067,21 @@ ${reqList}
                         placeholder="Название задачи/требования"
                         value={req.req}
                         onChange={(e) => updateRequirement(index, "req", e.target.value)}
-                        className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+                        className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
                       />
                       {department === "ГИБДД" && (
                         <Input
                           placeholder="Количество"
                           value={req.quantity || ""}
                           onChange={(e) => updateRequirement(index, "quantity", e.target.value)}
-                          className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 w-20"
+                          className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 w-20"
                         />
                       )}
                       <Input
                         placeholder="Ссылка"
                         value={req.link}
                         onChange={(e) => updateRequirement(index, "link", e.target.value)}
-                        className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+                        className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
                       />
                       <Button
                         variant="destructive"
@@ -1100,7 +1100,7 @@ ${reqList}
                 </div>
                 <div>
                   <Label htmlFor="signature" className="text-sm font-medium text-blue-200/90 mb-2 block">Подпись</Label>
-                  <Input id="signature" value={signature} onChange={(e) => setSignature(e.target.value)} className="bg-white/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
+                  <Input id="signature" value={signature} onChange={(e) => setSignature(e.target.value)} className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                 </div>
                 <div className="flex gap-3 flex-wrap pt-4 border-t border-white/20">
                   <Button onClick={generateReport} disabled={!isFormValid()} className="bg-green-500/20 hover:bg-green-500/30 text-green-300 border-green-400/40">

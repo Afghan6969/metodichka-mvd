@@ -123,7 +123,7 @@ export function GuvdPositionsPage() {
               <div className="p-6">
                 <div className="space-y-3">
                   {section.positions.map((position, posIndex) => (
-                    <div key={posIndex} className="bg-white/5 p-4 rounded-xl border border-white/10 hover:bg-white/8 transition-colors">
+                    <div key={posIndex} className="bg-black/5 p-4 rounded-xl border border-white/10 hover:bg-white/8 transition-colors">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <h3 className="font-bold text-white text-sm leading-tight mb-2">{position.title}</h3>

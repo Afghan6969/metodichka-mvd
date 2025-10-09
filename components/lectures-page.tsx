@@ -320,7 +320,7 @@ say На этом лекция на тему "Первая медицинска�
           placeholder="Поиск по лекциям..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-12 h-14 text-base border-2 border-blue-400/30 rounded-xl bg-white/5 backdrop-blur-sm font-semibold focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 text-white placeholder:text-blue-300/60"
+          className="pl-12 h-14 text-base border-2 border-blue-400/30 rounded-xl bg-black/5 backdrop-blur-sm font-semibold focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 text-white placeholder:text-blue-300/60"
         />
       </div>
 
@@ -333,7 +333,7 @@ say На этом лекция на тему "Первая медицинска�
           >
             <Collapsible open={openLectures[lecture.id]} onOpenChange={() => toggleLecture(lecture.id)}>
               <CollapsibleTrigger className="w-full">
-                <div className="flex items-center justify-between p-6 hover:bg-white/5 transition-colors">
+                <div className="flex items-center justify-between p-6 hover:bg-black/5 transition-colors">
                   <div className="flex items-center gap-4 flex-1">
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-500/80 to-blue-600/60 rounded-2xl flex items-center justify-center border border-blue-400/30 shadow-lg group-hover:shadow-blue-500/20 transition-all duration-300">
                       <BookOpen className="h-6 w-6 text-white" />
@@ -362,10 +362,10 @@ say На этом лекция на тему "Первая медицинска�
               
               <CollapsibleContent>
                 <div className="px-6 pb-6">
-                  <div className="mt-4 bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-sm">
+                  <div className="mt-4 bg-black/5 p-6 rounded-2xl border border-white/10 backdrop-blur-sm">
                     <div className="space-y-2">
                       {lecture.content.split("\n").map((line, index) => (
-                        <div key={index} className="flex items-start gap-3 group hover:bg-white/5 p-2 rounded-lg transition-colors">
+                        <div key={index} className="flex items-start gap-3 group hover:bg-black/5 p-2 rounded-lg transition-colors">
                           <div className="flex-1 font-mono text-sm text-blue-100/90 leading-relaxed">{line}</div>
                           {line.trim().startsWith("say ") && (
                             <div className="flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">

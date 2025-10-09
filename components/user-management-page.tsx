@@ -491,7 +491,7 @@ export function UserManagementPage() {
                       <div className="p-4 bg-white/8 border border-white/15 rounded-xl flex flex-wrap gap-4 items-center">
                         <span className="text-sm text-blue-200">Выбрано: {selectedUsers.length}</span>
                         <Select value={batchRole} onValueChange={(value) => setBatchRole(value as UserRole)}>
-                          <SelectTrigger className="w-[200px] bg-white/5 border-white/15 text-white">
+                          <SelectTrigger className="w-[200px] bg-black/5 border-white/15 text-white">
                             <SelectValue placeholder="Изменить роль" />
                           </SelectTrigger>
                           <SelectContent className="bg-white/10 border-white/20 backdrop-blur-xl">

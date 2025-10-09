@@ -53,6 +53,7 @@ export function CommandsPage() {
         { command: "/skan [ID]", description: "Показывает сумму штрафов у гражданина" },
         { command: "/wanted", description: "Список всех игроков онлайн которые находятся в розыске" },
         { command: "/fines", description: "Список игроков, имеющих штрафы (от 10.000 штрафов)" },
+        { command: "/wcar", description: "Список транспорта, находящихся в розыске" },
         { command: "/crimrec [ID]", description: "Показывает совершенные преступления игрока" },
         { command: "/paytime", description: "Время до начисления зарплаты" },
         { command: "Клавиша Ю", description: "Список сотрудников фракции", rankRequired: "9+" },
@@ -173,7 +174,7 @@ export function CommandsPage() {
           placeholder="Поиск команд..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-12 h-14 text-base border-2 border-blue-400/30 rounded-xl bg-white/5 backdrop-blur-sm font-semibold focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 text-white placeholder:text-blue-300/60"
+          className="pl-12 h-14 text-base border-2 border-blue-400/30 rounded-xl bg-black/5 backdrop-blur-sm font-semibold focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 text-white placeholder:text-blue-300/60"
         />
       </div>
 
@@ -206,7 +207,7 @@ export function CommandsPage() {
                 {category.commands.map((command, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/8 transition-colors group"
+                    className="flex items-start gap-4 p-4 rounded-xl bg-black/5 border border-white/10 hover:bg-white/8 transition-colors group"
                   >
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">

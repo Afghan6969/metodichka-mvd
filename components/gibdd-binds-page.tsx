@@ -24,7 +24,7 @@ export function GibddBindsPage() {
   }
 
   const BindItem = ({ bind, description }: { bind: string; description?: string }) => (
-    <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/8 transition-colors">
+    <div className="flex items-start gap-4 p-4 rounded-xl bg-black/5 border border-white/10 hover:bg-white/8 transition-colors">
       <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-400/30 mt-1">
         <Keyboard className="h-4 w-4 text-blue-300" />
       </div>
@@ -261,7 +261,7 @@ export function GibddBindsPage() {
               placeholder="Поиск по биндам..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 pr-12 h-14 border-blue-400/30 bg-white/5 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+              className="pl-12 pr-12 h-14 border-blue-400/30 bg-black/5 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
             />
             {searchQuery && (
               <Button

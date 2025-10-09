@@ -107,7 +107,7 @@ export function AmmunitionPage() {
             {basicItems.map((item, index) => (
               <div
                 key={index}
-                className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/8 transition-colors"
+                className="flex items-start gap-4 p-4 rounded-xl bg-black/5 border border-white/10 hover:bg-white/8 transition-colors"
               >
                 <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center border border-green-400/30 mt-1">
                   <item.icon className="h-5 w-5 text-green-300" />
@@ -146,7 +146,7 @@ export function AmmunitionPage() {
             {weaponItems.map((item, index) => (
               <div
                 key={index}
-                className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/8 transition-colors"
+                className="flex items-start gap-4 p-4 rounded-xl bg-black/5 border border-white/10 hover:bg-white/8 transition-colors"
               >
                 <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center border border-yellow-400/30 mt-1">
                   <item.icon className="h-5 w-5 text-yellow-300" />
@@ -185,7 +185,7 @@ export function AmmunitionPage() {
             {specialItems.map((item, index) => (
               <div
                 key={index}
-                className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/8 transition-colors"
+                className="flex items-start gap-4 p-4 rounded-xl bg-black/5 border border-white/10 hover:bg-white/8 transition-colors"
               >
                 <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center border border-red-400/30 mt-1">
                   <item.icon className="h-5 w-5 text-red-300" />
