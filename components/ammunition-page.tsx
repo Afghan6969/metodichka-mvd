@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Shield, Zap, HandCoins as Handcuffs, Hammer, Sun as Gun, Target } from "lucide-react"
+import { Shield, Zap, HandCoins as Handcuffs, Hammer, Sun as Gun, Target, Package } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 
 interface AmmunitionItem {
@@ -85,7 +85,7 @@ export function AmmunitionPage() {
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
       <PageHeader
-        icon={Shield}
+        icon={Package}
         title="Амуниция МВД"
         description="Обязательная и дополнительная экипировка согласно пункту 2.7 регламента"
         badge={`${ammunitionData.length} предметов`}

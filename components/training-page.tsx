@@ -2,7 +2,7 @@ import type React from "react"
 import { useState } from "react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Badge } from "@/components/ui/badge"
-import { Target, Clock, ChevronDown, ChevronRight, Zap, Dumbbell, Search } from "lucide-react"
+import { Target, Clock, ChevronDown, ChevronRight, Zap, Dumbbell, Search, Book } from "lucide-react"
 import { CopyButton } from "@/components/copy-button"
 import { PageHeader } from "@/components/page-header"
 import { Input } from "@/components/ui/input"
@@ -179,7 +179,7 @@ export function TrainingPage() {
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
       <PageHeader 
-        icon={Target}
+        icon={Dumbbell}
         title="Тренировки МВД"
         description="Физическая подготовка согласно программе обучения"
         badge={`${filteredTrainings.length} тренировок`}

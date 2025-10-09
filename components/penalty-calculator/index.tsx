@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Check, ChevronsUpDown, Calculator, DollarSign, Car, Shield, GraduationCap, X, Star, Search } from "lucide-react"
+import { Check, ChevronsUpDown, Scale, DollarSign, Car, Shield, GraduationCap, X, Star, Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { koapViolations } from "./koap-violations"
 import { ukViolations } from "./uk-violations"
@@ -52,34 +52,34 @@ const PenaltyCalculator = () => {
         let penalty = violation
 
         if (selectedPenalty !== "default" && violation.alternatives) {
-          const selectedAlt = violation.alternatives.find((alt) => alt.name === selectedPenalty)
+          const selectedAlt = violation.alternatives.find((alt: any) => alt.name === selectedPenalty)
           if (selectedAlt) {
             penalty = selectedAlt
           }
         }
 
-        if (penalty.fineRange && selectedFineAmounts[violationKey] !== undefined) {
+        // Only check fineRange if penalty is an alternative (not the main violation)
+        if (selectedPenalty !== "default" && selectedFineAmounts[violationKey] !== undefined) {
           penalty = {
             ...penalty,
             fine: selectedFineAmounts[violationKey],
           }
         }
 
-        if (penalty.arrestRange && selectedArrestAmounts[violationKey] !== undefined) {
+        // Only check arrestRange if penalty is an alternative (not the main violation)
+        if (selectedPenalty !== "default" && selectedArrestAmounts[violationKey] !== undefined) {
           penalty = {
             ...penalty,
             arrest: selectedArrestAmounts[violationKey],
           }
         }
 
-        const suspension = violation.suspensionRange && selectedSuspensionAmounts[violationKey] !== undefined
-          ? selectedSuspensionAmounts[violationKey]
-          : penalty.suspension
+        const suspension = penalty.suspension
 
         totalFine += penalty.fine
         totalSuspension += suspension
         totalArrest += penalty.arrest
-        if (penalty.retraining || (violation.suspensionRange && selectedSuspensionAmounts[violationKey] === 0)) {
+        if (penalty.retraining) {
           hasRetraining = true
         }
       }
@@ -108,32 +108,28 @@ const PenaltyCalculator = () => {
         let penalty = violation
 
         if (selectedPenalty !== "default" && violation.alternatives) {
-          const selectedAlt = violation.alternatives.find((alt) => alt.name === selectedPenalty)
+          const selectedAlt = violation.alternatives.find((alt: any) => alt.name === selectedPenalty)
           if (selectedAlt) {
             penalty = selectedAlt
           }
         }
 
-        const fineAmount = penalty.fineRange 
-          ? (selectedFineAmounts[violationKey] ?? penalty.fine) 
-          : penalty.fine
+        const fineAmount = penalty.fine
 
-        const arrestAmount = penalty.arrestRange
-          ? (selectedArrestAmounts[violationKey] ?? penalty.arrest)
-          : penalty.arrest
+        const arrestAmount = penalty.arrest
 
-        const altName = selectedPenalty !== "default" && penalty.name ? penalty.name : "Основное наказание"
+        const altName = selectedPenalty !== "default" && (penalty as any).name ? (penalty as any).name : "Основное наказание"
 
         alternatives.push({
-          name: `${violation.article}: ${altName}`,
+          name: `${violation.article as string}: ${altName}`,
           fine: fineAmount,
           suspension: penalty.suspension,
           arrest: arrestAmount,
           retraining: penalty.retraining,
-          hasRange: !!penalty.fineRange,
-          range: penalty.fineRange,
-          hasArrestRange: !!penalty.arrestRange,
-          arrestRange: penalty.arrestRange,
+          hasRange: false,
+          range: undefined,
+          hasArrestRange: false,
+          arrestRange: undefined,
         })
       }
     })
@@ -152,19 +148,12 @@ const PenaltyCalculator = () => {
 
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
-      <PageHeader 
-        icon={Calculator}
+      <PageHeader
+        icon={Scale}
         title="Калькулятор наказаний"
         description="Расчёт штрафов, ареста и лишения прав по КоАП и УК"
-        badge={`${selectedViolations.length} ${
-          selectedViolations.length % 10 === 1 && selectedViolations.length % 100 !== 11
-            ? 'статья'
-            : selectedViolations.length % 10 >= 2 && selectedViolations.length % 10 <= 4 &&
-              (selectedViolations.length % 100 < 10 || selectedViolations.length % 100 >= 20)
-            ? 'статьи'
-            : 'статей'
-        }`}
-              />
+        badge={`${selectedViolations.length} ${selectedViolations.length % 10 === 1 && selectedViolations.length % 100 !== 11 ? 'статья' : selectedViolations.length % 10 >= 2 && selectedViolations.length % 10 <= 4 && (selectedViolations.length % 100 < 10 || selectedViolations.length % 100 >= 20) ? 'статьи' : 'статей'}`}
+      />
 
       <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
         <div className="space-y-6 p-8">
@@ -219,7 +208,7 @@ const PenaltyCalculator = () => {
                         {Object.entries(category.items).map(([violationKey, violation]) => (
                           <CommandItem
                             key={violationKey}
-                            value={`${categoryKey}.${violationKey}|${violation.article}|${violation.description}`}
+                            value={`${categoryKey}.${violationKey}|${violation.article as string}|${violation.description as string}`}
                             onSelect={(currentValue) => {
                               const [key] = currentValue.split('|');
                               setSelectedViolations((prev) =>
@@ -238,8 +227,8 @@ const PenaltyCalculator = () => {
                               )}
                             />
                             <div className="flex-1">
-                              <div className="font-medium text-white">{violation.article}</div>
-                              <div className="text-sm text-blue-200/80">{violation.description}</div>
+                              <div className="font-medium text-white">{violation.article as string}</div>
+                              <div className="text-sm text-blue-200/80">{violation.description as string}</div>
                             </div>
                           </CommandItem>
                         ))}
@@ -278,7 +267,7 @@ const PenaltyCalculator = () => {
                     <div key={violationKey} className="flex flex-col gap-2 p-3 border rounded-lg bg-muted/20">
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary" className="flex items-center gap-1 border-blue-400/40 text-blue-300 bg-blue-500/10">
-                          {violation.article}
+                          {violation.article as string}
                           <Button
                             variant="ghost"
                             size="sm"
@@ -310,7 +299,7 @@ const PenaltyCalculator = () => {
                             <X className="h-3 w-3" />
                           </Button>
                         </Badge>
-                        <span className="text-xs text-blue-200/80">{violation.description}</span>
+                        <span className="text-xs text-blue-200/80">{violation.description as string}</span>
                       </div>
 
                       {violation.alternatives && (
@@ -559,14 +548,11 @@ const PenaltyCalculator = () => {
             </div>
           </>
         )}
+        </div>
       </div>
-    </div>
     </div>
   )
 }
 
 export { PenaltyCalculator }
 export default PenaltyCalculator
-
-
-

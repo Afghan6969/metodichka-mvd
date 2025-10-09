@@ -3,7 +3,7 @@ import { useState } from "react"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ChevronDown, ChevronRight, GraduationCap, BookOpen, Search } from "lucide-react"
+import { ChevronDown, ChevronRight, GraduationCap, BookOpen, Search, ScrollText } from "lucide-react"
 import { CopyButton } from "@/components/copy-button"
 import { PageHeader } from "@/components/page-header"
 import { Input } from "@/components/ui/input"
@@ -302,7 +302,7 @@ say На этом лекция на тему "Первая медицинска�
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
       <PageHeader 
-        icon={GraduationCap}
+        icon={ScrollText}
         title="Лекции МВД"
         description="Теоретическая подготовка и изучение регламента службы"
         badge={`${filteredLectures.length} лекций`}

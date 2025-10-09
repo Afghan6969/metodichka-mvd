@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Shield, Star, Award, Users, Car, Crown } from "lucide-react"
+import { Shield, Star, Award, Users, Car, Crown, Badge as BadgeIcon } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 
 export function PositionsPage() {
@@ -91,7 +91,7 @@ export function PositionsPage() {
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
       <PageHeader
-        icon={Car}
+        icon={BadgeIcon}
         title="Должности ГИБДД"
         description="Структура должностей и званий ГИБДД МВД РП"
         badge={`${totalPositions} должностей`}

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DatePicker } from "@/components/ui/date-picker"
-import { Shield, FileText, Check, ChevronsUpDown, Trash2, AlertCircle } from "lucide-react"
+import { Shield, FileText, Check, ChevronsUpDown, Trash2, AlertCircle, PenTool } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { cn } from "@/lib/utils"
@@ -680,7 +680,7 @@ ${reqList}
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
       <PageHeader
-        icon={FileText}
+        icon={PenTool}
         title="Генератор отчётов"
         description="Генератор рапортов для ГУВД и ГИБДД МВД РП"
         badge={department ? department : undefined}

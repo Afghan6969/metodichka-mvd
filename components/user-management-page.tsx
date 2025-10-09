@@ -6,7 +6,7 @@ import { ru } from "date-fns/locale"
 import { Card, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Users, Trash2, AlertCircle, History, Loader2, RefreshCw } from "lucide-react"
+import { Users, Trash2, AlertCircle, History, Loader2, RefreshCw, UserCog } from "lucide-react"
 import { useAuth, type UserRole } from "@/lib/auth-context"
 import { PageHeader } from "@/components/page-header"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -397,7 +397,7 @@ export function UserManagementPage() {
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
       <PageHeader 
-        icon={Users}
+        icon={UserCog}
         title="Управление пользователями"
         description="Добавление, редактирование и управление пользователями системы"
         badge={`${users.filter(u => u.status === 'active').length} активных`}

@@ -2,7 +2,7 @@
 
 import React from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ExternalLink, FileText, Scale, Shield, Users, AlertTriangle, Book, Camera } from "lucide-react"
+import { ExternalLink, FileText, Scale, Shield, Users, AlertTriangle, Book, Camera, Database } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 
 export function ResourcesPage() {
@@ -84,7 +84,7 @@ export function ResourcesPage() {
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
       <PageHeader
-        icon={ExternalLink}
+        icon={Database}
         title="Ресурсы МВД"
         description="Официальные документы и правила Республики Провинция"
         badge={`${resources.length} ресурсов`}

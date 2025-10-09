@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useAuth } from "@/lib/auth-context"
-import { ModernSidebar } from "@/components/modern-sidebar"
+import { EnhancedSidebar } from "@/components/enhanced-sidebar"
 import { ModernHeader } from "@/components/modern-header"
 import { MainContent } from "@/components/main-content"
 import { LecturesPage } from "@/components/lectures-page"
@@ -105,21 +105,30 @@ export default function Home() {
               <div className="relative z-10 max-w-7xl mx-auto px-6 py-16">
                 {/* Hero */}
                 <div className="text-center mb-20">
-                  <div className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-primary/10 rounded-2xl border-2 border-primary/30">
-                    <div className="police-beacon"></div>
-                    <Shield className="h-6 w-6 text-primary" />
-                    <span className="text-sm font-black uppercase tracking-widest text-primary">МВД РЕСПУБЛИКИ ПРОВИНЦИЯ</span>
+                  <div className="inline-flex items-center gap-3 mb-10 px-7 py-4 bg-gradient-to-r from-primary/12 via-primary/8 to-primary/12 rounded-3xl border-2 border-primary/35 backdrop-blur-sm shadow-xl hover:shadow-primary/25 transition-all duration-300 group">
+                    <div className="police-beacon group-hover:scale-110 transition-transform duration-300"></div>
+                    <Shield className="h-7 w-7 text-primary group-hover:rotate-3 transition-transform duration-300" />
+                    <span className="text-base font-black uppercase tracking-[0.12em] text-primary bg-gradient-to-r from-primary to-primary/85 bg-clip-text">МВД РЕСПУБЛИКИ ПРОВИНЦИЯ</span>
                   </div>
-                  
-                  <h1 className="mb-6 text-5xl lg:text-7xl font-black uppercase tracking-tight text-foreground">
-                    Методическое пособие МВД
+
+                  <h1 className="mb-8 text-5xl lg:text-7xl font-black uppercase tracking-tight leading-tight">
+                    <span className="text-transparent bg-gradient-to-br from-foreground via-foreground/95 to-muted-foreground/90 bg-clip-text drop-shadow-lg">
+                      Методическое
+                    </span>
+                    <span className="block text-primary drop-shadow-lg mt-1 hover:scale-105 transition-transform duration-300">пособие МВД</span>
                   </h1>
-                  
-                  <p className="text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
-                    Полное руководство для сотрудников ГИБДД и ГУВД Республики Провинция.
-                    <br/>
-                    Лекции, тренировки, бинды, должности, транспорт и инструменты для работы.
-                  </p>
+
+                  <div className="max-w-4xl mx-auto mb-14">
+                    <p className="text-xl lg:text-2xl text-muted-foreground leading-relaxed font-medium">
+                      Полное руководство для сотрудников
+                      <span className="text-primary font-bold mx-1 hover:scale-105 transition-transform duration-200 inline-block">ГИБДД</span> и
+                      <span className="text-red-500 font-bold mx-1 hover:scale-105 transition-transform duration-200 inline-block">ГУВД</span>
+                      Республики Провинция.
+                    </p>
+                    <p className="text-lg text-muted-foreground/90 mt-5 leading-relaxed font-light">
+                      Лекции, тренировки, бинды, должности, транспорт и инструменты для работы.
+                    </p>
+                  </div>
 
                   {/* Important Notice */}
                   <div className="max-w-3xl mx-auto mb-8">
@@ -227,7 +236,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <ModernSidebar
+      <EnhancedSidebar
         currentPage={currentPage}
         onPageChange={setCurrentPage}
         onGlobalSearchOpen={handleGlobalSearchOpen}

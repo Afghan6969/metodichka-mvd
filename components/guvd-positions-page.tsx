@@ -1,8 +1,8 @@
 "use client"
 
-import { Badge } from "@/components/ui/badge"
+import { Badge as UIBadge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Shield, Star, Award, Users } from "lucide-react"
+import { Shield, Star, Award, Users, Car, Crown, Badge as BadgeIcon } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 
 export function GuvdPositionsPage() {
@@ -103,7 +103,7 @@ export function GuvdPositionsPage() {
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
       <PageHeader
-        icon={Shield}
+        icon={BadgeIcon}
         title="Должности ГУВД"
         description="Структура должностей и званий ГУВД МВД РП"
         badge={`${totalPositions} должностей`}
@@ -128,15 +128,15 @@ export function GuvdPositionsPage() {
                         <div className="flex-1">
                           <h3 className="font-bold text-white text-sm leading-tight mb-2">{position.title}</h3>
                           <div className="flex items-center gap-2">
-                            <Badge className="border-blue-400/40 text-blue-300 bg-blue-500/10 text-xs font-mono">
+                            <UIBadge className="border-blue-400/40 text-blue-300 bg-blue-500/10 text-xs font-mono">
                               {position.abbr}
-                            </Badge>
-                            <Badge className="border-purple-400/40 text-purple-300 bg-purple-500/10 text-xs">
+                            </UIBadge>
+                            <UIBadge className="border-purple-400/40 text-purple-300 bg-purple-500/10 text-xs">
                               {position.rank}
-                            </Badge>
-                            <Badge className="border-green-400/40 text-green-300 bg-green-500/10 text-xs">
+                            </UIBadge>
+                            <UIBadge className="border-green-400/40 text-green-300 bg-green-500/10 text-xs">
                               {position.level}
-                            </Badge>
+                            </UIBadge>
                           </div>
                         </div>
                       </div>

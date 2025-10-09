@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Copy, Check, Keyboard, Search, X, Info, ExternalLink } from "lucide-react"
+import { Copy, Check, Terminal, Search, X, Info, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -26,7 +26,7 @@ export function GuvdBindsPage() {
   const BindItem = ({ bind, description }: { bind: string; description?: string }) => (
     <div className="flex items-start gap-4 p-4 rounded-xl bg-black/5 border border-white/10 hover:bg-white/8 transition-colors">
       <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-400/30 mt-1">
-        <Keyboard className="h-4 w-4 text-blue-300" />
+        <Terminal className="h-4 w-4 text-blue-300" />
       </div>
       <div className="flex-1">
         <div className="flex items-center gap-2 mb-2">
@@ -214,7 +214,7 @@ export function GuvdBindsPage() {
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
       <PageHeader
-        icon={Keyboard}
+        icon={Terminal}
         title="Бинды ГУВД"
         description="Готовые команды для сотрудников ГУВД"
         badge={`${bindSections.reduce((sum, s) => sum + s.binds.length, 0)} биндов`}

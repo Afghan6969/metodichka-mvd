@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { AlertCircle, BookOpen } from "lucide-react"
+import { AlertCircle, BookOpen, Lightbulb } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 
 const punishments = [
@@ -138,7 +138,7 @@ export default function GuvdExamplesPage() {
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
       <PageHeader
-        icon={BookOpen}
+        icon={Lightbulb}
         title="Примеры ситуаций"
         description="Типичные ситуации и порядок действий для новичков МВД"
         badge={`${punishments.length} ситуаций`}

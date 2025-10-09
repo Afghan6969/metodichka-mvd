@@ -1,10 +1,9 @@
-"use client"
 
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Car, Truck, Plane, X, Eye, Shield } from "lucide-react"
+import { Car, Truck, Plane, Bike, X, Eye, Shield } from "lucide-react"
 import Image from "next/image"
 import { PageHeader } from "@/components/page-header"
 
@@ -127,7 +126,7 @@ export default function GuvdVehiclesPage() {
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
       <PageHeader
-        icon={Shield}
+        icon={Car}
         title="Автопарк ГУВД"
         description="Транспортные средства для сотрудников ГУВД"
         badge={`${totalVehicles} авто`}

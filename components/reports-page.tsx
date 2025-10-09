@@ -171,7 +171,7 @@ export function ReportsPage() {
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
       <PageHeader 
-        icon={FileText}
+        icon={Radio}
         title="Доклады МВД"
         description="Шаблоны докладов для различных ситуаций"
         badge={`${filteredCategories.length} категорий`}

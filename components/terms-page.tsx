@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { BookOpen, Search } from "lucide-react"
+import { BookOpen, Search, ScrollText } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 
 export function TermsPage() {
@@ -103,7 +103,7 @@ export function TermsPage() {
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
       <PageHeader
-        icon={BookOpen}
+        icon={ScrollText}
         title="Термины МВД"
         description="Основные понятия и определения для сотрудников МВД"
         badge={`${filteredTerms.length} терминов`}
