@@ -15,6 +15,7 @@ interface UserLogsProps {
   onRollback?: (log: UserLog) => void
   showRollback?: boolean
   currentUserRole?: string
+  currentUserId?: string
   showDetails?: boolean
 }
 
@@ -23,8 +24,10 @@ const roleDisplayNames: Record<string, string> = {
   root: "Владелец",
   "gs-gibdd": "ГС ГИБДД",
   "pgs-gibdd": "ПГС ГИБДД",
+  "leader-gibdd": "Лидер ГИБДД",
   "gs-guvd": "ГС ГУВД",
   "pgs-guvd": "ПГС ГУВД",
+  "leader-guvd": "Лидер ГУВД",
   "ss-gibdd": "СС ГИБДД",
   "ss-guvd": "СС ГУВД",
   gibdd: "ГИБДД",
@@ -94,7 +97,7 @@ const formatLogDetails = (details: string): string => {
   }
 }
 
-export function UserLogs({ logs, actionDisplayNames, onRollback, showRollback = false, currentUserRole, showDetails = true }: UserLogsProps) {
+export function UserLogs({ logs, actionDisplayNames, onRollback, showRollback = false, currentUserRole, currentUserId, showDetails = true }: UserLogsProps) {
   const [selectedLog, setSelectedLog] = useState<UserLog | null>(null)
   const getActionIcon = (action: string) => {
     switch (action) {

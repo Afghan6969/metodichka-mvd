@@ -1,6 +1,6 @@
+"use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Car, Truck, Plane, Bike, X, Eye, Shield } from "lucide-react"
@@ -92,48 +92,30 @@ export default function GuvdVehiclesPage() {
   const getVehicleIcon = (type: Vehicle["type"]) => {
     switch (type) {
       case "car":
-        return <Car className="h-5 w-5" />
+        return <Car className="h-4 w-4" />
       case "truck":
-        return <Truck className="h-5 w-5" />
+        return <Truck className="h-4 w-4" />
       case "helicopter":
-        return <Plane className="h-5 w-5" />
+        return <Plane className="h-4 w-4" />
       default:
-        return <Car className="h-5 w-5" />
+        return <Car className="h-4 w-4" />
     }
   }
 
-  const getRankColor = (rank: string) => {
-    const rankNumber = parseInt(rank)
-    if (rankNumber <= 2) return "bg-gray-100 text-gray-800"
-    if (rankNumber <= 4) return "bg-blue-100 text-blue-800"
-    if (rankNumber <= 6) return "bg-green-100 text-green-800"
-    if (rankNumber <= 7) return "bg-yellow-100 text-yellow-800"
-    return "bg-red-100 text-red-800"
-  }
-
-  const openImageModal = (image: string | undefined) => {
-    if (image) setSelectedImage(image)
-  }
-
-  const closeImageModal = () => {
-    setSelectedImage(null)
-  }
-
-  // Получаем выбранный город или первый город по умолчанию
   const currentCityData = vehicleData.find(city => city.city === selectedCity) || vehicleData[0]
   const totalVehicles = vehicleData.reduce((sum, city) => sum + city.vehicles.length, 0)
 
   return (
-    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+    <div className="space-y-4 px-4 py-6 max-w-7xl mx-auto">
       <PageHeader
         icon={Car}
         title="Автопарк ГУВД"
-        description="Транспортные средства для сотрудников ГУВД"
-        badge={`${totalVehicles} авто`}
+        description="Специализированный транспорт для оперативного реагирования и поддержания правопорядка"
+        badge={`${totalVehicles} единиц техники`}
       />
 
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap gap-2 mb-4">
           {vehicleData.map((city) => (
             <Button
               key={city.city}
@@ -147,46 +129,77 @@ export default function GuvdVehiclesPage() {
           ))}
         </div>
 
-        <div className="grid gap-8">
-          <div key={currentCityData.city} className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
-            <div className="p-6 border-b border-white/10">
-              <h2 className="text-xl font-bold text-white">ГУВД г. {currentCityData.city}</h2>
+        <div className="grid gap-6">
+          <div key={currentCityData.city} className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-2xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+            <div className="p-4 border-b border-white/10">
+              <h2 className="text-lg font-bold text-white">ГУВД г. {currentCityData.city}</h2>
               <p className="text-blue-200/80 text-sm mt-1">Автопарк управления внутренних дел города {currentCityData.city}</p>
             </div>
-            <div className="p-6">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="p-4">
+              <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
                 {currentCityData.vehicles.map((vehicle, index) => (
                   <div
                     key={index}
-                    className="flex flex-col justify-between h-full p-4 rounded-xl bg-black/5 border border-white/10 hover:bg-white/8 hover:border-white/20 transition-all duration-200"
+                    className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-white/6 via-white/4 to-white/2 border border-white/10 hover:border-white/20 hover:from-white/10 hover:via-white/6 hover:to-white/4 transition-all duration-300 shadow-sm hover:shadow-md backdrop-blur-sm h-full flex flex-col"
                   >
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-400/30 mt-1">
-                        <div className="text-blue-300">{getVehicleIcon(vehicle.type)}</div>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-white text-sm truncate">{vehicle.name}</h3>
-                        <div className="flex items-center gap-2 mt-2">
-                          <Badge className="border-blue-400/40 text-blue-300 bg-blue-500/10 text-xs">
-                            {vehicle.rank}
-                          </Badge>
+                    {/* Subtle gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/3 via-transparent to-purple-500/3 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                    <div className="relative p-4 flex flex-col h-full">
+                      <div className="flex items-start gap-3 mb-3">
+                        {/* Compact Vehicle Icon */}
+                        <div className="w-8 h-8 bg-gradient-to-br from-blue-500/15 to-blue-600/15 rounded-lg flex items-center justify-center border border-blue-400/20 group-hover:border-blue-300/40 transition-all duration-300 flex-shrink-0">
+                          <div className="text-blue-300 group-hover:text-blue-200 transition-colors duration-300 text-sm">
+                            {getVehicleIcon(vehicle.type)}
+                          </div>
                         </div>
-                        {vehicle.special && (
-                          <p className="text-xs text-blue-200/80 mt-2 italic">{vehicle.special}</p>
-                        )}
+
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-white text-sm mb-1 leading-tight group-hover:text-blue-100 transition-colors duration-300">
+                            {vehicle.name}
+                          </h3>
+
+                          {/* Compact Rank Badge */}
+                          <div className="flex items-center gap-2 mb-2">
+                            <Badge className="border-blue-400/30 text-blue-300 bg-blue-500/8 text-xs font-medium px-1.5 py-0.5">
+                              {vehicle.rank}
+                            </Badge>
+                          </div>
+
+                          {/* Compact Specs Grid */}
+                          <div className="grid grid-cols-2 gap-2 mb-3">
+                          </div>
+
+                          {/* Compact Special notes */}
+                          {vehicle.special && (
+                            <div className="mb-3 p-2 bg-gradient-to-r from-blue-500/8 to-purple-500/8 rounded-md border border-blue-400/15 group-hover:border-blue-300/25 transition-all duration-300">
+                              <div className="flex items-start gap-2">
+                                <div className="w-1 h-1 bg-blue-300 rounded-full mt-2 shadow-sm shadow-blue-300/30 flex-shrink-0" />
+                                <p className="text-xs text-blue-100/90 leading-relaxed">
+                                  {vehicle.special}
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
+
+                      {/* Spacer */}
+                      <div className="flex-grow" />
+
+                      {/* Compact Image Button */}
+                      {vehicle.image && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full border-white/15 bg-white/3 hover:bg-white/8 text-white hover:text-blue-100 transition-all duration-300 mt-auto text-xs py-1.5"
+                          onClick={() => vehicle.image && setSelectedImage(vehicle.image)}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          Фото
+                        </Button>
+                      )}
                     </div>
-                    {vehicle.image && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="mt-4 w-full border-blue-400/40 text-blue-300 hover:bg-blue-500/10"
-                        onClick={() => openImageModal(vehicle.image)}
-                      >
-                        <Eye className="h-3 w-3 mr-1" />
-                        Показать изображение
-                      </Button>
-                    )}
                   </div>
                 ))}
               </div>
@@ -194,12 +207,12 @@ export default function GuvdVehiclesPage() {
           </div>
         </div>
 
-        <div className="mt-8 bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
-          <div className="p-6 border-b border-white/10">
-            <h2 className="text-xl font-bold text-white">Примечания</h2>
+        <div className="mt-6 bg-white/8 backdrop-blur-sm border border-white/15 rounded-2xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+          <div className="p-4 border-b border-white/10">
+            <h2 className="text-lg font-bold text-white">Примечания</h2>
           </div>
-          <div className="p-6">
-            <ul className="space-y-2 text-sm text-blue-100/90">
+          <div className="p-4">
+            <ul className="space-y-1.5 text-sm text-blue-100/90">
               <li>• Доступ к транспортным средствам осуществляется согласно рангу сотрудника</li>
               <li>• Специальные транспортные средства предназначены для конкретных подразделений</li>
               <li>• Вертолет доступен только сотрудникам высшего руководящего состава</li>
@@ -211,15 +224,15 @@ export default function GuvdVehiclesPage() {
         {selectedImage && (
           <div
             className="fixed inset-0 z-50 bg-black/80 flex justify-center items-center p-4"
-            onClick={closeImageModal}
+            onClick={() => setSelectedImage(null)}
           >
-            <div className="relative max-w-4xl w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-xl p-6">
+            <div className="relative max-w-4xl w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-xl p-4">
               <button
-                className="absolute top-3 right-3 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white hover:text-blue-300 transition-all duration-200 z-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                onClick={closeImageModal}
+                className="absolute top-2 right-2 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white hover:text-blue-300 transition-all duration-200 z-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                onClick={() => setSelectedImage(null)}
                 aria-label="Закрыть изображение"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
               <div className="relative w-full h-[70vh] max-h-[800px]">
                 <Image
@@ -231,7 +244,7 @@ export default function GuvdVehiclesPage() {
                   priority
                 />
               </div>
-              <p className="text-center text-white mt-4 font-medium">
+              <p className="text-center text-white mt-3 font-medium text-sm">
                 {Object.keys(vehicleImages).find((key) => vehicleImages[key] === selectedImage) || "Транспортное средство"}
               </p>
             </div>

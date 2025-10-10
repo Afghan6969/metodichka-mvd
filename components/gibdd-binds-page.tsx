@@ -245,7 +245,6 @@ export function GibddBindsPage() {
         icon={Terminal}
         title="Бинды ГИБДД"
         description="Готовые команды для сотрудников ГИБДД"
-        badge={`${bindSections.reduce((sum, s) => sum + s.binds.length, 0)} биндов`}
       />
 
       <div className="max-w-4xl mx-auto">

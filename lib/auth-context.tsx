@@ -8,8 +8,10 @@ export type UserRole =
   | "root"
   | "gs-gibdd"
   | "pgs-gibdd"
+  | "leader-gibdd"
   | "gs-guvd"
   | "pgs-guvd"
+  | "leader-guvd"
   | "ss-gibdd"
   | "ss-guvd"
   | "gibdd"
@@ -61,6 +63,7 @@ interface AuthContextType {
   hasAccess: (page: string, department?: string, reportType?: string) => boolean;
   canManageUsers: () => boolean;
   refreshUsers: () => Promise<void>;
+  refreshUserLogs: () => Promise<void>;
   verifyCurrentUserRole: () => Promise<boolean>;
   rollbackAction: (logId: number) => Promise<{ success: boolean; message?: string; error?: string }>;
 }
@@ -82,8 +85,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       "root",
       "gs-gibdd",
       "pgs-gibdd",
+      "leader-gibdd",
       "gs-guvd",
       "pgs-guvd",
+      "leader-guvd",
       "ss-gibdd",
       "ss-guvd",
       "gibdd",
@@ -368,11 +373,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     switch (page) {
       case "generator-page":
-        return ["gibdd", "ss-gibdd", "pgs-gibdd", "gs-gibdd", "guvd", "ss-guvd", "pgs-guvd", "gs-guvd"].includes(role);
+        return ["gibdd", "ss-gibdd", "leader-gibdd", "pgs-gibdd", "gs-gibdd", "guvd", "ss-guvd", "leader-guvd", "pgs-guvd", "gs-guvd"].includes(role);
       case "gibdd-gov-wave":
-        return ["ss-gibdd", "pgs-gibdd", "gs-gibdd"].includes(role);
+        return ["ss-gibdd", "leader-gibdd", "pgs-gibdd", "gs-gibdd"].includes(role);
       case "guvd-gov-wave":
-        return ["ss-guvd", "pgs-guvd", "gs-guvd"].includes(role);
+        return ["ss-guvd", "leader-guvd", "pgs-guvd", "gs-guvd"].includes(role);
       default:
         return true;
     }
@@ -382,7 +387,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const canManageUsers = (): boolean => {
     if (!currentUser) return false;
     const role = normalizeRole(currentUser.role);
-    return ["root", "gs-gibdd", "pgs-gibdd", "gs-guvd", "pgs-guvd"].includes(role);
+    return ["root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd"].includes(role);
   };
 
   // === ОТКАТ ДЕЙСТВИЯ ===
@@ -429,6 +434,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         hasAccess,
         canManageUsers,
         refreshUsers,
+        refreshUserLogs,
         verifyCurrentUserRole,
         rollbackAction,
       }}

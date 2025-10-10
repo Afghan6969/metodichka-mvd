@@ -7,8 +7,10 @@ const VALID_ROLES = [
   "root",
   "gs-gibdd",
   "pgs-gibdd",
+  "leader-gibdd",
   "gs-guvd",
   "pgs-guvd",
+  "leader-guvd",
   "ss-gibdd",
   "ss-guvd",
   "gibdd",
@@ -23,7 +25,7 @@ const normalizeRole = (role: unknown): string => {
 };
 
 const canManageUsersRole = (role: string) =>
-  ["root", "gs-gibdd", "pgs-gibdd", "gs-guvd", "pgs-guvd"].includes(role);
+  ["root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd"].includes(role);
 
 export async function POST(req: NextRequest) {
   try {

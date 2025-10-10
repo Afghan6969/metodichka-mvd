@@ -27,7 +27,7 @@ import {
 } from "@/components/user-management"
 
 export function UserManagementPage() {
-  const { currentUser, users, userLogs, addUser, removeUser, restoreUser, updateUser, canManageUsers, rollbackAction, refreshUsers } = useAuth()
+  const { currentUser, users, userLogs, addUser, removeUser, restoreUser, updateUser, canManageUsers, rollbackAction, refreshUsers, refreshUserLogs } = useAuth()
   
   // States
   const [error, setError] = useState("")
@@ -106,11 +106,13 @@ export function UserManagementPage() {
   const getAvailableRoles = (): UserRole[] => {
     if (!currentUser) return []
     const role = currentUser.role
-    if (role === "root") return ["root", "gs-gibdd", "pgs-gibdd", "gs-guvd", "pgs-guvd", "ss-gibdd", "ss-guvd", "gibdd", "guvd", "none"]
-    if (role === "gs-gibdd") return ["pgs-gibdd", "ss-gibdd", "gibdd", "none"]
-    if (role === "pgs-gibdd") return ["ss-gibdd", "gibdd", "none"]
-    if (role === "gs-guvd") return ["pgs-guvd", "ss-guvd", "guvd", "none"]
-    if (role === "pgs-guvd") return ["ss-guvd", "guvd", "none"]
+    if (role === "root") return ["root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd", "ss-gibdd", "ss-guvd", "gibdd", "guvd", "none"]
+    if (role === "gs-gibdd") return ["pgs-gibdd", "leader-gibdd", "ss-gibdd", "gibdd", "none"]
+    if (role === "pgs-gibdd") return ["leader-gibdd", "ss-gibdd", "gibdd", "none"]
+    if (role === "leader-gibdd") return ["ss-gibdd", "gibdd", "none"]
+    if (role === "gs-guvd") return ["pgs-guvd", "leader-guvd", "ss-guvd", "guvd", "none"]
+    if (role === "pgs-guvd") return ["leader-guvd", "ss-guvd", "guvd", "none"]
+    if (role === "leader-guvd") return ["ss-guvd", "guvd", "none"]
     return []
   }
 
@@ -118,10 +120,12 @@ export function UserManagementPage() {
     if (!currentUser) return false
     const role = currentUser.role
     if (role === "root") return true
-    if (role === "gs-gibdd") return !["root", "gs-gibdd", "gs-guvd", "pgs-guvd", "ss-guvd", "guvd"].includes(targetRole)
-    if (role === "pgs-gibdd") return !["root", "gs-gibdd", "pgs-gibdd", "gs-guvd", "pgs-guvd", "ss-guvd", "guvd"].includes(targetRole)
-    if (role === "gs-guvd") return !["root", "gs-guvd", "gs-gibdd", "pgs-gibdd", "ss-gibdd", "gibdd"].includes(targetRole)
-    if (role === "pgs-guvd") return !["root", "gs-guvd", "pgs-guvd", "gs-gibdd", "pgs-gibdd", "ss-gibdd", "gibdd"].includes(targetRole)
+    if (role === "gs-gibdd") return !["root", "gs-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd", "ss-guvd", "guvd"].includes(targetRole)
+    if (role === "pgs-gibdd") return !["root", "gs-gibdd", "pgs-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd", "ss-guvd", "guvd"].includes(targetRole)
+    if (role === "leader-gibdd") return !["root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd", "ss-guvd", "guvd"].includes(targetRole)
+    if (role === "gs-guvd") return !["root", "gs-guvd", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "ss-gibdd", "gibdd"].includes(targetRole)
+    if (role === "pgs-guvd") return !["root", "gs-guvd", "pgs-guvd", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "ss-gibdd", "gibdd"].includes(targetRole)
+    if (role === "leader-guvd") return !["root", "gs-guvd", "pgs-guvd", "leader-guvd", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "ss-gibdd", "gibdd"].includes(targetRole)
     return false
   }
 
@@ -327,13 +331,19 @@ export function UserManagementPage() {
     setIsLoading(false)
   }
 
+  const handleRefreshLogs = async () => {
+    setIsLoading(true)
+    await refreshUserLogs()
+    setIsLoading(false)
+  }
+
   // Filter and paginate users
   const filteredUsers = users.filter(
     (user) =>
       (showDeactivated ? user.status === "deactivated" : user.status === "active") &&
       (roleFilter === "all" ||
-        (roleFilter === "gibdd" && ["gs-gibdd", "pgs-gibdd", "ss-gibdd", "gibdd"].includes(user.role)) ||
-        (roleFilter === "guvd" && ["gs-guvd", "pgs-guvd", "ss-guvd", "guvd"].includes(user.role))) &&
+        (roleFilter === "gibdd" && ["gs-gibdd", "pgs-gibdd", "leader-gibdd", "ss-gibdd", "gibdd"].includes(user.role)) ||
+        (roleFilter === "guvd" && ["gs-guvd", "pgs-guvd", "leader-guvd", "ss-guvd", "guvd"].includes(user.role))) &&
       (user.nickname.toLowerCase().includes(userSearch.toLowerCase()) ||
         user.username.toLowerCase().includes(userSearch.toLowerCase()))
   )
@@ -388,10 +398,10 @@ export function UserManagementPage() {
   // Statistics
   const totalUsers = users.filter((u) => u.status === "active").length
   const gibddUsers = users.filter(
-    (user) => user.status === "active" && ["gs-gibdd", "pgs-gibdd", "ss-gibdd", "gibdd"].includes(user.role)
+    (user) => user.status === "active" && ["gs-gibdd", "pgs-gibdd", "leader-gibdd", "ss-gibdd", "gibdd"].includes(user.role)
   ).length
   const guvdUsers = users.filter(
-    (user) => user.status === "active" && ["gs-guvd", "pgs-guvd", "ss-guvd", "guvd"].includes(user.role)
+    (user) => user.status === "active" && ["gs-guvd", "pgs-guvd", "leader-guvd", "ss-guvd", "guvd"].includes(user.role)
   ).length
 
   return (
@@ -578,10 +588,22 @@ export function UserManagementPage() {
               <TabsContent value="logs" className="space-y-4 mt-6">
                 <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
                   <div className="p-6 border-b border-white/10">
-                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                      <History className="h-5 w-5 text-purple-300" />
-                      Журнал изменений
-                    </h2>
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                        <History className="h-5 w-5 text-purple-300" />
+                        Журнал изменений
+                      </h2>
+                      <Button
+                        variant="outline"
+                        onClick={handleRefreshLogs}
+                        className="border-purple-400/30 bg-purple-500/10 hover:bg-purple-500/20 hover:border-purple-400/50 text-purple-300"
+                        size="sm"
+                        disabled={isLoading}
+                        title="Обновить журнал"
+                      >
+                        <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                      </Button>
+                    </div>
                   </div>
                   <div className="p-6 space-y-4">
                     <LogFilters
@@ -603,6 +625,7 @@ export function UserManagementPage() {
                           logs={currentLogs} 
                           actionDisplayNames={actionDisplayNames} 
                           currentUserRole={currentUser?.role}
+                          currentUserId={currentUser?.id}
                           onRollback={handleRollback}
                           showRollback={true}
                         />
@@ -637,7 +660,7 @@ export function UserManagementPage() {
                   <p className="text-sm">Записи не найдены</p>
                 </div>
               ) : (
-                <UserLogs logs={userHistoryLogs} actionDisplayNames={actionDisplayNames} currentUserRole={currentUser?.role} showDetails={false} />
+                <UserLogs logs={userHistoryLogs} actionDisplayNames={actionDisplayNames} currentUserRole={currentUser?.role} currentUserId={currentUser?.id} showDetails={false} />
               )}
             </div>
             <DialogFooter>

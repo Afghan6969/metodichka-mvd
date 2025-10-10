@@ -4,15 +4,17 @@ import bcrypt from "bcryptjs";
 import { createClient as createServerClient } from '@supabase/supabase-js';
 
 const canManageUsersRole = (role: string) =>
-  ["root", "gs-gibdd", "pgs-gibdd", "gs-guvd", "pgs-guvd"].includes(role);
+  ["root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd"].includes(role);
 
 // Русские названия ролей
 const roleDisplayNames: Record<string, string> = {
   root: "Владелец",
   "gs-gibdd": "ГС ГИБДД",
   "pgs-gibdd": "ПГС ГИБДД",
+  "leader-gibdd": "Лидер ГИБДД",
   "gs-guvd": "ГС ГУВД",
   "pgs-guvd": "ПГС ГУВД",
+  "leader-guvd": "Лидер ГУВД",
   "ss-gibdd": "СС ГИБДД",
   "ss-guvd": "СС ГУВД",
   gibdd: "ГИБДД",
@@ -78,6 +80,66 @@ export async function POST(req: NextRequest) {
     // Нельзя откатить откат
     if (logData.action === "rollback") {
       return NextResponse.json({ error: "Cannot rollback a rollback" }, { status: 400 });
+    }
+
+    // Получаем роль того, кто выполнил действие
+    const { data: performedByUserData } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", logData.performed_by_id)
+      .single();
+
+    if (!performedByUserData) {
+      return NextResponse.json({ error: "Performed by user not found" }, { status: 404 });
+    }
+
+    // Проверка иерархии: кто может откатывать чьи действия
+    const canRollback = (currentUserId: string, currentRole: string, performedById: string, performedByRole: string): boolean => {
+      // Root может откатывать всё
+      if (currentRole === "root") return true;
+      
+      // ГС ГИБДД может откатывать: свои действия + действия ПГС ГИБДД и лидера ГИБДД
+      if (currentRole === "gs-gibdd") {
+        if (currentUserId === performedById) return true; // свои действия
+        return ["pgs-gibdd", "leader-gibdd", "ss-gibdd", "gibdd"].includes(performedByRole);
+      }
+      
+      // ПГС ГИБДД может откатывать: свои действия + действия лидера ГИБДД
+      if (currentRole === "pgs-gibdd") {
+        if (currentUserId === performedById) return true; // свои действия
+        return ["leader-gibdd", "ss-gibdd", "gibdd"].includes(performedByRole);
+      }
+      
+      // Лидер ГИБДД может откатывать только свои действия
+      if (currentRole === "leader-gibdd") {
+        return currentUserId === performedById; // только свои действия
+      }
+      
+      // ГС ГУВД может откатывать: свои действия + действия ПГС ГУВД и лидера ГУВД
+      if (currentRole === "gs-guvd") {
+        if (currentUserId === performedById) return true; // свои действия
+        return ["pgs-guvd", "leader-guvd", "ss-guvd", "guvd"].includes(performedByRole);
+      }
+      
+      // ПГС ГУВД может откатывать: свои действия + действия лидера ГУВД
+      if (currentRole === "pgs-guvd") {
+        if (currentUserId === performedById) return true; // свои действия
+        return ["leader-guvd", "ss-guvd", "guvd"].includes(performedByRole);
+      }
+      
+      // Лидер ГУВД может откатывать только свои действия
+      if (currentRole === "leader-guvd") {
+        return currentUserId === performedById; // только свои действия
+      }
+      
+      return false;
+    };
+
+    // Проверяем права на откат
+    if (!canRollback(currentUser.id, String(currentUser.role), logData.performed_by_id, String(performedByUserData.role))) {
+      return NextResponse.json({ 
+        error: "Недостаточно прав для отката этого действия." 
+      }, { status: 403 });
     }
 
     // Получаем IP адрес

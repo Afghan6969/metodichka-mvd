@@ -216,10 +216,7 @@ export function GuvdBindsPage() {
       <PageHeader
         icon={Terminal}
         title="Бинды ГУВД"
-        description="Готовые команды для сотрудников ГУВД"
-        badge={`${bindSections.reduce((sum, s) => sum + s.binds.length, 0)} биндов`}
-      />
-
+        description="Готовые команды для сотрудников ГУВД"      />
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-center">
           <div className="relative w-full max-w-md">

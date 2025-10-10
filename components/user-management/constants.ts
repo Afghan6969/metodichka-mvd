@@ -5,8 +5,10 @@ export const roleDisplayNames: Record<string, string> = {
   root: "Владелец",
   "gs-gibdd": "ГС ГИБДД",
   "pgs-gibdd": "ПГС ГИБДД",
+  "leader-gibdd": "Лидер ГИБДД",
   "gs-guvd": "ГС ГУВД",
   "pgs-guvd": "ПГС ГУВД",
+  "leader-guvd": "Лидер ГУВД",
   "ss-gibdd": "СС ГИБДД",
   "ss-guvd": "СС ГУВД",
   gibdd: "ГИБДД",
@@ -32,7 +34,7 @@ export const actionDisplayNames: Record<string, string> = {
 export const getRoleBadgeVariant = (role: UserRole): "default" | "secondary" | "outline" => {
   if (role === "root") return "default"
   if (role.startsWith("gs") || role.startsWith("pgs") || role.startsWith("moderator")) return "default"
-  if (role.startsWith("ss")) return "secondary"
+  if (role.startsWith("ss") || role.startsWith("leader")) return "secondary"
   return "outline"
 }
 

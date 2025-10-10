@@ -53,7 +53,7 @@ export async function GET(request: Request) {
     }
 
     // Проверяем права доступа (только те, кто может управлять пользователями)
-    const allowedRoles = ['root', 'gs-gibdd', 'pgs-gibdd', 'gs-guvd', 'pgs-guvd'];
+    const allowedRoles = ['root', 'gs-gibdd', 'pgs-gibdd', 'leader-gibdd', 'gs-guvd', 'pgs-guvd', 'leader-guvd'];
     if (!userData.role || !allowedRoles.includes(userData.role)) {
       console.error('[user-logs] Insufficient permissions:', userData.role);
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
