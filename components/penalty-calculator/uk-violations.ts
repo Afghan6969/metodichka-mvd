@@ -188,9 +188,9 @@ export const ukViolations: Record<string, ViolationCategory> = {
       "5.5": {
         article: "УК 5.5",
         description: "Хамство, борзость, дерзость по отношению к сотруднику",
-        fine: 15000,
+        fine: 0,
         suspension: 0,
-        arrest: 1,
+        arrest: 0,
         retraining: false,
         alternatives: [
           {
@@ -212,9 +212,9 @@ export const ukViolations: Record<string, ViolationCategory> = {
       "5.6": {
         article: "УК 5.6",
         description: "Публичное оскорбление представителей власти",
-        fine: 25000,
+        fine: 0,
         suspension: 0,
-        arrest: 2,
+        arrest: 0,
         retraining: false,
         alternatives: [
           {
@@ -236,9 +236,9 @@ export const ukViolations: Record<string, ViolationCategory> = {
       "5.7": {
         article: "УК 5.7",
         description: "Провокационные действия в отношении сотрудников",
-        fine: 50000,
+        fine: 0,
         suspension: 0,
-        arrest: 2,
+        arrest: 0,
         retraining: false,
         alternatives: [
           {
@@ -261,9 +261,9 @@ export const ukViolations: Record<string, ViolationCategory> = {
       "5.7.1": {
         article: "УК 5.7.1",
         description: "Длительное преследование экипажа полиции",
-        fine: 50000,
+        fine: 0,
         suspension: 0,
-        arrest: 2,
+        arrest: 0,
         retraining: false,
         alternatives: [
           {
@@ -310,9 +310,9 @@ export const ukViolations: Record<string, ViolationCategory> = {
       "5.9": {
         article: "УК 5.9",
         description: "Уничтожение имущества государственных организаций",
-        fine: 50000,
+        fine: 0,
         suspension: 0,
-        arrest: 2,
+        arrest: 0,
         retraining: false,
         alternatives: [
           {
@@ -334,9 +334,9 @@ export const ukViolations: Record<string, ViolationCategory> = {
       "5.10": {
         article: "УК 5.10",
         description: "Заведомо ложный донос о совершении преступления",
-        fine: 25000,
+        fine: 0,
         suspension: 0,
-        arrest: 2,
+        arrest: 0,
         retraining: false,
         alternatives: [
           {
@@ -376,9 +376,9 @@ export const ukViolations: Record<string, ViolationCategory> = {
       "5.12": {
         article: "УК 5.12",
         description: "Представление себя служащим государственной организации",
-        fine: 30000,
+        fine: 0,
         suspension: 0,
-        arrest: 1,
+        arrest: 0,
         retraining: false,
         alternatives: [
           {
@@ -503,9 +503,9 @@ export const ukViolations: Record<string, ViolationCategory> = {
       "6.6": {
         article: "УК 6.6",
         description: "Вандализм",
-        fine: 10000,
+        fine: 0,
         suspension: 0,
-        arrest: 1,
+        arrest: 0,
         retraining: false,
         alternatives: [
           {
@@ -535,9 +535,9 @@ export const ukViolations: Record<string, ViolationCategory> = {
       "6.8": {
         article: "УК 6.8",
         description: "Самовольное проникновение на охраняемый объект",
-        fine: 10000,
+        fine: 0,
         suspension: 0,
-        arrest: 2,
+        arrest: 0,
         retraining: false,
         alternatives: [
           {
@@ -591,9 +591,9 @@ export const ukViolations: Record<string, ViolationCategory> = {
       "6.13": {
         article: "УК 6.13",
         description: "Подделка официального документа",
-        fine: 20000,
+        fine: 0,
         suspension: 0,
-        arrest: 3,
+        arrest: 0,
         retraining: false,
         alternatives: [
           {
@@ -615,9 +615,9 @@ export const ukViolations: Record<string, ViolationCategory> = {
       "6.14": {
         article: "УК 6.14",
         description: "Превышение должностных полномочий",
-        fine: 50000,
+        fine: 0,
         suspension: 0,
-        arrest: 3,
+        arrest: 0,
         retraining: false,
         alternatives: [
           {
@@ -646,9 +646,9 @@ export const ukViolations: Record<string, ViolationCategory> = {
       "7.1": {
         article: "УК 7.1",
         description: "Мошенничество",
-        fine: 50000,
+        fine: 0,
         suspension: 0,
-        arrest: 3,
+        arrest: 0,
         retraining: false,
         alternatives: [
           {
@@ -686,9 +686,9 @@ export const ukViolations: Record<string, ViolationCategory> = {
       "7.4": {
         article: "УК 7.4",
         description: "Умышленное уничтожение чужого имущества",
-        fine: 50000,
+        fine: 0,
         suspension: 0,
-        arrest: 2,
+        arrest: 0,
         retraining: false,
         alternatives: [
           {
@@ -710,9 +710,9 @@ export const ukViolations: Record<string, ViolationCategory> = {
       "7.5": {
         article: "УК 7.5",
         description: "Организация азартных игр в общественных местах",
-        fine: 50000,
+        fine: 0,
         suspension: 0,
-        arrest: 2,
+        arrest: 0,
         retraining: false,
         alternatives: [
           {

@@ -49,6 +49,12 @@ const PenaltyCalculator = () => {
       if (found) {
         const violation = found.violation
         const selectedPenalty = selectedPenalties[violationKey] || "default"
+
+        // Если статья имеет альтернативы и не выбрана альтернатива - пропускаем
+        if (violation.alternatives && selectedPenalty === "default") {
+          return
+        }
+
         let penalty = violation
 
         if (selectedPenalty !== "default" && violation.alternatives) {
@@ -58,19 +64,27 @@ const PenaltyCalculator = () => {
           }
         }
 
-        // Only check fineRange if penalty is an alternative (not the main violation)
-        if (selectedPenalty !== "default" && selectedFineAmounts[violationKey] !== undefined) {
+        // Only check fineRange if penalty is an alternative (not the main violation) AND has fineRange
+        if (selectedPenalty !== "default" && selectedFineAmounts[violationKey] !== undefined && (penalty as any).fineRange) {
           penalty = {
             ...penalty,
             fine: selectedFineAmounts[violationKey],
           }
         }
 
-        // Only check arrestRange if penalty is an alternative (not the main violation)
-        if (selectedPenalty !== "default" && selectedArrestAmounts[violationKey] !== undefined) {
+        // Only check arrestRange if penalty is an alternative (not the main violation) AND has arrestRange
+        if (selectedPenalty !== "default" && selectedArrestAmounts[violationKey] !== undefined && (penalty as any).arrestRange) {
           penalty = {
             ...penalty,
             arrest: selectedArrestAmounts[violationKey],
+          }
+        }
+
+        // Only check suspensionRange if penalty has suspensionRange
+        if (selectedSuspensionAmounts[violationKey] !== undefined && (penalty as any).suspensionRange) {
+          penalty = {
+            ...penalty,
+            suspension: selectedSuspensionAmounts[violationKey],
           }
         }
 
@@ -105,6 +119,12 @@ const PenaltyCalculator = () => {
       if (found) {
         const violation = found.violation
         const selectedPenalty = selectedPenalties[violationKey] || "default"
+
+        // Если статья имеет альтернативы и не выбрана альтернатива - пропускаем
+        if (violation.alternatives && selectedPenalty === "default") {
+          return
+        }
+
         let penalty = violation
 
         if (selectedPenalty !== "default" && violation.alternatives) {
@@ -114,17 +134,30 @@ const PenaltyCalculator = () => {
           }
         }
 
-        const fineAmount = penalty.fine
+        // Apply selected amounts if they exist and the penalty supports ranges
+        let finalFine = penalty.fine
+        let finalSuspension = penalty.suspension
+        let finalArrest = penalty.arrest
 
-        const arrestAmount = penalty.arrest
+        if (selectedPenalty !== "default" && selectedFineAmounts[violationKey] !== undefined && (penalty as any).fineRange) {
+          finalFine = selectedFineAmounts[violationKey]
+        }
+
+        if (selectedSuspensionAmounts[violationKey] !== undefined && (penalty as any).suspensionRange) {
+          finalSuspension = selectedSuspensionAmounts[violationKey]
+        }
+
+        if (selectedPenalty !== "default" && selectedArrestAmounts[violationKey] !== undefined && (penalty as any).arrestRange) {
+          finalArrest = selectedArrestAmounts[violationKey]
+        }
 
         const altName = selectedPenalty !== "default" && (penalty as any).name ? (penalty as any).name : "Основное наказание"
 
         alternatives.push({
           name: `${violation.article as string}: ${altName}`,
-          fine: fineAmount,
-          suspension: penalty.suspension,
-          arrest: arrestAmount,
+          fine: finalFine,
+          suspension: finalSuspension,
+          arrest: finalArrest,
           retraining: penalty.retraining,
           hasRange: false,
           range: undefined,
@@ -250,6 +283,19 @@ const PenaltyCalculator = () => {
                   const violation = found.violation
                   const selectedAlt = getSelectedAlternative(violationKey)
 
+                  if (violation.suspensionRange && selectedSuspensionAmounts[violationKey] === undefined) {
+                    setSelectedSuspensionAmounts((prev) => ({
+                      ...prev,
+                      [violationKey]: violation.suspension,
+                    }))
+                  }
+                  if (selectedAlt?.suspensionRange && selectedSuspensionAmounts[violationKey] === undefined) {
+                    setSelectedSuspensionAmounts((prev) => ({
+                      ...prev,
+                      [violationKey]: selectedAlt.suspension,
+                    }))
+                  }
+
                   if (violation.arrestRange && selectedArrestAmounts[violationKey] === undefined) {
                     setSelectedArrestAmounts((prev) => ({
                       ...prev,
@@ -335,10 +381,24 @@ const PenaltyCalculator = () => {
                                       ...prev,
                                       [violationKey]: alt.fineRange ? alt.fine : prev[violationKey],
                                     }))
-                                    setSelectedArrestAmounts((prev) => ({
-                                      ...prev,
-                                      [violationKey]: alt.arrestRange ? alt.arrest : prev[violationKey] ?? violation.arrest,
-                                    }))
+                                    setSelectedSuspensionAmounts((prev) => {
+                                      const newAmounts = { ...prev }
+                                      if (alt.suspensionRange) {
+                                        newAmounts[violationKey] = alt.suspension
+                                      } else {
+                                        delete newAmounts[violationKey]
+                                      }
+                                      return newAmounts
+                                    })
+                                    setSelectedArrestAmounts((prev) => {
+                                      const newAmounts = { ...prev }
+                                      if (alt.arrestRange) {
+                                        newAmounts[violationKey] = alt.arrest
+                                      } else {
+                                        delete newAmounts[violationKey]
+                                      }
+                                      return newAmounts
+                                    })
                                   }
                                 }
                               }}
@@ -393,7 +453,7 @@ const PenaltyCalculator = () => {
                             <div className="flex items-center gap-2">
                               <span className="text-xs font-medium">Срок ареста:</span>
                               <Select
-                                value={(selectedArrestAmounts[violationKey] ?? (selectedAlt?.arrest || violation.arrest)).toString()}
+                                value={(selectedArrestAmounts[violationKey] ?? (selectedAlt?.arrest || violation.arrest || 0)).toString()}
                                 onValueChange={(value) => {
                                   const newValue = parseInt(value)
                                   setSelectedArrestAmounts((prev) => ({

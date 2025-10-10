@@ -74,11 +74,16 @@ export function GuvdGovWavePage() {
     const [startTime, endTime] = time.split("-")
     const [startHour, startMinute] = startTime.split(":")
 
+    // Добавляем 30 минут к времени начала для получения времени собеседования
     let interviewHour = Number.parseInt(startHour)
-    if (startMinute === "30") {
+    let interviewMinute = Number.parseInt(startMinute) + 30
+
+    if (interviewMinute >= 60) {
       interviewHour = (interviewHour + 1) % 24
+      interviewMinute = interviewMinute - 60
     }
-    const interviewTime = `${interviewHour.toString().padStart(2, "0")}:00`
+
+    const interviewTime = `${interviewHour.toString().padStart(2, "0")}:${interviewMinute.toString().padStart(2, "0")}`
 
     const cityData = cities.find((c) => c.name === city)
     const tag = cityData ? `ГУВД-${cityData.tag}` : "ГУВД-Н"
