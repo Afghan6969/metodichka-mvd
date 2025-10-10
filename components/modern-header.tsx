@@ -5,24 +5,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { useAuth } from "@/lib/auth-context"
+import { roleDisplayNames } from "@/components/user-management/constants"
 import { LoginModal } from "@/components/login-modal"
 
 interface ModernHeaderProps {
   onMenuClick: () => void
   onSearchClick: () => void
-}
-
-const roleDisplayNames: Record<string, string> = {
-  root: "Владелец",
-  "gs-gibdd": "ГС ГИБДД",
-  "pgs-gibdd": "ПГС ГИБДД",
-  "gs-guvd": "ГС ГУВД",
-  "pgs-guvd": "ПГС ГУВД",
-  "ss-gibdd": "СС ГИБДД",
-  "ss-guvd": "СС ГУВД",
-  gibdd: "ГИБДД",
-  guvd: "ГУВД",
-  none: "Без роли",
 }
 
 export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) {

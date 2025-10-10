@@ -366,7 +366,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   // === ДОСТУП ===
-  const hasAccess = (page: string): boolean => {
+  const hasAccess = (page: string, department?: string, reportType?: string): boolean => {
     if (!currentUser) return false;
     const role = normalizeRole(currentUser.role);
     if (role === "root") return true;

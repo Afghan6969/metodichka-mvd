@@ -237,19 +237,21 @@ export function GeneratorPage() {
   useEffect(() => {
     if (currentUser) {
       console.log("Current user:", currentUser)
-      console.log("Has access to generator-page:", hasAccess("generator-page", department || undefined, undefined))
+      console.log("Has access to generator-page:", hasAccess("generator-page"))
       if (
         currentUser.role === "gibdd" ||
         currentUser.role === "ss-gibdd" ||
         currentUser.role === "pgs-gibdd" ||
-        currentUser.role === "gs-gibdd"
+        currentUser.role === "gs-gibdd" ||
+        currentUser.role === "leader-gibdd"
       ) {
         setDepartment("ГИБДД")
       } else if (
         currentUser.role === "guvd" ||
         currentUser.role === "ss-guvd" ||
         currentUser.role === "pgs-guvd" ||
-        currentUser.role === "gs-guvd"
+        currentUser.role === "gs-guvd" ||
+        currentUser.role === "leader-guvd"
       ) {
         setDepartment("ГУВД")
       }
@@ -628,7 +630,7 @@ ${reqList}
     setGeneratedReport(template)
   }
 
-  if (!currentUser || !hasAccess("generator-page", department || undefined, undefined)) {
+  if (!currentUser || !hasAccess("generator-page")) {
     console.log("Access denied for role:", currentUser?.role, "with department:", department)
     return (
       <div className="flex-1 p-8 overflow-auto bg-background min-h-screen">
@@ -645,7 +647,7 @@ ${reqList}
               <Alert className="border-border bg-muted">
                 <AlertCircle className="h-4 w-4 text-muted-foreground" />
                 <AlertDescription className="text-muted-foreground text-sm">
-                  Для доступа к генератору отчётов необходимо иметь роль ГИБДД, ГУВД, СС ГИБДД, СС ГУВД, ПГС ГИБДД, ПГС ГУВД, ГС ГИБДД, ГС ГУВД или root.
+                  Для доступа к генератору отчётов необходимо иметь роль ГИБДД, ГУВД, СС ГИБДД, СС ГУВД, ПГС ГИБДД, ПГС ГУВД, ГС ГИБДД, ГС ГУВД, Лидер ГИБДД, Лидер ГУВД или root.
                 </AlertDescription>
               </Alert>
             </div>
@@ -662,7 +664,9 @@ ${reqList}
       currentUser.role === "gs-gibdd" ||
       currentUser.role === "gs-guvd" ||
       currentUser.role === "pgs-gibdd" ||
-      currentUser.role === "pgs-guvd"
+      currentUser.role === "pgs-guvd" ||
+      currentUser.role === "leader-gibdd" ||
+      currentUser.role === "leader-guvd"
     ) {
       return ["promotion", "reprimand", "senior"]
     }
