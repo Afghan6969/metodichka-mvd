@@ -4,10 +4,23 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
+  BookOpen,
+  GraduationCap,
+  FileText,
+  Users,
   Car,
   Shield,
+  Book,
+  Folder,
+  Calculator,
+  Search,
+  X,
+  ChevronRight,
+  ChevronDown,
+  UserCog,
   Home,
   ScrollText,
+  Dumbbell,
   Radio,
   Terminal,
   Scale,
@@ -15,11 +28,8 @@ import {
   Package,
   Lightbulb,
   Database,
-  UserCog,
-  X,
-  ChevronRight,
-  ChevronDown,
-  Search,
+  Building2,
+  Badge,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/lib/auth-context"
@@ -121,6 +131,8 @@ export function EnhancedSidebar({ currentPage, onPageChange, onGlobalSearchOpen,
 
   const menuItems = [
     { id: "contents", label: "Главная", icon: Home },
+    { id: "lectures", label: "Лекции", icon: ScrollText },
+    { id: "training", label: "Тренировки", icon: Dumbbell },
     { id: "reports", label: "Доклады в рацию", icon: Radio },
     { id: "commands", label: "Команды", icon: Terminal },
     { id: "penalty-calculator", label: "Калькулятор наказаний", icon: Scale },
