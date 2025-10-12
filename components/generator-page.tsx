@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -199,6 +199,86 @@ const declinePosition = (position: string, isVrio: boolean, caseType: "genitive"
 }
 
 const toGenitiveCase = (position: string, isVrio: boolean) => declinePosition(position, isVrio, "genitive")
+  const declineLeaderName = (name: string, targetCase: "dative" | "genitive") => {
+    if (!name) return ""
+    const parts = name.split(" ")
+    if (parts.length < 2) return name
+
+    const lastName = parts[0]
+    const firstName = parts[1]
+    const middleName = parts[2] || ""
+
+    // Правила склонения русских фамилий
+    const declinedLastName = declineRussianLastName(lastName, targetCase)
+    const declinedFirstName = declineRussianFirstName(firstName, targetCase)
+    const declinedMiddleName = middleName ? declineRussianMiddleName(middleName, targetCase) : ""
+
+    return `${declinedLastName} ${declinedFirstName}${declinedMiddleName ? " " + declinedMiddleName : ""}`.trim()
+  }
+
+  const declineRussianLastName = (lastName: string, targetCase: "dative" | "genitive") => {
+    if (!lastName) return ""
+
+    // Правила склонения русских фамилий
+    const endings = {
+      dative: {
+        "ов": "у", "ев": "у", "ёв": "ёву", "ин": "у", "ын": "у",
+        "ий": "ю", "ой": "ому", "ый": "ому", "ая": "ой", "яя": "ей"
+      },
+      genitive: {
+        "ов": "а", "ев": "а", "ёв": "ёва", "ин": "а", "ын": "а",
+        "ий": "его", "ой": "ого", "ый": "ого", "ая": "ой", "яя": "ей"
+      }
+    }
+
+    const rules = endings[targetCase]
+    for (const [ending, replacement] of Object.entries(rules)) {
+      if (lastName.endsWith(ending)) {
+        return lastName.slice(0, -ending.length) + replacement
+      }
+    }
+
+    // Если не найдено правило, возвращаем как есть (для иностранных фамилий)
+    return lastName
+  }
+
+  const declineRussianFirstName = (firstName: string, targetCase: "dative" | "genitive") => {
+    if (!firstName) return ""
+
+    // Правила склонения русских имен
+    const maleEndings = {
+      dative: { "ий": "ию", "ей": "ею", "ай": "аю", "я": "е", "а": "е" },
+      genitive: { "ий": "ия", "ей": "ея", "ай": "ая", "я": "и", "а": "ы" }
+    }
+
+    const femaleEndings = {
+      dative: { "а": "е", "я": "е", "ия": "ии" },
+      genitive: { "а": "ы", "я": "и", "ия": "ии" }
+    }
+
+    // Определяем пол по окончанию (упрощенный алгоритм)
+    const isFemale = firstName.endsWith("а") || firstName.endsWith("я")
+
+    const rules = isFemale ? femaleEndings[targetCase] : maleEndings[targetCase]
+
+    for (const [ending, replacement] of Object.entries(rules)) {
+      if (firstName.endsWith(ending)) {
+        return firstName.slice(0, -ending.length) + replacement
+      }
+    }
+
+    return firstName
+  }
+
+  const declineRussianMiddleName = (middleName: string, targetCase: "dative" | "genitive") => {
+    if (!middleName) return ""
+    if (targetCase === "dative") {
+      return middleName.endsWith("ич") ? middleName.slice(0, -2) + "ичу" : middleName.slice(0, -1) + "не"
+    } else {
+      return middleName.endsWith("ич") ? middleName.slice(0, -2) + "ича" : middleName.slice(0, -1) + "ны"
+    }
+  }
+
 const toInstrumentalCase = (position: string, isVrio: boolean) => declinePosition(position, isVrio, "instrumental")
 
 export function GeneratorPage() {
@@ -534,6 +614,89 @@ export function GeneratorPage() {
     const displayPosition = toGenitiveCase(position, isVrio && reportType === "senior")
     const instrumentalPosition = toInstrumentalCase(position, isVrio && reportType === "senior")
     const deptAbbr = departmentAbbreviations[selectedCategory] || selectedCategory
+    
+    // Склонение ФИО лидера в дательный падеж
+    const declineLeaderFio = (name: string) => {
+      if (!name) return ""
+      const parts = name.split(" ")
+      if (parts.length < 2) return name
+      
+      const lastName = parts[0]
+      const firstName = parts[1] || ""
+      const middleName = parts[2] || ""
+      
+      // Склонение фамилии
+      let declinedLastName = lastName
+      if (lastName.endsWith("ов") || lastName.endsWith("ев") || lastName.endsWith("ин")) {
+        declinedLastName = lastName.slice(0, -2) + "у"
+      } else if (lastName.endsWith("ий")) {
+        declinedLastName = lastName.slice(0, -2) + "ому"
+      } else if (lastName.endsWith("ский") || lastName.endsWith("цкий")) {
+        declinedLastName = lastName.slice(0, -2) + "ому"
+      }
+      
+      // Склонение имени
+      let declinedFirstName = firstName
+      if (firstName.endsWith("й") || firstName.endsWith("ий")) {
+        declinedFirstName = firstName.slice(0, -1) + "ю"
+      }
+      
+      // Склонение отчества
+      let declinedMiddleName = middleName
+      if (middleName.endsWith("ич")) {
+        declinedMiddleName = middleName.slice(0, -2) + "ичу"
+      } else if (middleName.endsWith("на")) {
+        declinedMiddleName = middleName.slice(0, -1) + "не"
+      }
+      
+      return `${declinedLastName} ${declinedFirstName}${declinedMiddleName ? " " + declinedMiddleName : ""}`
+    }
+    
+    const leaderFioDative = declineLeaderFio(leaderFio)
+    
+    // Склонение ФИО пользователя в родительный падеж
+    const declineUserFio = (name: string) => {
+      if (!name) return ""
+      const parts = name.split(" ")
+      if (parts.length < 2) return name
+      
+      const lastName = parts[0]
+      const firstName = parts[1] || ""
+      const middleName = parts[2] || ""
+      
+      // Склонение фамилии в родительный падеж
+      let declinedLastName = lastName
+      if (lastName.endsWith("ов") || lastName.endsWith("ев") || lastName.endsWith("ин")) {
+        declinedLastName = lastName.slice(0, -2) + "а"
+      } else if (lastName.endsWith("ий")) {
+        declinedLastName = lastName.slice(0, -2) + "ого"
+      } else if (lastName.endsWith("ский") || lastName.endsWith("цкий")) {
+        declinedLastName = lastName.slice(0, -2) + "ого"
+      }
+      
+      // Склонение имени в родительный падеж
+      let declinedFirstName = firstName
+      if (firstName.endsWith("й") || firstName.endsWith("ий")) {
+        declinedFirstName = firstName.slice(0, -1) + "я"
+      } else if (firstName.endsWith("а")) {
+        declinedFirstName = firstName.slice(0, -1) + "ы"
+      } else if (firstName.endsWith("я")) {
+        declinedFirstName = firstName.slice(0, -1) + "и"
+      }
+      
+      // Склонение отчества в родительный падеж
+      let declinedMiddleName = middleName
+      if (middleName.endsWith("ич")) {
+        declinedMiddleName = middleName.slice(0, -2) + "ича"
+      } else if (middleName.endsWith("на")) {
+        declinedMiddleName = middleName.slice(0, -1) + "ны"
+      }
+      
+      return `${declinedLastName} ${declinedFirstName}${declinedMiddleName ? " " + declinedMiddleName : ""}`
+    }
+    
+    const userFioGenitive = declineUserFio(fio)
+    
     let template = ""
     let reqList = ""
     if (department === "ГУВД") {
@@ -545,7 +708,7 @@ export function GeneratorPage() {
     if (department === "ГУВД") {
       if (reportType === "promotion") {
         template = `Начальнику ГУВД по г. ${city}
-Генерал-майору ${leaderFio}
+Генерал-майору ${leaderFioDative}
 От ${displayPosition}, ${rank}
 "${fio}"
 
@@ -560,9 +723,9 @@ ${reqList}
 Подпись: ${signature}`
       } else if (reportType === "reprimand") {
         template = `Начальнику ГУВД по г. ${city}
-Генерал-майору ${leaderFio}
+Генерал-майору ${leaderFioDative}
 От ${displayPosition}, ${rank}
-"${fio}"
+"${userFioGenitive}"
 
 Рапорт о проделанной работе.
 Я, ${fio}, являющийся ${instrumentalPosition}, находящийся в звании ${rank}, оставляю отчет о проделанной работе. В связи с выполнением мной нормы работы прошу снять с меня письменное дисциплинарное взыскание в виде выговора.
@@ -575,9 +738,9 @@ ${reqList}
 Подпись: ${signature}`
       } else if (reportType === "senior") {
         template = `Начальнику ГУВД по г. ${city}
-Генерал-майору ${leaderFio}
+Генерал-майору ${leaderFioDative}
 От ${displayPosition}, ${rank}
-"${fio}"
+"${userFioGenitive}"
 
 Рапорт.
 Я, ${rank} ${fio}, являющийся ${instrumentalPosition}, оставляю рапорт и докладываю Вам о проделанной мною работе в период с ${formattedFromDate} по ${formattedToDate}.
@@ -604,7 +767,7 @@ ${reqList}
       } else if (reportType === "reprimand") {
         template = `Генералу Республики Провинция
 Начальнику ГИБДД по городу ${city}
-От ${displayPosition}, находящегося в звании ${rank}, ${fio}.
+От ${displayPosition}, находящегося в звании ${rank}, ${userFioGenitive}.
 
 Я, ${fio}, являющийся ${instrumentalPosition}, прошу Вас рассмотреть мой рапорт на аннулирование дисциплинарного взыскания в виде выговора, полученного за нарушение ${violation}. К рапорту прикладываю сведения о выполнении плана и количестве набранных баллов: ${points}
 
@@ -616,7 +779,7 @@ ${reqList}
       } else if (reportType === "senior") {
         template = `Генералу Республики Провинция
 Начальнику ГИБДД по городу ${city}
-От ${displayPosition}, находящегося в звании ${rank}, ${fio}.
+От ${displayPosition}, находящегося в звании ${rank}, ${userFioGenitive}.
 
 Я, ${fio}, являющийся ${instrumentalPosition}, докладываю о состоянии несения службы и выполненной мной работе за промежуток времени с ${formattedFromDate} по ${formattedToDate}. За данный промежуток времени мною был выполнен следующий объём работ:
 
@@ -687,7 +850,7 @@ ${reqList}
         icon={PenTool}
         title="Генератор отчётов"
         description="Генератор рапортов для ГУВД и ГИБДД МВД РП"
-        badge={department ? department : undefined}
+        badge={department || undefined}
       />
 
       {/* Important Notice */}
@@ -697,7 +860,7 @@ ${reqList}
             <AlertCircle className="h-5 w-5 text-yellow-300" />
           </div>
           <div className="text-sm text-blue-200/90">
-            <span className="font-bold text-yellow-300">Внимание:</span> Генератор может выдавать неверные склонения в должностях и званиях. Проверяйте текст перед использованием.
+            <span className="font-bold text-yellow-300">Внимание:</span> Генератор может выдавать неверные склонения в должностях и званиях, а также ФИО. Проверяйте текст перед использованием.
           </div>
         </div>
       </div>
@@ -863,8 +1026,16 @@ ${reqList}
                 </div>
                 {department === "ГУВД" && (
                   <div>
-                    <Label htmlFor="leaderFio" className="text-sm font-medium text-blue-200/90 mb-2 block">ФИО лидера</Label>
-                    <Input id="leaderFio" value={leaderFio} onChange={(e) => setLeaderFio(e.target.value)} className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
+                    <Label htmlFor="leaderFio" className="text-sm font-medium text-blue-200/90 mb-2 block">
+                      ФИО лидера <span className="text-xs text-blue-300/70">(в дательном падеже: Иванову Ивану Ивановичу)</span>
+                    </Label>
+                    <Input 
+                      id="leaderFio" 
+                      value={leaderFio} 
+                      onChange={(e) => setLeaderFio(e.target.value)} 
+                      placeholder="Иванов Иван Иванович"
+                      className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" 
+                    />
                   </div>
                 )}
                 <div>
@@ -1064,28 +1235,33 @@ ${reqList}
                   </div>
                 )}
                 <div>
-                  <Label className="text-sm font-medium text-blue-200/90 mb-2 block">Требования/Задачи</Label>
+                  <Label className="text-sm font-medium text-blue-200/90 mb-2 block">
+                    Требования/Задачи
+                    {department === "ГИБДД" && (
+                      <span className="text-xs text-blue-300/70 ml-2">(Важно: 1 лекция или тренировка = 1 ссылка)</span>
+                    )}
+                  </Label>
                   {requirements.map((req, index) => (
-                    <div key={index} className="flex gap-2 mt-2 items-center">
+                    <div key={index} className="flex gap-3 mt-2 items-center">
                       <Input
                         placeholder="Название задачи/требования"
                         value={req.req}
                         onChange={(e) => updateRequirement(index, "req", e.target.value)}
-                        className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+                        className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 flex-1"
                       />
                       {department === "ГИБДД" && (
                         <Input
                           placeholder="Количество"
                           value={req.quantity || ""}
                           onChange={(e) => updateRequirement(index, "quantity", e.target.value)}
-                          className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 w-20"
+                          className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 w-28"
                         />
                       )}
                       <Input
-                        placeholder="Ссылка"
+                        placeholder="Ссылка/ссылки"
                         value={req.link}
                         onChange={(e) => updateRequirement(index, "link", e.target.value)}
-                        className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+                        className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 flex-1"
                       />
                       <Button
                         variant="destructive"
@@ -1126,6 +1302,165 @@ ${reqList}
               </div>
             </div>
           </div>
+        )}
+
+        {/* Examples Section */}
+        {department && reportType && (
+          <Card className="relative bg-gradient-to-br from-slate-50/80 via-gray-50/60 to-zinc-50/40 dark:from-slate-900/30 dark:via-gray-900/20 dark:to-zinc-900/10 border-2 border-border/60 shadow-xl overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-100/30 via-transparent to-zinc-100/20 dark:from-slate-800/20 dark:via-transparent dark:to-zinc-800/10"></div>
+            <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-blue-500/10 to-cyan-500/5 rounded-full blur-2xl"></div>
+            <div className="absolute bottom-0 right-0 w-16 h-16 bg-gradient-to-tr from-purple-500/8 to-indigo-500/4 rounded-full blur-xl"></div>
+
+            <CardHeader className="relative text-center pb-6">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-500/20 to-cyan-500/10 rounded-2xl mb-4 mx-auto">
+                <FileText className="h-7 w-7 text-blue-600" />
+              </div>
+              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 bg-clip-text text-transparent">
+                Примеры отчётов
+              </CardTitle>
+              <CardDescription className="text-base mt-2">
+                Образцы готовых отчётов для вашего типа и департамента
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="relative">
+              <div className="space-y-4">
+                {(() => {
+                  // Функции склонения для примеров
+                  const declineLeaderNameForExample = (name: string) => {
+                    if (!name) return "Генерал-майору Иванову Ивану Ивановичу"
+                    const parts = name.split(" ")
+                    if (parts.length < 2) return `Генерал-майору ${name}`
+                    
+                    const lastName = parts[0]
+                    const firstName = parts[1] || ""
+                    const middleName = parts[2] || ""
+                    
+                    // Склонение в дательный падеж
+                    const declinedLastName = lastName.endsWith("ов") || lastName.endsWith("ев") || lastName.endsWith("ин") 
+                      ? lastName.slice(0, -2) + "у" 
+                      : lastName.endsWith("ий") ? lastName.slice(0, -2) + "ому" : lastName
+                    
+                    const declinedFirstName = firstName.endsWith("й") || firstName.endsWith("ий") 
+                      ? firstName.slice(0, -1) + "ю" 
+                      : firstName
+                    
+                    const declinedMiddleName = middleName.endsWith("ич") 
+                      ? middleName.slice(0, -2) + "ичу" 
+                      : middleName.endsWith("на") ? middleName.slice(0, -1) + "не" : middleName
+                    
+                    return `Генерал-майору ${declinedLastName} ${declinedFirstName}${declinedMiddleName ? " " + declinedMiddleName : ""}`
+                  }
+                  
+                  const displayPositionForExample = position ? toGenitiveCase(position, false) : "Старшего инспектора ППС"
+                  const currentRank = rank || "Капитана"
+                  const currentFio = fio || "Петрова Петра Петровича"
+                  const leaderFioFormatted = declineLeaderNameForExample(leaderFio)
+                  const currentCity = city || "Мирный"
+                  
+                  const examples = {
+                    ГУВД: {
+                      promotion: `Начальнику ГУВД по г. ${currentCity}
+${leaderFioFormatted}
+От ${displayPositionForExample}, ${currentRank}
+"${currentFio}"
+
+Рапорт о проделанной работе.
+Я, ${fio || "Петров Петр Петрович"}, являющийся ${position ? toInstrumentalCase(position, false) : "Старшим инспектором ППС"} подразделения ${selectedCategory ? (departmentAbbreviations[selectedCategory] || selectedCategory) : "ППС"}, находящийся в звании ${rank || "Капитан"}, оставляю отчет о проделанной работе. В связи с выполнением мной всех необходимых нормативов и требований прошу повысить меня до звания ${newRank || "Майор"}.
+С правилами подачи рапорта ознакомлен(-на).
+
+К рапорту прикладываю необходимый объём работы:
+1. Лекция по тактике - https://example.com/lecture1
+2. Тренировка по стрельбе - https://example.com/training1
+
+Дата: 15.10.2024
+Подпись: Петров П.П.`,
+                      reprimand: `Начальнику ГУВД по г. ${currentCity}
+${leaderFioFormatted}
+От ${displayPositionForExample}, ${currentRank}
+"${currentFio}"
+
+Рапорт о проделанной работе.
+Я, ${fio || "Петров Петр Петрович"}, являющийся ${position ? toInstrumentalCase(position, false) : "Старшим инспектором ППС"}, находящийся в звании ${rank || "Капитан"}, оставляю отчет о проделанной работе. В связи с выполнением мной нормы работы прошу снять с меня письменное дисциплинарное взыскание в виде выговора.
+С правилами подачи рапорта ознакомлен(-на).
+
+К рапорту прикладываю необходимый объём работы:
+1. Лекция по дисциплине - https://example.com/lecture2
+2. Тренировка по этике - https://example.com/training2
+
+Дата: 15.10.2024
+Подпись: Петров П.П.`,
+
+                      senior: `Начальнику ГУВД по г. ${currentCity}
+${leaderFioFormatted}
+От ${displayPositionForExample}, ${currentRank}
+"${currentFio}"
+
+Рапорт.
+Я, ${rank || "Капитан"} ${fio || "Петров Петр Петрович"}, являющийся ${position ? toInstrumentalCase(position, false) : "Старшим инспектором ППС"}, оставляю рапорт и докладываю Вам о проделанной мною работе в период с 01.10.2024 по 15.10.2024.
+
+1. Лекция по тактике - https://example.com/lecture3
+2. Тренировка по стрельбе - https://example.com/training3
+
+Ваша статистика онлайна за неделю: 45 часов
+
+Дата: 15.10.2024
+Подпись: Петров П.П.`
+                    },
+                    ГИБДД: {
+                      promotion: `Генералу Республики Провинция
+Начальнику ГИБДД по городу ${currentCity}
+От ${displayPositionForExample}, находящегося в звании ${rank || "Старший Лейтенант"}, ${currentFio}.
+
+Я, ${fio || "Петров Петр Петрович"}, являющийся ${position ? toInstrumentalCase(position, false) : "Инспектором СБ"}, докладываю о состоянии несения службы и выполненной мной работе за период с 01.10.2024 по 15.10.2024 и прошу рассмотреть моё заявление о повышении в звании до ${newRank || "Капитана"}. За указанный период мною был выполнен следующий объём работы, а также набрано соответствующее количество баллов: 150
+
+1. Лекция по ПДД - https://example.com/lecture1 – 5 – https://example.com/proof1
+2. Тренировка по вождению - https://example.com/training1 – 3 – https://example.com/proof2
+
+Подпись: Петров П.П.
+Дата: 15.10.2024`,
+
+                      reprimand: `Генералу Республики Провинция
+Начальнику ГИБДД по городу ${currentCity}
+От ${displayPositionForExample}, находящегося в звании ${rank || "Старший Лейтенант"}, ${currentFio}.
+
+Я, ${fio || "Петров Петр Петрович"}, являющийся ${position ? toInstrumentalCase(position, false) : "Инспектором СБ"}, прошу Вас рассмотреть мой рапорт на аннулирование дисциплинарного взыскания в виде выговора, полученного за нарушение Пункт 4.6 ПСГО. К рапорту прикладываю сведения о выполнении плана и количестве набранных баллов: 120
+
+1. Лекция по дисциплине - https://example.com/lecture2 – 4 – https://example.com/proof1
+2. Тренировка по этике - https://example.com/training2 – 3 – https://example.com/proof2
+
+Также прикладываю подтверждение об оплате неустойки на счёт лидера – https://example.com/payment
+Подпись: Петров П.П.
+Дата: 15.10.2024`,
+
+                      senior: `Генералу Республики Провинция
+Начальнику ГИБДД по городу ${currentCity}
+От ${displayPositionForExample}, находящегося в звании ${rank || "Старший Лейтенант"}, ${currentFio}.
+
+Я, ${fio || "Петров Петр Петрович"}, являющийся ${position ? toInstrumentalCase(position, false) : "Инспектором СБ"}, докладываю о состоянии несения службы и выполненной мной работе за промежуток времени с 01.10.2024 по 15.10.2024. За данный промежуток времени мною был выполнен следующий объём работ:
+
+1. Лекция по ПДД - https://example.com/lecture3
+2. Тренировка по вождению - https://example.com/training3
+
+Дата: 15.10.2024
+Подпись: Петров П.П.`
+                    }
+                  }
+
+                  const currentExample = examples[department as keyof typeof examples]?.[reportType as keyof typeof examples.ГУВД]
+
+                  return currentExample ? (
+                    <div className="bg-white/10 p-6 rounded-xl border border-white/20">
+                      <h4 className="text-lg font-semibold text-white mb-4">Пример {reportType === 'promotion' ? 'рапорт на повышение' : reportType === 'reprimand' ? 'рапорт на отработку выговора' : 'отчёт старшего состава'}</h4>
+                      <pre className="font-mono text-sm text-blue-100 whitespace-pre-wrap leading-relaxed bg-black/20 p-4 rounded-lg border border-blue-400/20">
+                        {currentExample}
+                      </pre>
+                    </div>
+                  ) : null
+                })()}
+              </div>
+            </CardContent>
+          </Card>
         )}
 
         {generatedReport && (

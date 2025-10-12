@@ -17,25 +17,15 @@ interface Lecture {
   category: "basic" | "advanced" | "special"
 }
 
-export function LecturesPage() {
-  const [openLectures, setOpenLectures] = useState<{ [key: string]: boolean }>({})
-  const [searchQuery, setSearchQuery] = useState("")
-
-  const toggleLecture = (lectureId: string) => {
-    setOpenLectures((prev) => ({
-      ...prev,
-      [lectureId]: !prev[lectureId],
-    }))
-  }
-
-  const lectures: Lecture[] = [
+export const lectures: Lecture[] = [
     {
       id: "lecture1",
       title: "Лекция 1. Задержание",
       icon: GraduationCap,
       category: "basic",
       content: `say Добрый день. Сегодняшняя тема лекции — «Задержание». Разберём основания, сроки и порядок действий сотрудников полиции.
-say Полиция защищает право каждого на свободу и неприкосновенность. say Без суда задержание не может длиться более трёх часов реального времени.
+say Полиция защищает право каждого на свободу и неприкосновенность. 
+say Задержание не может длиться более трёх часов реального времени.
 say Если за 10 минут не удалось посадить нарушителя в КПЗ по объективной причине — он должен быть освобождён.
 say Полиция имеет право задерживать подозреваемых в преступлении, скрывшихся от ареста, находящихся в розыске.
 say Также задерживают лиц, нарушивших охрану объекта, либо скрывшихся от административного ареста.
@@ -282,6 +272,17 @@ say Обучайтесь навыкам первой помощи регуляр
 say На этом лекция на тему "Первая медицинская помощь" закончена.`,
     },
   ]
+
+export function LecturesPage() {
+  const [openLectures, setOpenLectures] = useState<{ [key: string]: boolean }>({})
+  const [searchQuery, setSearchQuery] = useState("")
+
+  const toggleLecture = (lectureId: string) => {
+    setOpenLectures((prev) => ({
+      ...prev,
+      [lectureId]: !prev[lectureId],
+    }))
+  }
 
   const getItemIcon = (IconComponent: React.ComponentType<any>) => {
     return <IconComponent className="h-5 w-5" />

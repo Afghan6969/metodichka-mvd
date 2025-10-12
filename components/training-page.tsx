@@ -17,18 +17,7 @@ interface Training {
   category: "basic" | "advanced" | "special"
 }
 
-export function TrainingPage() {
-  const [openTrainings, setOpenTrainings] = useState<{ [key: string]: boolean }>({})
-  const [searchQuery, setSearchQuery] = useState("")
-
-  const toggleTraining = (trainingId: string) => {
-    setOpenTrainings((prev) => ({
-      ...prev,
-      [trainingId]: !prev[trainingId],
-    }))
-  }
-
-  const trainings: Training[] = [
+export const trainings: Training[] = [
     {
       id: "pushups",
       title: 'Тренировка "Отжимания"',
@@ -158,6 +147,17 @@ export function TrainingPage() {
       note: "выполняется на треке либо на тест-драйве автомобилей в городе Приволжск.",
     },
   ]
+
+export function TrainingPage() {
+  const [openTrainings, setOpenTrainings] = useState<{ [key: string]: boolean }>({})
+  const [searchQuery, setSearchQuery] = useState("")
+
+  const toggleTraining = (trainingId: string) => {
+    setOpenTrainings((prev) => ({
+      ...prev,
+      [trainingId]: !prev[trainingId],
+    }))
+  }
 
   const getItemIcon = (IconComponent: React.ComponentType<any>) => {
     return <IconComponent className="h-5 w-5" />

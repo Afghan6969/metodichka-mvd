@@ -1,8 +1,10 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { cn } from "@/lib/utils"
 import {
   BookOpen,
   GraduationCap,
@@ -30,13 +32,36 @@ import {
   Database,
   Building2,
   Badge,
+  Heart,
 } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { useAuth } from "@/lib/auth-context"
 
 interface ModernSidebarProps {
   currentPage: string
-  onPageChange: (page: string) => void
+  onPageChange: (page: 
+    | "contents"
+    | "newcomer-guide"
+    | "medical-aid"
+    | "lectures"
+    | "training"
+    | "education"
+    | "reports"
+    | "commands"
+    | "ammunition"
+    | "terms"
+    | "resources"
+    | "penalty-calculator"
+    | "gibdd-positions"
+    | "guvd-positions"
+    | "guvd-vehicles"
+    | "gibdd-vehicles"
+    | "guvd-gov-wave"
+    | "gibdd-gov-wave"
+    | "gibdd-binds"
+    | "guvd-binds"
+    | "test"
+    | "generator-page"
+    | "user-management"
+  ) => void
   onGlobalSearchOpen: () => void
   isOpen: boolean
   onClose: () => void
@@ -108,7 +133,7 @@ export function EnhancedSidebar({ currentPage, onPageChange, onGlobalSearchOpen,
           !isActive && "hover:bg-transparent hover:text-foreground text-muted-foreground [&:hover]:bg-transparent [&:hover]:text-foreground [&:focus]:bg-transparent [&:focus]:outline-none [&:focus]:ring-0 [&:focus-visible]:bg-transparent [&:focus-visible]:outline-none [&:focus-visible]:ring-0 [&:active]:bg-transparent [&:active]:outline-none [&_*]:bg-transparent",
         )}
         onClick={() => {
-          onPageChange(item.id)
+          onPageChange(item.id as any)
           onClose()
         }}
         onMouseEnter={() => setHoveredItem(item.id)}
@@ -131,8 +156,9 @@ export function EnhancedSidebar({ currentPage, onPageChange, onGlobalSearchOpen,
 
   const menuItems = [
     { id: "contents", label: "Главная", icon: Home },
-    { id: "lectures", label: "Лекции", icon: ScrollText },
-    { id: "training", label: "Тренировки", icon: Dumbbell },
+    { id: "newcomer-guide", label: "Руководство новичка", icon: Lightbulb },
+    { id: "medical-aid", label: "Оказание ПМП", icon: Heart },
+    { id: "education", label: "Обучение персонала МВД", icon: GraduationCap },
     { id: "reports", label: "Доклады в рацию", icon: Radio },
     { id: "commands", label: "Команды", icon: Terminal },
     { id: "penalty-calculator", label: "Калькулятор наказаний", icon: Scale },

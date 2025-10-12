@@ -7,6 +7,7 @@ import { ModernHeader } from "@/components/modern-header"
 import { MainContent } from "@/components/main-content"
 import { LecturesPage } from "@/components/lectures-page"
 import { TrainingPage } from "@/components/training-page"
+import { EducationPage } from "@/components/education-page"
 import { ReportsPage } from "@/components/reports-page"
 import { CommandsPage } from "@/components/commands-page"
 import GuvdVehiclesPage from "@/components/guvd-vehicles-page"
@@ -26,14 +27,19 @@ import { PositionsPage } from "@/components/positions-page"
 import { GuvdPositionsPage } from "@/components/guvd-positions-page"
 import GuvdExamplesPage from "@/components/test"
 import { GeneratorPage } from "@/components/generator-page"
+import { NewcomerGuidePage } from "@/components/newcomer-guide-page"
+import { MedicalAidPage } from "@/components/medical-aid-page"
 import { UserManagementPage } from "@/components/user-management-page"
 
 export default function Home() {
   const { currentUser } = useAuth()
   const [currentPage, setCurrentPage] = useState<
     | "contents"
+    | "newcomer-guide"
+    | "medical-aid"
     | "lectures"
     | "training"
+    | "education"
     | "reports"
     | "commands"
     | "ammunition"
@@ -58,10 +64,16 @@ export default function Home() {
 
   const renderContent = () => {
     switch (currentPage) {
+      case "newcomer-guide":
+        return <NewcomerGuidePage onPageChange={setCurrentPage} />
+      case "medical-aid":
+        return <MedicalAidPage />
       case "lectures":
         return <LecturesPage />
       case "training":
         return <TrainingPage />
+      case "education":
+        return <EducationPage />
       case "reports":
         return <ReportsPage />
       case "commands":
