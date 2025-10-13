@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
-import { Radio, Terminal, Shield, Users, AlertTriangle, Crown, Search } from "lucide-react"
+import { Shield, Users, AlertTriangle, Search } from "lucide-react"
 import { CopyButton } from "@/components/copy-button"
 import { PageHeader } from "@/components/page-header"
 import { Input } from "@/components/ui/input"
@@ -13,7 +13,7 @@ interface CommandCategory {
   description: string
   icon: React.ComponentType<any>
   commands: CommandItem[]
-  category: "radio" | "info" | "arrest" | "admin" | "special"
+  category: "common" | "guvd" | "gibdd"
 }
 
 interface CommandItem {
@@ -27,12 +27,13 @@ export function CommandsPage() {
 
   const commandCategories: CommandCategory[] = [
     {
-      id: "radio",
-      title: "Рации",
-      description: "Команды для радиосвязи",
-      icon: Radio,
-      category: "radio",
+      id: "common",
+      title: "Общие команды ГУВД и ГИБДД",
+      description: "Общие команды для сотрудников ГУВД и ГИБДД",
+      icon: Shield,
+      category: "common",
       commands: [
+        // Рации
         { command: "/r [text]", description: "Рация ГИБДД/ГУВД" },
         { command: "/rb [text]", description: "NonRP чат рации ГИБДД/ГУВД" },
         { command: "/ro [text]", description: "Общий чат сотрудников ГУВД и ГИБДД" },
@@ -40,32 +41,15 @@ export function CommandsPage() {
         { command: "/d [Text]", description: "Рация между всеми фракциями", rankRequired: "7+" },
         { command: "/db [Text]", description: "NonRP рация между всеми фракциями", rankRequired: "7+" },
         { command: "/fracvoice [0/1]", description: "Выключить / Включить фракционную голосовую рацию" },
-      ],
-    },
-    {
-      id: "info",
-      title: "Информационные команды",
-      description: "Получение информации и статистики",
-      icon: Terminal,
-      category: "info",
-      commands: [
+
+        // Информационные команды
         { command: "/find", description: "Список игроков во фракции онлайн" },
-        { command: "/skan [ID]", description: "Показывает сумму штрафов у гражданина" },
         { command: "/wanted", description: "Список всех игроков онлайн которые находятся в розыске" },
-        { command: "/fines", description: "Список игроков, имеющих штрафы (от 10.000 штрафов)" },
-        { command: "/wcar", description: "Список транспорта, находящихся в розыске" },
         { command: "/crimrec [ID]", description: "Показывает совершенные преступления игрока" },
         { command: "/paytime", description: "Время до начисления зарплаты" },
         { command: "Клавиша Ю", description: "Список сотрудников фракции", rankRequired: "9+" },
-      ],
-    },
-    {
-      id: "arrest",
-      title: "Команды задержания",
-      description: "Задержание и конвоирование преступников",
-      icon: Shield,
-      category: "arrest",
-      commands: [
+
+        // Команды задержания
         { command: "/cuff [ID]", description: "Надевает на преступника наручники" },
         { command: "/uncuff [ID]", description: "Снимает наручники с преступника" },
         { command: "/putpl [ID]", description: "Посадить преступника в машину" },
@@ -76,15 +60,8 @@ export function CommandsPage() {
           description:
             "Посадить игрока в КПЗ (Необходимо находиться вблизи полицейского участка, преступник должен быть в розыске и в наручниках)",
         },
-      ],
-    },
-    {
-      id: "admin",
-      title: "Административные команды",
-      description: "Управление розыском и штрафами",
-      icon: Users,
-      category: "admin",
-      commands: [
+
+        // Административные команды
         {
           command: "/su [ID] [Уровень розыска 1-6] [Причина]",
           description: "Подать игрока в розыск",
@@ -95,8 +72,6 @@ export function CommandsPage() {
           description: "Выдать игроку штраф от 500 до 100.000 (ГИБДД)/250.000 (ГУВД)",
           rankRequired: "3/5+",
         },
-        { command: "/clear [ID]", description: "Убрать розыск с преступника"},
-        { command: "/jailbreak [ID]", description: "Выпустить заключенного из КПЗ", rankRequired: "8+" },
         {
           command: "/giverank [ID] [Номер ранга]",
           description: "Изменить ранг (9-10 ранги могут повышать до 8 ранг)",
@@ -104,15 +79,32 @@ export function CommandsPage() {
         },
         { command: "/invite [ID]", description: "Принять во фракцию", rankRequired: "10+" },
         { command: "/uninvite [ID]", description: "Уволить из фракции", rankRequired: "9+" },
+
+        // Команды руководства
+        { command: "/gov", description: "Написать государственные новости", rankRequired: "10+" },
+      ],
+    },
+    {
+      id: "guvd",
+      title: "Команды ГУВД",
+      description: "Специфичные команды для сотрудников ГУВД",
+      icon: Users,
+      category: "guvd",
+      commands: [
+        { command: "/clear [ID]", description: "Убрать розыск с преступника"},
+        { command: "/jailbreak [ID]", description: "Выпустить заключенного из КПЗ", rankRequired: "8+" },
       ],
     },
     {
       id: "gibdd",
-      title: "Специальные команды ГИБДД",
-      description: "Команды для работы с водительскими правами",
+      title: "Команды ГИБДД",
+      description: "Специфичные команды для сотрудников ГИБДД",
       icon: AlertTriangle,
-      category: "special",
+      category: "gibdd",
       commands: [
+        { command: "/fines", description: "Список игроков, имеющих штрафы (от 10.000 штрафов)" },
+        { command: "/wcar", description: "Список транспорта, находящихся в розыске" },
+        { command: "/skan [ID]", description: "Показывает сумму штрафов у гражданина" },
         {
           command: "/takecarlic [ID] [Срок 1-4]",
           description: "Отобрать права на определенный срок",
@@ -124,14 +116,6 @@ export function CommandsPage() {
           rankRequired: "9+",
         },
       ],
-    },
-    {
-      id: "leadership",
-      title: "Команды высшего руководства",
-      description: "Команды для руководящего состава",
-      icon: Crown,
-      category: "special",
-      commands: [{ command: "/gov", description: "Написать государственные новости", rankRequired: "10+" }],
     },
   ]
 
@@ -146,17 +130,15 @@ export function CommandsPage() {
   )
 
   const categoryIcons: Record<string, { icon: any; color: string }> = {
-    radio: { icon: Radio, color: "from-blue-500/80 to-blue-600/60" },
-    info: { icon: Terminal, color: "from-green-500/80 to-green-600/60" },
-    arrest: { icon: Shield, color: "from-red-500/80 to-red-600/60" },
-    admin: { icon: Users, color: "from-purple-500/80 to-purple-600/60" },
-    special: { icon: Crown, color: "from-yellow-500/80 to-yellow-600/60" },
+    common: { icon: Shield, color: "from-blue-500/80 to-blue-600/60" },
+    guvd: { icon: Users, color: "from-purple-500/80 to-purple-600/60" },
+    gibdd: { icon: AlertTriangle, color: "from-yellow-500/80 to-yellow-600/60" },
   }
 
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
       <PageHeader 
-        icon={Terminal}
+        icon={Shield}
         title="Команды МВД"
         description="Полный список игровых команд и их описание"
         badge={`${filteredCategories.length} категорий`}

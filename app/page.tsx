@@ -22,7 +22,7 @@ import { ResourcesPage } from "@/components/resources-page"
 import { PenaltyCalculator } from "@/components/penalty-calculator"
 import { GlobalSearch } from "@/components/global-search"
 import { Button } from "@/components/ui/button"
-import { Shield, ArrowRight, BookOpen, Target, Keyboard, Car, Award, AlertCircle } from "lucide-react"
+import { Shield, ArrowRight, BookOpen, Target, Keyboard, Car, Award, AlertCircle, Sparkles, TrendingUp, Users, Zap, GraduationCap, FileText, Radio, Briefcase } from "lucide-react"
 import { PositionsPage } from "@/components/positions-page"
 import { GuvdPositionsPage } from "@/components/guvd-positions-page"
 import GuvdExamplesPage from "@/components/test"
@@ -61,6 +61,18 @@ export default function Home() {
 
   const [isGlobalSearchOpen, setIsGlobalSearchOpen] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+
+  const handleGlobalSearchOpen = () => {
+    setIsGlobalSearchOpen(true)
+  }
+
+  const handleGlobalSearchClose = () => {
+    setIsGlobalSearchOpen(false)
+  }
+
+  const handleGlobalSearchResult = (page: string) => {
+    setCurrentPage(page as any)
+  }
 
   const renderContent = () => {
     switch (currentPage) {
@@ -114,104 +126,201 @@ export default function Home() {
             <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=80 height=80 viewBox=0 0 80 80 xmlns=http://www.w3.org/2000/svg%3E%3Cg fill=none fillRule=evenodd%3E%3Cg fill=%23000000 fillOpacity=0.02%3E%3Cpath d=M0 0h80v80H0V0zm20 20v40h40V20H20zm20 35a15 15 0 1 1 0-30 15 15 0 0 1 0 30z/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
 
-              <div className="relative z-10 max-w-7xl mx-auto px-6 py-16">
-                {/* Hero */}
-                <div className="text-center mb-20">
-                  <div className="inline-flex items-center gap-3 mb-10 px-7 py-4 bg-gradient-to-r from-primary/12 via-primary/8 to-primary/12 rounded-3xl border-2 border-primary/35 backdrop-blur-sm shadow-xl hover:shadow-primary/25 transition-all duration-300 group">
-                    <div className="police-beacon group-hover:scale-110 transition-transform duration-300"></div>
-                    <Shield className="h-7 w-7 text-primary group-hover:rotate-3 transition-transform duration-300" />
-                    <span className="text-base font-black uppercase tracking-[0.12em] text-primary bg-gradient-to-r from-primary to-primary/85 bg-clip-text">МВД РЕСПУБЛИКИ ПРОВИНЦИЯ</span>
+              <div className="relative z-10 max-w-7xl mx-auto px-6 py-12">
+                {/* Header Section */}
+                <div className="mb-12">
+                  <div className="flex items-center justify-center gap-4 mb-6">
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+                    <div className="flex items-center gap-3 px-5 py-2.5 bg-primary/10 rounded-full border border-primary/30">
+                      <Shield className="h-5 w-5 text-primary" />
+                      <span className="text-sm font-bold uppercase tracking-widest text-primary">МВД Республики Провинция</span>
+                    </div>
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
                   </div>
-
-                  <h1 className="mb-8 text-5xl lg:text-7xl font-black uppercase tracking-tight leading-tight">
-                    <span className="text-transparent bg-gradient-to-br from-foreground via-foreground/95 to-muted-foreground/90 bg-clip-text drop-shadow-lg">
-                      Методическое
-                    </span>
-                    <span className="block text-primary drop-shadow-lg mt-1 hover:scale-105 transition-transform duration-300">пособие МВД</span>
+                  
+                  <h1 className="text-center text-5xl lg:text-7xl font-black uppercase mb-4">
+                    <span className="block text-foreground">Методическое пособие</span>
+                    <span className="block text-primary mt-2">МВД</span>
                   </h1>
+                  
+                {/* Important Notice - moved up */}
+                <div className="max-w-4xl mx-auto mb-8">
+                  <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500/5 via-orange-500/10 to-orange-600/5 border-2 border-orange-500/30 shadow-xl hover:shadow-2xl transition-all duration-300">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl"></div>
+                    <div className="relative flex items-start gap-5 p-6">
+                      <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center border border-orange-500/40">
+                        <AlertCircle className="h-7 w-7 text-orange-600 dark:text-orange-500" />
+                      </div>
+                      <div className="text-left space-y-3 flex-1">
+                        <h3 className="font-black text-xl text-orange-600 dark:text-orange-500 uppercase tracking-wide flex items-center gap-2">
+                          Важное уточнение
+                          <TrendingUp className="h-5 w-5" />
+                        </h3>
+                        <div className="grid gap-2 text-sm text-muted-foreground leading-relaxed">
+                          <p className="flex items-start gap-2">
+                            <span className="text-orange-500 font-bold mt-0.5">•</span>
+                            <span>Данная методичка может содержать неточности или устаревшую информацию</span>
+                          </p>
+                          <p className="flex items-start gap-2">
+                            <span className="text-orange-500 font-bold mt-0.5">•</span>
+                            <span>Материалы служат основой для изучения, но не являются окончательным источником</span>
+                          </p>
+                          <p className="flex items-start gap-2">
+                            <span className="text-orange-500 font-bold mt-0.5">•</span>
+                            <span>При возникновении спорных вопросов обращайтесь к актуальным регламентам</span>
+                          </p>
+                          <p className="flex items-start gap-2">
+                            <span className="text-orange-500 font-bold mt-0.5">•</span>
+                            <span>Администрация не несет ответственности за возможные ошибки в содержании</span>
+                          </p>
+                          <p className="flex items-start gap-2">
+                            <span className="text-orange-500 font-bold mt-0.5">•</span>
+                            <span>При обнаружении неточности сообщите об этом разработчику</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-center mb-12">
+                  <div className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-primary to-primary/80 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group cursor-pointer border border-primary/30" onClick={() => setCurrentPage("newcomer-guide")}>
+                    <GraduationCap className="h-6 w-6 text-white group-hover:scale-110 transition-transform duration-300" />
+                    <span className="text-lg font-bold text-white uppercase tracking-wide">Начать обучение</span>
+                    <ArrowRight className="h-5 w-5 text-white group-hover:translate-x-1 transition-transform duration-300" />
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-3">Руководство новичка для быстрого старта в работе</p>
+                </div>
 
-                  <div className="max-w-4xl mx-auto mb-14">
-                    <p className="text-xl lg:text-2xl text-muted-foreground leading-relaxed font-medium">
-                      Полное руководство для сотрудников
-                      <span className="text-primary font-bold mx-1 hover:scale-105 transition-transform duration-200 inline-block">ГИБДД</span> и
-                      <span className="text-red-500 font-bold mx-1 hover:scale-105 transition-transform duration-200 inline-block">ГУВД</span>
-                      Республики Провинция.
-                    </p>
-                    <p className="text-lg text-muted-foreground/90 mt-5 leading-relaxed font-light">
-                      Лекции, тренировки, бинды, должности, транспорт и инструменты для работы.
-                    </p>
+                {/* Main Content Grid */}
+                <div className="grid lg:grid-cols-2 gap-6 mb-8">
+                  {/* ГИБДД Section */}
+                  <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 border-2 border-primary/20 p-8 hover:border-primary/40 transition-all duration-300">
+                    <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
+                    <div className="relative">
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shadow-lg">
+                          <Car className="h-8 w-8 text-white" />
+                        </div>
+                        <div>
+                          <h2 className="text-3xl font-black uppercase text-primary">ГИБДД</h2>
+                          <p className="text-sm text-muted-foreground">Госавтоинспекция</p>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3 text-sm">
+                          <Briefcase className="h-4 w-4 text-primary" />
+                          <span className="text-foreground/80">Полная информация о должностях и иерархии</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-sm">
+                          <Car className="h-4 w-4 text-primary" />
+                          <span className="text-foreground/80">Подробный автопарк с характеристиками</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-sm">
+                          <Radio className="h-4 w-4 text-primary" />
+                          <span className="text-foreground/80">Руководства по работе на гос. волне</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-sm">
+                          <Keyboard className="h-4 w-4 text-primary" />
+                          <span className="text-foreground/80">Полный набор биндов и команд</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Important Notice */}
-                  <div className="max-w-3xl mx-auto mb-8">
-                    <div className="military-card bg-orange-500/10 border-orange-500/30">
-                      <div className="flex items-start gap-4 p-5">
-                        <AlertCircle className="h-6 w-6 text-orange-600 dark:text-orange-500 flex-shrink-0 mt-1" />
-                        <div className="text-left space-y-3">
-                          <h3 className="font-black text-lg text-orange-600 dark:text-orange-500 uppercase">Важное уточнение</h3>
-                          <div className="space-y-2 text-sm text-muted-foreground">
-                            <p>• Данная методичка может содержать неточности или устаревшую информацию</p>
-                            <p>• Материалы служат основой для изучения, но не являются окончательным источником</p>
-                            <p>• При возникновении спорных вопросов обращайтесь к актуальным регламентам</p>
-                            <p>• Администрация не несет ответственности за возможные ошибки в содержании</p>
-                            <p>• При обнаружении неточности сообщите об этом разработчику</p>
-                          </div>
+                  {/* ГУВД Section */}
+                  <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-red-500/5 via-red-500/10 to-red-500/5 border-2 border-red-500/20 p-8 hover:border-red-500/40 transition-all duration-300">
+                    <div className="absolute top-0 right-0 w-40 h-40 bg-red-500/10 rounded-full blur-3xl"></div>
+                    <div className="relative">
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg">
+                          <Shield className="h-8 w-8 text-white" />
+                        </div>
+                        <div>
+                          <h2 className="text-3xl font-black uppercase text-red-500">ГУВД</h2>
+                          <p className="text-sm text-muted-foreground">Главное управление</p>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3 text-sm">
+                          <Briefcase className="h-4 w-4 text-red-500" />
+                          <span className="text-foreground/80">Полная информация о должностях и иерархии</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-sm">
+                          <Car className="h-4 w-4 text-red-500" />
+                          <span className="text-foreground/80">Подробный автопарк с характеристиками</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-sm">
+                          <Radio className="h-4 w-4 text-red-500" />
+                          <span className="text-foreground/80">Руководства по работе на гос. волне</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-sm">
+                          <Keyboard className="h-4 w-4 text-red-500" />
+                          <span className="text-foreground/80">Полный набор биндов и команд</span>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Stats */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
+                {/* Quick Stats */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                   {[
-                    { icon: BookOpen, label: "Лекций", value: "15+" },
-                    { icon: Target, label: "Тренировок", value: "20+" },
-                    { icon: Keyboard, label: "Биндов", value: "50+" },
-                    { icon: Car, label: "Автомобилей", value: "30+" },
+                    { icon: GraduationCap, label: "Лекций", value: "15+", gradient: "from-blue-500 to-cyan-500" },
+                    { icon: Target, label: "Тренировок", value: "20+", gradient: "from-green-500 to-emerald-500" },
+                    { icon: Keyboard, label: "Биндов", value: "50+", gradient: "from-purple-500 to-pink-500" },
+                    { icon: Car, label: "Автомобилей", value: "30+", gradient: "from-orange-500 to-red-500" },
                   ].map((stat, i) => (
-                    <div key={i} className="bg-black/5 backdrop-blur-sm border border-white/10 rounded-2xl text-center p-6 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
-                      <stat.icon className="h-8 w-8 mx-auto mb-3 text-blue-300" />
-                      <div className="text-3xl font-black mb-1 text-white">{stat.value}</div>
-                      <div className="text-sm text-blue-200/80 font-semibold uppercase tracking-wide">{stat.label}</div>
+                    <div key={i} className="relative overflow-hidden rounded-xl bg-card/50 backdrop-blur-sm border border-border p-5 hover:border-primary/50 transition-all duration-300 group">
+                      <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
+                      <div className="relative flex flex-col items-center text-center space-y-2">
+                        <stat.icon className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                        <div className="text-2xl font-black text-foreground">{stat.value}</div>
+                        <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{stat.label}</div>
+                      </div>
                     </div>
                   ))}
                 </div>
 
-                {/* Feature Cards */}
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div className="bg-black/5 backdrop-blur-sm border border-white/10 rounded-3xl text-center group hover:shadow-2xl transition-all duration-300 p-8 hover:scale-105">
-                    <div className="relative w-20 h-20 bg-gradient-to-br from-blue-500/80 to-blue-600/60 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
-                      <BookOpen className="h-10 w-10 text-white" />
+                {/* Tools Section */}
+                <div className="grid md:grid-cols-3 gap-5 mb-8">
+                  <div className="rounded-xl bg-card/50 backdrop-blur-sm border border-border p-6 hover:border-primary/50 transition-all duration-300">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <FileText className="h-5 w-5 text-primary" />
+                      </div>
+                      <h3 className="text-lg font-bold uppercase">Обучение</h3>
                     </div>
-                    <h3 className="text-2xl font-black mb-4 uppercase tracking-wide text-white">ГИБДД</h3>
-                    <p className="text-blue-100/80 leading-relaxed">
-                      Должности, автопарк, гос волна, бинды и материалы для ГИБДД
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Лекции, тренировки и образовательные материалы для подготовки сотрудников
                     </p>
                   </div>
 
-                  <div className="bg-black/5 backdrop-blur-sm border border-white/10 rounded-3xl text-center group hover:shadow-2xl transition-all duration-300 p-8 hover:scale-105">
-                    <div className="relative w-20 h-20 bg-gradient-to-br from-red-500/80 to-red-600/60 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
-                      <Shield className="h-10 w-10 text-white" />
+                  <div className="rounded-xl bg-card/50 backdrop-blur-sm border border-border p-6 hover:border-primary/50 transition-all duration-300">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <Award className="h-5 w-5 text-primary" />
+                      </div>
+                      <h3 className="text-lg font-bold uppercase">Инструменты</h3>
                     </div>
-                    <h3 className="text-2xl font-black mb-4 uppercase tracking-wide text-white">ГУВД</h3>
-                    <p className="text-red-100/80 leading-relaxed">
-                      Должности, автопарк, гос волна, бинды и материалы для ГУВД
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Калькулятор штрафов, генератор отчётов и справочные материалы
                     </p>
                   </div>
 
-                  <div className="bg-black/5 backdrop-blur-sm border border-white/10 rounded-3xl text-center group hover:shadow-2xl transition-all duration-300 p-8 hover:scale-105">
-                    <div className="relative w-20 h-20 bg-gradient-to-br from-purple-500/80 to-purple-600/60 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
-                      <Award className="h-10 w-10 text-white" />
+                  <div className="rounded-xl bg-card/50 backdrop-blur-sm border border-border p-6 hover:border-primary/50 transition-all duration-300">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <BookOpen className="h-5 w-5 text-primary" />
+                      </div>
+                      <h3 className="text-lg font-bold uppercase">Справочник</h3>
                     </div>
-                    <h3 className="text-2xl font-black mb-4 uppercase tracking-wide text-white">Инструменты</h3>
-                    <p className="text-purple-100/80 leading-relaxed">
-                      Калькулятор штрафов, генератор отчётов, термины и ресурсы
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Термины, определения и полезные ресурсы для работы
                     </p>
                   </div>
                 </div>
 
-                {/* Developer Contact */}
+                {/* Important Notice */}
                 <div className="mt-16 pt-8 border-t border-border/50">
                   <div className="text-center">
                     <p className="text-sm text-muted-foreground">
@@ -230,20 +339,9 @@ export default function Home() {
               </div>
             </div>
           </div>
+          </div>
         )
-    }
   }
-
-  const handleGlobalSearchOpen = () => {
-    setIsGlobalSearchOpen(true)
-  }
-
-  const handleGlobalSearchClose = () => {
-    setIsGlobalSearchOpen(false)
-  }
-
-  const handleGlobalSearchResult = (page: string) => {
-    setCurrentPage(page as any)
   }
 
   return (

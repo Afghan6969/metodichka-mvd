@@ -105,10 +105,10 @@ export function NewcomerGuidePage({ onPageChange }: NewcomerGuidePageProps) {
       description: "Создание рапортов и отчётов для МВД",
       link: "generator-page" as const,
       icon: FileText,
-      gradient: "from-amber-500/20 to-orange-600/20",
-      borderGradient: "border-amber-500/30",
-      textColor: "text-amber-700 dark:text-amber-300",
-      bgGradient: "from-amber-50/50 to-orange-50/30 dark:from-amber-950/20 dark:to-orange-950/10",
+      gradient: "from-violet-500/20 to-purple-600/20",
+      borderGradient: "border-violet-500/30",
+      textColor: "text-violet-700 dark:text-violet-300",
+      bgGradient: "from-violet-50/50 to-purple-50/30 dark:from-violet-950/20 dark:to-purple-950/10",
       badge: "Инструмент"
     },
     {
@@ -116,10 +116,10 @@ export function NewcomerGuidePage({ onPageChange }: NewcomerGuidePageProps) {
       description: "Расчёт штрафов по КоАП и УК РП",
       link: "penalty-calculator" as const,
       icon: CheckCircle,
-      gradient: "from-cyan-500/20 to-sky-600/20",
-      borderGradient: "border-cyan-500/30",
-      textColor: "text-cyan-700 dark:text-cyan-300",
-      bgGradient: "from-cyan-50/50 to-sky-50/30 dark:from-cyan-950/20 dark:to-sky-950/10",
+      gradient: "from-violet-500/20 to-purple-600/20",
+      borderGradient: "border-violet-500/30",
+      textColor: "text-violet-700 dark:text-violet-300",
+      bgGradient: "from-violet-50/50 to-purple-50/30 dark:from-violet-950/20 dark:to-purple-950/10",
       badge: "Инструмент"
     },
     {
@@ -127,30 +127,30 @@ export function NewcomerGuidePage({ onPageChange }: NewcomerGuidePageProps) {
       description: "Карьерный рост и структура ГУВД",
       link: "guvd-positions" as const,
       icon: Shield,
-      gradient: "from-purple-500/20 to-violet-600/20",
-      borderGradient: "border-purple-500/30",
-      textColor: "text-purple-700 dark:text-purple-300",
-      bgGradient: "from-purple-50/50 to-violet-50/30 dark:from-purple-950/20 dark:to-violet-950/10"
+      gradient: "from-violet-500/20 to-purple-600/20",
+      borderGradient: "border-violet-500/30",
+      textColor: "text-violet-700 dark:text-violet-300",
+      bgGradient: "from-violet-50/50 to-purple-50/30 dark:from-violet-950/20 dark:to-purple-950/10"
     },
     {
       title: "Должности ГИБДД",
       description: "Карьерный рост и структура ГИБДД",
       link: "gibdd-positions" as const,
       icon: Car,
-      gradient: "from-blue-500/20 to-cyan-600/20",
-      borderGradient: "border-blue-500/30",
-      textColor: "text-blue-700 dark:text-blue-300",
-      bgGradient: "from-blue-50/50 to-cyan-50/30 dark:from-blue-950/20 dark:to-cyan-950/10"
+      gradient: "from-violet-500/20 to-purple-600/20",
+      borderGradient: "border-violet-500/30",
+      textColor: "text-violet-700 dark:text-violet-300",
+      bgGradient: "from-violet-50/50 to-purple-50/30 dark:from-violet-950/20 dark:to-purple-950/10"
     },
     {
       title: "Оказание ПМП",
       description: "Первая медицинская помощь и отыгровки",
       link: "medical-aid" as const,
       icon: Heart,
-      gradient: "from-red-500/20 to-rose-600/20",
-      borderGradient: "border-red-500/30",
-      textColor: "text-red-700 dark:text-red-300",
-      bgGradient: "from-red-50/50 to-rose-50/30 dark:from-red-950/20 dark:to-rose-950/10",
+      gradient: "from-violet-500/20 to-purple-600/20",
+      borderGradient: "border-violet-500/30",
+      textColor: "text-violet-700 dark:text-violet-300",
+      bgGradient: "from-violet-50/50 to-purple-50/30 dark:from-violet-950/20 dark:to-purple-950/10",
       badge: "Важно"
     },
     {
@@ -168,10 +168,10 @@ export function NewcomerGuidePage({ onPageChange }: NewcomerGuidePageProps) {
       description: "Полезные игровые команды для работы",
       link: "commands",
       icon: Terminal,
-      gradient: "from-lime-500/20 to-green-600/20",
-      borderGradient: "border-lime-500/30",
-      textColor: "text-lime-700 dark:text-lime-300",
-      bgGradient: "from-lime-50/50 to-green-50/30 dark:from-lime-950/20 dark:to-green-950/10"
+      gradient: "from-violet-500/20 to-purple-600/20",
+      borderGradient: "border-violet-500/30",
+      textColor: "text-violet-700 dark:text-violet-300",
+      bgGradient: "from-violet-50/50 to-purple-50/30 dark:from-violet-950/20 dark:to-purple-950/10"
     }
   ]
 
