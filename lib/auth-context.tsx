@@ -140,10 +140,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           )
         `
         )
+        .order("role", { ascending: false })
         .order("created_at", { ascending: true });
 
       if (error) {
         console.error("[Auth] Failed to load users:", error);
+        console.error("[Auth] Error details:", JSON.stringify(error, null, 2));
+        console.error("[Auth] Error message:", error?.message);
+        console.error("[Auth] Error code:", error?.code);
+        console.error("[Auth] Error hint:", error?.hint);
         return;
       }
 
@@ -169,6 +174,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
           : undefined,
       }));
+
+      // Сортируем пользователей по ролям в нужном порядке
+      const roleOrder = {
+        'root': 0,
+        'gs-guvd': 1,
+        'gs-gibdd': 1,
+        'pgs-guvd': 2,
+        'pgs-gibdd': 2,
+        'leader-guvd': 3,
+        'leader-gibdd': 3,
+        'ss-guvd': 4,
+        'ss-gibdd': 4,
+        'guvd': 5,
+        'gibdd': 5,
+        'none': 6
+      };
+
+      usersWithRoles.sort((a: any, b: any) => {
+        const aOrder = roleOrder[a.role as keyof typeof roleOrder] ?? 999;
+        const bOrder = roleOrder[b.role as keyof typeof roleOrder] ?? 999;
+
+        if (aOrder !== bOrder) {
+          return aOrder - bOrder;
+        }
+
+        // Если роли одинаковые, сортируем по нику
+        return a.nickname.localeCompare(b.nickname);
+      });
 
       setUsers(usersWithRoles);
     } catch (err) {

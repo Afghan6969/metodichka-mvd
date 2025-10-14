@@ -198,7 +198,7 @@ export default function Home() {
                     <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
                     <div className="relative">
                       <div className="flex items-center gap-4 mb-6">
-                        <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shadow-lg">
+                        <div className="w-16 h-16 rounded-xl bg-blue-500 flex items-center justify-center shadow-lg">
                           <Car className="h-8 w-8 text-white" />
                         </div>
                         <div>

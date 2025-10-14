@@ -7,6 +7,7 @@ import { useState } from "react"
 import { useAuth } from "@/lib/auth-context"
 import { roleDisplayNames } from "@/components/user-management/constants"
 import { LoginModal } from "@/components/login-modal"
+import { ThemeSwitcher } from "@/components/theme-switcher"
 
 interface ModernHeaderProps {
   onMenuClick: () => void
@@ -72,6 +73,8 @@ export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) 
                 </Button>
               </div>
             )}
+
+            <ThemeSwitcher />
 
             <Button variant="ghost" size="icon" onClick={onSearchClick} className="lg:hidden rounded-xl h-10 w-10 hover:bg-primary/20 border border-primary/30 shadow-md">
               <Search className="h-4 w-4 text-primary" />
