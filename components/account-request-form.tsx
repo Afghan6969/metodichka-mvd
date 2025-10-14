@@ -268,6 +268,14 @@ export function AccountRequestForm() {
             </p>
           </div>
 
+          {/* Уточнение о безопасности пароля и логина */}
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription className="text-xs">
+              <strong>Важное уточнение:</strong> Не используйте логин и пароль, совпадающие или похожие на данные от ваших игровых аккаунтов.
+            </AlertDescription>
+          </Alert>
+
           {/* Пароль */}
           <div className="space-y-2">
             <Label htmlFor="password">
