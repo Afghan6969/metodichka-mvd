@@ -62,7 +62,7 @@ export function EducationPage() {
       />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3 h-14 bg-card border border-border rounded-2xl p-1">
+        <TabsList className="grid w-full grid-cols-2 h-14 bg-card border border-border rounded-2xl p-1">
           <TabsTrigger value="lectures" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <ScrollText className="h-4 w-4 mr-2" />
             Лекции ({lectures.length})
@@ -70,10 +70,6 @@ export function EducationPage() {
           <TabsTrigger value="trainings" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             <Dumbbell className="h-4 w-4 mr-2" />
             Тренировки ({trainings.length})
-          </TabsTrigger>
-          <TabsTrigger value="events" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-            <Calendar className="h-4 w-4 mr-2" />
-            Мероприятия (Скоро)
           </TabsTrigger>
         </TabsList>
 
@@ -85,9 +81,7 @@ export function EducationPage() {
             placeholder={
               activeTab === "lectures" 
                 ? "Поиск по лекциям..." 
-                : activeTab === "trainings"
-                ? "Поиск по тренировкам..."
-                : "Поиск по мероприятиям..."
+                : "Поиск по тренировкам..."
             }
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -228,24 +222,6 @@ export function EducationPage() {
               </Collapsible>
             </div>
           ))}
-        </TabsContent>
-
-        <TabsContent value="events" className="mt-6">
-          <div className="relative bg-gradient-to-br from-amber-500/15 via-yellow-500/8 to-orange-500/5 border-2 border-amber-500/40 shadow-xl rounded-2xl">
-            <div className="text-center py-16">
-              <div className="max-w-2xl mx-auto">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-amber-500/25 to-yellow-500/15 rounded-3xl mb-6 mx-auto">
-                  <Calendar className="h-10 w-10 text-amber-600" />
-                </div>
-                <h2 className="text-4xl font-bold text-amber-700 dark:text-amber-300 mb-4">
-                  В разработке
-                </h2>
-                <p className="text-muted-foreground text-lg leading-relaxed">
-                  Раздел мероприятий находится в процессе разработки и скоро будет доступен.
-                </p>
-              </div>
-            </div>
-          </div>
         </TabsContent>
       </Tabs>
     </div>
