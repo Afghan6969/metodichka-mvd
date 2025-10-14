@@ -33,8 +33,8 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "User not found or inactive" }, { status: 403 });
     }
 
-    // Только root, ПГС и ГС могут просматривать запросы
-    const allowedRoles = ["root", "pgs-gibdd", "pgs-guvd", "gs-gibdd", "gs-guvd"];
+    // Только root, ПГС, ГС и лидеры могут просматривать запросы
+    const allowedRoles = ["root", "pgs-gibdd", "pgs-guvd", "gs-gibdd", "gs-guvd", "leader-gibdd", "leader-guvd"];
     if (!allowedRoles.includes(user.role)) {
       return NextResponse.json(
         { error: "Access denied. Only Leaders and GS can view requests." },

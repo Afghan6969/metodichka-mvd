@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
+import { useAuth } from "@/lib/auth-context";
 
 interface AccountRequest {
   id: string;
@@ -51,6 +52,7 @@ interface ReviewDialogData {
 }
 
 export function AccountRequestsAdmin() {
+  const { currentUser } = useAuth();
   const [requests, setRequests] = useState<AccountRequest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -263,7 +265,7 @@ export function AccountRequestsAdmin() {
                             <Calendar className="w-4 h-4" />
                             <span>Создан: {formatDate(request.created_at)}</span>
                           </div>
-                          {request.ip_address && (
+                          {request.ip_address && currentUser?.role === "root" && (
                             <div className="flex items-center gap-2 text-muted-foreground">
                               <Shield className="w-4 h-4" />
                               <span>IP: {request.ip_address}</span>

@@ -1,4 +1,4 @@
--- Обновление RLS политик для account_requests
+-- Обновление RLS политик для account_requests (добавлены лидеры)
 -- Удаляем старые политики
 DROP POLICY IF EXISTS "Leaders can view account requests" ON account_requests;
 DROP POLICY IF EXISTS "Leaders can update account requests" ON account_requests;
