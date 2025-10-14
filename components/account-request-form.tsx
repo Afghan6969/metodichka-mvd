@@ -54,11 +54,22 @@ export function AccountRequestForm() {
     setValidationErrors([]);
   };
 
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Разрешаем только буквы, дефисы и подчеркивания
+    const filteredValue = value.replace(/[^a-zA-Zа-яА-ЯёЁ_\-]/g, '');
+    handleInputChange("nickname", filteredValue);
+  };
+
   const validateForm = (): boolean => {
     const errors: string[] = [];
 
     if (!formData.nickname.trim()) {
       errors.push("Ник обязателен для заполнения");
+    } else if (!/^[a-zA-Zа-яА-ЯёЁ_\-]+$/.test(formData.nickname.trim())) {
+      errors.push("Ник может содержать только буквы, дефисы и подчеркивания");
+    } else if (!/^[a-zA-Zа-яА-ЯёЁ]+_[a-zA-Zа-яА-ЯёЁ]+$/.test(formData.nickname.trim())) {
+      errors.push("Ник должен быть в формате 'Имя_Фамилия'");
     }
 
     if (!formData.login.trim()) {
@@ -85,10 +96,22 @@ export function AccountRequestForm() {
     return errors.length === 0;
   };
 
+  const isFormValid = (): boolean => {
+    if (!formData.nickname.trim()) return false;
+    if (!/^[a-zA-Zа-яА-ЯёЁ_\-]+$/.test(formData.nickname.trim())) return false;
+    if (!/^[a-zA-Zа-яА-ЯёЁ]+_[a-zA-Zа-яА-ЯёЁ]+$/.test(formData.nickname.trim())) return false;
+    if (!formData.login.trim()) return false;
+    if (!formData.password) return false;
+    if (formData.password !== formData.confirmPassword) return false;
+    if (!formData.role) return false;
+    if (!captchaAnswer.trim()) return false;
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
+
+    if (!isFormValid()) {
       return;
     }
 
@@ -139,6 +162,17 @@ export function AccountRequestForm() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const getNicknameInputClassName = () => {
+    if (!formData.nickname.trim()) return "";
+    if (!/^[a-zA-Zа-яА-ЯёЁ_\-]+$/.test(formData.nickname.trim())) {
+      return "border-red-400 focus:border-red-500 focus:ring-red-500/20";
+    }
+    if (!/^[a-zA-Zа-яА-ЯёЁ]+_[a-zA-Zа-яА-ЯёЁ]+$/.test(formData.nickname.trim())) {
+      return "border-yellow-400 focus:border-yellow-500 focus:ring-yellow-500/20";
+    }
+    return "border-green-400 focus:border-green-500 focus:ring-green-500/20";
   };
 
   if (isSuccess) {
@@ -206,12 +240,13 @@ export function AccountRequestForm() {
               id="nickname"
               placeholder="Введите ник (например: Petr_Petrov)"
               value={formData.nickname}
-              onChange={(e) => handleInputChange("nickname", e.target.value)}
+              onChange={handleNicknameChange}
               disabled={isLoading}
               maxLength={50}
+              className={getNicknameInputClassName()}
             />
             <p className="text-xs text-muted-foreground">
-              Только буквы, дефисы и подчеркивания
+              Исключительно формат Имя_Фамилия (например: Petr_Petrov)
             </p>
           </div>
 
@@ -247,7 +282,6 @@ export function AccountRequestForm() {
               disabled={isLoading}
               maxLength={100}
             />
-            <p className="text-xs text-muted-foreground">Пароль обязателен</p>
           </div>
 
           {/* Подтверждение пароля */}
@@ -324,7 +358,7 @@ export function AccountRequestForm() {
           </Alert>
 
           {/* Кнопка отправки */}
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" className="w-full" disabled={isLoading || !isFormValid()}>
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />

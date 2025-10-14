@@ -130,10 +130,10 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             type="button"
             variant="outline"
             onClick={handleRegisterClick}
-            className="w-full h-11 text-sm border-2 border-primary/30 hover:bg-primary/10 hover:border-primary/50 rounded-xl font-bold uppercase tracking-wide"
+            className="w-full h-12 text-base bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 border-2 border-green-400/50 hover:border-green-300/70 rounded-xl font-black uppercase tracking-widest shadow-lg shadow-green-500/30 hover:shadow-green-400/50 hover:shadow-xl transition-all duration-300"
             disabled={isLoading}
           >
-            <UserPlus className="h-4 w-4 mr-2" />
+            <UserPlus className="h-5 w-5 mr-2" />
             Запрос на регистрацию
           </Button>
           

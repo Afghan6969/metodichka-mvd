@@ -129,6 +129,9 @@ export function validateRequestFields(data: {
   if (data.nickname && !/^[a-zA-Zа-яА-ЯёЁ_\-]+$/.test(data.nickname)) {
     errors.push("Ник может содержать только буквы, дефисы и подчеркивания");
   }
+  if (data.nickname && !/^[a-zA-Zа-яА-ЯёЁ]+_[a-zA-Zа-яА-ЯёЁ]+$/.test(data.nickname)) {
+    errors.push("Ник должен быть в формате 'Имя_Фамилия'");
+  }
 
   // Проверка login
   if (!data.login || data.login.trim().length === 0) {
