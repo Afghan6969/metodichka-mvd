@@ -51,6 +51,8 @@ export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) 
 
           {/* Правая часть: Пользователь + Управление */}
           <div className="flex items-center gap-3">
+            <ThemeSwitcher />
+
             {currentUser && (
               <div className="hidden md:flex items-center gap-3 px-3 py-2 bg-gradient-to-r from-primary/20 via-accent/15 to-primary/15 rounded-xl border border-primary/30 shadow-lg relative">
                 <div className="relative w-8 h-8 rounded-lg bg-gradient-to-br from-primary/80 to-accent/60 flex items-center justify-center border border-primary/50 shadow-md">
@@ -73,8 +75,6 @@ export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) 
                 </Button>
               </div>
             )}
-
-            <ThemeSwitcher />
 
             <Button variant="ghost" size="icon" onClick={onSearchClick} className="lg:hidden rounded-xl h-10 w-10 hover:bg-primary/20 border border-primary/30 shadow-md">
               <Search className="h-4 w-4 text-primary" />
