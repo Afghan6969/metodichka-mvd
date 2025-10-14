@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
 import { Check, ChevronsUpDown, Scale, DollarSign, Car, Shield, GraduationCap, X, Star, Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { koapViolations } from "./koap-violations"
@@ -20,6 +21,9 @@ const PenaltyCalculator = () => {
   const [selectedSuspensionAmounts, setSelectedSuspensionAmounts] = useState<Record<string, number>>({})
   const [selectedArrestAmounts, setSelectedArrestAmounts] = useState<Record<string, number>>({})
   const [open, setOpen] = useState(false)
+
+  // Рефы для прямого управления полями ввода
+  const fineInputRefs = useRef<Record<string, HTMLInputElement>>({})
 
   // Объединяем все нарушения
   const violations: Record<string, ViolationCategory> = {
@@ -420,32 +424,36 @@ const PenaltyCalculator = () => {
                           {selectedAlt?.fineRange && (
                             <div className="flex items-center gap-2">
                               <span className="text-xs font-medium">Сумма штрафа:</span>
-                              <Select
-                                value={(selectedFineAmounts[violationKey] ?? selectedAlt.fine).toString()}
-                                onValueChange={(value) =>
-                                  setSelectedFineAmounts((prev) => ({
-                                    ...prev,
-                                    [violationKey]: parseInt(value),
-                                  }))
-                                }
-                              >
-                                <SelectTrigger className="text-xs h-8 border-blue-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white/10 backdrop-blur-sm border-white/20">
-                                  {Array.from(
-                                    { length: (selectedAlt.fineRange.max - selectedAlt.fineRange.min) / 500 + 1 },
-                                    (_, i) => {
-                                      const amount = selectedAlt.fineRange!.min + i * 500
-                                      return (
-                                        <SelectItem key={amount} value={amount.toString()} className="hover:bg-white/10 text-white focus:bg-blue-500/20 focus:text-blue-100">
-                                          {amount.toLocaleString()} ₽
-                                        </SelectItem>
-                                      )
+                              <div className="flex items-center gap-2">
+                                <input
+                                  ref={(el) => {
+                                    if (el) fineInputRefs.current[violationKey] = el
+                                  }}
+                                  type="number"
+                                  defaultValue={selectedAlt.fine}
+                                  onBlur={(e) => {
+                                    const value = parseInt(e.target.value) || 0
+                                    // Ограничиваем значение в пределах диапазона
+                                    if (selectedAlt.fineRange) {
+                                      const clampedValue = Math.max(selectedAlt.fineRange.min, Math.min(selectedAlt.fineRange.max, value))
+                                      setSelectedFineAmounts((prev) => ({
+                                        ...prev,
+                                        [violationKey]: clampedValue,
+                                      }))
+                                      // Обновляем значение в поле
+                                      e.target.value = clampedValue.toString()
                                     }
-                                  )}
-                                </SelectContent>
-                              </Select>
+                                  }}
+                                  className="text-xs h-8 w-24 px-2 py-1 border border-blue-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 rounded"
+                                  min={selectedAlt.fineRange.min}
+                                  max={selectedAlt.fineRange.max}
+                                  placeholder="Введите сумму"
+                                />
+                                <span className="text-xs text-blue-200/60">₽</span>
+                              </div>
+                              <span className="text-xs text-blue-200/60">
+                                (от {selectedAlt.fineRange.min.toLocaleString()} до {selectedAlt.fineRange.max.toLocaleString()} ₽)
+                              </span>
                             </div>
                           )}
 
