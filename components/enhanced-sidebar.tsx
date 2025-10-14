@@ -33,6 +33,7 @@ import {
   Building2,
   Badge,
   Heart,
+  UserPlus,
 } from "lucide-react"
 
 interface ModernSidebarProps {

@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Shield, User, Lock, Loader2 } from "lucide-react";
+import { AlertCircle, Shield, User, Lock, Loader2, UserPlus } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ interface LoginModalProps {
 
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const { login } = useAuth();
+  const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -42,6 +44,11 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       setError("Неверный логин или пароль");
     }
     setIsLoading(false);
+  };
+
+  const handleRegisterClick = () => {
+    onClose();
+    router.push("/account-request");
   };
 
   return (
@@ -118,8 +125,19 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
           </Button>
         </form>
 
-        <div className="text-center pt-4 border-t-2 border-primary/20 mt-4">
-          <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">
+        <div className="space-y-3 pt-4 border-t-2 border-primary/20 mt-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleRegisterClick}
+            className="w-full h-11 text-sm border-2 border-primary/30 hover:bg-primary/10 hover:border-primary/50 rounded-xl font-bold uppercase tracking-wide"
+            disabled={isLoading}
+          >
+            <UserPlus className="h-4 w-4 mr-2" />
+            Запрос на регистрацию
+          </Button>
+          
+          <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide text-center">
             Доступ только для персонала МВД РП
           </p>
         </div>

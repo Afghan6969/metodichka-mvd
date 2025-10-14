@@ -6,7 +6,7 @@ import { ru } from "date-fns/locale"
 import { Card, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Users, Trash2, AlertCircle, History, Loader2, RefreshCw, UserCog } from "lucide-react"
+import { Users, Trash2, AlertCircle, History, Loader2, RefreshCw, UserCog, UserPlus } from "lucide-react"
 import { useAuth, type UserRole } from "@/lib/auth-context"
 import { PageHeader } from "@/components/page-header"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -25,6 +25,7 @@ import {
   actionDisplayNames,
   getRoleBadgeVariant,
 } from "@/components/user-management"
+import { AccountRequestsAdmin } from "@/components/account-requests-admin"
 
 export function UserManagementPage() {
   const { currentUser, users, userLogs, addUser, removeUser, restoreUser, updateUser, canManageUsers, rollbackAction, refreshUsers, refreshUserLogs } = useAuth()
@@ -436,12 +437,18 @@ export function UserManagementPage() {
 
         <div className="space-y-6">
             <Tabs defaultValue="users" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-white/8 border border-white/15 h-12">
+              <TabsList className="grid w-full grid-cols-3 bg-white/8 border border-white/15 h-12">
                 <TabsTrigger
                   value="users"
                   className="data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-100 data-[state=active]:border-blue-400/40 text-blue-200 hover:bg-blue-500/10 hover:text-blue-100 transition-all duration-200 font-medium"
                 >
                   Пользователи
+                </TabsTrigger>
+                <TabsTrigger
+                  value="requests"
+                  className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-100 data-[state=active]:border-green-400/40 text-green-200 hover:bg-green-500/10 hover:text-green-100 transition-all duration-200 font-medium"
+                >
+                  Запросы на аккаунты
                 </TabsTrigger>
                 <TabsTrigger
                   value="logs"
@@ -583,6 +590,10 @@ export function UserManagementPage() {
                     />
                   </div>
                 </div>
+              </TabsContent>
+
+              <TabsContent value="requests" className="space-y-4 mt-6">
+                <AccountRequestsAdmin />
               </TabsContent>
 
               <TabsContent value="logs" className="space-y-4 mt-6">
