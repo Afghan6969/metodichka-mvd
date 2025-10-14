@@ -204,14 +204,14 @@ export function AccountRequestForm() {
             </Label>
             <Input
               id="nickname"
-              placeholder="Введите ваш игровой ник"
+              placeholder="Введите ник (например: Petr_Petrov)"
               value={formData.nickname}
               onChange={(e) => handleInputChange("nickname", e.target.value)}
               disabled={isLoading}
               maxLength={50}
             />
             <p className="text-xs text-muted-foreground">
-              Минимум 3 символа, только буквы, цифры, пробелы, дефисы и подчеркивания
+              Только буквы, дефисы и подчеркивания
             </p>
           </div>
 
@@ -224,12 +224,12 @@ export function AccountRequestForm() {
               id="login"
               placeholder="Введите логин для входа"
               value={formData.login}
-              onChange={(e) => handleInputChange("login", e.target.value.toLowerCase())}
+              onChange={(e) => handleInputChange("login", e.target.value)}
               disabled={isLoading}
               maxLength={30}
             />
             <p className="text-xs text-muted-foreground">
-              Минимум 3 символа, только латинские буквы, цифры, дефисы и подчеркивания
+              Только латинские буквы, цифры, дефисы и подчеркивания
             </p>
           </div>
 
@@ -247,7 +247,7 @@ export function AccountRequestForm() {
               disabled={isLoading}
               maxLength={100}
             />
-            <p className="text-xs text-muted-foreground">Минимум 6 символов</p>
+            <p className="text-xs text-muted-foreground">Пароль обязателен</p>
           </div>
 
           {/* Подтверждение пароля */}

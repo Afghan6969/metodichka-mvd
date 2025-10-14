@@ -120,19 +120,19 @@ export function validateRequestFields(data: {
   const errors: string[] = [];
 
   // Проверка nickname
-  if (!data.nickname || data.nickname.trim().length < 3) {
-    errors.push("Ник должен содержать минимум 3 символа");
+  if (!data.nickname || data.nickname.trim().length === 0) {
+    errors.push("Ник обязателен для заполнения");
   }
   if (data.nickname && data.nickname.length > 50) {
     errors.push("Ник не должен превышать 50 символов");
   }
-  if (data.nickname && !/^[a-zA-Zа-яА-ЯёЁ0-9_\-\s]+$/.test(data.nickname)) {
-    errors.push("Ник может содержать только буквы, цифры, пробелы, дефисы и подчеркивания");
+  if (data.nickname && !/^[a-zA-Zа-яА-ЯёЁ_\-]+$/.test(data.nickname)) {
+    errors.push("Ник может содержать только буквы, дефисы и подчеркивания");
   }
 
   // Проверка login
-  if (!data.login || data.login.trim().length < 3) {
-    errors.push("Логин должен содержать минимум 3 символа");
+  if (!data.login || data.login.trim().length === 0) {
+    errors.push("Логин обязателен для заполнения");
   }
   if (data.login && data.login.length > 30) {
     errors.push("Логин не должен превышать 30 символов");
@@ -142,8 +142,8 @@ export function validateRequestFields(data: {
   }
 
   // Проверка password
-  if (!data.password || data.password.length < 6) {
-    errors.push("Пароль должен содержать минимум 6 символов");
+  if (!data.password || data.password.length === 0) {
+    errors.push("Пароль обязателен для заполнения");
   }
   if (data.password && data.password.length > 100) {
     errors.push("Пароль не должен превышать 100 символов");

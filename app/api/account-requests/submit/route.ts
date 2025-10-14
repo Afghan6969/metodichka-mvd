@@ -81,7 +81,7 @@ export async function POST(request: Request) {
       .from("account_requests")
       .insert({
         nickname: nickname.trim(),
-        login: login.trim().toLowerCase(),
+        login: login.trim(), // Убираем .toLowerCase() чтобы сохранить регистр
         password_hash: passwordHash,
         role: role?.trim() || null,
         ip_address: ip,
