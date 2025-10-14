@@ -64,7 +64,7 @@ export async function POST(request: Request) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    maxAge: 3600,
+    maxAge: 172800, // ⏰ 48 часов = 48 * 60 * 60 секунд
     path: "/",
   });
 
