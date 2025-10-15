@@ -107,6 +107,7 @@ export function UserManagementPage() {
   const getAvailableRoles = (): UserRole[] => {
     if (!currentUser) return []
     const role = currentUser.role
+    if (role === "super-admin") return ["super-admin", "root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd", "ss-gibdd", "ss-guvd", "gibdd", "guvd", "none"]
     if (role === "root") return ["root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd", "ss-gibdd", "ss-guvd", "gibdd", "guvd", "none"]
     if (role === "gs-gibdd") return ["pgs-gibdd", "leader-gibdd", "ss-gibdd", "gibdd", "none"]
     if (role === "pgs-gibdd") return ["leader-gibdd", "ss-gibdd", "gibdd", "none"]
@@ -120,13 +121,16 @@ export function UserManagementPage() {
   const canEditUser = (targetRole: UserRole): boolean => {
     if (!currentUser) return false
     const role = currentUser.role
-    if (role === "root") return true
-    if (role === "gs-gibdd") return !["root", "gs-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd", "ss-guvd", "guvd"].includes(targetRole)
-    if (role === "pgs-gibdd") return !["root", "gs-gibdd", "pgs-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd", "ss-guvd", "guvd"].includes(targetRole)
-    if (role === "leader-gibdd") return !["root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd", "ss-guvd", "guvd"].includes(targetRole)
-    if (role === "gs-guvd") return !["root", "gs-guvd", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "ss-gibdd", "gibdd"].includes(targetRole)
-    if (role === "pgs-guvd") return !["root", "gs-guvd", "pgs-guvd", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "ss-gibdd", "gibdd"].includes(targetRole)
-    if (role === "leader-guvd") return !["root", "gs-guvd", "pgs-guvd", "leader-guvd", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "ss-gibdd", "gibdd"].includes(targetRole)
+    // super-admin может редактировать всех
+    if (role === "super-admin") return true
+    // root НЕ может редактировать super-admin
+    if (role === "root") return targetRole !== "super-admin"
+    if (role === "gs-gibdd") return !["super-admin", "root", "gs-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd", "ss-guvd", "guvd"].includes(targetRole)
+    if (role === "pgs-gibdd") return !["super-admin", "root", "gs-gibdd", "pgs-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd", "ss-guvd", "guvd"].includes(targetRole)
+    if (role === "leader-gibdd") return !["super-admin", "root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd", "ss-guvd", "guvd"].includes(targetRole)
+    if (role === "gs-guvd") return !["super-admin", "root", "gs-guvd", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "ss-gibdd", "gibdd"].includes(targetRole)
+    if (role === "pgs-guvd") return !["super-admin", "root", "gs-guvd", "pgs-guvd", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "ss-gibdd", "gibdd"].includes(targetRole)
+    if (role === "leader-guvd") return !["super-admin", "root", "gs-guvd", "pgs-guvd", "leader-guvd", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "ss-gibdd", "gibdd"].includes(targetRole)
     return false
   }
 

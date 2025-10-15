@@ -2,6 +2,7 @@ import { UserRole } from "@/lib/auth-context"
 
 // Role display names
 export const roleDisplayNames: Record<string, string> = {
+  "super-admin": "Разработчик",
   root: "Владелец",
   "gs-gibdd": "ГС ГИБДД",
   "pgs-gibdd": "ПГС ГИБДД",
@@ -32,7 +33,7 @@ export const actionDisplayNames: Record<string, string> = {
 
 // Function to determine badge variant based on role
 export const getRoleBadgeVariant = (role: UserRole): "default" | "secondary" | "outline" => {
-  if (role === "root") return "default"
+  if (role === "super-admin" || role === "root") return "default"
   if (role.startsWith("gs") || role.startsWith("pgs") || role.startsWith("moderator")) return "default"
   if (role.startsWith("ss") || role.startsWith("leader")) return "secondary"
   return "outline"

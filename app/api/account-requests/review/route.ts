@@ -33,11 +33,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "User not found or inactive" }, { status: 403 });
     }
 
-    // Только root, ПГС, ГС и лидеры могут рассматривать запросы
-    const allowedRoles = ["root", "pgs-gibdd", "pgs-guvd", "gs-gibdd", "gs-guvd", "leader-gibdd", "leader-guvd"];
+    // Только super-admin, root, ПГС, ГС, лидеры и СС могут рассматривать запросы
+    const allowedRoles = ["super-admin", "root", "pgs-gibdd", "pgs-guvd", "gs-gibdd", "gs-guvd", "leader-gibdd", "leader-guvd", "ss-gibdd", "ss-guvd"];
     if (!allowedRoles.includes(user.role)) {
       return NextResponse.json(
-        { error: "Access denied. Only Leaders and GS can review requests." },
+        { error: "Access denied. Only Leaders, GS, and SS can review requests." },
         { status: 403 }
       );
     }

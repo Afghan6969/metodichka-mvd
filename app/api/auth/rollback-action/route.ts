@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { createClient as createServerClient } from '@supabase/supabase-js';
 
 const canManageUsersRole = (role: string) =>
-  ["root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd"].includes(role);
+  ["super-admin", "root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd"].includes(role);
 
 // Русские названия ролей
 const roleDisplayNames: Record<string, string> = {

@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 
 // ==== РОЛИ ====
 export type UserRole =
+  | "super-admin"
   | "root"
   | "gs-gibdd"
   | "pgs-gibdd"
@@ -82,6 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!role) return "none";
     const formatted = String(role).trim().toLowerCase().replace(/_/g, "-");
     const validRoles: UserRole[] = [
+      "super-admin",
       "root",
       "gs-gibdd",
       "pgs-gibdd",
@@ -177,18 +179,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Сортируем пользователей по ролям в нужном порядке
       const roleOrder = {
-        'root': 0,
-        'gs-guvd': 1,
-        'gs-gibdd': 1,
-        'pgs-guvd': 2,
-        'pgs-gibdd': 2,
-        'leader-guvd': 3,
-        'leader-gibdd': 3,
-        'ss-guvd': 4,
-        'ss-gibdd': 4,
-        'guvd': 5,
-        'gibdd': 5,
-        'none': 6
+        'super-admin': 0,
+        'root': 1,
+        'gs-guvd': 2,
+        'gs-gibdd': 2,
+        'pgs-guvd': 3,
+        'pgs-gibdd': 3,
+        'leader-guvd': 4,
+        'leader-gibdd': 4,
+        'ss-guvd': 5,
+        'ss-gibdd': 5,
+        'guvd': 6,
+        'gibdd': 6,
+        'none': 7
       };
 
       usersWithRoles.sort((a: any, b: any) => {
@@ -402,7 +405,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const hasAccess = (page: string, department?: string, reportType?: string): boolean => {
     if (!currentUser) return false;
     const role = normalizeRole(currentUser.role);
-    if (role === "root") return true;
+    if (role === "super-admin" || role === "root") return true;
 
     switch (page) {
       case "generator-page":
@@ -420,7 +423,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const canManageUsers = (): boolean => {
     if (!currentUser) return false;
     const role = normalizeRole(currentUser.role);
-    return ["root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd"].includes(role);
+    return ["super-admin", "root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd"].includes(role);
   };
 
   // === ОТКАТ ДЕЙСТВИЯ ===

@@ -260,7 +260,7 @@ export function UserLogs({ logs, actionDisplayNames, onRollback, showRollback = 
                 </p>
               </div>
 
-              {selectedLog.ip_address && currentUserRole === "root" && (
+              {selectedLog.ip_address && (currentUserRole === "super-admin" || currentUserRole === "root") && (
                 <div>
                   <p className="text-sm font-medium text-blue-200/80 mb-1">IP адрес</p>
                   <p className="text-sm font-mono text-white">{selectedLog.ip_address}</p>

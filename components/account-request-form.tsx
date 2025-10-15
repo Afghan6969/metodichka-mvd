@@ -310,18 +310,22 @@ export function AccountRequestForm() {
 
           {/* Роль/Фракция */}
           <div className="space-y-2">
-            <Label htmlFor="role">Фракция <span className="text-red-500">*</span></Label>
+            <Label htmlFor="role">Роль<span className="text-red-500">*</span></Label>
             <Select
               value={formData.role}
               onValueChange={(value) => handleInputChange("role", value)}
               disabled={isLoading}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Выберите фракцию" />
+                <SelectValue placeholder="Выберите фракцию и должность" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ГУВД">ГУВД</SelectItem>
+                <SelectItem value="ГИБДД - Лидер">ГИБДД - Лидер</SelectItem>
+                <SelectItem value="ГИБДД - СС">ГИБДД - СС</SelectItem>
                 <SelectItem value="ГИБДД">ГИБДД</SelectItem>
+                <SelectItem value="ГУВД - Лидер">ГУВД - Лидер</SelectItem>
+                <SelectItem value="ГУВД - СС">ГУВД - СС</SelectItem>
+                <SelectItem value="ГУВД">ГУВД</SelectItem>
               </SelectContent>
             </Select>
           </div>

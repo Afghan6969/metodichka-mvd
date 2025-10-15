@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { createClient } from "@/lib/supabase/server";
 
 const VALID_ROLES = [
+  "super-admin",
   "root",
   "gs-gibdd",
   "pgs-gibdd",
@@ -25,7 +26,7 @@ const normalizeRole = (role: unknown): string => {
 };
 
 const canManageUsersRole = (role: string) =>
-  ["root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd"].includes(role);
+  ["super-admin", "root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd"].includes(role);
 
 export async function POST(req: NextRequest) {
   try {
@@ -80,10 +81,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Username already exists" }, { status: 400 });
     }
 
-    // Prevent root role assignment through the interface
+    // Prevent root and super-admin role assignment through the interface (except for super-admin users)
     const normalizedRole = normalizeRole(role);
-    if (normalizedRole === "root") {
-      return NextResponse.json({ error: "Cannot assign root role" }, { status: 403 });
+    if (normalizedRole === "root" || (normalizedRole === "super-admin" && String(currentUser.role) !== "super-admin")) {
+      return NextResponse.json({ error: "Cannot assign this role" }, { status: 403 });
     }
 
     // create user

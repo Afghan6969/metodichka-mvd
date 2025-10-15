@@ -21,16 +21,21 @@ export async function POST(request: Request) {
     // Получаем информацию о текущем пользователе
     const { data: currentUserData } = await supabase
       .from('users')
-      .select('nickname, username')
+      .select('nickname, username, role')
       .eq('id', currentUserId)
       .single();
     
     // Получаем информацию о целевом пользователе
     const { data: targetUser } = await supabase
       .from('users')
-      .select('nickname, username')
+      .select('nickname, username, role')
       .eq('id', userId)
       .single();
+    
+    // Защита: запретить root деактивировать super-admin пользователей
+    if (String(targetUser?.role) === "super-admin" && String(currentUserData?.role) !== "super-admin") {
+      return NextResponse.json({ error: "Cannot deactivate super-admin users" }, { status: 403 });
+    }
     
     // Деактивируем пользователя вместо удаления
     const { error } = await supabase

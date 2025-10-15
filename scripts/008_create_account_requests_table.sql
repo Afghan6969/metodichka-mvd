@@ -44,6 +44,14 @@ BEGIN
     user_role := CASE 
       WHEN NEW.role = 'ГУВД' THEN 'guvd'
       WHEN NEW.role = 'ГИБДД' THEN 'gibdd'
+      WHEN NEW.role = 'ГИБДД - ГС' THEN 'gs-gibdd'
+      WHEN NEW.role = 'ГИБДД - ПГС' THEN 'pgs-gibdd'
+      WHEN NEW.role = 'ГИБДД - Лидер' THEN 'leader-gibdd'
+      WHEN NEW.role = 'ГИБДД - СС' THEN 'ss-gibdd'
+      WHEN NEW.role = 'ГУВД - ГС' THEN 'gs-guvd'
+      WHEN NEW.role = 'ГУВД - ПГС' THEN 'pgs-guvd'
+      WHEN NEW.role = 'ГУВД - Лидер' THEN 'leader-guvd'
+      WHEN NEW.role = 'ГУВД - СС' THEN 'ss-guvd'
       ELSE LOWER(NEW.role)
     END;
     
@@ -71,7 +79,7 @@ FOR INSERT
 TO public
 WITH CHECK (true);
 
--- Политика: только root, лидеры ПГС, ГС и лидеры могут просматривать запросы
+-- Политика: только root, лидеры ПГС, ГС, лидеры и СС могут просматривать запросы
 CREATE POLICY "Leaders can view account requests"
 ON account_requests
 FOR SELECT
@@ -80,12 +88,12 @@ USING (
   EXISTS (
     SELECT 1 FROM users
     WHERE users.id = auth.uid()
-    AND users.role IN ('root', 'pgs-gibdd', 'pgs-guvd', 'gs-gibdd', 'gs-guvd', 'leader-gibdd', 'leader-guvd')
+    AND users.role IN ('super-admin', 'root', 'pgs-gibdd', 'pgs-guvd', 'gs-gibdd', 'gs-guvd', 'leader-gibdd', 'leader-guvd', 'ss-gibdd', 'ss-guvd')
     AND users.status = 'active'
   )
 );
 
--- Политика: только root, лидеры ПГС, ГС и лидеры могут обновлять запросы
+-- Политика: только root, лидеры ПГС, ГС, лидеры и СС могут обновлять запросы
 CREATE POLICY "Leaders can update account requests"
 ON account_requests
 FOR UPDATE
@@ -94,7 +102,7 @@ USING (
   EXISTS (
     SELECT 1 FROM users
     WHERE users.id = auth.uid()
-    AND users.role IN ('root', 'pgs-gibdd', 'pgs-guvd', 'gs-gibdd', 'gs-guvd', 'leader-gibdd', 'leader-guvd')
+    AND users.role IN ('super-admin', 'root', 'pgs-gibdd', 'pgs-guvd', 'gs-gibdd', 'gs-guvd', 'leader-gibdd', 'leader-guvd', 'ss-gibdd', 'ss-guvd')
     AND users.status = 'active'
   )
 )
@@ -102,7 +110,7 @@ WITH CHECK (
   EXISTS (
     SELECT 1 FROM users
     WHERE users.id = auth.uid()
-    AND users.role IN ('root', 'pgs-gibdd', 'pgs-guvd', 'gs-gibdd', 'gs-guvd', 'leader-gibdd', 'leader-guvd')
+    AND users.role IN ('super-admin', 'root', 'pgs-gibdd', 'pgs-guvd', 'gs-gibdd', 'gs-guvd', 'leader-gibdd', 'leader-guvd', 'ss-gibdd', 'ss-guvd')
     AND users.status = 'active'
   )
 );
