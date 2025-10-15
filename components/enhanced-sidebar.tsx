@@ -34,6 +34,7 @@ import {
   Badge,
   Heart,
   UserPlus,
+  ClipboardCheck,
 } from "lucide-react"
 
 interface ModernSidebarProps {
@@ -51,6 +52,7 @@ interface ModernSidebarProps {
     | "terms"
     | "resources"
     | "penalty-calculator"
+    | "tests"
     | "gibdd-positions"
     | "guvd-positions"
     | "guvd-vehicles"
@@ -163,6 +165,7 @@ export function EnhancedSidebar({ currentPage, onPageChange, onGlobalSearchOpen,
     { id: "reports", label: "Доклады в рацию", icon: Radio },
     { id: "commands", label: "Команды", icon: Terminal },
     { id: "penalty-calculator", label: "Калькулятор наказаний", icon: Scale },
+    { id: "tests", label: "Тесты по УК и КоАП", icon: ClipboardCheck },
     { id: "generator-page", label: "Генератор отчётов", icon: PenTool },
     { id: "ammunition", label: "Амуниция", icon: Package },
     { id: "terms", label: "Термины", icon: ScrollText },

@@ -20,6 +20,7 @@ import { AmmunitionPage } from "@/components/ammunition-page"
 import { TermsPage } from "@/components/terms-page"
 import { ResourcesPage } from "@/components/resources-page"
 import { PenaltyCalculator } from "@/components/penalty-calculator"
+import { LawTests } from "@/components/law-tests"
 import { GlobalSearch } from "@/components/global-search"
 import { Button } from "@/components/ui/button"
 import { Shield, ArrowRight, BookOpen, Target, Keyboard, Car, Award, AlertCircle, Sparkles, TrendingUp, Users, Zap, GraduationCap, FileText, Radio, Briefcase } from "lucide-react"
@@ -46,6 +47,7 @@ export default function Home() {
     | "terms"
     | "resources"
     | "penalty-calculator"
+    | "tests"
     | "gibdd-positions"
     | "guvd-positions"
     | "guvd-vehicles"
@@ -98,6 +100,8 @@ export default function Home() {
         return <ResourcesPage />
       case "penalty-calculator":
         return <PenaltyCalculator />
+      case "tests":
+        return <LawTests />
       case "gibdd-positions":
         return <PositionsPage />
       case "guvd-positions":

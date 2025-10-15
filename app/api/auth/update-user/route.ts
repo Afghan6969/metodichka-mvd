@@ -91,6 +91,38 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Cannot assign root role" }, { status: 403 });
     }
 
+    // Build changes array BEFORE updating
+    const changes: string[] = [];
+    const newNickname = nickname || oldUserData.nickname;
+    
+    console.log("[UpdateUser] Comparison:", {
+      oldNickname: oldUserData.nickname,
+      newNickname,
+      nicknameChanged: oldUserData.nickname !== newNickname,
+      oldUsername: oldUserData.username,
+      newUsername: username,
+      usernameChanged: oldUserData.username !== username,
+      oldRole: oldUserData.role,
+      normalizedRole,
+      roleChanged: String(oldUserData.role) !== normalizedRole,
+      passwordProvided: !!password
+    });
+    
+    if (oldUserData.nickname !== newNickname) {
+      changes.push(`Никнейм: ${oldUserData.nickname} → ${newNickname}`);
+    }
+    if (oldUserData.username !== username) {
+      changes.push(`Логин: ${oldUserData.username} → ${username}`);
+    }
+    if (String(oldUserData.role) !== normalizedRole) {
+      changes.push(`Роль: ${oldUserData.role} → ${normalizedRole}`);
+    }
+    if (password) {
+      changes.push("Пароль: изменён");
+    }
+    
+    console.log("[UpdateUser] Changes array:", changes);
+
     const updates: any = { username, role: normalizedRole };
     if (nickname) updates.nickname = nickname;
     if (password) updates.password_hash = await bcrypt.hash(password, 10);
@@ -100,13 +132,6 @@ export async function POST(req: NextRequest) {
       console.error("[UpdateUser API] Update error:", updateErr);
       return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
     }
-
-    // build structured log with previous state (helps rollback)
-    const changes: string[] = [];
-    if (nickname && oldUserData.nickname !== nickname) changes.push(`nickname: ${oldUserData.nickname} → ${nickname}`);
-    if (oldUserData.username !== username) changes.push(`username: ${oldUserData.username} → ${username}`);
-    if (String(oldUserData.role) !== normalizedRole) changes.push(`role: ${oldUserData.role} → ${normalizedRole}`);
-    if (password) changes.push("password: changed");
 
     // Получаем IP адрес
     const forwarded = req.headers.get("x-forwarded-for");
@@ -126,7 +151,7 @@ export async function POST(req: NextRequest) {
             role: oldUserData.role 
           },
           next: { 
-            nickname: nickname || oldUserData.nickname,
+            nickname: newNickname,
             username, 
             role: normalizedRole 
           },
