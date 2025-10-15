@@ -20,7 +20,8 @@ const PenaltyCalculator = () => {
   const [selectedFineAmounts, setSelectedFineAmounts] = useState<Record<string, number>>({})
   const [selectedSuspensionAmounts, setSelectedSuspensionAmounts] = useState<Record<string, number>>({})
   const [selectedArrestAmounts, setSelectedArrestAmounts] = useState<Record<string, number>>({})
-  const [open, setOpen] = useState(false)
+  const [openKoap, setOpenKoap] = useState(false)
+  const [openUk, setOpenUk] = useState(false)
 
   // Рефы для прямого управления полями ввода
   const fineInputRefs = useRef<Record<string, HTMLInputElement>>({})
@@ -215,66 +216,168 @@ const PenaltyCalculator = () => {
             )}
           </div>
 
-          <div className="relative w-full">
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              className="w-full justify-between h-14 border-blue-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
-              onClick={() => setOpen(!open)}
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-400/30">
-                  <Search className="h-4 w-4 text-blue-300" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* КоАП меню */}
+            <div className="relative w-full">
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openKoap}
+                className="w-full justify-between h-14 border border-blue-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
+                onClick={() => setOpenKoap(!openKoap)}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-400/30">
+                    <Car className="h-4 w-4 text-blue-300" />
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <span className="text-xs font-medium text-blue-200/70 uppercase tracking-wide">
+                      КоАП
+                    </span>
+                    <span className="text-sm font-semibold">
+                      {selectedViolations.filter(v => Object.keys(koapViolations).some(k => v.startsWith(k))).length === 0 
+                        ? "Выберите статьи" 
+                        : `Выбрано: ${selectedViolations.filter(v => Object.keys(koapViolations).some(k => v.startsWith(k))).length}`}
+                    </span>
+                  </div>
                 </div>
-                <span className="text-base font-semibold">
-                  {selectedViolations.length === 0 ? "Выберите статьи..." : `Выбрано статей: ${selectedViolations.length}`}
-                </span>
-              </div>
-              <ChevronsUpDown className="ml-2 h-5 w-5 shrink-0 opacity-60" />
-            </Button>
+                <ChevronsUpDown className="ml-2 h-5 w-5 shrink-0 opacity-50" />
+              </Button>
 
-            {open && (
-              <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg">
-                <Command>
-                  <CommandInput placeholder="Поиск статей..." className="bg-black/5 border-white/10 text-white placeholder:text-blue-200/60" />
-                  <CommandEmpty className="text-blue-200/60">Статьи не найдены.</CommandEmpty>
-                  <CommandList className="max-h-[300px] overflow-y-auto">
-                    {Object.entries(violations).map(([categoryKey, category]) => (
-                      <CommandGroup key={categoryKey} heading={category.name} className="text-blue-100">
-                        {Object.entries(category.items).map(([violationKey, violation]) => (
-                          <CommandItem
-                            key={violationKey}
-                            value={`${categoryKey}.${violationKey}|${violation.article as string}|${violation.description as string}`}
-                            onSelect={(currentValue) => {
-                              const [key] = currentValue.split('|');
-                              setSelectedViolations((prev) =>
-                                prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key]
-                              )
-                              setOpen(false)
-                            }}
-                            className="hover:bg-white/10 text-white data-[selected]:text-blue-200 data-[selected]:bg-transparent"
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                selectedViolations.includes(`${categoryKey}.${violationKey}`)
-                                  ? "opacity-100 text-blue-300"
-                                  : "opacity-0"
-                              )}
-                            />
-                            <div className="flex-1">
-                              <div className="font-medium text-white">{violation.article as string}</div>
-                              <div className="text-sm text-blue-200/80">{violation.description as string}</div>
-                            </div>
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    ))}
-                  </CommandList>
-                </Command>
-              </div>
-            )}
+              {openKoap && (
+                <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-black/90 backdrop-blur-md border border-white/15 rounded-xl shadow-2xl overflow-hidden">
+                  <Command className="bg-transparent">
+                    <div className="border-b border-white/10 bg-white/5 p-2">
+                      <CommandInput 
+                        placeholder="Поиск в КоАП..." 
+                        className="bg-white/5 border-white/10 text-white placeholder:text-blue-200/60 h-10 rounded-lg px-3 focus:outline-none focus:ring-0" 
+                      />
+                    </div>
+                    <CommandEmpty className="text-blue-200/60 py-6 text-center text-sm">
+                      Статьи не найдены
+                    </CommandEmpty>
+                    <CommandList className="max-h-[350px] overflow-y-auto p-2">
+                      {Object.entries(koapViolations).map(([categoryKey, category]) => (
+                        <CommandGroup 
+                          key={categoryKey} 
+                          heading={category.name} 
+                          className="text-blue-200 font-semibold text-xs uppercase tracking-wide mb-1 px-2 py-1"
+                        >
+                          {Object.entries(category.items).map(([violationKey, violation]) => (
+                            <CommandItem
+                              key={violationKey}
+                              value={`${categoryKey}.${violationKey}|${violation.article as string}|${violation.description as string}`}
+                              onSelect={(currentValue) => {
+                                const [key] = currentValue.split('|');
+                                setSelectedViolations((prev) =>
+                                  prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key]
+                                )
+                                setOpenKoap(false)
+                              }}
+                              className="hover:bg-white/15 text-white rounded-lg mb-1 p-2.5 cursor-pointer transition-all duration-150"
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4 shrink-0",
+                                  selectedViolations.includes(`${categoryKey}.${violationKey}`)
+                                    ? "opacity-100 text-blue-300"
+                                    : "opacity-0"
+                                )}
+                              />
+                              <div className="flex-1">
+                                <div className="font-semibold text-white text-sm">{violation.article as string}</div>
+                                <div className="text-xs text-blue-200/80 mt-0.5">{violation.description as string}</div>
+                              </div>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      ))}
+                    </CommandList>
+                  </Command>
+                </div>
+              )}
+            </div>
+
+            {/* УК меню */}
+            <div className="relative w-full">
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openUk}
+                className="w-full justify-between h-14 border border-red-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-red-400 focus:ring-2 focus:ring-red-400/20 transition-all duration-200"
+                onClick={() => setOpenUk(!openUk)}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 bg-red-500/20 rounded-lg flex items-center justify-center border border-red-400/30">
+                    <Shield className="h-4 w-4 text-red-300" />
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <span className="text-xs font-medium text-red-200/70 uppercase tracking-wide">
+                      УК
+                    </span>
+                    <span className="text-sm font-semibold">
+                      {selectedViolations.filter(v => Object.keys(ukViolations).some(k => v.startsWith(k))).length === 0 
+                        ? "Выберите статьи" 
+                        : `Выбрано: ${selectedViolations.filter(v => Object.keys(ukViolations).some(k => v.startsWith(k))).length}`}
+                    </span>
+                  </div>
+                </div>
+                <ChevronsUpDown className="ml-2 h-5 w-5 shrink-0 opacity-50" />
+              </Button>
+
+              {openUk && (
+                <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-black/90 backdrop-blur-md border border-white/15 rounded-xl shadow-2xl overflow-hidden">
+                  <Command className="bg-transparent">
+                    <div className="border-b border-white/10 bg-white/5 p-2">
+                      <CommandInput 
+                        placeholder="Поиск в УК..." 
+                        className="bg-white/5 border-white/10 text-white placeholder:text-red-200/60 h-10 rounded-lg px-3 focus:outline-none focus:ring-0" 
+                      />
+                    </div>
+                    <CommandEmpty className="text-red-200/60 py-6 text-center text-sm">
+                      Статьи не найдены
+                    </CommandEmpty>
+                    <CommandList className="max-h-[350px] overflow-y-auto p-2">
+                      {Object.entries(ukViolations).map(([categoryKey, category]) => (
+                        <CommandGroup 
+                          key={categoryKey} 
+                          heading={category.name} 
+                          className="text-red-200 font-semibold text-xs uppercase tracking-wide mb-1 px-2 py-1"
+                        >
+                          {Object.entries(category.items).map(([violationKey, violation]) => (
+                            <CommandItem
+                              key={violationKey}
+                              value={`${categoryKey}.${violationKey}|${violation.article as string}|${violation.description as string}`}
+                              onSelect={(currentValue) => {
+                                const [key] = currentValue.split('|');
+                                setSelectedViolations((prev) =>
+                                  prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key]
+                                )
+                                setOpenUk(false)
+                              }}
+                              className="hover:bg-white/15 text-white rounded-lg mb-1 p-2.5 cursor-pointer transition-all duration-150"
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4 shrink-0",
+                                  selectedViolations.includes(`${categoryKey}.${violationKey}`)
+                                    ? "opacity-100 text-red-300"
+                                    : "opacity-0"
+                                )}
+                              />
+                              <div className="flex-1">
+                                <div className="font-semibold text-white text-sm">{violation.article as string}</div>
+                                <div className="text-xs text-red-200/80 mt-0.5">{violation.description as string}</div>
+                              </div>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      ))}
+                    </CommandList>
+                  </Command>
+                </div>
+              )}
+            </div>
           </div>
 
           {selectedViolations.length > 0 && (
