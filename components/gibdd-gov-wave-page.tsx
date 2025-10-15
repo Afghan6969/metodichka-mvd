@@ -126,7 +126,7 @@ export function GibddGovWavePage() {
           href="https://province.status-journal.com/gov"
           target="_blank"
           rel="noopener noreferrer"
-          className="h-12 px-6 text-base bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl font-bold shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
+          className="h-12 px-6 text-base bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border border-blue-400/40 rounded-xl font-bold shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
         >
           Перейти на Гос Волну
           <ExternalLink className="h-4 w-4" />

@@ -335,7 +335,7 @@ export function GeneratorPage() {
       ) {
         setDepartment("ГУВД")
       }
-      // Для роли root департамент не устанавливается автоматически, пользователь выберет вручную
+      // Для ролей root и super-admin департамент не устанавливается автоматически, пользователь выберет вручную
     }
   }, [currentUser])
 
@@ -810,7 +810,7 @@ ${reqList}
               <Alert className="border-border bg-muted">
                 <AlertCircle className="h-4 w-4 text-muted-foreground" />
                 <AlertDescription className="text-muted-foreground text-sm">
-                  Для доступа к генератору отчётов необходимо иметь роль ГИБДД, ГУВД, СС ГИБДД, СС ГУВД, ПГС ГИБДД, ПГС ГУВД, ГС ГИБДД, ГС ГУВД, Лидер ГИБДД, Лидер ГУВД или root.
+                  Для доступа к генератору отчётов необходимо иметь роль ГИБДД, ГУВД, СС ГИБДД, СС ГУВД, ПГС ГИБДД, ПГС ГУВД, ГС ГИБДД, ГС ГУВД, Лидер ГИБДД, Лидер ГУВД, root или super-admin.
                 </AlertDescription>
               </Alert>
             </div>
@@ -824,6 +824,7 @@ ${reqList}
     if (!currentUser) return []
     if (
       currentUser.role === "root" ||
+      currentUser.role === "super-admin" ||
       currentUser.role === "gs-gibdd" ||
       currentUser.role === "gs-guvd" ||
       currentUser.role === "pgs-gibdd" ||
@@ -868,7 +869,7 @@ ${reqList}
       <div className="grid gap-6 md:grid-cols-1">
         <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl p-8 group hover:bg-white/12 hover:border-white/25 transition-all duration-300">
           <div className="text-center">
-            {currentUser?.role === "root" ? (
+            {currentUser?.role === "root" || currentUser?.role === "super-admin" ? (
               <div className="flex flex-wrap justify-center gap-4">
                 <Button
                   onClick={() => setDepartment("ГУВД")}
