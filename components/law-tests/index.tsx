@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -12,7 +12,7 @@ import { koapTestQuestions } from "./koap-test-data"
 import { ukTestQuestions } from "./uk-test-data"
 import type { TestQuestion, TestResult } from "./types"
 import { cn } from "@/lib/utils"
-import { shuffleArray } from "./utils"
+import { shuffleArray, shuffleQuestionOptions } from "./utils"
 
 type TestMode = "all" | "koap" | "uk"
 
@@ -23,15 +23,26 @@ export const LawTests = () => {
   const [answeredQuestions, setAnsweredQuestions] = useState<Record<string, number>>({})
   const [showExplanation, setShowExplanation] = useState(false)
   const [testCompleted, setTestCompleted] = useState(false)
+  const [allQuestions, setAllQuestions] = useState<TestQuestion[]>([])
 
-  const allQuestions = useMemo(() => {
+  // Инициализация и перемешивание вопросов при выборе режима теста
+  useEffect(() => {
+    if (!testMode) return
+    
     let questions: TestQuestion[] = []
-    if (testMode === "koap") questions = koapTestQuestions
-    else if (testMode === "uk") questions = ukTestQuestions
+    if (testMode === "koap") questions = [...koapTestQuestions]
+    else if (testMode === "uk") questions = [...ukTestQuestions]
     else questions = [...koapTestQuestions, ...ukTestQuestions]
     
     // Перемешиваем вопросы
-    return shuffleArray(questions)
+    const shuffledQuestions = shuffleArray(questions)
+    
+    // Перемешиваем варианты ответов в каждом вопросе
+    const questionsWithShuffledOptions = shuffledQuestions.map(question => 
+      shuffleQuestionOptions(question)
+    )
+    
+    setAllQuestions(questionsWithShuffledOptions)
   }, [testMode])
 
   const currentQuestion = allQuestions[currentQuestionIndex]
@@ -258,6 +269,11 @@ export const LawTests = () => {
         </Card>
       </div>
     )
+  }
+
+  // Если вопросы ещё не загружены, показываем загрузку
+  if (!currentQuestion || allQuestions.length === 0) {
+    return null
   }
 
   const progress = ((currentQuestionIndex + 1) / allQuestions.length) * 100
