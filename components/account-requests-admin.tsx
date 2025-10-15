@@ -128,7 +128,7 @@ export function AccountRequestsAdmin() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to review request");
+        throw new Error(data.error || "Не удалось обработать запрос");
       }
 
       // Обновляем список запросов

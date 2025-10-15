@@ -83,6 +83,22 @@ export async function POST(request: Request) {
 
     const newStatus = action === "approve" ? "approved" : "rejected";
 
+    // Проверяем, существует ли уже пользователь с таким логином
+    if (action === "approve") {
+      const { data: existingUser } = await supabase
+        .from("users")
+        .select("id, username")
+        .eq("username", accountRequest.login)
+        .maybeSingle();
+
+      if (existingUser) {
+        return NextResponse.json(
+          { error: `Пользователь с логином "${accountRequest.login}" уже существует` },
+          { status: 409 }
+        );
+      }
+    }
+
     // Обновляем статус запроса
     const { data: updatedRequest, error: updateError } = await supabase
       .from("account_requests")
