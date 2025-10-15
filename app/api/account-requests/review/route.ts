@@ -97,6 +97,20 @@ export async function POST(request: Request) {
           { status: 409 }
         );
       }
+
+      // Проверяем, что роль допустима для создания пользователя
+      const validRoles = [
+        'ГУВД', 'ГИБДД', 'ГИБДД - ГС', 'ГИБДД - ПГС', 'ГИБДД - Лидер', 'ГИБДД - СС',
+        'ГУВД - ГС', 'ГУВД - ПГС', 'ГУВД - Лидер', 'ГУВД - СС',
+        'super-admin', 'root'
+      ];
+
+      if (accountRequest.role && !validRoles.includes(accountRequest.role)) {
+        return NextResponse.json(
+          { error: `Недопустимая роль "${accountRequest.role}". Допустимые роли: ${validRoles.join(', ')}` },
+          { status: 400 }
+        );
+      }
     }
 
     // Обновляем статус запроса

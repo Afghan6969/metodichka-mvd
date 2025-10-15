@@ -203,9 +203,21 @@ export function GibddBindsPage() {
         { bind: "bind [клавиша] me закончив заполнять схему ДТП, положил её на торпеду" },
       ],
     },
-  ]
-
-
+    {
+      title: "Проверка личности через боди-камеру и флешку",
+      binds: [
+        { bind: "bind [клавиша] do Боди-камера с флешкой закреплена на груди.", description: "" },
+        { bind: "bind [клавиша] do Тактический планшет закреплён на поясе.", description: "" },
+        { bind: "bind [клавиша] up me сняв боди-камеру с груди и тактический планшет с пояса, извлёк флешку и вставил в тактический планшет", description: "" },
+        { bind: "bind [клавиша] do Запасная флешка в кармане.", description: "" },
+        { bind: "bind [клавиша] me достав запасную флешку из кармана, вставил в боди-камеру", description: "" },
+        { bind: "bind [клавиша] up me включил видео снятое на боди-камеру", description: "" },
+        { bind: "bind [клавиша] me перемотал видео до момента, где видно лицо гражданина и сделал скриншот", description: "" },
+        { bind: "bind [клавиша] me открыв базу данных МВД, пробил лицо гражданина по базе данных", description: "" },
+        { bind: "bind [клавиша] up do Личность гражданина установлена.", description: "" },
+      ],
+    },
+  ];
   const filteredSections = bindSections
     .filter((section) => {
       if (!searchQuery.trim()) return true
@@ -327,6 +339,9 @@ export function GibddBindsPage() {
                           <SectionDivider title="Часть 2" />
                         )}
                         {section.title === "Оформление ДТП" && (index === 2 || index === 4) && (
+                          <SectionDivider title={index === 2 ? "Часть 2" : "Часть 3"} />
+                        )}
+                        {section.title === "Проверка личности через боди-камеру и флешку" && (index === 2 || index === 5) && (
                           <SectionDivider title={index === 2 ? "Часть 2" : "Часть 3"} />
                         )}
                         {section.title === "Проверка тонировки" && index === 1 && (

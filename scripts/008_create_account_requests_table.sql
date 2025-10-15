@@ -52,11 +52,16 @@ BEGIN
       WHEN NEW.role = 'ГУВД - ПГС' THEN 'pgs-guvd'
       WHEN NEW.role = 'ГУВД - Лидер' THEN 'leader-guvd'
       WHEN NEW.role = 'ГУВД - СС' THEN 'ss-guvd'
-      ELSE LOWER(NEW.role)
+      WHEN NEW.role = 'super-admin' THEN 'super-admin'
+      WHEN NEW.role = 'root' THEN 'root'
+      ELSE NULL -- Недопустимая роль, не создаем пользователя
     END;
     
-    INSERT INTO users (nickname, username, password_hash, role, created_by, status, created_at)
-    VALUES (NEW.nickname, NEW.login, NEW.password_hash, user_role, NEW.reviewed_by, 'active', NOW());
+    -- Создаем пользователя только если роль допустима
+    IF user_role IS NOT NULL THEN
+      INSERT INTO users (nickname, username, password_hash, role, created_by, status, created_at)
+      VALUES (NEW.nickname, NEW.login, NEW.password_hash, user_role, NEW.reviewed_by, 'active', NOW());
+    END IF;
   END IF;
   
   RETURN NEW;
@@ -64,7 +69,8 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Триггер для автоматического создания пользователя
-CREATE TRIGGER trigger_auto_create_user_from_request
+DROP TRIGGER IF EXISTS trigger_auto_create_user_from_request ON account_requests;
+CREATE OR REPLACE TRIGGER trigger_auto_create_user_from_request
 AFTER UPDATE ON account_requests
 FOR EACH ROW
 EXECUTE FUNCTION auto_create_user_from_request();
@@ -73,6 +79,7 @@ EXECUTE FUNCTION auto_create_user_from_request();
 ALTER TABLE account_requests ENABLE ROW LEVEL SECURITY;
 
 -- Политика: все могут создавать запросы
+DROP POLICY IF EXISTS "Anyone can create account requests" ON account_requests;
 CREATE POLICY "Anyone can create account requests"
 ON account_requests
 FOR INSERT
@@ -80,6 +87,7 @@ TO public
 WITH CHECK (true);
 
 -- Политика: только root, лидеры ПГС, ГС, лидеры и СС могут просматривать запросы
+DROP POLICY IF EXISTS "Leaders can view account requests" ON account_requests;
 CREATE POLICY "Leaders can view account requests"
 ON account_requests
 FOR SELECT
@@ -94,6 +102,7 @@ USING (
 );
 
 -- Политика: только root, лидеры ПГС, ГС, лидеры и СС могут обновлять запросы
+DROP POLICY IF EXISTS "Leaders can update account requests" ON account_requests;
 CREATE POLICY "Leaders can update account requests"
 ON account_requests
 FOR UPDATE
@@ -118,6 +127,7 @@ WITH CHECK (
 -- Политика для rate_limits (только backend может работать с этой таблицей)
 ALTER TABLE request_rate_limits ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Service role can manage rate limits" ON request_rate_limits;
 CREATE POLICY "Service role can manage rate limits"
 ON request_rate_limits
 FOR ALL
