@@ -1235,48 +1235,92 @@ ${reqList}
                     <Input id="onlineStats" value={onlineStats} onChange={(e) => setOnlineStats(e.target.value)} className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                   </div>
                 )}
-                <div>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
                   <Label className="text-sm font-medium text-blue-200/90 mb-2 block">
                     Требования/Задачи
-                    {department === "ГИБДД" && (
-                      <span className="text-xs text-blue-300/70 ml-2">(Важно: 1 лекция или тренировка = 1 ссылка)</span>
-                    )}
-                  </Label>
-                  {requirements.map((req, index) => (
-                    <div key={index} className="flex gap-3 mt-2 items-center">
-                      <Input
-                        placeholder="Название задачи/требования"
-                        value={req.req}
-                        onChange={(e) => updateRequirement(index, "req", e.target.value)}
-                        className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 flex-1"
-                      />
                       {department === "ГИБДД" && (
-                        <Input
-                          placeholder="Количество"
-                          value={req.quantity || ""}
-                          onChange={(e) => updateRequirement(index, "quantity", e.target.value)}
-                          className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 w-28"
-                        />
+                        <p className="text-xs text-blue-300/70 ml-10 mt-1">
+                          💡 Важно: 1 лекция или тренировка = 1 ссылка
+                        </p>
                       )}
-                      <Input
-                        placeholder="Ссылка/ссылки"
-                        value={req.link}
-                        onChange={(e) => updateRequirement(index, "link", e.target.value)}
-                        className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 flex-1"
-                      />
-                      <Button
-                        variant="destructive"
-                        size="icon"
-                        onClick={() => removeRequirement(index)}
-                        disabled={requirements.length === 1}
-                        className="h-10 w-10 bg-red-500/20 hover:bg-red-500/30 text-red-300 border-red-400/40"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                    </Label>
                     </div>
-                  ))}
-                  <Button variant="outline" onClick={addRequirement} className="mt-2 border-blue-400/40 text-blue-300 hover:bg-blue-500/10">
-                    Добавить требование
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {requirements.map((req, index) => (
+                      <div 
+                        key={index} 
+                        className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 hover:bg-white/8 hover:border-white/20 transition-all duration-200 group"
+                      >
+                        <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-gradient-to-br from-blue-500/30 to-purple-500/30 rounded-full flex items-center justify-center border border-blue-400/40 text-xs font-bold text-blue-200">
+                          {index + 1}
+                        </div>
+                        
+                        <div className="flex gap-3 items-start">
+                          <div className="flex-1 space-y-3">
+                            <div>
+                              <Label className="text-xs text-blue-300/80 mb-1.5 block">Название задачи</Label>
+                              <Input
+                                placeholder="Например: Патрулирование, Оформление ДТП, Лекция..."
+                                value={req.req}
+                                onChange={(e) => updateRequirement(index, "req", e.target.value)}
+                                className="bg-black/20 border-blue-400/30 text-white placeholder:text-blue-200/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all"
+                              />
+                            </div>
+                            
+                            <div className="grid gap-3" style={{ gridTemplateColumns: department === "ГИБДД" ? "120px 1fr" : "1fr" }}>
+                              {department === "ГИБДД" && (
+                                <div>
+                                  <Label className="text-xs text-blue-300/80 mb-1.5 block">Количество</Label>
+                                  <Input
+                                    placeholder="0"
+                                    value={req.quantity || ""}
+                                    onChange={(e) => updateRequirement(index, "quantity", e.target.value)}
+                                    className="bg-black/20 border-blue-400/30 text-white placeholder:text-blue-200/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all text-center font-semibold"
+                                  />
+                                </div>
+                              )}
+                              <div>
+                                <Label className="text-xs text-blue-300/80 mb-1.5 block">Ссылка на подтверждение</Label>
+                                <Input
+                                  placeholder="https://..."
+                                  value={req.link}
+                                  onChange={(e) => updateRequirement(index, "link", e.target.value)}
+                                  className="bg-black/20 border-blue-400/30 text-white placeholder:text-blue-200/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeRequirement(index)}
+                            disabled={requirements.length === 1}
+                            className="h-9 w-9 mt-6 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-400/20 hover:border-red-400/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                            title="Удалить требование"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <Button 
+                    variant="outline" 
+                    onClick={addRequirement} 
+                    className="w-full border-2 border-dashed border-blue-400/40 text-blue-300 hover:bg-blue-500/10 hover:border-blue-400/60 transition-all duration-200 py-6 group"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
+                        <span className="text-lg leading-none">+</span>
+                      </div>
+                      <span className="font-medium">Добавить требование</span>
+                    </div>
                   </Button>
                 </div>
                 <div>

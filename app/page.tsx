@@ -30,6 +30,7 @@ import { GeneratorPage } from "@/components/generator-page"
 import { NewcomerGuidePage } from "@/components/newcomer-guide-page"
 import { MedicalAidPage } from "@/components/medical-aid-page"
 import { UserManagementPage } from "@/components/user-management-page"
+import { OrdersPage } from "@/components/orders-page"
 
 export default function Home() {
   const { currentUser } = useAuth()
@@ -58,6 +59,7 @@ export default function Home() {
     | "test"
     | "generator-page"
     | "user-management"
+    | "orders"
   >("contents")
 
   const [isGlobalSearchOpen, setIsGlobalSearchOpen] = useState(false)
@@ -123,6 +125,8 @@ export default function Home() {
         return <GeneratorPage />
       case "user-management":
         return <UserManagementPage />
+      case "orders":
+        return <OrdersPage />
       default:
         return (
           <div className="max-w-7xl mx-auto px-6 py-12">

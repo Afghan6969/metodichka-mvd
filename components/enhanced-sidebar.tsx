@@ -64,6 +64,7 @@ interface ModernSidebarProps {
     | "test"
     | "generator-page"
     | "user-management"
+    | "orders"
   ) => void
   onGlobalSearchOpen: () => void
   isOpen: boolean
@@ -111,11 +112,17 @@ export function EnhancedSidebar({ currentPage, onPageChange, onGlobalSearchOpen,
     const isHovered = hoveredItem === item.id
 
     // Проверка доступа к защищенным страницам
-    const protectedPages = ["generator-page", "gibdd-gov-wave", "guvd-gov-wave"]
+    const protectedPages = ["generator-page", "gibdd-gov-wave", "guvd-gov-wave", "orders"]
 
     if (protectedPages.includes(item.id)) {
       if (item.id === "generator-page") {
         if (!hasAccess("generator-page")) {
+          return null
+        }
+      } else if (item.id === "orders") {
+        // Приказы доступны только старшему составу и выше
+        const allowedRoles = ["ss-gibdd", "ss-guvd", "leader-gibdd", "leader-guvd", "pgs-gibdd", "pgs-guvd", "gs-gibdd", "gs-guvd", "root", "super-admin"]
+        if (!currentUser || !currentUser.role || !allowedRoles.includes(currentUser.role)) {
           return null
         }
       } else if (!hasAccess(item.id)) {
@@ -167,6 +174,7 @@ export function EnhancedSidebar({ currentPage, onPageChange, onGlobalSearchOpen,
     { id: "penalty-calculator", label: "Калькулятор наказаний", icon: Scale },
     { id: "tests", label: "Тесты по УК и КоАП", icon: ClipboardCheck },
     { id: "generator-page", label: "Генератор отчётов", icon: PenTool },
+    { id: "orders", label: "Приказы в ДО", icon: ClipboardCheck },
     { id: "ammunition", label: "Амуниция", icon: Package },
     { id: "terms", label: "Термины", icon: ScrollText },
     { id: "test", label: "Примеры ситуаций", icon: Lightbulb },
