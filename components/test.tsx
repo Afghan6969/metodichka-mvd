@@ -237,7 +237,12 @@ export default function GuvdExamplesPage() {
           )}
 
           <div className="space-y-6">
-            <h2 className="text-3xl font-black uppercase tracking-wide text-white">Важные уточнения</h2>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center shadow-md">
+                <AlertCircle className="h-6 w-6 text-white" />
+              </div>
+              <h2 className="text-3xl font-black uppercase tracking-wide text-foreground">⚠ Важные уточнения</h2>
+            </div>
             {[
               {
                 title: "Окно у ТС",
@@ -281,20 +286,18 @@ export default function GuvdExamplesPage() {
             ].map((section, index) => (
               <div
                 key={index}
-                className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden"
+                className="rounded-2xl border-2 border-orange-500 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/20 dark:to-orange-900/20 p-6 shadow-lg"
               >
-                <div className="p-6 border-b border-white/10">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center border border-blue-400/30">
-                      <AlertCircle className="h-5 w-5 text-blue-300" />
-                    </div>
-                    <h3 className="text-lg font-bold text-white">Важное уточнение №{index + 1}. {section.title}</h3>
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 shadow-md">
+                    <span className="text-white font-black text-sm">{index + 1}</span>
                   </div>
+                  <h3 className="text-lg font-black uppercase text-orange-600 dark:text-orange-500 pt-2">{section.title}</h3>
                 </div>
-                <div className="p-6">
-                  <div className="text-sm text-blue-100/90 space-y-2">
+                <div className="pl-14">
+                  <div className="text-sm text-foreground/80 space-y-2">
                     {section.content.map((item, i) => (
-                      <p key={i} dangerouslySetInnerHTML={{ __html: item }} />
+                      <p key={i} className="leading-relaxed" dangerouslySetInnerHTML={{ __html: item }} />
                     ))}
                   </div>
                 </div>

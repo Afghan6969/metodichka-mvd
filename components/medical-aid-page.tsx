@@ -1,10 +1,23 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Heart, Zap } from "lucide-react"
+import { Heart, Zap, ChevronDown } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
+import { Badge } from "@/components/ui/badge"
 
 export function MedicalAidPage() {
+  const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set())
+
+  const toggleSection = (index: number) => {
+    const newExpanded = new Set(expandedSections)
+    if (newExpanded.has(index)) {
+      newExpanded.delete(index)
+    } else {
+      newExpanded.add(index)
+    }
+    setExpandedSections(newExpanded)
+  }
   const firstAidSteps = [
     {
       title: "Подготовка аптечки",
@@ -237,18 +250,29 @@ export function MedicalAidPage() {
       </div>
 
       <div className="space-y-4">
-        {firstAidSteps.map((step: any, index: number) => (
-          <div key={index} className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
-            <div className="p-6">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 bg-gradient-to-br from-red-500/80 to-red-600/60 rounded-xl flex items-center justify-center border border-red-400/30 shadow-lg">
-                  <span className="text-3xl">{step.icon}</span>
+        {firstAidSteps.map((step: any, index: number) => {
+          const isExpanded = expandedSections.has(index)
+          return (
+          <div key={index} className="rounded-xl border-2 border-red-500/20 bg-card overflow-hidden hover:border-red-500/40 transition-all">
+            <button
+              onClick={() => toggleSection(index)}
+              className="w-full px-6 py-4 bg-gradient-to-r from-red-500/10 to-red-500/5 hover:from-red-500/15 hover:to-red-500/10 transition-all flex items-center justify-between group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-red-500/80 to-red-600/60 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-2xl">{step.icon}</span>
                 </div>
-                <h3 className="text-2xl font-black uppercase tracking-wide text-white group-hover:text-red-200 transition-colors">
+                <h3 className="text-lg font-bold text-foreground text-left">
                   {index + 1}. {step.title}
                 </h3>
               </div>
-
+              <div className="flex items-center gap-3">
+                <Badge variant="secondary" className="text-xs">{step.commands.filter((c: string) => c && !c.includes('Вариант')).length} шагов</Badge>
+                <ChevronDown className={`h-5 w-5 text-red-500 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
+              </div>
+            </button>
+            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+            <div className="p-6 border-t-2 border-red-500/10">
               <div className="space-y-2">
                 {step.commands.map((command: string, commandIndex: number) => {
                   const isSubpoint = (command.startsWith('Если') && command.endsWith(':')) || (command.startsWith('Вариант') && command.includes('—'));
@@ -278,8 +302,10 @@ export function MedicalAidPage() {
                 })}
               </div>
             </div>
+            </div>
           </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

@@ -200,42 +200,42 @@ export function ReportsPage() {
           const categoryType = categoryIcons[category.category]
 
           return (
-            <div key={category.id} className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
-              <div className="flex items-center gap-4 p-6 border-b border-white/10">
-                <div className={`w-14 h-14 bg-gradient-to-br ${categoryType.color} rounded-xl flex items-center justify-center border border-blue-400/30 shadow-lg group-hover:shadow-blue-500/20 transition-all duration-300`}>
-                  <IconComponent className="h-7 w-7 text-white" />
+            <div key={category.id} className="rounded-2xl border-2 border-primary/20 bg-card shadow-md hover:shadow-xl hover:border-primary/40 transition-all overflow-hidden">
+              <div className="flex items-center gap-4 px-6 py-4 bg-gradient-to-r from-primary/10 to-primary/5 border-b-2 border-primary/20">
+                <div className={`w-12 h-12 bg-gradient-to-br ${categoryType.color} rounded-xl flex items-center justify-center shadow-lg`}>
+                  <IconComponent className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-2xl font-bold uppercase tracking-wide mb-1 text-white group-hover:text-blue-200 transition-colors">{category.title}</h2>
-                  <p className="text-blue-200/80 font-medium">{category.description}</p>
+                  <h2 className="text-xl font-bold uppercase text-foreground">{category.title}</h2>
+                  <p className="text-sm text-muted-foreground">{category.description}</p>
                 </div>
-                <Badge variant="outline" className="border-blue-400/40 text-blue-300 font-semibold bg-blue-500/10">
+                <Badge variant="secondary" className="text-xs">
                   {categoryLabels[category.category]}
                 </Badge>
               </div>
 
-              <div className="space-y-2 p-6">
+              <div className="space-y-3 p-6">
                 {category.reports.map((report, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-4 p-4 rounded-xl bg-black/5 border border-white/10 hover:bg-white/8 transition-colors group"
+                    className="group flex items-start gap-3 p-4 rounded-xl bg-gradient-to-r from-primary/5 to-primary/10 border-2 border-primary/20 hover:border-primary/40 hover:shadow-lg transition-all"
                   >
-                    <div className="flex-1">
-                      <h3 className="text-base font-bold uppercase tracking-wide mb-2 text-blue-100 group-hover:text-white transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-bold uppercase mb-3 text-foreground">
                         {report.title}
                       </h3>
-                      <div className="bg-white/10 p-3 rounded-lg border border-blue-400/20">
-                        <code className="font-mono text-sm text-blue-100 font-semibold leading-relaxed">
+                      <div className="bg-card/80 p-3 rounded-lg border border-border">
+                        <code className="font-mono text-sm text-foreground leading-relaxed break-all">
                           {report.command}
                         </code>
                       </div>
                       {report.description && (
-                        <p className="text-sm text-blue-200/80 font-medium mt-2 leading-relaxed">
+                        <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
                           {report.description}
                         </p>
                       )}
                     </div>
-                    <div className="opacity-60 group-hover:opacity-100 transition-opacity">
+                    <div className="flex-shrink-0">
                       <CopyButton text={report.command} />
                     </div>
                   </div>

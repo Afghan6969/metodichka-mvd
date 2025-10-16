@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Copy, Check, Terminal, Search, X, Info, ExternalLink } from "lucide-react"
+import { Copy, Check, Terminal, Search, X, Info, ExternalLink, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -12,6 +12,33 @@ import { PageHeader } from "@/components/page-header"
 export function GuvdBindsPage() {
   const [copiedBind, setCopiedBind] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
+  const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set())
+
+  const toggleSection = (index: number) => {
+    const newExpanded = new Set(expandedSections)
+    if (newExpanded.has(index)) {
+      newExpanded.delete(index)
+    } else {
+      newExpanded.add(index)
+    }
+    setExpandedSections(newExpanded)
+  }
+
+  const getBindsWord = (count: number) => {
+    const lastDigit = count % 10
+    const lastTwoDigits = count % 100
+    
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+      return 'биндов'
+    }
+    if (lastDigit === 1) {
+      return 'бинд'
+    }
+    if (lastDigit >= 2 && lastDigit <= 4) {
+      return 'бинда'
+    }
+    return 'биндов'
+  }
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -24,17 +51,15 @@ export function GuvdBindsPage() {
   }
 
   const BindItem = ({ bind, description }: { bind: string; description?: string }) => (
-    <div className="flex items-start gap-4 p-4 rounded-xl bg-black/5 border border-white/10 hover:bg-white/8 transition-colors">
-      <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-400/30 mt-1">
-        <Terminal className="h-4 w-4 text-blue-300" />
+    <div className="group flex items-start gap-3 p-4 rounded-xl bg-gradient-to-r from-red-500/5 to-red-500/10 border-2 border-red-500/20 hover:border-red-500/40 hover:shadow-lg transition-all">
+      <div className="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+        <Terminal className="h-5 w-5 text-white" />
       </div>
-      <div className="flex-1">
-        <div className="flex items-center gap-2 mb-2">
-          <code className="font-mono text-sm bg-white/10 text-blue-100 px-3 py-1.5 rounded-lg border border-blue-400/20">{bind}</code>
-        </div>
-        {description && <p className="text-xs text-blue-200/80 mt-1">{description}</p>}
+      <div className="flex-1 min-w-0">
+        <code className="block font-mono text-sm bg-card/80 text-foreground px-4 py-2 rounded-lg border border-border break-all">{bind}</code>
+        {description && <p className="text-xs text-muted-foreground mt-2 italic">{description}</p>}
       </div>
-      <div className="opacity-60 hover:opacity-100 transition-opacity">
+      <div className="flex-shrink-0">
         <CopyButton text={bind} />
       </div>
     </div>
@@ -261,42 +286,60 @@ export function GuvdBindsPage() {
           <div className="text-center text-sm text-blue-200/80 mt-2">Найдено разделов: {filteredSections.length}</div>
         )}
 
-        <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden mt-6">
-          <div className="p-6 border-b border-white/10">
-            <h2 className="text-xl font-bold text-white">Важные примечания</h2>
+        <div className="rounded-2xl border-2 border-orange-500 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/20 dark:to-orange-900/20 p-6 shadow-lg mt-6">
+          <div className="flex items-start gap-4 mb-4">
+            <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 shadow-md">
+              <Info className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-black uppercase text-orange-600 dark:text-orange-500">⚠ Важные примечания</h2>
+            </div>
           </div>
-          <div className="p-6">
-            <div className="space-y-4 text-sm text-blue-100/90">
-              <div className="flex items-start gap-3">
-                <Badge className="border-blue-400/40 text-blue-300 bg-blue-500/10 text-xs mt-0.5">
-                  UP
-                </Badge>
-                <p>Клавиши где присутствуют "up", нужно зажимать на 1-2 секунды, после того как отпустите - сработает отыгровка "up".</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <Badge className="border-purple-400/40 text-purple-300 bg-purple-500/10 text-xs mt-0.5">
-                  Интервал
-                </Badge>
-                <p>Интервал между биндами - не менее двух секунд.</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <Badge className="border-green-400/40 text-green-300 bg-green-500/10 text-xs mt-0.5">
-                  Лимит
-                </Badge>
-                <p>На одну клавишу не более трёх отыгровок.</p>
-              </div>
+          <div className="space-y-3 text-sm text-foreground/80">
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-white/50 dark:bg-black/20">
+              <Badge className="border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-950 text-xs mt-0.5 font-bold">
+                UP
+              </Badge>
+              <p>Клавиши где присутствуют "up", нужно зажимать на 1-2 секунды, после того как отпустите - сработает отыгровка "up".</p>
+            </div>
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-white/50 dark:bg-black/20">
+              <Badge className="border-purple-500 text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-950 text-xs mt-0.5 font-bold">
+                Интервал
+              </Badge>
+              <p>Интервал между биндами - не менее двух секунд.</p>
+            </div>
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-white/50 dark:bg-black/20">
+              <Badge className="border-green-500 text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-950 text-xs mt-0.5 font-bold">
+                Лимит
+              </Badge>
+              <p>На одну клавишу не более трёх отыгровок.</p>
             </div>
           </div>
         </div>
 
-        <div className="grid gap-6 mt-6">
+        <div className="grid gap-4 mt-6">
           {filteredSections.length > 0 ? (
-            filteredSections.map((section, sectionIndex) => (
-              <div key={sectionIndex} className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
-                <div className="p-6 border-b border-white/10">
-                  <h2 className="text-xl font-bold text-white">{section.title}</h2>
-                </div>
-                <div className="p-6">
+            filteredSections.map((section, sectionIndex) => {
+              const isExpanded = expandedSections.has(sectionIndex)
+              return (
+              <div key={sectionIndex} className="rounded-xl border-2 border-red-500/20 bg-card overflow-hidden hover:border-red-500/40 transition-all">
+                <button
+                  onClick={() => toggleSection(sectionIndex)}
+                  className="w-full px-6 py-4 bg-gradient-to-r from-red-500/10 to-red-500/5 hover:from-red-500/15 hover:to-red-500/10 transition-all flex items-center justify-between group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center group-hover:bg-red-500/30 transition-colors">
+                      <Terminal className="h-4 w-4 text-red-500" />
+                    </div>
+                    <h2 className="text-lg font-bold text-foreground text-left">{section.title}</h2>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="secondary" className="text-xs">{section.binds.length} {getBindsWord(section.binds.length)}</Badge>
+                    <ChevronDown className={`h-5 w-5 text-red-500 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
+                  </div>
+                </button>
+                <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div className="p-6 border-t-2 border-red-500/10">
                   <div className="space-y-3">
                     {section.binds.map((item, index) => (
                       <div key={index}>
@@ -339,8 +382,10 @@ export function GuvdBindsPage() {
                     ))}
                   </div>
                 </div>
+                </div>
               </div>
-            ))
+              )
+            })
           ) : (
             <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
               <div className="p-8 text-center">

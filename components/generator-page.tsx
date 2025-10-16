@@ -810,7 +810,7 @@ ${reqList}
               <Alert className="border-border bg-muted">
                 <AlertCircle className="h-4 w-4 text-muted-foreground" />
                 <AlertDescription className="text-muted-foreground text-sm">
-                  Для доступа к генератору отчётов необходимо иметь роль ГИБДД, ГУВД, СС ГИБДД, СС ГУВД, ПГС ГИБДД, ПГС ГУВД, ГС ГИБДД, ГС ГУВД, Лидер ГИБДД, Лидер ГУВД, root или super-admin.
+                  Доступ к генератору отчётов предоставлен авторизованному составу МВД и администраторам системы.
                 </AlertDescription>
               </Alert>
             </div>
