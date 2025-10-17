@@ -92,8 +92,8 @@ export async function POST(req: NextRequest) {
 
     const normalizedRole = normalizeRole(role);
     
-    // Prevent root and super-admin role assignment through the interface (except for super-admin users)
-    if (normalizedRole === "root" || (normalizedRole === "super-admin" && String(currentUser.role) !== "super-admin")) {
+    // Prevent root and super-admin role assignment through the interface (no exceptions)
+    if (normalizedRole === "root" || normalizedRole === "super-admin") {
       return NextResponse.json({ error: "Cannot assign this role" }, { status: 403 });
     }
 

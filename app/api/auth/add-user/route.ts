@@ -81,9 +81,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Username already exists" }, { status: 400 });
     }
 
-    // Prevent root and super-admin role assignment through the interface (except for super-admin users)
+    // Prevent root and super-admin role assignment through the interface (no exceptions)
     const normalizedRole = normalizeRole(role);
-    if (normalizedRole === "root" || (normalizedRole === "super-admin" && String(currentUser.role) !== "super-admin")) {
+    if (normalizedRole === "root" || normalizedRole === "super-admin") {
       return NextResponse.json({ error: "Cannot assign this role" }, { status: 403 });
     }
 
