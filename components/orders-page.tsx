@@ -494,17 +494,8 @@ export function OrdersPage() {
 
   // Функция замены плейсхолдеров на реальные данные (для обычного просмотра)
   const replaceOrderContent = (content: string): string => {
-    if (!position && !nickname) return content
-    
-    let result = content
-    if (position && nickname) {
-      result = result.replace("[ [Ваша должность] | [Ваш никнейм] ]", `[${position} | ${nickname}]`)
-    } else if (position) {
-      result = result.replace("[Ваша должность]", position)
-    } else if (nickname) {
-      result = result.replace("[Ваш никнейм]", nickname)
-    }
-    return result
+    // Возвращаем контент как есть, без замены должности и никнейма
+    return content
   }
   
   // Фильтрация по категории и поиску
@@ -539,113 +530,98 @@ export function OrdersPage() {
         badge={`${orders.length} приказов`}
       />
 
-      {/* Форма ввода данных */}
-      <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl p-6">
-        <div className="mb-4">
-          <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-            <User className="h-5 w-5 text-blue-300" />
-            Ваши данные
-          </h3>
-          <p className="text-sm text-blue-200/80">Введите свою должность и никнейм для автоматической подстановки в приказы</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Поиск и фильтры */}
+      <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/15 rounded-3xl p-6 shadow-xl">
+        <div className="grid md:grid-cols-[1fr,auto] gap-6 items-end">
+          {/* Поиск */}
           <div>
-            <Label className="text-sm text-blue-200/90 mb-2 flex items-center gap-2">
-              <Briefcase className="h-4 w-4" />
-              Должность
+            <Label className="text-sm text-blue-200/90 mb-3 flex items-center gap-2 font-semibold">
+              <Search className="h-4 w-4" />
+              Поиск приказов
             </Label>
-            <Input
-              placeholder="Например: Начальник ГИБДД-Н"
-              value={position}
-              onChange={(e) => setPosition(e.target.value)}
-              className="bg-black/20 border-blue-400/30 text-white placeholder:text-blue-200/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
-            />
+            <div className="relative">
+              <Input
+                placeholder="Введите название, категорию или содержание..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-black/30 border-blue-400/30 text-white placeholder:text-blue-200/40 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 pl-4 pr-10 h-12 rounded-xl"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-300/60 hover:text-blue-300 transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+            {searchQuery && (
+              <p className="text-xs text-blue-300/70 mt-2 flex items-center gap-1">
+                <FileText className="h-3 w-3" />
+                Найдено: {filteredOrders.length} {filteredOrders.length === 1 ? 'приказ' : filteredOrders.length < 5 ? 'приказа' : 'приказов'}
+              </p>
+            )}
           </div>
+
+          {/* Фильтры */}
           <div>
-            <Label className="text-sm text-blue-200/90 mb-2 flex items-center gap-2">
-              <User className="h-4 w-4" />
-              Никнейм
-            </Label>
-            <Input
-              placeholder="Например: Посейдон Вагнер"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-              className="bg-black/20 border-blue-400/30 text-white placeholder:text-blue-200/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
-            />
+            <Label className="text-sm text-blue-200/90 mb-3 font-semibold">Категория</Label>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2.5 rounded-xl font-medium transition-all duration-200 text-sm ${
+                    selectedCategory === category
+                      ? "bg-blue-500/30 text-white border-2 border-blue-400/60 shadow-lg shadow-blue-500/20"
+                      : "bg-white/5 text-blue-200/70 border border-white/10 hover:bg-white/10 hover:border-white/20"
+                  }`}
+                >
+                  {category === "all" ? "Все" : category}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Поиск */}
-      <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl p-6">
-        <Label className="text-sm text-blue-200/90 mb-2 flex items-center gap-2">
-          <Search className="h-4 w-4" />
-          Поиск приказов
-        </Label>
-        <Input
-          placeholder="Поиск по названию, содержанию или категории..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="bg-black/20 border-blue-400/30 text-white placeholder:text-blue-200/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
-        />
-        {searchQuery && (
-          <p className="text-xs text-blue-300/80 mt-2">
-            Найдено: {filteredOrders.length} {filteredOrders.length === 1 ? 'приказ' : filteredOrders.length < 5 ? 'приказа' : 'приказов'}
-          </p>
-        )}
-      </div>
-
-      {/* Фильтры */}
-      <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl p-6">
-        <div className="flex flex-wrap gap-3">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
-                selectedCategory === category
-                  ? "bg-blue-500/30 text-white border-2 border-blue-400/60 shadow-lg"
-                  : "bg-white/5 text-blue-200/80 border border-white/10 hover:bg-white/10"
-              }`}
-            >
-              {category === "all" ? "Все приказы" : category}
-            </button>
-          ))}
         </div>
       </div>
 
       {/* Список приказов */}
-      <div className="grid gap-5">
+      <div className="grid gap-6">
         {filteredOrders.map((order) => (
           <div
             key={order.id}
-            className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl overflow-hidden group hover:bg-white/12 hover:border-white/25 transition-all duration-300"
+            className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/15 rounded-3xl overflow-hidden group hover:from-white/15 hover:to-white/8 hover:border-blue-400/30 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300"
           >
-            <div className="p-6 border-b border-white/10">
+            <div className="p-6 border-b border-white/10 bg-gradient-to-r from-blue-500/5 to-transparent">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold text-white mb-2">{order.title}</h3>
-                  <Badge className={`${getCategoryColor(order.category)} text-xs px-3 py-1`}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-blue-500/20 rounded-xl border border-blue-400/30">
+                      <FileText className="h-5 w-5 text-blue-300" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white">{order.title}</h3>
+                  </div>
+                  <Badge className={`${getCategoryColor(order.category)} text-xs px-3 py-1.5 font-medium`}>
                     {order.category}
                   </Badge>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                   <Button
                     onClick={() => openEditor(order)}
-                    className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border border-blue-400/40 h-9 px-4"
+                    className="bg-gradient-to-r from-blue-500/30 to-blue-500/20 hover:from-blue-500/40 hover:to-blue-500/30 text-white border border-blue-400/50 h-10 px-5 rounded-xl shadow-lg hover:shadow-blue-500/20 transition-all"
                   >
                     <Edit className="h-4 w-4 mr-2" />
                     Заполнить
                   </Button>
                   <CopyButton 
                     text={replaceOrderContent(order.content)} 
-                    className="shrink-0"
+                    className="shrink-0 h-10 px-4 rounded-xl"
                   />
                 </div>
               </div>
             </div>
-            <div className="p-6">
-              <pre className="font-mono text-sm text-blue-100/90 leading-relaxed whitespace-pre-wrap">
+            <div className="p-6 bg-black/20">
+              <pre className="font-mono text-sm text-blue-50/95 leading-relaxed whitespace-pre-wrap">
                 {replaceOrderContent(order.content)}
               </pre>
             </div>
@@ -989,7 +965,7 @@ export function OrdersPage() {
                               {label}
                             </Label>
                             <Input
-                              placeholder={`Введите ${label.toLowerCase()}...`}
+                              placeholder={`Введите ${label.toLowerCase().replace(/никнейм/i, 'никнейм').replace(/дата/i, 'дату').replace(/должность/i, 'должность').replace(/сумма/i, 'сумму').replace(/причина/i, 'причину').replace(/название/i, 'название')}...`}
                               value={formData[placeholder]}
                               onChange={(e) => setFormData({ ...formData, [placeholder]: e.target.value })}
                               className="bg-black/40 border-red-900/40 text-white placeholder:text-red-100/40 focus:border-red-700 focus:ring-2 focus:ring-red-900/30 rounded-xl"
@@ -1002,10 +978,10 @@ export function OrdersPage() {
                 )}
 
                 {/* Предпросмотр */}
-                <div className="bg-gradient-to-br from-red-950/30 to-transparent border border-red-900/30 rounded-2xl p-6">
+                <div className="bg-red-950/20 backdrop-blur-sm border border-red-900/30 rounded-2xl p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="p-1.5 bg-red-900/30 rounded-lg">
-                      <FileText className="h-4 w-4 text-red-400" />
+                    <div className="p-2 bg-red-900/30 rounded-lg">
+                      <FileText className="h-5 w-5 text-red-400" />
                     </div>
                     <h3 className="text-lg font-bold text-white">Предпросмотр приказа</h3>
                   </div>

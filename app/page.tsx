@@ -316,6 +316,14 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground">Создание документов</p>
                 </button>
 
+                <button onClick={() => setCurrentPage("orders")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary hover:shadow-lg transition-all text-left">
+                  <div className="flex items-center gap-3 mb-2">
+                    <FileText className="h-5 w-5 text-primary" />
+                    <h3 className="font-bold uppercase text-sm">Приказы в ДО</h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Шаблоны приказов</p>
+                </button>
+
                 <button onClick={() => setCurrentPage("reports")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary hover:shadow-lg transition-all text-left">
                   <div className="flex items-center gap-3 mb-2">
                     <Radio className="h-5 w-5 text-primary" />
