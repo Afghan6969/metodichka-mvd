@@ -1,6 +1,6 @@
 "use client";
 
-import { AccountRequestsAdmin } from "@/components/account-requests-admin";
+import { AccountRequestsAdmin } from "@/components/user-management/account-requests-admin";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";

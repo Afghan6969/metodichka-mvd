@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 
-export type ThemeName = "police-sides" | "police-dual" | "police-corners" | "police-cross"
+export type ThemeName = "police-sides" | "police-dual" | "police-corners" | "police-cross" | "siren-stars"
 
 export interface Theme {
   name: ThemeName
@@ -166,6 +166,38 @@ export const themes: Record<ThemeName, Theme> = {
       "sidebar-border": "rgba(220, 38, 38, 0.4)",
     },
   },
+  "siren-stars": {
+    name: "siren-stars",
+    displayName: "Мерцающие звёзды",
+    colors: {
+      background: "transparent",
+      foreground: "#f8fafc",
+      card: "rgba(10, 10, 10, 0.92)",
+      "card-foreground": "#f8fafc",
+      popover: "rgba(10, 10, 10, 0.98)",
+      "popover-foreground": "#f8fafc",
+      primary: "#dc2626",
+      "primary-foreground": "#ffffff",
+      secondary: "rgba(59, 130, 246, 0.8)",
+      "secondary-foreground": "#dbeafe",
+      muted: "rgba(30, 30, 30, 0.7)",
+      "muted-foreground": "#a8a8a8",
+      accent: "#3b82f6",
+      "accent-foreground": "#ffffff",
+      destructive: "#b91c1c",
+      "destructive-foreground": "#ffffff",
+      border: "rgba(220, 38, 38, 0.3)",
+      input: "rgba(20, 20, 20, 0.95)",
+      ring: "#dc2626",
+      sidebar: "rgba(0, 0, 0, 0.9)",
+      "sidebar-foreground": "#f8fafc",
+      "sidebar-primary": "#dc2626",
+      "sidebar-primary-foreground": "#ffffff",
+      "sidebar-accent": "rgba(59, 130, 246, 0.6)",
+      "sidebar-accent-foreground": "#dbeafe",
+      "sidebar-border": "rgba(220, 38, 38, 0.3)",
+    },
+  },
 }
 
 interface ThemeContextType {
@@ -196,7 +228,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const currentTheme = themes[theme]
 
     // Удаляем все классы тем
-    root.classList.remove("police-sides", "police-dual", "police-corners", "police-cross")
+    root.classList.remove("police-sides", "police-dual", "police-corners", "police-cross", "siren-stars")
 
     // Добавляем класс текущей темы
     root.classList.add(theme)

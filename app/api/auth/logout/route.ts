@@ -42,7 +42,7 @@ export async function POST(request: Request) {
         ip_address: ip,
       });
     } catch (error) {
-      console.error("Error logging logout:", error);
+      console.error("Ошибка логирования выхода:", error);
     }
   }
 

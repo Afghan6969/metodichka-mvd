@@ -51,7 +51,11 @@ interface ReviewDialogData {
   action: "approve" | "reject";
 }
 
-export function AccountRequestsAdmin() {
+interface AccountRequestsAdminProps {
+  onCountChange?: () => void;
+}
+
+export function AccountRequestsAdmin({ onCountChange }: AccountRequestsAdminProps = {}) {
   const { currentUser } = useAuth();
   const [requests, setRequests] = useState<AccountRequest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -134,6 +138,10 @@ export function AccountRequestsAdmin() {
       // Обновляем список запросов
       await loadRequests();
       closeReviewDialog();
+      // Уведомляем родительский компонент об изменении количества
+      if (onCountChange) {
+        onCountChange();
+      }
     } catch (err: any) {
       setError(err.message || "Ошибка при обработке запроса");
       console.error("Review error:", err);

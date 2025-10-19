@@ -9,12 +9,12 @@ import { TrainingPage } from "@/components/training-page"
 import { EducationPage } from "@/components/education-page"
 import { ReportsPage } from "@/components/reports-page"
 import { CommandsPage } from "@/components/commands-page"
-import GuvdVehiclesPage from "@/components/guvd-vehicles-page"
-import GibddVehiclesPage from "@/components/gibdd-vehicles-page"
-import { GuvdGovWavePage } from "@/components/guvd-gov-wave-page"
-import { GibddGovWavePage } from "@/components/gibdd-gov-wave-page"
-import { GibddBindsPage } from "@/components/gibdd-binds-page"
-import { GuvdBindsPage } from "@/components/guvd-binds-page"
+import GuvdVehiclesPage from "@/components/guvd/vehicles-page"
+import GibddVehiclesPage from "@/components/gibdd/vehicles-page"
+import { GuvdGovWavePage } from "@/components/guvd/gov-wave-page"
+import { GibddGovWavePage } from "@/components/gibdd/gov-wave-page"
+import { GibddBindsPage } from "@/components/gibdd/binds-page"
+import { GuvdBindsPage } from "@/components/guvd/binds-page"
 import { AmmunitionPage } from "@/components/ammunition-page"
 import { TermsPage } from "@/components/terms-page"
 import { ResourcesPage } from "@/components/resources-page"
@@ -23,13 +23,13 @@ import { LawTests } from "@/components/law-tests"
 import { GlobalSearch } from "@/components/global-search"
 import { Button } from "@/components/ui/button"
 import { Shield, ArrowRight, BookOpen, Target, Keyboard, Car, Award, AlertCircle, Sparkles, TrendingUp, Users, Zap, GraduationCap, FileText, Radio, Briefcase, Heart, Scale, ClipboardCheck, PenTool, Package, ScrollText, Lightbulb, Database, Terminal } from "lucide-react"
-import { PositionsPage } from "@/components/positions-page"
-import { GuvdPositionsPage } from "@/components/guvd-positions-page"
+import { PositionsPage } from "@/components/gibdd/positions-page"
+import { GuvdPositionsPage } from "@/components/guvd/positions-page"
 import GuvdExamplesPage from "@/components/test"
 import { GeneratorPage } from "@/components/generator-page"
 import { NewcomerGuidePage } from "@/components/newcomer-guide-page"
 import { MedicalAidPage } from "@/components/medical-aid-page"
-import { UserManagementPage } from "@/components/user-management-page"
+import { UserManagementPage } from "@/components/user-management"
 import { OrdersPage } from "@/components/orders-page"
 
 export default function Home() {
@@ -160,7 +160,7 @@ export default function Home() {
             </div>
 
             {/* CTA */}
-            <div className="mb-12 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30 p-8 text-center">
+            <div className="mb-12 rounded-2xl border-2 border-primary/30 p-8 text-center">
               <div className="w-16 h-16 rounded-full bg-primary mx-auto mb-4 flex items-center justify-center">
                 <GraduationCap className="h-8 w-8 text-white" />
               </div>
@@ -178,9 +178,9 @@ export default function Home() {
             {/* Departments */}
             <div className="grid md:grid-cols-2 gap-6 mb-10">
               {/* ГИБДД */}
-              <div className="rounded-2xl border-2 border-primary bg-gradient-to-br from-primary/5 to-primary/10 p-6">
+              <div className="rounded-2xl border-2 border-primary p-6">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 bg-primary rounded-xl flex items-center justify-center shadow-lg">
+                  <div className="w-14 h-14 bg-primary rounded-xl flex items-center justify-center">
                     <Car className="h-7 w-7 text-white" />
                   </div>
                   <div>
@@ -209,9 +209,9 @@ export default function Home() {
               </div>
 
               {/* ГУВД */}
-              <div className="rounded-2xl border-2 border-red-500 bg-gradient-to-br from-red-500/5 to-red-500/10 p-6">
+              <div className="rounded-2xl border-2 border-red-500 p-6">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 bg-red-500 rounded-xl flex items-center justify-center shadow-lg">
+                  <div className="w-14 h-14 bg-red-500 rounded-xl flex items-center justify-center">
                     <Shield className="h-7 w-7 text-white" />
                   </div>
                   <div>
@@ -268,7 +268,7 @@ export default function Home() {
             <div className="mb-10">
               <h2 className="text-2xl font-black uppercase mb-6">Разделы пособия</h2>
               <div className="grid md:grid-cols-3 gap-4">
-                <button onClick={() => setCurrentPage("newcomer-guide")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary hover:shadow-lg transition-all text-left">
+                <button onClick={() => setCurrentPage("newcomer-guide")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary transition-all text-left">
                   <div className="flex items-center gap-3 mb-2">
                     <Lightbulb className="h-5 w-5 text-primary" />
                     <h3 className="font-bold uppercase text-sm">Руководство новичка</h3>
@@ -276,7 +276,7 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground">Для начинающих сотрудников</p>
                 </button>
 
-                <button onClick={() => setCurrentPage("medical-aid")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary hover:shadow-lg transition-all text-left">
+                <button onClick={() => setCurrentPage("medical-aid")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary transition-all text-left">
                   <div className="flex items-center gap-3 mb-2">
                     <Heart className="h-5 w-5 text-primary" />
                     <h3 className="font-bold uppercase text-sm">Оказание ПМП</h3>
@@ -284,7 +284,7 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground">Первая медицинская помощь</p>
                 </button>
 
-                <button onClick={() => setCurrentPage("education")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary hover:shadow-lg transition-all text-left">
+                <button onClick={() => setCurrentPage("education")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary transition-all text-left">
                   <div className="flex items-center gap-3 mb-2">
                     <GraduationCap className="h-5 w-5 text-primary" />
                     <h3 className="font-bold uppercase text-sm">Обучение персонала</h3>
@@ -292,7 +292,7 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground">Образовательные программы</p>
                 </button>
 
-                <button onClick={() => setCurrentPage("penalty-calculator")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary hover:shadow-lg transition-all text-left">
+                <button onClick={() => setCurrentPage("penalty-calculator")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary transition-all text-left">
                   <div className="flex items-center gap-3 mb-2">
                     <Scale className="h-5 w-5 text-primary" />
                     <h3 className="font-bold uppercase text-sm">Калькулятор наказаний</h3>
@@ -300,7 +300,7 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground">Расчёт штрафов по КоАП и УК</p>
                 </button>
 
-                <button onClick={() => setCurrentPage("tests")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary hover:shadow-lg transition-all text-left">
+                <button onClick={() => setCurrentPage("tests")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary transition-all text-left">
                   <div className="flex items-center gap-3 mb-2">
                     <ClipboardCheck className="h-5 w-5 text-primary" />
                     <h3 className="font-bold uppercase text-sm">Тесты по УК и КоАП</h3>
@@ -308,7 +308,7 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground">Проверка знаний</p>
                 </button>
 
-                <button onClick={() => setCurrentPage("generator-page")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary hover:shadow-lg transition-all text-left">
+                <button onClick={() => setCurrentPage("generator-page")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary transition-all text-left">
                   <div className="flex items-center gap-3 mb-2">
                     <PenTool className="h-5 w-5 text-primary" />
                     <h3 className="font-bold uppercase text-sm">Генератор отчётов</h3>
@@ -316,7 +316,7 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground">Создание документов</p>
                 </button>
 
-                <button onClick={() => setCurrentPage("orders")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary hover:shadow-lg transition-all text-left">
+                <button onClick={() => setCurrentPage("orders")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary transition-all text-left">
                   <div className="flex items-center gap-3 mb-2">
                     <FileText className="h-5 w-5 text-primary" />
                     <h3 className="font-bold uppercase text-sm">Приказы в ДО</h3>
@@ -324,7 +324,7 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground">Шаблоны приказов</p>
                 </button>
 
-                <button onClick={() => setCurrentPage("reports")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary hover:shadow-lg transition-all text-left">
+                <button onClick={() => setCurrentPage("reports")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary transition-all text-left">
                   <div className="flex items-center gap-3 mb-2">
                     <Radio className="h-5 w-5 text-primary" />
                     <h3 className="font-bold uppercase text-sm">Доклады в рацию</h3>
@@ -332,7 +332,7 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground">Радиосвязь</p>
                 </button>
 
-                <button onClick={() => setCurrentPage("commands")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary hover:shadow-lg transition-all text-left">
+                <button onClick={() => setCurrentPage("commands")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary transition-all text-left">
                   <div className="flex items-center gap-3 mb-2">
                     <Terminal className="h-5 w-5 text-primary" />
                     <h3 className="font-bold uppercase text-sm">Команды</h3>
@@ -340,7 +340,7 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground">Игровые команды</p>
                 </button>
 
-                <button onClick={() => setCurrentPage("ammunition")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary hover:shadow-lg transition-all text-left">
+                <button onClick={() => setCurrentPage("ammunition")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary transition-all text-left">
                   <div className="flex items-center gap-3 mb-2">
                     <Package className="h-5 w-5 text-primary" />
                     <h3 className="font-bold uppercase text-sm">Амуниция</h3>
@@ -348,7 +348,7 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground">Снаряжение</p>
                 </button>
 
-                <button onClick={() => setCurrentPage("terms")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary hover:shadow-lg transition-all text-left">
+                <button onClick={() => setCurrentPage("terms")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary transition-all text-left">
                   <div className="flex items-center gap-3 mb-2">
                     <ScrollText className="h-5 w-5 text-primary" />
                     <h3 className="font-bold uppercase text-sm">Термины</h3>
@@ -356,7 +356,7 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground">Определения</p>
                 </button>
 
-                <button onClick={() => setCurrentPage("test")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary hover:shadow-lg transition-all text-left">
+                <button onClick={() => setCurrentPage("test")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary transition-all text-left">
                   <div className="flex items-center gap-3 mb-2">
                     <Lightbulb className="h-5 w-5 text-primary" />
                     <h3 className="font-bold uppercase text-sm">Примеры ситуаций</h3>
@@ -364,7 +364,7 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground">Практические примеры</p>
                 </button>
 
-                <button onClick={() => setCurrentPage("resources")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary hover:shadow-lg transition-all text-left">
+                <button onClick={() => setCurrentPage("resources")} className="rounded-xl border-2 border-border bg-card p-5 hover:bg-accent hover:border-primary transition-all text-left">
                   <div className="flex items-center gap-3 mb-2">
                     <Database className="h-5 w-5 text-primary" />
                     <h3 className="font-bold uppercase text-sm">Ресурсы</h3>

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { useAuth } from "@/lib/auth-context"
 import { roleDisplayNames } from "@/components/user-management/constants"
-import { LoginModal } from "@/components/login-modal"
+import { LoginModal } from "@/components/user-management"
 import { ThemeSwitcher } from "@/components/theme-switcher"
 
 interface ModernHeaderProps {
@@ -20,8 +20,7 @@ export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) 
 
   return (
     <>
-      <header className="modern-nav px-4 py-3 border-b-2 border-primary/30 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/5 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/15 via-accent/15 to-transparent opacity-40"></div>
+      <header className="modern-nav px-4 py-3 border-b-2 border-primary/30 relative overflow-hidden">
         <div className="flex items-center justify-between max-w-7xl mx-auto relative z-10">
           {/* Левая часть: Меню + Лого */}
           <div className="flex items-center gap-3">
@@ -29,7 +28,7 @@ export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) 
               <Menu className="h-5 w-5 text-primary" />
             </Button>
             <div className="flex items-center gap-3">
-              <div className="relative w-11 h-11 rounded-2xl flex items-center justify-center border-2 border-primary/50 overflow-hidden bg-gradient-to-br from-primary/20 via-accent/20 to-primary/20 shadow-xl shadow-primary/20">
+              <div className="relative w-11 h-11 rounded-2xl flex items-center justify-center border-2 border-primary/50 overflow-hidden">
                 <img src="/mvd-logo.jpg" alt="МВД Лого" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
               </div>
@@ -54,8 +53,8 @@ export function ModernHeader({ onMenuClick, onSearchClick }: ModernHeaderProps) 
             <ThemeSwitcher />
 
             {currentUser && (
-              <div className="hidden md:flex items-center gap-3 px-3 py-2 bg-gradient-to-r from-primary/20 via-accent/15 to-primary/15 rounded-xl border border-primary/30 shadow-lg relative">
-                <div className="relative w-8 h-8 rounded-lg bg-gradient-to-br from-primary/80 to-accent/60 flex items-center justify-center border border-primary/50 shadow-md">
+              <div className="hidden md:flex items-center gap-3 px-3 py-2 rounded-xl border border-primary/30 relative">
+                <div className="relative w-8 h-8 rounded-lg bg-primary flex items-center justify-center border border-primary/50">
                   <User className="h-4 w-4 text-primary-foreground" />
                 </div>
                 <div className="flex flex-col">

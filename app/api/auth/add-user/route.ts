@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
       .limit(1);
 
     if (existingErr) {
-      console.error("[AddUser API] DB check error:", existingErr);
+      console.error("[AddUser API] Ошибка проверки БД:", existingErr);
       return NextResponse.json({ error: "DB error" }, { status: 500 });
     }
     if (existingUsers && existingUsers.length > 0) {
@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
       ])
       .select();
     if (insertErr) {
-      console.error("[AddUser API] Insert error:", insertErr);
+      console.error("[AddUser API] Ошибка вставки:", insertErr);
       return NextResponse.json({ error: insertErr.message || "Insert failed" }, { status: 500 });
     }
 
@@ -128,6 +128,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, user: newUser });
   } catch (err: any) {
-    console.error("[AddUser API] Exception:", err);
+    console.error("[AddUser API] Исключение:", err);
   }
 }

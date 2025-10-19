@@ -444,6 +444,203 @@
     }
   }
 
+  /* ============================================ */
+  /* НОВЫЕ АНИМИРОВАННЫЕ ТЕМЫ - МИГАЛКИ */
+  /* ============================================ */
+
+  /* 1. Спиральное вращение - Красный и синий вращаются по спирали с масштабированием */
+  .siren-spiral {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.95) 100%),
+      radial-gradient(ellipse at 40% 40%, rgba(185, 28, 28, 0.15) 0%, transparent 45%),
+      radial-gradient(ellipse at 60% 60%, rgba(37, 99, 235, 0.15) 0%, transparent 45%),
+      linear-gradient(135deg, #050508 0%, #08050c 50%, #050508 100%);
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  .siren-spiral::before {
+    content: "";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 150%;
+    height: 150%;
+    transform: translate(-50%, -50%) rotate(0deg) scale(0.9);
+    background:
+      radial-gradient(ellipse at 30% 30%, rgba(185, 28, 28, 0.3) 0%, transparent 35%),
+      radial-gradient(ellipse at 70% 70%, rgba(37, 99, 235, 0.3) 0%, transparent 35%);
+    animation: siren-spiral-spin 7s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes siren-spiral-spin {
+    0% {
+      transform: translate(-50%, -50%) rotate(0deg) scale(0.9);
+      opacity: 0.3;
+    }
+    25% {
+      transform: translate(-50%, -50%) rotate(90deg) scale(1.05);
+      opacity: 0.5;
+    }
+    50% {
+      transform: translate(-50%, -50%) rotate(180deg) scale(0.9);
+      opacity: 0.35;
+    }
+    75% {
+      transform: translate(-50%, -50%) rotate(270deg) scale(1.05);
+      opacity: 0.5;
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(360deg) scale(0.9);
+      opacity: 0.3;
+    }
+  }
+
+  /* 2. Горизонтальные волны - Красный и синий волнами слева направо */
+  .siren-horizon {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.95) 100%),
+      radial-gradient(ellipse at 0% 50%, rgba(153, 27, 27, 0.18) 0%, transparent 55%),
+      radial-gradient(ellipse at 100% 50%, rgba(29, 78, 216, 0.18) 0%, transparent 55%),
+      linear-gradient(135deg, #080508 0%, #050508 50%, #05080c 100%);
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  .siren-horizon::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 200%;
+    background:
+      radial-gradient(ellipse at 25% 50%, rgba(153, 27, 27, 0.3) 0%, transparent 30%),
+      radial-gradient(ellipse at 75% 50%, rgba(29, 78, 216, 0.3) 0%, transparent 30%);
+    animation: siren-horizon-flow 8s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes siren-horizon-flow {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* 3. Мерцающие звёзды - Красный и синий мерцают как звёзды */
+  .siren-stars {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.95) 100%),
+      radial-gradient(circle at 15% 20%, rgba(220, 38, 38, 0.12) 0%, transparent 35%),
+      radial-gradient(circle at 85% 25%, rgba(37, 99, 235, 0.12) 0%, transparent 35%),
+      radial-gradient(circle at 25% 75%, rgba(37, 99, 235, 0.12) 0%, transparent 35%),
+      radial-gradient(circle at 75% 80%, rgba(220, 38, 38, 0.12) 0%, transparent 35%),
+      radial-gradient(circle at 50% 50%, rgba(185, 28, 28, 0.12) 0%, transparent 35%),
+      linear-gradient(135deg, #050508 0%, #08050a 50%, #050508 100%);
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  .siren-stars::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(220, 38, 38, 0.25) 0%, transparent 40%),
+      radial-gradient(circle at 75% 80%, rgba(220, 38, 38, 0.25) 0%, transparent 40%);
+    animation: siren-stars-twinkle-1 3s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .siren-stars::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(circle at 85% 25%, rgba(37, 99, 235, 0.25) 0%, transparent 40%),
+      radial-gradient(circle at 25% 75%, rgba(37, 99, 235, 0.25) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(185, 28, 28, 0.25) 0%, transparent 40%);
+    animation: siren-stars-twinkle-2 3s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes siren-stars-twinkle-1 {
+    0%, 100% {
+      opacity: 0.2;
+    }
+    33% {
+      opacity: 0.5;
+    }
+    66% {
+      opacity: 0.25;
+    }
+  }
+
+  @keyframes siren-stars-twinkle-2 {
+    0%, 100% {
+      opacity: 0.25;
+    }
+    33% {
+      opacity: 0.3;
+    }
+    66% {
+      opacity: 0.55;
+    }
+  }
+
+  /* Общие стили для новых тем мигалок */
+  .siren-spiral body,
+  .siren-spiral main,
+  .siren-spiral [data-slot="sidebar-inset"],
+  .siren-horizon body,
+  .siren-horizon main,
+  .siren-horizon [data-slot="sidebar-inset"],
+  .siren-stars body,
+  .siren-stars main,
+  .siren-stars [data-slot="sidebar-inset"] {
+    background: transparent !important;
+  }
+
+  /* Усиленное размытие для карточек новых тем */
+  .siren-spiral .bg-card,
+  .siren-spiral [data-slot="sidebar-inner"],
+  .siren-horizon .bg-card,
+  .siren-horizon [data-slot="sidebar-inner"],
+  .siren-stars .bg-card,
+  .siren-stars [data-slot="sidebar-inner"] {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+
+  /* Стили для боковой панели новых тем */
+  .siren-spiral .modern-sidebar,
+  .siren-horizon .modern-sidebar,
+  .siren-stars .modern-sidebar {
+    background: rgba(0, 0, 0, 0.9) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-right: 1px solid rgba(220, 38, 38, 0.3);
+  }
+
+  /* ============================================ */
+  /* КОНЕЦ НОВЫХ АНИМИРОВАННЫХ ТЕМ */
+  /* ============================================ */
+
   /* Общие стили для полицейских тем */
   .police-sides body,
   .police-sides main,

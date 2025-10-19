@@ -127,7 +127,7 @@ export async function POST(request: Request) {
       .single();
 
     if (updateError) {
-      console.error("Error updating account request:", updateError);
+      console.error("Ошибка обновления запроса аккаунта:", updateError);
       return NextResponse.json(
         { error: "Failed to update request", details: updateError.message },
         { status: 500 }
@@ -151,11 +151,11 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: `Request ${newStatus} successfully`,
+      message: `Запрос успешно ${newStatus}`,
       request: updatedRequest,
     });
   } catch (error) {
-    console.error("Review account request error:", error);
+    console.error("Ошибка рассмотрения запроса аккаунта:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

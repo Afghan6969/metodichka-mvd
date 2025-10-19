@@ -129,13 +129,19 @@ export async function POST(req: NextRequest) {
     
     console.log("[UpdateUser] Changes array:", changes);
 
+    // Не логировать если нет изменений
+    if (changes.length === 0) {
+      console.log("[UpdateUser] Изменений не обнаружено, пропускаем логирование");
+      return NextResponse.json({ success: true });
+    }
+
     const updates: any = { username, role: normalizedRole };
     if (nickname) updates.nickname = nickname;
     if (password) updates.password_hash = await bcrypt.hash(password, 10);
 
     const { error: updateErr } = await supabase.from("users").update(updates).eq("id", userId);
     if (updateErr) {
-      console.error("[UpdateUser API] Update error:", updateErr);
+      console.error("[UpdateUser API] Ошибка обновления:", updateErr);
       return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
     }
 
@@ -169,7 +175,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (err: any) {
-    console.error("[UpdateUser API] Exception:", err);
+    console.error("[UpdateUser API] Исключение:", err);
 
   }
 }

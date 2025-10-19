@@ -6,6 +6,7 @@ import { ru } from "date-fns/locale"
 import { Card, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Badge } from "@/components/ui/badge"
 import { Users, Trash2, AlertCircle, History, Loader2, RefreshCw, UserCog, UserPlus } from "lucide-react"
 import { useAuth, type UserRole } from "@/lib/auth-context"
 import { PageHeader } from "@/components/page-header"
@@ -25,7 +26,7 @@ import {
   actionDisplayNames,
   getRoleBadgeVariant,
 } from "@/components/user-management"
-import { AccountRequestsAdmin } from "@/components/account-requests-admin"
+import { AccountRequestsAdmin } from "@/components/user-management/account-requests-admin"
 
 export function UserManagementPage() {
   const { currentUser, users, userLogs, addUser, removeUser, restoreUser, updateUser, canManageUsers, rollbackAction, refreshUsers, refreshUserLogs } = useAuth()
@@ -63,6 +64,9 @@ export function UserManagementPage() {
   const [currentPageUsers, setCurrentPageUsers] = useState(1)
   const [currentPageLogs, setCurrentPageLogs] = useState(1)
   const itemsPerPage = 10
+  
+  // Account requests states
+  const [pendingRequestsCount, setPendingRequestsCount] = useState(0)
 
   // Clear messages after 5 seconds
   useEffect(() => {
@@ -83,6 +87,27 @@ export function UserManagementPage() {
   useEffect(() => {
     setCurrentPageLogs(1)
   }, [logSearch, actionFilter])
+
+  // Function to fetch pending account requests count
+  const fetchPendingCount = async () => {
+    try {
+      const response = await fetch("/api/account-requests/count")
+      if (response.ok) {
+        const data = await response.json()
+        setPendingRequestsCount(data.count || 0)
+      }
+    } catch (error) {
+      console.error("Failed to fetch pending requests count:", error)
+    }
+  }
+
+  // Fetch pending account requests count on mount and periodically
+  useEffect(() => {
+    fetchPendingCount()
+    // Refresh count every 30 seconds
+    const interval = setInterval(fetchPendingCount, 30000)
+    return () => clearInterval(interval)
+  }, [])
 
   // Access control
   if (!currentUser || !canManageUsers()) {
@@ -452,7 +477,14 @@ export function UserManagementPage() {
                   value="requests"
                   className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-100 data-[state=active]:border-green-400/40 text-green-200 hover:bg-green-500/10 hover:text-green-100 transition-all duration-200 font-medium"
                 >
-                  Запросы на аккаунты
+                  <span className="flex items-center gap-2">
+                    Запросы на аккаунты
+                    {pendingRequestsCount > 0 && (
+                      <Badge variant="destructive" className="bg-red-500/90 text-white border-0 px-2 py-0.5 text-xs font-bold">
+                        {pendingRequestsCount}
+                      </Badge>
+                    )}
+                  </span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="logs"
@@ -597,7 +629,7 @@ export function UserManagementPage() {
               </TabsContent>
 
               <TabsContent value="requests" className="space-y-4 mt-6">
-                <AccountRequestsAdmin />
+                <AccountRequestsAdmin onCountChange={fetchPendingCount} />
               </TabsContent>
 
               <TabsContent value="logs" className="space-y-4 mt-6">

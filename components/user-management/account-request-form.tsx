@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, CheckCircle2, AlertCircle, Shield } from "lucide-react";
+import { Loader2, CheckCircle2, AlertCircle, Shield, Home } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface CaptchaData {
@@ -15,6 +16,7 @@ interface CaptchaData {
 }
 
 export function AccountRequestForm() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     nickname: "",
     login: "",
@@ -186,8 +188,9 @@ export function AccountRequestForm() {
               Ваш запрос на создание аккаунта был успешно отправлен и ожидает рассмотрения
               лидерами ПГС или ГС. Вы получите уведомление о результате.
             </p>
-            <Button onClick={() => setIsSuccess(false)}>
-              Отправить еще один запрос
+            <Button onClick={() => router.push("/")} className="gap-2">
+              <Home className="w-4 h-4" />
+              На главную
             </Button>
           </div>
         </CardContent>

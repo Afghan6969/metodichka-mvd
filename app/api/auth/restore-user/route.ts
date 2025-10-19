@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 export async function POST(request: Request) {
   try {
     const { userId } = await request.json();
-    console.log("[RestoreUser API] Request to restore user:", userId);
+    console.log("[RestoreUser API] Запрос на восстановление пользователя:", userId);
     
     // Получаем текущего пользователя из токена
     const token = request.headers.get('cookie')?.match(/auth_token=([^;]+)/)?.[1];
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       .eq('id', userId);
     
     if (error) {
-      console.error("[RestoreUser API] Error restoring user:", error.message);
+      console.error("[RestoreUser API] Ошибка восстановления пользователя:", error.message);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     
@@ -68,21 +68,21 @@ export async function POST(request: Request) {
       ip_address: ip,
     };
     
-    console.log("[RestoreUser API] Inserting log:", logData);
+    console.log("[RestoreUser API] Вставляем лог:", logData);
     
     const { error: logError } = await supabase.from('user_logs').insert(logData);
     
     if (logError) {
-      console.error("[RestoreUser API] Error inserting log:", logError);
+      console.error("[RestoreUser API] Ошибка вставки лога:", logError);
       // Не блокируем восстановление, если лог не записался
     } else {
-      console.log("[RestoreUser API] Log inserted successfully");
+      console.log("[RestoreUser API] Лог успешно вставлен");
     }
     
-    console.log("[RestoreUser API] User restored successfully:", userId);
+    console.log("[RestoreUser API] Пользователь успешно восстановлен:", userId);
     return NextResponse.json({ success: true });
   } catch (err: any) {
-    console.error("[RestoreUser API] Exception:", err);
+    console.error("[RestoreUser API] Исключение:", err);
     return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 });
   }
 }

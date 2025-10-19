@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 export async function POST(request: Request) {
   try {
     const { userId } = await request.json();
-    console.log("[RemoveUser API] Request to deactivate user:", userId);
+    console.log("[RemoveUser API] Запрос на деактивацию пользователя:", userId);
     
     // Получаем текущего пользователя из токена
     const token = request.headers.get('cookie')?.match(/auth_token=([^;]+)/)?.[1];
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       .eq('id', userId);
     
     if (error) {
-      console.error("[RemoveUser API] Error deactivating user:", error.message);
+      console.error("[RemoveUser API] Ошибка деактивации пользователя:", error.message);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     
@@ -68,21 +68,21 @@ export async function POST(request: Request) {
       ip_address: ip,
     };
     
-    console.log("[RemoveUser API] Inserting log:", logData);
+    console.log("[RemoveUser API] Вставляем лог:", logData);
     
     const { error: logError } = await supabase.from('user_logs').insert(logData);
     
     if (logError) {
-      console.error("[RemoveUser API] Error inserting log:", logError);
+      console.error("[RemoveUser API] Ошибка вставки лога:", logError);
       // Не блокируем деактивацию, если лог не записался
     } else {
-      console.log("[RemoveUser API] Log inserted successfully");
+      console.log("[RemoveUser API] Лог успешно вставлен");
     }
     
-    console.log("[RemoveUser API] User deactivated successfully:", userId);
+    console.log("[RemoveUser API] Пользователь успешно деактивирован:", userId);
     return NextResponse.json({ success: true });
   } catch (err: any) {
-    console.error("[RemoveUser API] Exception:", err);
+    console.error("[RemoveUser API] Исключение:", err);
     return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 });
   }
 }

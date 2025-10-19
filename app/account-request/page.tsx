@@ -1,4 +1,4 @@
-import { AccountRequestForm } from "@/components/account-request-form";
+import { AccountRequestForm } from "@/components/user-management/account-request-form";
 
 export default function AccountRequestPage() {
   return (
