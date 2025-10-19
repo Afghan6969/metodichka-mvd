@@ -37,6 +37,7 @@ const cities = [
 export function GuvdGovWavePage() {
   const [selectedTime, setSelectedTime] = useState("")
   const [selectedCity, setSelectedCity] = useState("")
+  const [selectedLocation, setSelectedLocation] = useState("police_station")
   const { currentUser } = useAuth()
 
   if (!currentUser) {
@@ -70,7 +71,7 @@ export function GuvdGovWavePage() {
     )
   }
 
-  const generateMessages = (time: string, city: string) => {
+  const generateMessages = (time: string, city: string, location: string) => {
     const [startTime, endTime] = time.split("-")
     const [startHour, startMinute] = startTime.split(":")
 
@@ -88,21 +89,24 @@ export function GuvdGovWavePage() {
     const cityData = cities.find((c) => c.name === city)
     const tag = cityData ? `ГУВД-${cityData.tag}` : "ГУВД-Н"
 
+    const locationText = location === "parking" ? "парковке Полицейского участка" : "здании Полицейского участка"
+    const locationPreposition = location === "parking" ? "на" : "в"
+
     return {
       announcement:
         `gov Уважаемые жители Республики Провинция! Сегодня в ${interviewTime} пройдет собеседование в Полицейскую Академию ГУВД г. ${city}.\\n` +
         `gov Требования к кандидатам: опрятный вид, юридическое образование, военный билет, медкарта, полный пакет документов и прописка от 5 лет.\\n` +
-        `gov Собеседование пройдет в здании Полицейского участка г. ${city}. Мы ждем именно Вас!`,
+        `gov Собеседование пройдет ${locationPreposition} ${locationText} г. ${city}. Мы ждем именно Вас!`,
 
       start:
         `gov Собеседование в Полицейскую Академию ГУВД г. ${city} начато!\\n` +
         `gov Требования к кандидатам: опрятный вид, юридическое образование, военный билет, медкарта, полный пакет документов и прописка от 5 лет.\\n` +
-        `gov Собеседование проходит в здании Полицейского участка г. ${city}. Мы ждем именно Вас!`,
+        `gov Собеседование проходит ${locationPreposition} ${locationText} г. ${city}. Мы ждем именно Вас!`,
 
       continue:
         `gov Собеседование в Полицейскую Академию ГУВД г. ${city} продолжается!\\n` +
         `gov Требования к кандидатам: опрятный вид, юридическое образование, военный билет, медкарта, полный пакет документов и прописка от 5 лет.\\n` +
-        `gov Собеседование проходит в здании Полицейского участка г. ${city}. Мы ждем именно Вас!`,
+        `gov Собеседование проходит ${locationPreposition} ${locationText} г. ${city}. Мы ждем именно Вас!`,
 
       end:
         `gov Собеседование в Полицейскую Академию ГУВД г. ${city} окончено.\\n` +
@@ -111,7 +115,7 @@ export function GuvdGovWavePage() {
     }
   }
 
-  const messages = selectedTime && selectedCity ? generateMessages(selectedTime, selectedCity) : null
+  const messages = selectedTime && selectedCity ? generateMessages(selectedTime, selectedCity, selectedLocation) : null
 
   return (
     <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
@@ -171,6 +175,33 @@ export function GuvdGovWavePage() {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium mb-3 text-blue-200/90">Место проведения собеседования</label>
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedLocation("police_station")}
+                      className={`flex-1 h-12 px-4 text-sm font-medium rounded-xl border transition-all duration-200 ${
+                        selectedLocation === "police_station"
+                          ? "bg-blue-500/20 text-blue-300 border-blue-400/50 shadow-md"
+                          : "bg-white/5 text-blue-200/70 border-blue-400/20 hover:bg-white/10 hover:border-blue-400/30"
+                      }`}
+                    >
+                      Полицейский участок
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedLocation("parking")}
+                      className={`flex-1 h-12 px-4 text-sm font-medium rounded-xl border transition-all duration-200 ${
+                        selectedLocation === "parking"
+                          ? "bg-blue-500/20 text-blue-300 border-blue-400/50 shadow-md"
+                          : "bg-white/5 text-blue-200/70 border-blue-400/20 hover:bg-white/10 hover:border-blue-400/30"
+                      }`}
+                    >
+                      Парковка
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
