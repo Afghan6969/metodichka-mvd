@@ -127,22 +127,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // === ОБНОВЛЕНИЕ СПИСКА ПОЛЬЗОВАТЕЛЕЙ ===
   const refreshUsers = async () => {
     try {
+      // Сначала получаем всех пользователей без JOIN
       const { data, error } = await supabase
         .from("users")
-        .select(
-          `
-          *,
-          created_by_user:created_by(
-            nickname,
-            role
-          ),
-          deactivated_by_user:deactivated_by(
-            nickname,
-            role
-          )
-        `
-        )
-        .order("role", { ascending: false })
+        .select("*")
         .order("created_at", { ascending: true });
 
       if (error) {
@@ -154,6 +142,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
+      if (!data || data.length === 0) {
+        console.warn("[Auth] No users found in database");
+        setUsers([]);
+        return;
+      }
+
+      console.log("[Auth] Loaded users:", data.length);
+
+      // Получаем уникальные ID создателей и деактиваторов
+      const creatorIds = [...new Set(data.map((u: any) => u.created_by).filter(Boolean))];
+      const deactivatorIds = [...new Set(data.map((u: any) => u.deactivated_by).filter(Boolean))];
+      const relatedUserIds = [...new Set([...creatorIds, ...deactivatorIds])];
+
+      // Получаем информацию о связанных пользователях
+      let relatedUsers: Record<string, any> = {};
+      if (relatedUserIds.length > 0) {
+        const { data: relatedData, error: relatedError } = await supabase
+          .from("users")
+          .select("id, nickname, role")
+          .in("id", relatedUserIds);
+
+        if (!relatedError && relatedData) {
+          relatedUsers = Object.fromEntries(
+            relatedData.map((u: any) => [u.id, { nickname: u.nickname, role: normalizeRole(u.role) }])
+          );
+        }
+      }
+
       const usersWithRoles = (data || []).map((u: any) => ({
         id: u.id,
         nickname: u.nickname,
@@ -161,19 +177,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         role: normalizeRole(u.role),
         status: u.status || "active",
         created_at: u.created_at,
-        created_by_user: u.created_by_user
-          ? {
-              nickname: u.created_by_user.nickname,
-              role: normalizeRole(u.created_by_user.role),
-            }
+        created_by_user: u.created_by && relatedUsers[u.created_by]
+          ? relatedUsers[u.created_by]
           : undefined,
         deactivated_by: u.deactivated_by,
         deactivated_at: u.deactivated_at,
-        deactivated_by_user: u.deactivated_by_user
-          ? {
-              nickname: u.deactivated_by_user.nickname,
-              role: normalizeRole(u.deactivated_by_user.role),
-            }
+        deactivated_by_user: u.deactivated_by && relatedUsers[u.deactivated_by]
+          ? relatedUsers[u.deactivated_by]
           : undefined,
       }));
 
@@ -307,8 +317,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const addUser = async (nickname: string, username: string, password: string, role: UserRole): Promise<boolean> => {
     try {
       if (!currentUser || !canManageUsers()) return false;
-      const valid = await verifyCurrentUserRole();
-      if (!valid) return false;
 
       const res = await fetch("/api/auth/add-user", {
         method: "POST",
@@ -317,7 +325,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         credentials: "include",
       });
       if (!res.ok) {
-        console.error("[Auth] addUser failed:", await res.text());
+        const errorText = await res.text();
+        console.error("[Auth] addUser failed:", errorText);
+        // Если 401, то сессия истекла
+        if (res.status === 401) {
+          await logout();
+        }
         return false;
       }
       await refreshUsers();
@@ -378,8 +391,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const updateUser = async (userId: string, nickname: string, username: string, password: string | undefined, role: UserRole): Promise<boolean> => {
     try {
       if (!currentUser || !canManageUsers()) return false;
-      const valid = await verifyCurrentUserRole();
-      if (!valid) return false;
 
       const res = await fetch("/api/auth/update-user", {
         method: "POST",
@@ -387,7 +398,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ userId, nickname, username, password, role }),
         credentials: "include",
       });
-      if (!res.ok) return false;
+      if (!res.ok) {
+        // Если 401, то сессия истекла
+        if (res.status === 401) {
+          await logout();
+        }
+        return false;
+      }
 
       if (currentUser.id === userId)
         setCurrentUser({ ...currentUser, nickname, username, role: normalizeRole(role), status: currentUser.status });
