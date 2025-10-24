@@ -209,64 +209,96 @@ export function GuvdGovWavePage() {
 
           {messages && (
             <div className="space-y-4">
-              <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
-                <div className="p-6 border-b border-white/10">
-                  <h3 className="text-lg font-bold text-white">Объявление (за 30 минут до начала)</h3>
+              <div className="bg-gradient-to-br from-red-500/10 via-red-600/5 to-transparent backdrop-blur-sm border border-red-400/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-red-500/10 transition-all duration-300">
+                <div className="p-5 border-b border-red-400/20 bg-red-500/5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center border border-red-400/30">
+                      <Radio className="h-5 w-5 text-red-300" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-white">Объявление</h3>
+                      <p className="text-xs text-red-200/60">За 30 минут до начала</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="p-6">
-                  <div className="font-mono text-sm text-blue-100/90 leading-relaxed space-y-2">
+                <div className="p-5">
+                  <div className="space-y-2">
                     {messages.announcement.split("\\n").map((line, index) => (
-                      <div key={index} className="flex items-center justify-between gap-4 bg-black/5 px-3 py-2 rounded-lg border border-white/10 hover:bg-white/10 transition">
-                        <span className="flex-1">{line}</span>
-                        <CopyButton text={line} className="shrink-0 opacity-50 hover:opacity-100 transition-opacity" />
+                      <div key={index} className="flex items-center justify-between gap-3 bg-red-500/5 px-4 py-3 rounded-xl border border-red-400/15 hover:bg-red-500/10 hover:border-red-400/25 transition-all group">
+                        <span className="flex-1 font-mono text-sm text-red-100/90">{line}</span>
+                        <CopyButton text={line} className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
-                <div className="p-6 border-b border-white/10">
-                  <h3 className="text-lg font-bold text-white">Начало собеседования</h3>
+              <div className="bg-gradient-to-br from-green-500/10 via-green-600/5 to-transparent backdrop-blur-sm border border-green-400/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-green-500/10 transition-all duration-300">
+                <div className="p-5 border-b border-green-400/20 bg-green-500/5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center border border-green-400/30">
+                      <Radio className="h-5 w-5 text-green-300" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-white">Начало собеседования</h3>
+                      <p className="text-xs text-green-200/60">Старт приёма кандидатов</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="p-6">
-                  <div className="font-mono text-sm text-blue-100/90 leading-relaxed space-y-2">
+                <div className="p-5">
+                  <div className="space-y-2">
                     {messages.start.split("\\n").map((line, index) => (
-                      <div key={index} className="flex items-center justify-between gap-4 bg-black/5 px-3 py-2 rounded-lg border border-white/10 hover:bg-white/10 transition">
-                        <span className="flex-1">{line}</span>
-                        <CopyButton text={line} className="shrink-0 opacity-50 hover:opacity-100 transition-opacity" />
+                      <div key={index} className="flex items-center justify-between gap-3 bg-green-500/5 px-4 py-3 rounded-xl border border-green-400/15 hover:bg-green-500/10 hover:border-green-400/25 transition-all group">
+                        <span className="flex-1 font-mono text-sm text-green-100/90">{line}</span>
+                        <CopyButton text={line} className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
-                <div className="p-6 border-b border-white/10">
-                  <h3 className="text-lg font-bold text-white">Продолжение собеседования</h3>
+              <div className="bg-gradient-to-br from-blue-500/10 via-blue-600/5 to-transparent backdrop-blur-sm border border-blue-400/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-blue-500/10 transition-all duration-300">
+                <div className="p-5 border-b border-blue-400/20 bg-blue-500/5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center border border-blue-400/30">
+                      <Radio className="h-5 w-5 text-blue-300" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-white">Продолжение собеседования</h3>
+                      <p className="text-xs text-blue-200/60">Напоминание о приёме</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="p-6">
-                  <div className="font-mono text-sm text-blue-100/90 leading-relaxed space-y-2">
+                <div className="p-5">
+                  <div className="space-y-2">
                     {messages.continue.split("\\n").map((line, index) => (
-                      <div key={index} className="flex items-center justify-between gap-4 bg-black/5 px-3 py-2 rounded-lg border border-white/10 hover:bg-white/10 transition">
-                        <span className="flex-1">{line}</span>
-                        <CopyButton text={line} className="shrink-0 opacity-50 hover:opacity-100 transition-opacity" />
+                      <div key={index} className="flex items-center justify-between gap-3 bg-blue-500/5 px-4 py-3 rounded-xl border border-blue-400/15 hover:bg-blue-500/10 hover:border-blue-400/25 transition-all group">
+                        <span className="flex-1 font-mono text-sm text-blue-100/90">{line}</span>
+                        <CopyButton text={line} className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
-                <div className="p-6 border-b border-white/10">
-                  <h3 className="text-lg font-bold text-white">Окончание собеседования</h3>
+              <div className="bg-gradient-to-br from-purple-500/10 via-purple-600/5 to-transparent backdrop-blur-sm border border-purple-400/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-purple-500/10 transition-all duration-300">
+                <div className="p-5 border-b border-purple-400/20 bg-purple-500/5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center border border-purple-400/30">
+                      <Radio className="h-5 w-5 text-purple-300" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-white">Окончание собеседования</h3>
+                      <p className="text-xs text-purple-200/60">Завершение приёма</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="p-6">
-                  <div className="font-mono text-sm text-blue-100/90 leading-relaxed space-y-2">
+                <div className="p-5">
+                  <div className="space-y-2">
                     {messages.end.split("\\n").map((line, index) => (
-                      <div key={index} className="flex items-center justify-between gap-4 bg-black/5 px-3 py-2 rounded-lg border border-white/10 hover:bg-white/10 transition">
-                        <span className="flex-1">{line}</span>
-                        <CopyButton text={line} className="shrink-0 opacity-50 hover:opacity-100 transition-opacity" />
+                      <div key={index} className="flex items-center justify-between gap-3 bg-purple-500/5 px-4 py-3 rounded-xl border border-purple-400/15 hover:bg-purple-500/10 hover:border-purple-400/25 transition-all group">
+                        <span className="flex-1 font-mono text-sm text-purple-100/90">{line}</span>
+                        <CopyButton text={line} className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                     ))}
                   </div>
@@ -275,12 +307,13 @@ export function GuvdGovWavePage() {
             </div>
           )}
 
-          <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
-            <div className="p-6 border-b border-white/10">
-              <h2 className="text-xl font-bold text-white">Правила гос волны</h2>
-            </div>
-            <div className="p-6">
-              <div className="text-sm text-blue-100/90 space-y-2">
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-white/8 hover:border-white/15 transition-all duration-200">
+            <div className="p-4">
+              <h2 className="text-base font-bold text-white mb-3 flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+                Правила гос волны
+              </h2>
+              <div className="text-xs text-blue-100/80 space-y-1.5 leading-relaxed">
                 <p>• Сообщения государственной волны (/gov) видны всем игрокам на сервере.</p>
                 <p>• Руководство по использованию государственной волны, а также расписание — закреплены в беседе VK — "Гос. волна".</p>
                 <p>• Эфирное время расставляется на сайте.</p>
@@ -296,13 +329,14 @@ export function GuvdGovWavePage() {
             </div>
           </div>
 
-          <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
-            <div className="p-6 border-b border-white/10">
-              <h2 className="text-xl font-bold text-white">Правила проведения собеседования</h2>
-            </div>
-            <div className="p-6">
-              <div className="text-sm text-blue-100/90 space-y-2">
-                <p><span className="font-bold text-white">Собеседование проводится по следующему плану:</span></p>
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-white/8 hover:border-white/15 transition-all duration-200">
+            <div className="p-4">
+              <h2 className="text-base font-bold text-white mb-3 flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                Правила проведения собеседования
+              </h2>
+              <div className="text-xs text-blue-100/80 space-y-1.5 leading-relaxed">
+                <p className="font-semibold text-white text-sm mb-2">Собеседование проводится по следующему плану:</p>
                 <p>• Получить информацию о предстоящем собеседовании можно через новостные источники, либо по факту приглашения кандидата через электронное заявление на государственном портале в разделе государственной организации.</p>
                 <p>• Гражданин, заявивший, что он иностранец, не может служить/работать в государственной организации. Требуется гражданство Республики Провинция.</p>
                 <p>• Знакомство с гражданином: уточнение Ф.И.О, возраста, образования, места проживания и т.д.</p>
@@ -313,12 +347,13 @@ export function GuvdGovWavePage() {
             </div>
           </div>
 
-          <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
-            <div className="p-6 border-b border-white/10">
-              <h2 className="text-xl font-bold text-white">Требования к кандидатам</h2>
-            </div>
-            <div className="p-6">
-              <div className="text-sm text-blue-100/90 space-y-2">
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-white/8 hover:border-white/15 transition-all duration-200">
+            <div className="p-4">
+              <h2 className="text-base font-bold text-white mb-3 flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-purple-400"></div>
+                Требования к кандидатам
+              </h2>
+              <div className="text-xs text-blue-100/80 space-y-1.5 leading-relaxed">
                 <p>• Возраст от 18-ти до 40-ка лет включительно.</p>
                 <p>• Опрятный внешний вид гражданина.</p>
                 <p>• Не менее 5-ти лет проживания в Республике Провинция.</p>
@@ -335,35 +370,18 @@ export function GuvdGovWavePage() {
             </div>
           </div>
 
-          <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
-            <div className="p-6 border-b border-white/10">
-              <h2 className="text-xl font-bold text-white">Временная схема</h2>
-            </div>
-            <div className="p-6">
-              <div className="text-sm text-blue-100/90 space-y-2">
-                <p><span className="font-bold text-white">Пример для времени 00:00-01:00:</span></p>
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-white/8 hover:border-white/15 transition-all duration-200">
+            <div className="p-4">
+              <h2 className="text-base font-bold text-white mb-3 flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-yellow-400"></div>
+                Временная схема
+              </h2>
+              <div className="text-xs text-blue-100/80 space-y-1.5 leading-relaxed">
+                <p className="font-semibold text-white text-sm mb-2">Пример для времени 00:00-01:00:</p>
                 <p>• 00:00, 00:10, 00:20 - объявления о предстоящем собеседовании</p>
                 <p>• 00:30 - объявление о начале собеседования</p>
                 <p>• 00:40, 00:50 - продолжение собеседования</p>
                 <p>• 01:00 - окончание собеседования</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl p-6 group hover:bg-white/12 hover:border-white/25 transition-all duration-300">
-            <div className="flex flex-col items-center justify-center gap-2 text-sm text-blue-100/90">
-              <p className="font-medium">Разработано для МВД Республики Провинция (РП)</p>
-              <div className="flex items-center gap-2">
-                <span>Разработчик:</span>
-                <a
-                  href="https://vk.com/id503251431"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-blue-300 hover:text-blue-200 font-medium transition-colors"
-                >
-                  Poseidon_Wagner
-                  <ExternalLink className="h-3 w-3" />
-                </a>
               </div>
             </div>
           </div>

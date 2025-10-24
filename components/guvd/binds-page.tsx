@@ -295,20 +295,20 @@ export function GuvdBindsPage() {
               <h2 className="text-xl font-black uppercase text-orange-600 dark:text-orange-500">⚠ Важные примечания</h2>
             </div>
           </div>
-          <div className="space-y-3 text-sm text-foreground/80">
-            <div className="flex items-start gap-3 p-3 rounded-lg bg-white/50 dark:bg-black/20">
+          <div className="space-y-2 text-sm text-foreground/80">
+            <div className="flex items-start gap-3 p-1.5 rounded-lg bg-white/50 dark:bg-black/20">
               <Badge className="border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-950 text-xs mt-0.5 font-bold">
                 UP
               </Badge>
               <p>Клавиши где присутствуют "up", нужно зажимать на 1-2 секунды, после того как отпустите - сработает отыгровка "up".</p>
             </div>
-            <div className="flex items-start gap-3 p-3 rounded-lg bg-white/50 dark:bg-black/20">
+            <div className="flex items-start gap-3 p-1.5 rounded-lg bg-white/50 dark:bg-black/20">
               <Badge className="border-purple-500 text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-950 text-xs mt-0.5 font-bold">
                 Интервал
               </Badge>
               <p>Интервал между биндами - не менее двух секунд.</p>
             </div>
-            <div className="flex items-start gap-3 p-3 rounded-lg bg-white/50 dark:bg-black/20">
+            <div className="flex items-start gap-3 p-1.5 rounded-lg bg-white/50 dark:bg-black/20">
               <Badge className="border-green-500 text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-950 text-xs mt-0.5 font-bold">
                 Лимит
               </Badge>
@@ -397,24 +397,6 @@ export function GuvdBindsPage() {
               </div>
             </div>
           )}
-        </div>
-
-        <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl p-6 group hover:bg-white/12 hover:border-white/25 transition-all duration-300 mt-16">
-          <div className="flex flex-col items-center justify-center gap-2 text-sm text-blue-100/90">
-            <p className="font-medium">Разработано для МВД Республики Провинция (РП)</p>
-            <div className="flex items-center gap-2">
-              <span>Разработчик:</span>
-              <a
-                href="https://vk.com/id503251431"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-blue-300 hover:text-blue-200 font-medium transition-colors"
-              >
-                Poseidon_Wagner
-                <ExternalLink className="h-3 w-3" />
-              </a>
-            </div>
-          </div>
         </div>
       </div>
     </div>

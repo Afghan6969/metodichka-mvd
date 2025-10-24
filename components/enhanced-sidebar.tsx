@@ -35,6 +35,7 @@ import {
   Heart,
   UserPlus,
   ClipboardCheck,
+  Bug,
 } from "lucide-react"
 
 interface ModernSidebarProps {
@@ -65,6 +66,7 @@ interface ModernSidebarProps {
     | "generator-page"
     | "user-management"
     | "orders"
+    | "bug-reports"
   ) => void
   onGlobalSearchOpen: () => void
   isOpen: boolean
@@ -334,11 +336,17 @@ export function EnhancedSidebar({ currentPage, onPageChange, onGlobalSearchOpen,
                   )}
                 </div>
 
-                {currentUser && canManageUsers() && (
+                {currentUser && (
                   <>
                     <div className="py-2">
                       <div className="h-px bg-border" />
                     </div>
+                    {renderMenuItem({ id: "bug-reports", label: "Баги/Предложения", icon: Bug })}
+                  </>
+                )}
+
+                {currentUser && canManageUsers() && (
+                  <>
                     {renderMenuItem({ id: "user-management", label: "Управление пользователями", icon: UserCog })}
                   </>
                 )}

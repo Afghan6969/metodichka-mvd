@@ -7,11 +7,12 @@ import { Separator } from "@/components/ui/separator"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Check, ChevronsUpDown, Scale, DollarSign, Car, Shield, GraduationCap, X, Star, Search } from "lucide-react"
+import { Check, ChevronsUpDown, Scale, DollarSign, Car, Shield, GraduationCap, X, Star, Search, ChevronDown, ChevronUp } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { koapViolations } from "./koap-violations"
 import { ukViolations } from "./uk-violations"
 import { PageHeader } from "@/components/page-header"
+import { SelectedViolationCard } from "./selected-violation-card"
 import type { Violation, ViolationCategory, PenaltyTotals, Alternative } from "./types"
 
 const PenaltyCalculator = () => {
@@ -22,6 +23,7 @@ const PenaltyCalculator = () => {
   const [selectedArrestAmounts, setSelectedArrestAmounts] = useState<Record<string, number>>({})
   const [openKoap, setOpenKoap] = useState(false)
   const [openUk, setOpenUk] = useState(false)
+  const [expandedViolations, setExpandedViolations] = useState<Record<string, boolean>>({})
 
   // Рефы для прямого управления полями ввода
   const fineInputRefs = useRef<Record<string, HTMLInputElement>>({})
@@ -193,7 +195,7 @@ const PenaltyCalculator = () => {
         badge={`${selectedViolations.length} ${selectedViolations.length % 10 === 1 && selectedViolations.length % 100 !== 11 ? 'статья' : selectedViolations.length % 10 >= 2 && selectedViolations.length % 10 <= 4 && (selectedViolations.length % 100 < 10 || selectedViolations.length % 100 >= 20) ? 'статьи' : 'статей'}`}
       />
 
-      <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300 overflow-hidden">
+      <div className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-3xl group hover:bg-white/12 hover:border-white/25 transition-all duration-300">
         <div className="space-y-6 p-8">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -256,7 +258,7 @@ const PenaltyCalculator = () => {
                     <CommandEmpty className="text-blue-200/60 py-6 text-center text-sm">
                       Статьи не найдены
                     </CommandEmpty>
-                    <CommandList className="max-h-[350px] overflow-y-auto p-2">
+                    <CommandList className="max-h-[500px] overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
                       {Object.entries(koapViolations).map(([categoryKey, category]) => (
                         <CommandGroup 
                           key={categoryKey} 
@@ -272,21 +274,24 @@ const PenaltyCalculator = () => {
                                 setSelectedViolations((prev) =>
                                   prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key]
                                 )
-                                setOpenKoap(false)
                               }}
                               className="hover:bg-white/15 text-white rounded-lg mb-1 p-2.5 cursor-pointer transition-all duration-150"
                             >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4 shrink-0",
+                              <div className="flex items-center gap-2 w-full">
+                                <div className={cn(
+                                  "w-4 h-4 rounded border-2 flex items-center justify-center shrink-0",
                                   selectedViolations.includes(`${categoryKey}.${violationKey}`)
-                                    ? "opacity-100 text-blue-300"
-                                    : "opacity-0"
-                                )}
-                              />
-                              <div className="flex-1">
-                                <div className="font-semibold text-white text-sm">{violation.article as string}</div>
-                                <div className="text-xs text-blue-200/80 mt-0.5">{violation.description as string}</div>
+                                    ? "bg-blue-500 border-blue-500"
+                                    : "border-white/30"
+                                )}>
+                                  {selectedViolations.includes(`${categoryKey}.${violationKey}`) && (
+                                    <Check className="h-3 w-3 text-white" />
+                                  )}
+                                </div>
+                                <div className="flex-1">
+                                  <div className="font-semibold text-white text-sm">{violation.article as string}</div>
+                                  <div className="text-xs text-blue-200/80 mt-0.5">{violation.description as string}</div>
+                                </div>
                               </div>
                             </CommandItem>
                           ))}
@@ -337,7 +342,7 @@ const PenaltyCalculator = () => {
                     <CommandEmpty className="text-red-200/60 py-6 text-center text-sm">
                       Статьи не найдены
                     </CommandEmpty>
-                    <CommandList className="max-h-[350px] overflow-y-auto p-2">
+                    <CommandList className="max-h-[500px] overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
                       {Object.entries(ukViolations).map(([categoryKey, category]) => (
                         <CommandGroup 
                           key={categoryKey} 
@@ -353,21 +358,24 @@ const PenaltyCalculator = () => {
                                 setSelectedViolations((prev) =>
                                   prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key]
                                 )
-                                setOpenUk(false)
                               }}
                               className="hover:bg-white/15 text-white rounded-lg mb-1 p-2.5 cursor-pointer transition-all duration-150"
                             >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4 shrink-0",
+                              <div className="flex items-center gap-2 w-full">
+                                <div className={cn(
+                                  "w-4 h-4 rounded border-2 flex items-center justify-center shrink-0",
                                   selectedViolations.includes(`${categoryKey}.${violationKey}`)
-                                    ? "opacity-100 text-red-300"
-                                    : "opacity-0"
-                                )}
-                              />
-                              <div className="flex-1">
-                                <div className="font-semibold text-white text-sm">{violation.article as string}</div>
-                                <div className="text-xs text-red-200/80 mt-0.5">{violation.description as string}</div>
+                                    ? "bg-red-500 border-red-500"
+                                    : "border-white/30"
+                                )}>
+                                  {selectedViolations.includes(`${categoryKey}.${violationKey}`) && (
+                                    <Check className="h-3 w-3 text-white" />
+                                  )}
+                                </div>
+                                <div className="flex-1">
+                                  <div className="font-semibold text-white text-sm">{violation.article as string}</div>
+                                  <div className="text-xs text-red-200/80 mt-0.5">{violation.description as string}</div>
+                                </div>
                               </div>
                             </CommandItem>
                           ))}
@@ -381,9 +389,9 @@ const PenaltyCalculator = () => {
           </div>
 
           {selectedViolations.length > 0 && (
-            <div className="space-y-2">
+            <div className="space-y-3">
               <h4 className="text-sm font-medium text-blue-200/80">Выбранные статьи:</h4>
-              <div className="flex flex-wrap gap-2">
+              <div className="space-y-3">
                 {selectedViolations.map((violationKey) => {
                   const found = getAllViolations().find((v) => v.key === violationKey)
                   if (!found) return null
@@ -417,220 +425,104 @@ const PenaltyCalculator = () => {
                   }
 
                   return (
-                    <div key={violationKey} className="flex flex-col gap-2 p-3 border rounded-lg bg-muted/20">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="flex items-center gap-1 border-blue-400/40 text-blue-300 bg-blue-500/10">
-                          {violation.article as string}
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 w-6 p-0 hover:bg-red-500/20 hover:text-red-300 border border-red-400/30 text-red-300"
-                            onClick={() => {
-                              setSelectedViolations((prev) => prev.filter((v) => v !== violationKey))
-                              setSelectedPenalties((prev) => {
-                                const newPenalties = { ...prev }
-                                delete newPenalties[violationKey]
-                                return newPenalties
-                              })
-                              setSelectedFineAmounts((prev) => {
-                                const newAmounts = { ...prev }
+                    <SelectedViolationCard
+                      key={violationKey}
+                      violationKey={violationKey}
+                      violation={violation}
+                      selectedPenalty={selectedPenalties[violationKey]}
+                      selectedFineAmount={selectedFineAmounts[violationKey]}
+                      selectedSuspensionAmount={selectedSuspensionAmounts[violationKey]}
+                      selectedArrestAmount={selectedArrestAmounts[violationKey]}
+                      onRemove={() => {
+                        setSelectedViolations((prev) => prev.filter((v) => v !== violationKey))
+                        setSelectedPenalties((prev) => {
+                          const newPenalties = { ...prev }
+                          delete newPenalties[violationKey]
+                          return newPenalties
+                        })
+                        setSelectedFineAmounts((prev) => {
+                          const newAmounts = { ...prev }
+                          delete newAmounts[violationKey]
+                          return newAmounts
+                        })
+                        setSelectedSuspensionAmounts((prev) => {
+                          const newAmounts = { ...prev }
+                          delete newAmounts[violationKey]
+                          return newAmounts
+                        })
+                        setSelectedArrestAmounts((prev) => {
+                          const newAmounts = { ...prev }
+                          delete newAmounts[violationKey]
+                          return newAmounts
+                        })
+                      }}
+                      onPenaltyChange={(newPenalty) => {
+                        setSelectedPenalties((prev) => ({
+                          ...prev,
+                          [violationKey]: newPenalty,
+                        }))
+                        if (newPenalty === "default") {
+                          setSelectedFineAmounts((prev) => {
+                            const newAmounts = { ...prev }
+                            delete newAmounts[violationKey]
+                            return newAmounts
+                          })
+                          setSelectedArrestAmounts((prev) => {
+                            const newAmounts = { ...prev }
+                            if (violation.arrestRange) {
+                              newAmounts[violationKey] = violation.arrest
+                            } else {
+                              delete newAmounts[violationKey]
+                            }
+                            return newAmounts
+                          })
+                        } else {
+                          const alt = violation.alternatives?.find(a => a.name === newPenalty)
+                          if (alt) {
+                            setSelectedFineAmounts((prev) => ({
+                              ...prev,
+                              [violationKey]: alt.fineRange ? alt.fine : prev[violationKey],
+                            }))
+                            setSelectedSuspensionAmounts((prev) => {
+                              const newAmounts = { ...prev }
+                              if (alt.suspensionRange) {
+                                newAmounts[violationKey] = alt.suspension
+                              } else {
                                 delete newAmounts[violationKey]
-                                return newAmounts
-                              })
-                              setSelectedSuspensionAmounts((prev) => {
-                                const newAmounts = { ...prev }
+                              }
+                              return newAmounts
+                            })
+                            setSelectedArrestAmounts((prev) => {
+                              const newAmounts = { ...prev }
+                              if (alt.arrestRange) {
+                                newAmounts[violationKey] = alt.arrest
+                              } else {
                                 delete newAmounts[violationKey]
-                                return newAmounts
-                              })
-                              setSelectedArrestAmounts((prev) => {
-                                const newAmounts = { ...prev }
-                                delete newAmounts[violationKey]
-                                return newAmounts
-                              })
-                            }}
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        </Badge>
-                        <span className="text-xs text-blue-200/80">{violation.description as string}</span>
-                      </div>
-
-                      {violation.alternatives && (
-                        <div className="flex flex-col gap-2">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-medium">Наказание:</span>
-                            <Select
-                              value={selectedPenalties[violationKey] || "default"}
-                              onValueChange={(newPenalty) => {
-                                setSelectedPenalties((prev) => ({
-                                  ...prev,
-                                  [violationKey]: newPenalty,
-                                }))
-                                if (newPenalty === "default") {
-                                  setSelectedFineAmounts((prev) => {
-                                    const newAmounts = { ...prev }
-                                    delete newAmounts[violationKey]
-                                    return newAmounts
-                                  })
-                                  setSelectedArrestAmounts((prev) => {
-                                    const newAmounts = { ...prev }
-                                    if (violation.arrestRange) {
-                                      newAmounts[violationKey] = violation.arrest
-                                    } else {
-                                      delete newAmounts[violationKey]
-                                    }
-                                    return newAmounts
-                                  })
-                                } else {
-                                  const alt = violation.alternatives?.find(a => a.name === newPenalty)
-                                  if (alt) {
-                                    setSelectedFineAmounts((prev) => ({
-                                      ...prev,
-                                      [violationKey]: alt.fineRange ? alt.fine : prev[violationKey],
-                                    }))
-                                    setSelectedSuspensionAmounts((prev) => {
-                                      const newAmounts = { ...prev }
-                                      if (alt.suspensionRange) {
-                                        newAmounts[violationKey] = alt.suspension
-                                      } else {
-                                        delete newAmounts[violationKey]
-                                      }
-                                      return newAmounts
-                                    })
-                                    setSelectedArrestAmounts((prev) => {
-                                      const newAmounts = { ...prev }
-                                      if (alt.arrestRange) {
-                                        newAmounts[violationKey] = alt.arrest
-                                      } else {
-                                        delete newAmounts[violationKey]
-                                      }
-                                      return newAmounts
-                                    })
-                                  }
-                                }
-                              }}
-                            >
-                              <SelectTrigger className="text-xs h-8 border-blue-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
-                                <SelectValue placeholder="Выбрать наказание" />
-                              </SelectTrigger>
-                              <SelectContent className="bg-white/10 backdrop-blur-sm border-white/20">
-                                <SelectItem value="default" className="hover:bg-white/10 text-white focus:bg-blue-500/20 focus:text-blue-100">Выбрать наказание</SelectItem>
-                                {violation.alternatives.map((alt) => (
-                                  <SelectItem key={alt.name} value={alt.name} className="hover:bg-white/10 text-white focus:bg-blue-500/20 focus:text-blue-100">
-                                    {alt.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-
-                          {selectedAlt?.fineRange && (
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs font-medium">Сумма штрафа:</span>
-                              <div className="flex items-center gap-2">
-                                <input
-                                  ref={(el) => {
-                                    if (el) fineInputRefs.current[violationKey] = el
-                                  }}
-                                  type="number"
-                                  defaultValue={selectedAlt.fine}
-                                  onBlur={(e) => {
-                                    const value = parseInt(e.target.value) || 0
-                                    // Ограничиваем значение в пределах диапазона
-                                    if (selectedAlt.fineRange) {
-                                      const clampedValue = Math.max(selectedAlt.fineRange.min, Math.min(selectedAlt.fineRange.max, value))
-                                      setSelectedFineAmounts((prev) => ({
-                                        ...prev,
-                                        [violationKey]: clampedValue,
-                                      }))
-                                      // Обновляем значение в поле
-                                      e.target.value = clampedValue.toString()
-                                    }
-                                  }}
-                                  className="text-xs h-8 w-24 px-2 py-1 border border-blue-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 rounded"
-                                  min={selectedAlt.fineRange.min}
-                                  max={selectedAlt.fineRange.max}
-                                  placeholder="Введите сумму"
-                                />
-                                <span className="text-xs text-blue-200/60">₽</span>
-                              </div>
-                              <span className="text-xs text-blue-200/60">
-                                (от {selectedAlt.fineRange.min.toLocaleString()} до {selectedAlt.fineRange.max.toLocaleString()} ₽)
-                              </span>
-                            </div>
-                          )}
-
-                          {(violation.arrestRange || selectedAlt?.arrestRange) && (
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs font-medium">Срок ареста:</span>
-                              <Select
-                                value={(selectedArrestAmounts[violationKey] ?? (selectedAlt?.arrest || violation.arrest || 0)).toString()}
-                                onValueChange={(value) => {
-                                  const newValue = parseInt(value)
-                                  setSelectedArrestAmounts((prev) => ({
-                                    ...prev,
-                                    [violationKey]: newValue,
-                                  }))
-                                }}
-                              >
-                                <SelectTrigger className="text-xs h-8 border-blue-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white/10 backdrop-blur-sm border-white/20">
-                                  {Array.from(
-                                    { length: ((selectedAlt?.arrestRange || violation.arrestRange)!.max - (selectedAlt?.arrestRange || violation.arrestRange)!.min) + 1 },
-                                    (_, i) => {
-                                      const range = selectedAlt?.arrestRange || violation.arrestRange!
-                                      const amount = range.min + i
-                                      return (
-                                        <SelectItem key={amount} value={amount.toString()} className="hover:bg-white/10 text-white focus:bg-blue-500/20 focus:text-blue-100">
-                                          {amount} {amount === 1 ? "год" : amount < 5 ? "года" : "лет"}
-                                        </SelectItem>
-                                      )
-                                    }
-                                  )}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {violation.suspensionRange && (
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-medium">Срок лишения:</span>
-                          <Select
-                            value={(selectedSuspensionAmounts[violationKey] ?? violation.suspension).toString()}
-                            onValueChange={(value) => {
-                              const newValue = parseInt(value)
-                              setSelectedSuspensionAmounts((prev) => ({
-                                ...prev,
-                                [violationKey]: newValue,
-                              }))
-                            }}
-                          >
-                            <SelectTrigger className="text-xs h-8 border-blue-400/30 bg-black/5 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white/10 backdrop-blur-sm border-white/20">
-                              {Array.from(
-                                { length: violation.suspensionRange.max - violation.suspensionRange.min + 1 },
-                                (_, i) => {
-                                  const amount = violation.suspensionRange!.min + i
-                                  return (
-                                    <SelectItem key={amount} value={amount.toString()} className="hover:bg-white/10 text-white focus:bg-blue-500/20 focus:text-blue-100">
-                                      {amount === 0
-                                        ? "Лишение прав (с переобучением)"
-                                        : `${amount} ${amount === 1 ? "год" : amount < 5 ? "года" : "лет"}`}
-                                    </SelectItem>
-                                  )
-                                }
-                              )}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      )}
-                    </div>
+                              }
+                              return newAmounts
+                            })
+                          }
+                        }
+                      }}
+                      onFineAmountChange={(amount) => {
+                        setSelectedFineAmounts((prev) => ({
+                          ...prev,
+                          [violationKey]: amount,
+                        }))
+                      }}
+                      onSuspensionAmountChange={(amount) => {
+                        setSelectedSuspensionAmounts((prev) => ({
+                          ...prev,
+                          [violationKey]: amount,
+                        }))
+                      }}
+                      onArrestAmountChange={(amount) => {
+                        setSelectedArrestAmounts((prev) => ({
+                          ...prev,
+                          [violationKey]: amount,
+                        }))
+                      }}
+                    />
                   )
                 })}
               </div>
@@ -640,78 +532,120 @@ const PenaltyCalculator = () => {
 
         <Separator />
 
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-white">Итоговое наказание</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center border border-green-400/30">
-                  <DollarSign className="h-5 w-5 text-green-300" />
+        <div className="space-y-4 p-6">
+          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+            <Scale className="h-5 w-5 text-blue-300" />
+            Итоговое наказание
+          </h3>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 hover:bg-white/8 transition-colors">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-green-500/15 rounded-lg flex items-center justify-center">
+                  <DollarSign className="h-4 w-4 text-green-400" />
                 </div>
-                <h4 className="text-lg font-bold text-white">Штраф</h4>
+                <span className="text-sm text-white/70">Штраф</span>
               </div>
-              <p className="text-2xl font-black text-green-300">{totals.fine.toLocaleString()} ₽</p>
+              <p className="text-2xl font-bold text-green-300">{totals.fine.toLocaleString()} ₽</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center border border-blue-400/30">
-                  <Car className="h-5 w-5 text-blue-300" />
+
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 hover:bg-white/8 transition-colors">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-blue-500/15 rounded-lg flex items-center justify-center">
+                  <Car className="h-4 w-4 text-blue-400" />
                 </div>
-                <h4 className="text-lg font-bold text-white">Лишение прав</h4>
+                <span className="text-sm text-white/70">Лишение</span>
               </div>
-              <p className="text-2xl font-black text-blue-300">
+              <p className="text-2xl font-bold text-blue-300">
                 {totals.suspension > 0
-                  ? `${totals.suspension} ${totals.suspension === 1 ? "год" : totals.suspension < 5 ? "года" : "лет"}`
-                  : "Нет"}
+                  ? `${totals.suspension} ${totals.suspension === 1 ? "г" : totals.suspension < 5 ? "г" : "л"}`
+                  : "—"}
               </p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center border border-red-400/30">
-                  <Shield className="h-5 w-5 text-red-300" />
+
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 hover:bg-white/8 transition-colors">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-red-500/15 rounded-lg flex items-center justify-center">
+                  <Shield className="h-4 w-4 text-red-400" />
                 </div>
-                <h4 className="text-lg font-bold text-white">Арест</h4>
+                <span className="text-sm text-white/70">Арест</span>
               </div>
-              <p className="text-2xl font-black text-red-300">
+              <p className="text-2xl font-bold text-red-300">
                 {totals.arrest > 0
-                  ? `${totals.arrest} ${totals.arrest === 1 ? "год" : totals.arrest < 5 ? "года" : "лет"}`
-                  : "Нет"}
+                  ? `${totals.arrest} ${totals.arrest === 1 ? "г" : totals.arrest < 5 ? "г" : "л"}`
+                  : "—"}
               </p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center border border-purple-400/30">
-                  <GraduationCap className="h-5 w-5 text-purple-300" />
+
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 hover:bg-white/8 transition-colors">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-purple-500/15 rounded-lg flex items-center justify-center">
+                  <GraduationCap className="h-4 w-4 text-purple-400" />
                 </div>
-                <h4 className="text-lg font-bold text-white">Переобучение</h4>
+                <span className="text-sm text-white/70">Переобучение</span>
               </div>
-              <p className="text-2xl font-black text-purple-300">{totals.retraining ? "Требуется" : "Не требуется"}</p>
+              <p className="text-2xl font-bold text-purple-300">{totals.retraining ? "Да" : "—"}</p>
             </div>
           </div>
         </div>
 
         {alternatives.length > 0 && (
           <>
-            <div className="border-t border-white/20"></div>
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-white">Детализация наказаний</h3>
+            <Separator />
+            <div className="space-y-6 p-8">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                  <Star className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">Детализация наказаний</h3>
+                  <p className="text-sm text-blue-200/60">Разбивка по каждой статье</p>
+                </div>
+              </div>
               <div className="space-y-3">
                 {alternatives.map((alt, index) => (
-                  <div key={index} className="bg-black/5 p-4 rounded-xl border border-white/10">
-                    <div className="font-bold text-white mb-2">{alt.name}</div>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div className="text-green-300">Штраф: {alt.fine.toLocaleString()} ₽</div>
-                      <div className="text-blue-300">
-                        Лишение прав: {alt.suspension > 0
-                          ? `${alt.suspension} ${alt.suspension === 1 ? "год" : alt.suspension < 5 ? "года" : "лет"}`
-                          : "Нет"}
+                  <div key={index} className="bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-sm p-5 rounded-xl border border-white/15 hover:border-white/30 transition-all duration-300 shadow-lg">
+                    <div className="font-bold text-white mb-3 text-lg flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+                      {alt.name}
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="h-4 w-4 text-green-400" />
+                        <div>
+                          <div className="text-xs text-green-200/60">Штраф</div>
+                          <div className="text-sm font-semibold text-green-300">{alt.fine.toLocaleString()} ₽</div>
+                        </div>
                       </div>
-                      <div className="text-red-300">
-                        Арест: {alt.arrest > 0
-                          ? `${alt.arrest} ${alt.arrest === 1 ? "год" : alt.arrest < 5 ? "года" : "лет"}`
-                          : "Нет"}
+                      <div className="flex items-center gap-2">
+                        <Car className="h-4 w-4 text-blue-400" />
+                        <div>
+                          <div className="text-xs text-blue-200/60">Лишение прав</div>
+                          <div className="text-sm font-semibold text-blue-300">
+                            {alt.suspension > 0
+                              ? `${alt.suspension} ${alt.suspension === 1 ? "год" : alt.suspension < 5 ? "года" : "лет"}`
+                              : "Нет"}
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-purple-300">Переобучение: {alt.retraining ? "Требуется" : "Не требуется"}</div>
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-4 w-4 text-red-400" />
+                        <div>
+                          <div className="text-xs text-red-200/60">Арест</div>
+                          <div className="text-sm font-semibold text-red-300">
+                            {alt.arrest > 0
+                              ? `${alt.arrest} ${alt.arrest === 1 ? "год" : alt.arrest < 5 ? "года" : "лет"}`
+                              : "Нет"}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <GraduationCap className="h-4 w-4 text-purple-400" />
+                        <div>
+                          <div className="text-xs text-purple-200/60">Переобучение</div>
+                          <div className="text-sm font-semibold text-purple-300">{alt.retraining ? "Требуется" : "Нет"}</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}

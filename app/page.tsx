@@ -31,6 +31,7 @@ import { NewcomerGuidePage } from "@/components/newcomer-guide-page"
 import { MedicalAidPage } from "@/components/medical-aid-page"
 import { UserManagementPage } from "@/components/user-management"
 import { OrdersPage } from "@/components/orders-page"
+import { BugReportsPage } from "@/components/bug-reports-page"
 
 export default function Home() {
   const { currentUser } = useAuth()
@@ -60,6 +61,7 @@ export default function Home() {
     | "generator-page"
     | "user-management"
     | "orders"
+    | "bug-reports"
   >("contents")
 
   const [isGlobalSearchOpen, setIsGlobalSearchOpen] = useState(false)
@@ -127,6 +129,8 @@ export default function Home() {
         return <UserManagementPage />
       case "orders":
         return <OrdersPage />
+      case "bug-reports":
+        return <BugReportsPage />
       default:
         return (
           <div className="max-w-7xl mx-auto px-6 py-12">
@@ -153,7 +157,7 @@ export default function Home() {
                     <li>• Материалы служат основой для изучения, но не являются окончательным источником</li>
                     <li>• При возникновении спорных вопросов обращайтесь к актуальным регламентам</li>
                     <li>• Администрация не несет ответственности за возможные ошибки в содержании</li>
-                    <li>• При обнаружении неточности сообщите об этом разработчику</li>
+                    <li>• При обнаружении неточности используйте раздел "Баги/Предложения"</li>
                   </ul>
                 </div>
               </div>
