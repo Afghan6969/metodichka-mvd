@@ -114,17 +114,48 @@ export async function POST(req: NextRequest) {
     const ip = forwarded ? forwarded.split(",")[0] : req.headers.get("x-real-ip") || "unknown";
 
     // structured log (helps UI parsing + rollback)
-    await supabase.from("user_logs").insert([
-      {
-        action: "add_user",
-        target_user_id: newUser?.id ?? null,
-        target_user_nickname: nickname,
-        performed_by_id: currentUser.id,
-        performed_by_nickname: currentUser.nickname,
-        details: JSON.stringify({ nickname, username, role: normalizedRole }),
-        ip_address: ip,
-      },
-    ]);
+    const logData = {
+      action: "add_user",
+      target_user_id: newUser?.id ?? null,
+      target_user_nickname: nickname,
+      performed_by_id: currentUser.id,
+      performed_by_nickname: currentUser.nickname,
+      details: JSON.stringify({ nickname, username, role: normalizedRole }),
+      ip_address: ip,
+    };
+    
+    console.log("[AddUser API] Попытка записи лога:", logData);
+    
+    const { data: insertedLog, error: logError } = await supabase
+      .from("user_logs")
+      .insert([logData])
+      .select();
+
+    if (logError) {
+      console.error("[AddUser API] ❌ Ошибка записи лога:", logError);
+      console.error("[AddUser API] Log error details:", JSON.stringify(logError, null, 2));
+      console.error("[AddUser API] Log error code:", logError.code);
+      console.error("[AddUser API] Log error message:", logError.message);
+    } else {
+      console.log("[AddUser API] ✅ Лог успешно записан для пользователя:", nickname);
+      console.log("[AddUser API] Вставленная запись:", insertedLog);
+      console.log("[AddUser API] ID вставленного лога:", insertedLog?.[0]?.id);
+      
+      // Дополнительная проверка - читаем запись обратно
+      if (insertedLog?.[0]?.id) {
+        const { data: verifyLog, error: verifyError } = await supabase
+          .from("user_logs")
+          .select("*")
+          .eq("id", insertedLog[0].id)
+          .single();
+        
+        if (verifyError) {
+          console.error("[AddUser API] ⚠️ Не удалось прочитать вставленный лог:", verifyError);
+        } else {
+          console.log("[AddUser API] ✅ Проверка: лог найден в БД:", verifyLog);
+        }
+      }
+    }
 
     return NextResponse.json({ success: true, user: newUser });
   } catch (err: any) {

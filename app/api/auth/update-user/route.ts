@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
     const forwarded = req.headers.get("x-forwarded-for");
     const ip = forwarded ? forwarded.split(",")[0] : req.headers.get("x-real-ip") || "unknown";
 
-    await supabase.from("user_logs").insert([
+    const { error: logError } = await supabase.from("user_logs").insert([
       {
         action: "update_user",
         target_user_id: userId,
@@ -172,6 +172,13 @@ export async function POST(req: NextRequest) {
         ip_address: ip,
       },
     ]);
+
+    if (logError) {
+      console.error("[UpdateUser API] Ошибка записи лога:", logError);
+      console.error("[UpdateUser API] Log error details:", JSON.stringify(logError, null, 2));
+    } else {
+      console.log("[UpdateUser API] Лог успешно записан для пользователя:", oldUserData.nickname);
+    }
 
     return NextResponse.json({ success: true });
   } catch (err: any) {

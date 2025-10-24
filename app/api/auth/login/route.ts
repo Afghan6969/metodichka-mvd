@@ -38,7 +38,7 @@ export async function POST(request: Request) {
   const ip = forwarded ? forwarded.split(",")[0] : request.headers.get("x-real-ip") || "unknown";
 
   // Логируем вход
-  await supabase.from("user_logs").insert({
+  const { error: logError } = await supabase.from("user_logs").insert({
     action: "login",
     target_user_id: user.id,
     target_user_nickname: user.nickname,
@@ -47,6 +47,13 @@ export async function POST(request: Request) {
     details: `Успешный вход в систему`,
     ip_address: ip,
   });
+
+  if (logError) {
+    console.error("[Login API] Ошибка записи лога:", logError);
+    console.error("[Login API] Log error details:", JSON.stringify(logError, null, 2));
+  } else {
+    console.log("[Login API] Лог входа записан для пользователя:", user.nickname);
+  }
 
   const response = NextResponse.json({
     success: true,
