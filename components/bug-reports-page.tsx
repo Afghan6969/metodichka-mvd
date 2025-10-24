@@ -26,6 +26,7 @@ import { Bug, Lightbulb, Plus, Loader2, Trash2, CheckCircle2, XCircle, Clock, Se
 import { Switch } from '@/components/ui/switch';
 import { toast } from '@/hooks/use-toast';
 import type { BugReportWithUser, BugReportType, BugReportStatus, BugReportPriority } from '@/types/bug-reports';
+import { PageHeader } from '@/components/page-header';
 
 export function BugReportsPage() {
   const [reports, setReports] = useState<BugReportWithUser[]>([]);
@@ -360,16 +361,16 @@ export function BugReportsPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Баги и предложения</h1>
-          <p className="text-muted-foreground mt-1">
-            {isSuperAdmin ? 'Управление отчетами о багах и предложениями' : 'Отправляйте баги и предложения'}
-          </p>
-        </div>
+    <div className="space-y-6 px-6 py-8 max-w-7xl mx-auto">
+      <PageHeader 
+        icon={Bug}
+        title="Баги и предложения"
+        description={isSuperAdmin ? 'Управление отчетами о багах и предложениями' : 'Отправляйте баги и предложения для улучшения системы'}
+        badge={`${reports.length} ${reports.length === 1 ? 'отчет' : reports.length < 5 ? 'отчета' : 'отчетов'}`}
+      />
 
-        <div className="flex items-center gap-4">
+      <div className="max-w-7xl mx-auto space-y-6">
+        <div className="flex items-center justify-end gap-4">
           {isSuperAdmin && (
             <Card className="px-4 py-2">
               <div className="flex items-center gap-3">
