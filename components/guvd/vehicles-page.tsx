@@ -3,14 +3,16 @@
 import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Car, Truck, Plane, Bike, X, Eye, Shield } from "lucide-react"
+import { Car, Truck, Plane, Bike, X, Eye } from "lucide-react"
 import Image from "next/image"
 import { PageHeader } from "@/components/page-header"
 
 interface Vehicle {
   name: string
   rank: string
-  type: "car" | "truck" | "helicopter"
+  type: "car" | "truck" | "helicopter" | "motorcycle"
+  maxSpeed?: number
+  trunkCapacity?: number
   special?: string
   image?: string
 }
@@ -43,48 +45,48 @@ export default function GuvdVehiclesPage() {
 
   const vehicleData: CityVehicles[] = [
     {
-      city: "Приволжск",
-      vehicles: [
-        { name: "Lada Priora", rank: "2+ ранг", type: "car", image: vehicleImages["Lada Priora"] },
-        { name: "Chevrolet Cruze", rank: "2+ ранг", type: "car", image: vehicleImages["Chevrolet Cruze"] },
-        { name: "УАЗ Патриот", rank: "3+ ранг", type: "car", image: vehicleImages["УАЗ Патриот"] },
-        { name: "Toyota Camry", rank: "4+ ранг", type: "car", image: vehicleImages["Toyota Camry"] },
-        { name: "Audi Q7 TDI", rank: "5+ ранг", type: "car", image: vehicleImages["Audi Q7 TDI"] },
-        { name: "Audi S8 Plus", rank: "6+ ранг", type: "car", image: vehicleImages["Audi S8 Plus"] },
-        { name: "Toyota Land Cruiser 200", rank: "7+ ранг", type: "car", image: vehicleImages["Toyota Land Cruiser 200"] },
-        { name: "ПАЗ-320405-04", rank: "5+ ранг", type: "truck", special: "для мероприятий, сборов, тренировок", image: vehicleImages["ПАЗ-320405-04"] },
-        { name: "ГАЗель БИЗНЕС", rank: "5+ ранг", type: "truck", special: 'для подразделения "ОМОН/СОБР"', image: vehicleImages["ГАЗель БИЗНЕС"] },
-        { name: 'Вертолет "Maverick"', rank: "8+ ранг", type: "helicopter", image: vehicleImages['Вертолет "Maverick"'] },
-      ],
-    },
-    {
-      city: "Мирный",
-      vehicles: [
-        { name: "Lada Priora", rank: "2+ ранг", type: "car", image: vehicleImages["Lada Priora"] },
-        { name: "Volkswagen Polo", rank: "2+ ранг", type: "car", image: vehicleImages["Volkswagen Polo"] },
-        { name: "УАЗ Патриот", rank: "3+ ранг", type: "car", image: vehicleImages["УАЗ Патриот"] },
-        { name: "Audi A3", rank: "4+ ранг", type: "car", image: vehicleImages["Audi A3"] },
-        { name: "Audi Q7 TDI", rank: "5+ ранг", type: "car", image: vehicleImages["Audi Q7 TDI"] },
-        { name: "Audi S8 Plus", rank: "6+ ранг", type: "car", image: vehicleImages["Audi S8 Plus"] },
-        { name: "Toyota Land Cruiser 200", rank: "7+ ранг", type: "car", image: vehicleImages["Toyota Land Cruiser 200"] },
-        { name: "ПАЗ-320405-04", rank: "5+ ранг", type: "truck", special: "для мероприятий, сборов, тренировок", image: vehicleImages["ПАЗ-320405-04"] },
-        { name: "ГАЗель БИЗНЕС", rank: "5+ ранг", type: "truck", special: 'для подразделения "ОМОН/СОБР"', image: vehicleImages["ГАЗель БИЗНЕС"] },
-        { name: 'Вертолет "Maverick"', rank: "8+ ранг", type: "helicopter", image: vehicleImages['Вертолет "Maverick"'] },
-      ],
-    },
-    {
-      city: "Невский",
-      vehicles: [
-        { name: "Lada Priora", rank: "2+ ранг", type: "car", image: vehicleImages["Lada Priora"] },
-        { name: "Kia Rio", rank: "2+ ранг", type: "car", image: vehicleImages["Kia Rio"] },
-        { name: "УАЗ Патриот", rank: "3+ ранг", type: "car", image: vehicleImages["УАЗ Патриот"] },
-        { name: "Lexus IS 350", rank: "4+ ранг", type: "car", image: vehicleImages["Lexus IS 350"] },
-        { name: "Audi Q7 TDI", rank: "5+ ранг", type: "car", image: vehicleImages["Audi Q7 TDI"] },
-        { name: "Audi S8 Plus", rank: "6+ ранг", type: "car", image: vehicleImages["Audi S8 Plus"] },
-        { name: "Toyota Land Cruiser 200", rank: "7+ ранг", type: "car", image: vehicleImages["Toyota Land Cruiser 200"] },
-        { name: "ПАЗ-320405-04", rank: "5+ ранг", type: "truck", special: "для мероприятий, сборов, тренировок", image: vehicleImages["ПАЗ-320405-04"] },
-        { name: "ГАЗель БИЗНЕС", rank: "5+ ранг", type: "truck", special: 'для подразделения "ОМОН/СОБР"', image: vehicleImages["ГАЗель БИЗНЕС"] },
-        { name: 'Вертолет "Maverick"', rank: "8+ ранг", type: "helicopter", image: vehicleImages['Вертолет "Maverick"'] },
+  city: "Приволжск",
+  vehicles: [
+    { name: "Lada Priora", rank: "2+ ранг", type: "car", maxSpeed: 204, trunkCapacity: 10, image: vehicleImages["Lada Priora"] },
+    { name: "Chevrolet Cruze", rank: "2+ ранг", type: "car", maxSpeed: 223, trunkCapacity: 10, image: vehicleImages["Chevrolet Cruze"] },
+    { name: "УАЗ Патриот", rank: "3+ ранг", type: "car", maxSpeed: 160, trunkCapacity: 10, image: vehicleImages["УАЗ Патриот"] },
+    { name: "Toyota Camry", rank: "4+ ранг", type: "car", maxSpeed: 234, trunkCapacity: 10, image: vehicleImages["Toyota Camry"] },
+    { name: "Audi Q7 TDI", rank: "5+ ранг", type: "car", maxSpeed: 266, trunkCapacity: 15, image: vehicleImages["Audi Q7 TDI"] },
+    { name: "Audi S8 Plus", rank: "6+ ранг", type: "car", maxSpeed: 331, trunkCapacity: 10, image: vehicleImages["Audi S8 Plus"] },
+    { name: "Toyota Land Cruiser 200", rank: "7+ ранг", type: "car", maxSpeed: 235, trunkCapacity: 15, image: vehicleImages["Toyota Land Cruiser 200"] },
+    { name: "ПАЗ-320405-04", rank: "5+ ранг", type: "truck", special: "для мероприятий, сборов, тренировок", maxSpeed: 133, image: vehicleImages["ПАЗ-320405-04"] },
+    { name: "ГАЗель БИЗНЕС", rank: "5+ ранг", type: "truck", special: 'для подразделения "ОМОН/СОБР"', maxSpeed: 129, image: vehicleImages["ГАЗель БИЗНЕС"] },
+    { name: 'Вертолет "Maverick"', rank: "8+ ранг", type: "helicopter", image: vehicleImages['Вертолет "Maverick"'] },
+  ],
+},
+{
+  city: "Мирный",
+  vehicles: [
+    { name: "Lada Priora", rank: "2+ ранг", type: "car", maxSpeed: 204, trunkCapacity: 10, image: vehicleImages["Lada Priora"] },
+    { name: "Volkswagen Polo", rank: "2+ ранг", type: "car", maxSpeed: 216, trunkCapacity: 10, image: vehicleImages["Volkswagen Polo"] },
+    { name: "УАЗ Патриот", rank: "3+ ранг", type: "car", maxSpeed: 160, trunkCapacity: 10, image: vehicleImages["УАЗ Патриот"] },
+    { name: "Audi A3", rank: "4+ ранг", type: "car", maxSpeed: 249, trunkCapacity: 10, image: vehicleImages["Audi A3"] },
+    { name: "Audi Q7 TDI", rank: "5+ ранг", type: "car", maxSpeed: 266, trunkCapacity: 15, image: vehicleImages["Audi Q7 TDI"] },
+    { name: "Audi S8 Plus", rank: "6+ ранг", type: "car", maxSpeed: 331, trunkCapacity: 10, image: vehicleImages["Audi S8 Plus"] },
+    { name: "Toyota Land Cruiser 200", rank: "7+ ранг", type: "car", maxSpeed: 235, trunkCapacity: 15, image: vehicleImages["Toyota Land Cruiser 200"] },
+    { name: "ПАЗ-320405-04", rank: "5+ ранг", type: "truck", special: "для мероприятий, сборов, тренировок", maxSpeed: 133, image: vehicleImages["ПАЗ-320405-04"] },
+    { name: "ГАЗель БИЗНЕС", rank: "5+ ранг", type: "truck", special: 'для подразделения "ОМОН/СОБР"', maxSpeed: 129, image: vehicleImages["ГАЗель БИЗНЕС"] },
+    { name: 'Вертолет "Maverick"', rank: "8+ ранг", type: "helicopter", image: vehicleImages['Вертолет "Maverick"'] },
+  ],
+},
+{
+  city: "Невский",
+  vehicles: [
+    { name: "Lada Priora", rank: "2+ ранг", type: "car", maxSpeed: 204, trunkCapacity: 10, image: vehicleImages["Lada Priora"] },
+    { name: "Kia Rio", rank: "2+ ранг", type: "car", maxSpeed: 217, trunkCapacity: 10, image: vehicleImages["Kia Rio"] },
+    { name: "УАЗ Патриот", rank: "3+ ранг", type: "car", maxSpeed: 160, trunkCapacity: 10, image: vehicleImages["УАЗ Патриот"] },
+    { name: "Lexus IS 350", rank: "4+ ранг", type: "car", maxSpeed: 275, trunkCapacity: 10, image: vehicleImages["Lexus IS 350"] },
+    { name: "Audi Q7 TDI", rank: "5+ ранг", type: "car", maxSpeed: 266, trunkCapacity: 15, image: vehicleImages["Audi Q7 TDI"] },
+    { name: "Audi S8 Plus", rank: "6+ ранг", type: "car", maxSpeed: 331, trunkCapacity: 10, image: vehicleImages["Audi S8 Plus"] },
+    { name: "Toyota Land Cruiser 200", rank: "7+ ранг", type: "car", maxSpeed: 235, trunkCapacity: 15, image: vehicleImages["Toyota Land Cruiser 200"] },
+    { name: "ПАЗ-320405-04", rank: "5+ ранг", type: "truck", special: "для мероприятий, сборов, тренировок", maxSpeed: 133, image: vehicleImages["ПАЗ-320405-04"] },
+    { name: "ГАЗель БИЗНЕС", rank: "5+ ранг", type: "truck", special: 'для подразделения "ОМОН/СОБР"', maxSpeed: 129, image: vehicleImages["ГАЗель БИЗНЕС"] },
+    { name: 'Вертолет "Maverick"', rank: "8+ ранг", type: "helicopter", image: vehicleImages['Вертолет "Maverick"'] },
       ],
     },
   ]
@@ -140,7 +142,7 @@ export default function GuvdVehiclesPage() {
                 {currentCityData.vehicles.map((vehicle, index) => (
                   <div
                     key={index}
-                    className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-white/6 via-white/4 to-white/2 border border-white/10 hover:border-white/20 hover:from-white/10 hover:via-white/6 hover:to-white/4 transition-all duration-300 shadow-sm hover:shadow-md backdrop-blur-sm h-full flex flex-col"
+                    className={`group relative overflow-hidden rounded-xl bg-gradient-to-br from-white/6 via-white/4 to-white/2 border border-white/10 hover:border-white/20 hover:from-white/10 hover:via-white/6 hover:to-white/4 transition-all duration-300 shadow-sm hover:shadow-md backdrop-blur-sm flex flex-col ${vehicle.type === 'helicopter' ? 'h-36' : 'h-full'}`}
                   >
                     {/* Subtle gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-500/3 via-transparent to-purple-500/3 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -168,6 +170,25 @@ export default function GuvdVehiclesPage() {
 
                           {/* Compact Specs Grid */}
                           <div className="grid grid-cols-2 gap-2 mb-3">
+                            {vehicle.maxSpeed && (
+                              <div className="flex items-center gap-2 p-1.5 bg-black/8 rounded-md border border-white/8 group-hover:border-white/15 transition-all duration-300">
+                                <div className="w-2 h-2 bg-emerald-400 rounded-full shadow-sm shadow-emerald-400/20 flex-shrink-0" />
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-xs text-blue-200/70 font-medium leading-none mb-0.5">Макс. скорость</p>
+                                  <p className="text-xs font-bold text-white leading-none">{vehicle.maxSpeed} км/ч</p>
+                                </div>
+                              </div>
+                            )}
+
+                            {vehicle.trunkCapacity && (
+                              <div className="flex items-center gap-2 p-1.5 bg-black/8 rounded-md border border-white/8 group-hover:border-white/15 transition-all duration-300">
+                                <div className="w-2 h-2 bg-amber-400 rounded-full shadow-sm shadow-amber-400/20 flex-shrink-0" />
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-xs text-blue-200/70 font-medium leading-none mb-0.5">Багажник</p>
+                                  <p className="text-xs font-bold text-white leading-none">{vehicle.trunkCapacity} {vehicle.trunkCapacity === 1 ? 'слот' : 'слотов'}</p>
+                                </div>
+                              </div>
+                            )}
                           </div>
 
                           {/* Compact Special notes */}
