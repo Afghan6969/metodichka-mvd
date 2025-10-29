@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { DatePicker } from "@/components/ui/date-picker"
 import { Shield, FileText, Check, ChevronsUpDown, AlertCircle, PenTool } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -16,17 +15,279 @@ import { useAuth } from "@/lib/auth-context"
 import { PageHeader } from "@/components/page-header"
 
 // Import modular components
-import { CitySelect, LeaderFioInput, FioInput, DateRangeInputs, RequirementsList } from "./generator/form-fields"
-import { LeaderReportFieldsNew } from "./generator/leader-report-fields-new"
-import { guvdPositions, gibddPositions, seniorCategories, academyCategories, cities, rankHierarchy, departmentAbbreviations } from "./generator/constants"
-import { parseRanks, getNextRank, toGenitiveCase, toInstrumentalCase } from "./generator/utils"
+import { CitySelect, LeaderFioInput, FioInput, DateRangeInputs, RequirementsList, LeaderReportFields } from "./generator/form-fields"
+import { guvdPositions, gibddPositions, seniorCategories, academyCategories } from "./generator/constants"
+import { parseRanks, getNextRank } from "./generator/utils"
 import { generateReport } from "./generator/report-templates"
 import { Requirement, ReportType, Department } from "./generator/types"
 
+interface Position {
+  title: string
+  rank: string
+  level: string
+}
+
+interface DepartmentPositions {
+  [key: string]: Position[]
+}
+
+const guvdPositions: DepartmentPositions = {
+  "Руководящий состав": [
+    { title: "Первый заместитель начальника ГУВД", rank: "Полковник", level: "10 ранг" },
+    {
+      title: "Заместитель начальника ГУВД, ответственный за спец. подразделения",
+      rank: "Полковник",
+      level: "10 ранг",
+    },
+    {
+      title: "Заместитель начальника ГУВД, начальник отдела кадров",
+      rank: "Полковник",
+      level: "10 ранг",
+    },
+    {
+      title: "Заместитель начальника ГУВД, начальник тыла",
+      rank: "Полковник",
+      level: "10 ранг",
+    },
+  ],
+  "Старший состав": [
+    {
+      title: "Начальник Отряда мобильного особого назначения / Начальник СОБРа",
+      rank: "Подполковник",
+      level: "9 ранг",
+    },
+    { title: "Начальник Патрульно-постовой службы", rank: "Подполковник", level: "9 ранг" },
+    { title: "Начальник Полицейской академии", rank: "Подполковник", level: "9 ранг" },
+    {
+      title: "Начальник Отдела воздушного патрулирования",
+      rank: "Подполковник",
+      level: "9 ранг",
+    },
+  ],
+  "Отдел воздушного патрулирования": [{ title: "Сотрудник ОВП", rank: "Лейтенант-Майор", level: "5-8 ранг" }],
+  "Отряд мобильного особого назначения": [{ title: "Боец ОМОН", rank: "Лейтенант-Капитан", level: "5-7 ранг" }],
+  "Специальный отряд быстрого реагирования": [{ title: "Боец СОБРа", rank: "Лейтенант-Капитан", level: "5-7 ранг" }],
+  "Патрульно-постовая служба": [
+    { title: "Старший инспектор ППС", rank: "Старший Лейтенант-Капитан", level: "6-7 ранг" },
+    { title: "Инспектор ППС", rank: "Лейтенант", level: "5 ранг" },
+    { title: "Младший инспектор ППС", rank: "Старшина-Прапорщик", level: "3-4 ранг" },
+  ],
+  "Полицейская академия": [{ title: "Курсант ПА", rank: "Рядовой-Сержант", level: "1-2 ранг" }],
+}
+
+const gibddPositions: DepartmentPositions = {
+  "Руководящий состав": [
+    { title: "Первый заместитель начальника ГИБДД", rank: "Полковник", level: "10 ранг" },
+    {
+      title: "Заместитель начальника ГИБДД, начальник отдела кадров",
+      rank: "Полковник",
+      level: "10 ранг",
+    },
+    {
+      title: "Заместитель начальника ГИБДД по работе с личным составом",
+      rank: "Полковник",
+      level: "10 ранг",
+    },
+    {
+      title: "Заместитель начальника ГИБДД по вооружению",
+      rank: "Полковник",
+      level: "10 ранг",
+    },
+  ],
+  "Старший состав": [
+    { title: "Начальник Специализированного Батальона", rank: "Подполковник", level: "9 ранг" },
+    { title: "Начальник Отдельного Батальона", rank: "Подполковник", level: "9 ранг" },
+    { title: "Начальник Учебного Батальона", rank: "Подполковник", level: "9 ранг" },
+    { title: "Начальник Мотобатальона", rank: "Подполковник", level: "9 ранг" },
+    {
+      title: "Заместитель Начальника Специализированного Батальона",
+      rank: "Майор",
+      level: "8 ранг",
+    },
+    { title: "Заместитель Начальника Отдельного Батальона", rank: "Майор", level: "8 ранг" },
+    { title: "Заместитель Начальника Учебного Батальона", rank: "Майор", level: "8 ранг" },
+    { title: "Заместитель Начальника Мотобатальона", rank: "Майор", level: "8 ранг" },
+  ],
+  Мотобатальон: [{ title: "Инспектор МБ", rank: "Старший Лейтенант-Капитан", level: "6-7 ранг" }],
+  "Специализированный Батальон": [{ title: "Инспектор СБ", rank: "Прапорщик-Капитан", level: "4-7 ранг" }],
+  "Отдельный Батальон": [{ title: "Инспектор ОБ", rank: "Старшина-Капитан", level: "3-7 ранг" }],
+  "Учебный Батальон": [{ title: "Курсант УБ", rank: "Рядовой-Сержант", level: "1-2 ранг" }],
+}
+
+const rankHierarchy = [
+  "Рядовой",
+  "Сержант",
+  "Старшина",
+  "Прапорщик",
+  "Лейтенант",
+  "Старший Лейтенант",
+  "Капитан",
+  "Майор",
+  "Подполковник",
+  "Полковник",
+]
+
+const seniorCategories = ["Руководящий состав", "Старший состав"]
+const academyCategories = ["Полицейская академия", "Учебный Батальон"]
+const cities = ["Мирный", "Невский", "Приволжск"]
+
+const departmentAbbreviations: { [key: string]: string } = {
+  "Патрульно-постовая служба": "ППС",
+  "Полицейская академия": "ПА",
+  "Отдел воздушного патрулирования": "ОВП",
+  "Отряд мобильного особого назначения": "ОМОН",
+  "Специальный отряд быстрого реагирования": "СОБР",
+}
+
+const declensionRules: Record<string, { genitive: string; instrumental: string }> = {
+  Боец: { genitive: "Бойца", instrumental: "Бойцом" },
+  Курсант: { genitive: "Курсанта", instrumental: "Курсантом" },
+  Инспектор: { genitive: "Инспектора", instrumental: "Инспектором" },
+  Сотрудник: { genitive: "Сотрудника", instrumental: "Сотрудником" },
+  Начальник: { genitive: "Начальника", instrumental: "Начальником" },
+  Заместитель: { genitive: "Заместителя", instrumental: "Заместителем" },
+  Первый: { genitive: "Первого", instrumental: "Первым" },
+}
+
+const departmentDeclension = {
+  академии: { genitive: "ии", instrumental: "ией" },
+  отряда: { genitive: "отряда", instrumental: "отрядом" },
+  службы: { genitive: "службы", instrumental: "службой" },
+  отдела: { genitive: "отдела", instrumental: "отделом" },
+  батальона: { genitive: "батальона", instrumental: "батальоном" },
+}
+
+const declinePosition = (position: string, isVrio: boolean, caseType: "genitive" | "instrumental") => {
+  if (!position) return ""
+  const prefix = isVrio ? "ВрИО " : ""
+  const title = isVrio ? position.replace(/^ВрИО /, "") : position
+  const words = title.trim().split(/\s+/)
+  let modifier = ""
+  let mainNoun = words[0]
+  let department = words.slice(1).join(" ")
+
+  if (["Первый", "Заместитель"].includes(words[0])) {
+    modifier = words[0]
+    mainNoun = words[1] || ""
+    department = words.slice(2).join(" ")
+  }
+
+  const nounDeclension = declensionRules[mainNoun] || {
+    genitive: !mainNoun.endsWith("а") && !mainNoun.endsWith("о") && !mainNoun.endsWith("е") ? mainNoun + "а" : mainNoun,
+    instrumental:
+      !mainNoun.endsWith("а") && !mainNoun.endsWith("о") && !mainNoun.endsWith("е") ? mainNoun + "ом" : mainNoun,
+  }
+
+  let declinedDept = department
+  if (
+    department &&
+    !["ОМОН", "СОБР", "ППС", "ОВП", "ПА", "ГУВД", "ГИБДД", "МБ", "СБ", "ОБ", "УБ"].some((abbr) =>
+      department.includes(abbr),
+    )
+  ) {
+    for (const [key, declension] of Object.entries(departmentDeclension)) {
+      if (department.endsWith(key)) {
+        declinedDept = department.replace(new RegExp(`${key}$`), declension[caseType])
+        break
+      }
+    }
+  }
+
+  if (modifier === "Первый") {
+    return prefix + `Перв${caseType === "genitive" ? "ого" : "ым"} Заместителя ${declinedDept}`.trim()
+  } else if (modifier === "Заместитель") {
+    return prefix + `Заместителя ${declinedDept}`.trim()
+  }
+  return prefix + (declinedDept ? `${nounDeclension[caseType]} ${declinedDept}` : nounDeclension[caseType]).trim()
+}
+
+const toGenitiveCase = (position: string, isVrio: boolean) => declinePosition(position, isVrio, "genitive")
+  const declineLeaderName = (name: string, targetCase: "dative" | "genitive") => {
+    if (!name) return ""
+    const parts = name.split(" ")
+    if (parts.length < 2) return name
+
+    const lastName = parts[0]
+    const firstName = parts[1]
+    const middleName = parts[2] || ""
+
+    // Правила склонения русских фамилий
+    const declinedLastName = declineRussianLastName(lastName, targetCase)
+    const declinedFirstName = declineRussianFirstName(firstName, targetCase)
+    const declinedMiddleName = middleName ? declineRussianMiddleName(middleName, targetCase) : ""
+
+    return `${declinedLastName} ${declinedFirstName}${declinedMiddleName ? " " + declinedMiddleName : ""}`.trim()
+  }
+
+  const declineRussianLastName = (lastName: string, targetCase: "dative" | "genitive") => {
+    if (!lastName) return ""
+
+    // Правила склонения русских фамилий
+    const endings = {
+      dative: {
+        "ов": "у", "ев": "у", "ёв": "ёву", "ин": "у", "ын": "у",
+        "ий": "ю", "ой": "ому", "ый": "ому", "ая": "ой", "яя": "ей"
+      },
+      genitive: {
+        "ов": "а", "ев": "а", "ёв": "ёва", "ин": "а", "ын": "а",
+        "ий": "его", "ой": "ого", "ый": "ого", "ая": "ой", "яя": "ей"
+      }
+    }
+
+    const rules = endings[targetCase]
+    for (const [ending, replacement] of Object.entries(rules)) {
+      if (lastName.endsWith(ending)) {
+        return lastName.slice(0, -ending.length) + replacement
+      }
+    }
+
+    // Если не найдено правило, возвращаем как есть (для иностранных фамилий)
+    return lastName
+  }
+
+  const declineRussianFirstName = (firstName: string, targetCase: "dative" | "genitive") => {
+    if (!firstName) return ""
+
+    // Правила склонения русских имен
+    const maleEndings = {
+      dative: { "ий": "ию", "ей": "ею", "ай": "аю", "я": "е", "а": "е" },
+      genitive: { "ий": "ия", "ей": "ея", "ай": "ая", "я": "и", "а": "ы" }
+    }
+
+    const femaleEndings = {
+      dative: { "а": "е", "я": "е", "ия": "ии" },
+      genitive: { "а": "ы", "я": "и", "ия": "ии" }
+    }
+
+    // Определяем пол по окончанию (упрощенный алгоритм)
+    const isFemale = firstName.endsWith("а") || firstName.endsWith("я")
+
+    const rules = isFemale ? femaleEndings[targetCase] : maleEndings[targetCase]
+
+    for (const [ending, replacement] of Object.entries(rules)) {
+      if (firstName.endsWith(ending)) {
+        return firstName.slice(0, -ending.length) + replacement
+      }
+    }
+
+    return firstName
+  }
+
+  const declineRussianMiddleName = (middleName: string, targetCase: "dative" | "genitive") => {
+    if (!middleName) return ""
+    if (targetCase === "dative") {
+      return middleName.endsWith("ич") ? middleName.slice(0, -2) + "ичу" : middleName.slice(0, -1) + "не"
+    } else {
+      return middleName.endsWith("ич") ? middleName.slice(0, -2) + "ича" : middleName.slice(0, -1) + "ны"
+    }
+  }
+
+const toInstrumentalCase = (position: string, isVrio: boolean) => declinePosition(position, isVrio, "instrumental")
+
 export function GeneratorPage() {
   const { currentUser, hasAccess } = useAuth()
-  const [department, setDepartment] = useState<Department | null>(null)
-  const [reportType, setReportType] = useState<ReportType | null>(null)
+  const [department, setDepartment] = useState<"ГУВД" | "ГИБДД" | null>(null)
+  const [reportType, setReportType] = useState<"promotion" | "reprimand" | "senior" | null>(null)
   const [city, setCity] = useState("")
   const [leaderFio, setLeaderFio] = useState("")
   const [fio, setFio] = useState("")
@@ -36,7 +297,7 @@ export function GeneratorPage() {
   const [newRank, setNewRank] = useState("")
   const [fromDate, setFromDate] = useState<Date | undefined>()
   const [toDate, setToDate] = useState<Date | undefined>()
-  const [requirements, setRequirements] = useState<Requirement[]>([
+  const [requirements, setRequirements] = useState<{ req: string; quantity?: string; link: string }[]>([
     { req: "", quantity: "", link: "" },
   ])
   const [points, setPoints] = useState("")
@@ -52,31 +313,6 @@ export function GeneratorPage() {
   const [openPosition, setOpenPosition] = useState(false)
   const [openRank, setOpenRank] = useState(false)
   const [copied, setCopied] = useState(false)
-
-  // Leader report fields - all 13 sections
-  const [interviews, setInterviews] = useState<string[]>([""])
-  const [firedPSG, setFiredPSG] = useState("")
-  const [firedOCHS, setFiredOCHS] = useState("")
-  const [totalFired, setTotalFired] = useState("")
-  const [totalAccepted, setTotalAccepted] = useState("")
-  const [firstRanks, setFirstRanks] = useState("")
-  const [middleStaff, setMiddleStaff] = useState("")
-  const [seniorStaffCount, setSeniorStaffCount] = useState("")
-  const [managementStaff, setManagementStaff] = useState("")
-  const [totalStaffCount, setTotalStaffCount] = useState("")
-  const [callsCount, setCallsCount] = useState("")
-  const [callsAccepted, setCallsAccepted] = useState("")
-  const [staffChanges, setStaffChanges] = useState<string[]>([""])
-  const [reprimands, setReprimands] = useState<string[]>([""])
-  const [finesReceived, setFinesReceived] = useState("")
-  const [finesPaid, setFinesPaid] = useState("")
-  const [finesBalance, setFinesBalance] = useState("")
-  const [lectures, setLectures] = useState<Array<{ name: string; link: string }>>([{ name: "", link: "" }])
-  const [lecturesFormat, setLecturesFormat] = useState<"separate" | "combined">("separate")
-  const [branchEvents, setBranchEvents] = useState<string[]>([""])
-  const [interfactionEvents, setInterfactionEvents] = useState<string[]>([""])
-  const [seniorEvaluation, setSeniorEvaluation] = useState<string[]>([""])
-  const [lineups, setLineups] = useState<string[]>([""])
 
   const positionsData = department === "ГУВД" ? guvdPositions : gibddPositions
   const allPositions = Object.values(positionsData).flat()
@@ -127,15 +363,6 @@ export function GeneratorPage() {
   }, [department])
 
   const isFormValid = useCallback(() => {
-    if (reportType === "leader") {
-      return (
-        city.trim() !== "" &&
-        fio.trim() !== "" &&
-        fromDate !== undefined &&
-        toDate !== undefined
-      )
-    }
-
     const requiredFields = [city, fio, position, rank, signature]
     if (department === "ГУВД") {
       requiredFields.push(leaderFio)
@@ -289,6 +516,19 @@ export function GeneratorPage() {
     toast.success("Форма очищена!")
   }, [department])
 
+  const parseRanks = (rankString: string): string[] => {
+    const normalizedRankString = rankString.replace("—", "-")
+    if (normalizedRankString.includes("-")) {
+      const [start, end] = normalizedRankString.split("-").map((s) => s.trim())
+      const startIndex = rankHierarchy.indexOf(start)
+      const endIndex = rankHierarchy.indexOf(end)
+      if (startIndex !== -1 && endIndex !== -1 && startIndex <= endIndex) {
+        return rankHierarchy.slice(startIndex, endIndex + 1)
+      }
+    }
+    return [rankString.trim()]
+  }
+
   const handlePositionChange = useCallback(
     (value: string) => {
       const selected = allPositions.find((p) => p.title === value)
@@ -319,6 +559,14 @@ export function GeneratorPage() {
     },
     [allPositions, positionsData],
   )
+
+  const getNextRank = useCallback((currentRank: string) => {
+    const currentIndex = rankHierarchy.indexOf(currentRank)
+    if (currentIndex !== -1 && currentIndex < rankHierarchy.length - 1) {
+      return rankHierarchy[currentIndex + 1]
+    }
+    return ""
+  }, [])
 
   useEffect(() => {
     if (rank && reportType === "promotion") {
@@ -358,68 +606,194 @@ export function GeneratorPage() {
       })
   }
 
-  const handleGenerateReport = () => {
+  const generateReport = () => {
     if (!isFormValid()) {
-      toast.error("Пожалуйста, заполните все обязательные поля!")
+      toast.error("Пожалуйста, заполните все обязательные поля, включая департамент!")
       return
     }
-
-    if (!department) {
-      toast.error("Выберите департамент!")
-      return
+    const currentDate = format(new Date(), "dd.MM.yyyy", { locale: ru })
+    const formattedFromDate = fromDate ? format(fromDate, "dd.MM.yyyy", { locale: ru }) : ""
+    const formattedToDate = toDate ? format(toDate, "dd.MM.yyyy", { locale: ru }) : ""
+    const displayPosition = toGenitiveCase(position, isVrio && reportType === "senior")
+    const instrumentalPosition = toInstrumentalCase(position, isVrio && reportType === "senior")
+    const deptAbbr = departmentAbbreviations[selectedCategory] || selectedCategory
+    
+    // Склонение ФИО лидера в дательный падеж
+    const declineLeaderFio = (name: string) => {
+      if (!name) return ""
+      const parts = name.split(" ")
+      if (parts.length < 2) return name
+      
+      const lastName = parts[0]
+      const firstName = parts[1] || ""
+      const middleName = parts[2] || ""
+      
+      // Склонение фамилии
+      let declinedLastName = lastName
+      if (lastName.endsWith("ов") || lastName.endsWith("ев") || lastName.endsWith("ин")) {
+        declinedLastName = lastName.slice(0, -2) + "у"
+      } else if (lastName.endsWith("ий")) {
+        declinedLastName = lastName.slice(0, -2) + "ому"
+      } else if (lastName.endsWith("ский") || lastName.endsWith("цкий")) {
+        declinedLastName = lastName.slice(0, -2) + "ому"
+      }
+      
+      // Склонение имени
+      let declinedFirstName = firstName
+      if (firstName.endsWith("й") || firstName.endsWith("ий")) {
+        declinedFirstName = firstName.slice(0, -1) + "ю"
+      }
+      
+      // Склонение отчества
+      let declinedMiddleName = middleName
+      if (middleName.endsWith("ич")) {
+        declinedMiddleName = middleName.slice(0, -2) + "ичу"
+      } else if (middleName.endsWith("на")) {
+        declinedMiddleName = middleName.slice(0, -1) + "не"
+      }
+      
+      return `${declinedLastName} ${declinedFirstName}${declinedMiddleName ? " " + declinedMiddleName : ""}`
+    }
+    
+    const leaderFioDative = declineLeaderFio(leaderFio)
+    
+    // Склонение ФИО пользователя в родительный падеж
+    const declineUserFio = (name: string) => {
+      if (!name) return ""
+      const parts = name.split(" ")
+      if (parts.length < 2) return name
+      
+      const lastName = parts[0]
+      const firstName = parts[1] || ""
+      const middleName = parts[2] || ""
+      
+      // Склонение фамилии в родительный падеж
+      let declinedLastName = lastName
+      if (lastName.endsWith("ов") || lastName.endsWith("ев") || lastName.endsWith("ин")) {
+        declinedLastName = lastName.slice(0, -2) + "а"
+      } else if (lastName.endsWith("ий")) {
+        declinedLastName = lastName.slice(0, -2) + "ого"
+      } else if (lastName.endsWith("ский") || lastName.endsWith("цкий")) {
+        declinedLastName = lastName.slice(0, -2) + "ого"
+      }
+      
+      // Склонение имени в родительный падеж
+      let declinedFirstName = firstName
+      if (firstName.endsWith("й") || firstName.endsWith("ий")) {
+        declinedFirstName = firstName.slice(0, -1) + "я"
+      } else if (firstName.endsWith("а")) {
+        declinedFirstName = firstName.slice(0, -1) + "ы"
+      } else if (firstName.endsWith("я")) {
+        declinedFirstName = firstName.slice(0, -1) + "и"
+      }
+      
+      // Склонение отчества в родительный падеж
+      let declinedMiddleName = middleName
+      if (middleName.endsWith("ич")) {
+        declinedMiddleName = middleName.slice(0, -2) + "ича"
+      } else if (middleName.endsWith("на")) {
+        declinedMiddleName = middleName.slice(0, -1) + "ны"
+      }
+      
+      return `${declinedLastName} ${declinedFirstName}${declinedMiddleName ? " " + declinedMiddleName : ""}`
+    }
+    
+    const userFioGenitive = declineUserFio(fio)
+    
+    let template = ""
+    let reqList = ""
+    if (department === "ГУВД") {
+      reqList = requirements.map((r, i) => `${i + 1}. ${r.req} - ${r.link}`).join("\n")
+    } else {
+      reqList = requirements.map((r, i) => `${i + 1}. ${r.req} – ${r.quantity} – ${r.link}`).join("\n")
     }
 
-    if (!reportType) {
-      toast.error("Выберите тип отчёта!")
-      return
+    if (department === "ГУВД") {
+      if (reportType === "promotion") {
+        template = `Начальнику ГУВД по г. ${city}
+Генерал-майору ${leaderFioDative}
+От ${displayPosition}, ${rank}
+"${fio}"
+
+Рапорт о проделанной работе.
+Я, ${fio}, являющийся ${instrumentalPosition} подразделения ${deptAbbr}, находящийся в звании ${rank}, оставляю отчет о проделанной работе. В связи с выполнением мной всех необходимых нормативов и требований прошу повысить меня до звания ${newRank}.
+С правилами подачи рапорта ознакомлен(-на).
+
+К рапорту прикладываю необходимый объём работы:
+${reqList}
+
+Дата: ${currentDate}
+Подпись: ${signature}`
+      } else if (reportType === "reprimand") {
+        template = `Начальнику ГУВД по г. ${city}
+Генерал-майору ${leaderFioDative}
+От ${displayPosition}, ${rank}
+"${userFioGenitive}"
+
+Рапорт о проделанной работе.
+Я, ${fio}, являющийся ${instrumentalPosition}, находящийся в звании ${rank}, оставляю отчет о проделанной работе. В связи с выполнением мной нормы работы прошу снять с меня письменное дисциплинарное взыскание в виде выговора.
+С правилами подачи рапорта ознакомлен(-на).
+
+К рапорту прикладываю необходимый объём работы:
+${reqList}
+
+Дата: ${currentDate}
+Подпись: ${signature}`
+      } else if (reportType === "senior") {
+        template = `Начальнику ГУВД по г. ${city}
+Генерал-майору ${leaderFioDative}
+От ${displayPosition}, ${rank}
+"${userFioGenitive}"
+
+Рапорт.
+Я, ${rank} ${fio}, являющийся ${instrumentalPosition}, оставляю рапорт и докладываю Вам о проделанной мною работе в период с ${formattedFromDate} по ${formattedToDate}.
+
+${reqList}
+
+Ваша статистика онлайна за неделю: ${onlineStats}
+
+Дата: ${currentDate}
+Подпись: ${signature}`
+      }
+    } else if (department === "ГИБДД") {
+      if (reportType === "promotion") {
+        template = `Генералу Республики Провинция
+Начальнику ГИБДД по городу ${city}
+От ${displayPosition}, находящегося в звании ${rank}, ${fio}.
+
+Я, ${fio}, являющийся ${instrumentalPosition}, докладываю о состоянии несения службы и выполненной мной работе за период с ${formattedFromDate} по ${formattedToDate} и прошу рассмотреть моё заявление о повышении в звании до ${newRank}. За указанный период мною был выполнен следующий объём работы, а также набрано соответствующее количество баллов: ${points}
+
+${reqList}
+
+Подпись: ${signature}
+Дата: ${currentDate}`
+      } else if (reportType === "reprimand") {
+        template = `Генералу Республики Провинция
+Начальнику ГИБДД по городу ${city}
+От ${displayPosition}, находящегося в звании ${rank}, ${userFioGenitive}.
+
+Я, ${fio}, являющийся ${instrumentalPosition}, прошу Вас рассмотреть мой рапорт на аннулирование дисциплинарного взыскания в виде выговора, полученного за нарушение ${violation}. К рапорту прикладываю сведения о выполнении плана и количестве набранных баллов: ${points}
+
+${reqList}
+
+Также прикладываю подтверждение об оплате неустойки на счёт лидера – ${paymentLink}
+Подпись: ${signature}
+Дата: ${currentDate}`
+      } else if (reportType === "senior") {
+        template = `Генералу Республики Провинция
+Начальнику ГИБДД по городу ${city}
+От ${displayPosition}, находящегося в звании ${rank}, ${userFioGenitive}.
+
+Я, ${fio}, являющийся ${instrumentalPosition}, докладываю о состоянии несения службы и выполненной мной работе за промежуток времени с ${formattedFromDate} по ${formattedToDate}. За данный промежуток времени мною был выполнен следующий объём работ:
+
+${reqList}
+
+Дата: ${currentDate}
+Подпись: ${signature}`
+      }
     }
 
-    const report = generateReport({
-      city,
-      leaderFio,
-      fio,
-      position,
-      rank,
-      newRank,
-      fromDate,
-      toDate,
-      requirements,
-      points,
-      violation,
-      paymentLink,
-      onlineStats,
-      signature,
-      isVrio,
-      selectedCategory,
-      department,
-      reportType,
-      // Leader report fields
-      interviews,
-      firedPSG,
-      firedOCHS,
-      totalFired,
-      totalAccepted,
-      firstRanks,
-      middleStaff,
-      seniorStaff: seniorStaffCount,
-      managementStaff,
-      totalStaff: totalStaffCount,
-      callsCount,
-      callsAccepted,
-      staffChanges,
-      reprimands,
-      finesReceived,
-      finesPaid,
-      finesBalance,
-      lectures,
-      lecturesFormat,
-      branchEvents,
-      interfactionEvents,
-      seniorEvaluation,
-      lineups,
-    })
-
-    setGeneratedReport(report)
+    setGeneratedReport(template)
   }
 
   if (!currentUser || !hasAccess("generator-page")) {
@@ -461,7 +835,7 @@ export function GeneratorPage() {
       currentUser.role === "leader-gibdd" ||
       currentUser.role === "leader-guvd"
     ) {
-      return ["promotion", "reprimand", "senior", "leader"]
+      return ["promotion", "reprimand", "senior"]
     }
     if (currentUser.role === "ss-gibdd" || currentUser.role === "ss-guvd") {
       return ["promotion", "reprimand", "senior"]
@@ -586,18 +960,6 @@ export function GeneratorPage() {
                     Отчёт старшего состава
                   </Button>
                 )}
-                {availableReportTypes.includes("leader") && (
-                  <Button
-                    onClick={() => setReportType("leader")}
-                    variant={reportType === "leader" ? "default" : "outline"}
-                    className={cn(
-                      "w-60 transition-all duration-300 ease-in-out transform hover:scale-105",
-                      reportType === "leader" ? "bg-primary hover:bg-primary/90 shadow-lg" : "border-2 hover:bg-muted",
-                    )}
-                  >
-                    Лидерский отчёт
-                  </Button>
-                )}
               </div>
             </div>
           </div>
@@ -613,84 +975,77 @@ export function GeneratorPage() {
             </div>
             <div className="p-8">
               <div className="space-y-6">
-                {reportType === "leader" ? (
-                  <>
-                    <CitySelect
-                      city={city}
-                      setCity={setCity}
-                      openCity={openCity}
-                      setOpenCity={setOpenCity}
-                      setOpenPosition={setOpenPosition}
-                      setOpenRank={setOpenRank}
+                <div>
+                  <Label htmlFor="city" className="text-sm font-medium text-blue-200/90 mb-2 block">Город</Label>
+                  <div className="relative w-full">
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={openCity}
+                      className="w-full justify-between bg-black/5 border-blue-400/30 text-white hover:bg-white/10 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
+                      onClick={() => {
+                        setOpenCity(!openCity)
+                        setOpenPosition(false)
+                        setOpenRank(false)
+                      }}
+                    >
+                      {city || "Выберите город..."}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                    <AnimatePresence>
+                      {openCity && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                          transition={{ duration: 0.15, ease: "easeOut" }}
+                          className="absolute top-full left-0 right-0 z-50 mt-1 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg"
+                        >
+                          <Command>
+                            <CommandInput placeholder="Поиск города..." className="bg-black/5 border-white/10 text-white placeholder:text-blue-200/60" />
+                            <CommandEmpty className="text-blue-200/60">Города не найдены.</CommandEmpty>
+                            <CommandList className="max-h-[200px] overflow-y-auto">
+                              <CommandGroup>
+                                {cities.map((c) => (
+                                  <CommandItem
+                                    key={c}
+                                    value={c}
+                                    onSelect={() => {
+                                      setCity(c)
+                                      setOpenCity(false)
+                                    }}
+                                    className="hover:bg-white/10 text-white data-[selected]:text-blue-200 data-[selected]:bg-transparent"
+                                  >
+                                    <Check className={cn("mr-2 h-4 w-4", city === c ? "opacity-100 text-blue-300" : "opacity-0")} />
+                                    {c}
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+                {department === "ГУВД" && (
+                  <div>
+                    <Label htmlFor="leaderFio" className="text-sm font-medium text-blue-200/90 mb-2 block">
+                      ФИО лидера <span className="text-xs text-blue-300/70">(в дательном падеже: Иванову Ивану Ивановичу)</span>
+                    </Label>
+                    <Input 
+                      id="leaderFio" 
+                      value={leaderFio} 
+                      onChange={(e) => setLeaderFio(e.target.value)} 
+                      placeholder="Иванов Иван Иванович"
+                      className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" 
                     />
-                    <FioInput fio={fio} setFio={setFio} label="Ваше ФИО (лидер)" placeholder="Nick_Name" />
-                    <DateRangeInputs
-                      fromDate={fromDate}
-                      toDate={toDate}
-                      setFromDate={setFromDate}
-                      setToDate={setToDate}
-                    />
-                    <LeaderReportFieldsNew
-                      interviews={interviews}
-                      setInterviews={setInterviews}
-                      firedPSG={firedPSG}
-                      setFiredPSG={setFiredPSG}
-                      firedOCHS={firedOCHS}
-                      setFiredOCHS={setFiredOCHS}
-                      totalFired={totalFired}
-                      setTotalFired={setTotalFired}
-                      totalAccepted={totalAccepted}
-                      setTotalAccepted={setTotalAccepted}
-                      firstRanks={firstRanks}
-                      setFirstRanks={setFirstRanks}
-                      middleStaff={middleStaff}
-                      setMiddleStaff={setMiddleStaff}
-                      seniorStaff={seniorStaffCount}
-                      setSeniorStaff={setSeniorStaffCount}
-                      managementStaff={managementStaff}
-                      setManagementStaff={setManagementStaff}
-                      totalStaff={totalStaffCount}
-                      setTotalStaff={setTotalStaffCount}
-                      callsCount={callsCount}
-                      setCallsCount={setCallsCount}
-                      callsAccepted={callsAccepted}
-                      setCallsAccepted={setCallsAccepted}
-                      staffChanges={staffChanges}
-                      setStaffChanges={setStaffChanges}
-                      reprimands={reprimands}
-                      setReprimands={setReprimands}
-                      finesReceived={finesReceived}
-                      setFinesReceived={setFinesReceived}
-                      finesPaid={finesPaid}
-                      setFinesPaid={setFinesPaid}
-                      finesBalance={finesBalance}
-                      setFinesBalance={setFinesBalance}
-                      lectures={lectures}
-                      setLectures={setLectures}
-                      lecturesFormat={lecturesFormat}
-                      setLecturesFormat={setLecturesFormat}
-                      branchEvents={branchEvents}
-                      setBranchEvents={setBranchEvents}
-                      interfactionEvents={interfactionEvents}
-                      setInterfactionEvents={setInterfactionEvents}
-                      seniorEvaluation={seniorEvaluation}
-                      setSeniorEvaluation={setSeniorEvaluation}
-                      lineups={lineups}
-                      setLineups={setLineups}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <CitySelect
-                      city={city}
-                      setCity={setCity}
-                      openCity={openCity}
-                      setOpenCity={setOpenCity}
-                      setOpenPosition={setOpenPosition}
-                      setOpenRank={setOpenRank}
-                    />
-                    {department === "ГУВД" && <LeaderFioInput leaderFio={leaderFio} setLeaderFio={setLeaderFio} />}
-                    <FioInput fio={fio} setFio={setFio} />
+                  </div>
+                )}
+                <div>
+                  <Label htmlFor="fio" className="text-sm font-medium text-blue-200/90 mb-2 block">Ваше ФИО</Label>
+                  <Input id="fio" value={fio} onChange={(e) => setFio(e.target.value)} className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
+                </div>
                 <div>
                   <Label htmlFor="position" className="text-sm font-medium text-blue-200/90 mb-2 block">Должность</Label>
                   <div className="relative w-full">
@@ -883,19 +1238,100 @@ export function GeneratorPage() {
                     <Input id="onlineStats" value={onlineStats} onChange={(e) => setOnlineStats(e.target.value)} className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                   </div>
                 )}
-                <RequirementsList
-                  requirements={requirements}
-                  setRequirements={setRequirements}
-                  department={department!}
-                />
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                  <Label className="text-sm font-medium text-blue-200/90 mb-2 block">
+                    Требования/Задачи
+                      {department === "ГИБДД" && (
+                        <p className="text-xs text-blue-300/70 ml-10 mt-1">
+                          💡 Важно: 1 лекция или тренировка = 1 ссылка
+                        </p>
+                      )}
+                    </Label>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {requirements.map((req, index) => (
+                      <div 
+                        key={index} 
+                        className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 hover:bg-white/8 hover:border-white/20 transition-all duration-200 group"
+                      >
+                        <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-gradient-to-br from-blue-500/30 to-purple-500/30 rounded-full flex items-center justify-center border border-blue-400/40 text-xs font-bold text-blue-200">
+                          {index + 1}
+                        </div>
+                        
+                        <div className="flex gap-3 items-start">
+                          <div className="flex-1 space-y-3">
+                            <div>
+                              <Label className="text-xs text-blue-300/80 mb-1.5 block">Название задачи</Label>
+                              <Input
+                                placeholder="Например: Патрулирование, Оформление ДТП, Лекция..."
+                                value={req.req}
+                                onChange={(e) => updateRequirement(index, "req", e.target.value)}
+                                className="bg-black/20 border-blue-400/30 text-white placeholder:text-blue-200/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all"
+                              />
+                            </div>
+                            
+                            <div className="grid gap-3" style={{ gridTemplateColumns: department === "ГИБДД" ? "120px 1fr" : "1fr" }}>
+                              {department === "ГИБДД" && (
+                                <div>
+                                  <Label className="text-xs text-blue-300/80 mb-1.5 block">Количество</Label>
+                                  <Input
+                                    placeholder="0"
+                                    value={req.quantity || ""}
+                                    onChange={(e) => updateRequirement(index, "quantity", e.target.value)}
+                                    className="bg-black/20 border-blue-400/30 text-white placeholder:text-blue-200/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all text-center font-semibold"
+                                  />
+                                </div>
+                              )}
+                              <div>
+                                <Label className="text-xs text-blue-300/80 mb-1.5 block">Ссылка на подтверждение</Label>
+                                <Input
+                                  placeholder="https://..."
+                                  value={req.link}
+                                  onChange={(e) => updateRequirement(index, "link", e.target.value)}
+                                  className="bg-black/20 border-blue-400/30 text-white placeholder:text-blue-200/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeRequirement(index)}
+                            disabled={requirements.length === 1}
+                            className="h-9 w-9 mt-6 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-400/20 hover:border-red-400/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                            title="Удалить требование"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <Button 
+                    variant="outline" 
+                    onClick={addRequirement} 
+                    className="w-full border-2 border-dashed border-blue-400/40 text-blue-300 hover:bg-blue-500/10 hover:border-blue-400/60 transition-all duration-200 py-6 group"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
+                        <span className="text-lg leading-none">+</span>
+                      </div>
+                      <span className="font-medium">Добавить требование</span>
+                    </div>
+                  </Button>
+                </div>
                 <div>
                   <Label htmlFor="signature" className="text-sm font-medium text-blue-200/90 mb-2 block">Подпись</Label>
                   <Input id="signature" value={signature} onChange={(e) => setSignature(e.target.value)} className="bg-black/5 border-blue-400/30 text-white placeholder:text-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20" />
                 </div>
-                  </>
-                )}
                 <div className="flex gap-3 flex-wrap pt-4 border-t border-white/20">
-                  <Button onClick={handleGenerateReport} disabled={!isFormValid()} className="bg-green-500/20 hover:bg-green-500/30 text-green-300 border-green-400/40">
+                  <Button onClick={generateReport} disabled={!isFormValid()} className="bg-green-500/20 hover:bg-green-500/30 text-green-300 border-green-400/40">
                     Сгенерировать отчёт
                   </Button>
                   <Button variant="outline" onClick={saveDraft} className="border-blue-400/40 text-blue-300 hover:bg-blue-500/10">
