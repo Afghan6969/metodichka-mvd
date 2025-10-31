@@ -1,164 +1,164 @@
-import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import { createClient } from "@/lib/supabase/server";
+import { NextRequest, NextResponse } from"next/server";
+import jwt from"jsonwebtoken";
+import bcrypt from"bcryptjs";
+import { createClient } from"@/lib/supabase/server";
 
 const VALID_ROLES = [
-  "super-admin",
-  "root",
-  "gs-gibdd",
-  "pgs-gibdd",
-  "leader-gibdd",
-  "gs-guvd",
-  "pgs-guvd",
-  "leader-guvd",
-  "ss-gibdd",
-  "ss-guvd",
-  "gibdd",
-  "guvd",
-  "none",
+"super-admin",
+"root",
+"gs-gibdd",
+"pgs-gibdd",
+"leader-gibdd",
+"gs-guvd",
+"pgs-guvd",
+"leader-guvd",
+"ss-gibdd",
+"ss-guvd",
+"gibdd",
+"guvd",
+"none",
 ];
 
 const normalizeRole = (role: unknown): string => {
-  if (!role) return "none";
-  const r = String(role).trim().toLowerCase().replace(/_/g, "-");
-  return VALID_ROLES.includes(r) ? r : "none";
+ if (!role) return"none";
+ const r = String(role).trim().toLowerCase().replace(/_/g,"-");
+ return VALID_ROLES.includes(r) ? r :"none";
 };
 
 const canManageUsersRole = (role: string) =>
-  ["super-admin", "root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd"].includes(role);
+ ["super-admin","root","gs-gibdd","pgs-gibdd","leader-gibdd","gs-guvd","pgs-guvd","leader-guvd"].includes(role);
 
 export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json().catch(() => null);
-    if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+ try {
+ const body = await req.json().catch(() => null);
+ if (!body) return NextResponse.json({ error:"Invalid body" }, { status: 400 });
 
-    const { nickname, username, password, role } = body;
-    if (!nickname || !username || !password) {
-      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
-    }
+ const { nickname, username, password, role } = body;
+ if (!nickname || !username || !password) {
+ return NextResponse.json({ error:"Missing fields" }, { status: 400 });
+ }
 
-    // get token from cookie (compatible with your current setup)
-    const token = req.headers.get("cookie")?.match(/auth_token=([^;]+)/)?.[1];
-    if (!token) return NextResponse.json({ error: "No token" }, { status: 401 });
+ // get token from cookie (compatible with your current setup)
+ const token = req.headers.get("cookie")?.match(/auth_token=([^;]+)/)?.[1];
+ if (!token) return NextResponse.json({ error:"No token" }, { status: 401 });
 
-    let decoded: any;
-    try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string; role?: string };
-    } catch (e) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-    }
+ let decoded: any;
+ try {
+ decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string; role?: string };
+ } catch (e) {
+ return NextResponse.json({ error:"Invalid token" }, { status: 401 });
+ }
 
-    const supabase = await createClient();
+ const supabase = await createClient();
 
-    // load current user from DB (server-side check, more reliable than token only)
-    const { data: currentUsers, error: userErr } = await supabase
-      .from("users")
-      .select("id, nickname, role")
-      .eq("id", decoded.id);
+ // load current user from DB (server-side check, more reliable than token only)
+ const { data: currentUsers, error: userErr } = await supabase
+ .from("users")
+ .select("id, nickname, role")
+ .eq("id", decoded.id);
 
-    if (userErr || !currentUsers || currentUsers.length === 0) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-    }
+ if (userErr || !currentUsers || currentUsers.length === 0) {
+ return NextResponse.json({ error:"Unauthorized" }, { status: 403 });
+ }
 
-    const currentUser = currentUsers[0];
-    if (!canManageUsersRole(String(currentUser.role))) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+ const currentUser = currentUsers[0];
+ if (!canManageUsersRole(String(currentUser.role))) {
+ return NextResponse.json({ error:"Forbidden" }, { status: 403 });
+ }
 
-    // unique username check
-    const { data: existingUsers, error: existingErr } = await supabase
-      .from("users")
-      .select("id")
-      .eq("username", username)
-      .limit(1);
+ // unique username check
+ const { data: existingUsers, error: existingErr } = await supabase
+ .from("users")
+ .select("id")
+ .eq("username", username)
+ .limit(1);
 
-    if (existingErr) {
-      console.error("[AddUser API] Ошибка проверки БД:", existingErr);
-      return NextResponse.json({ error: "DB error" }, { status: 500 });
-    }
-    if (existingUsers && existingUsers.length > 0) {
-      return NextResponse.json({ error: "Username already exists" }, { status: 400 });
-    }
+ if (existingErr) {
+ console.error("[AddUser API] Ошибка проверки БД:", existingErr);
+ return NextResponse.json({ error:"DB error" }, { status: 500 });
+ }
+ if (existingUsers && existingUsers.length > 0) {
+ return NextResponse.json({ error:"Username already exists" }, { status: 400 });
+ }
 
-    // Prevent root and super-admin role assignment through the interface (no exceptions)
-    const normalizedRole = normalizeRole(role);
-    if (normalizedRole === "root" || normalizedRole === "super-admin") {
-      return NextResponse.json({ error: "Cannot assign this role" }, { status: 403 });
-    }
+ // Prevent root and super-admin role assignment through the interface (no exceptions)
+ const normalizedRole = normalizeRole(role);
+ if (normalizedRole ==="root" || normalizedRole ==="super-admin") {
+ return NextResponse.json({ error:"Cannot assign this role" }, { status: 403 });
+ }
 
-    // create user
-    const passwordHash = await bcrypt.hash(password, 10);
+ // create user
+ const passwordHash = await bcrypt.hash(password, 10);
 
-    const { data: newUsers, error: insertErr } = await supabase
-      .from("users")
-      .insert([
-        {
-          nickname,
-          username,
-          password_hash: passwordHash,
-          role: normalizedRole,
-          created_by: currentUser.id,
-        },
-      ])
-      .select();
-    if (insertErr) {
-      console.error("[AddUser API] Ошибка вставки:", insertErr);
-      return NextResponse.json({ error: insertErr.message || "Insert failed" }, { status: 500 });
-    }
+ const { data: newUsers, error: insertErr } = await supabase
+ .from("users")
+ .insert([
+ {
+ nickname,
+ username,
+ password_hash: passwordHash,
+ role: normalizedRole,
+ created_by: currentUser.id,
+ },
+ ])
+ .select();
+ if (insertErr) {
+ console.error("[AddUser API] Ошибка вставки:", insertErr);
+ return NextResponse.json({ error: insertErr.message ||"Insert failed" }, { status: 500 });
+ }
 
-    const newUser = newUsers?.[0] ?? null;
+ const newUser = newUsers?.[0] ?? null;
 
-    // Получаем IP адрес
-    const forwarded = req.headers.get("x-forwarded-for");
-    const ip = forwarded ? forwarded.split(",")[0] : req.headers.get("x-real-ip") || "unknown";
+ // Получаем IP адрес
+ const forwarded = req.headers.get("x-forwarded-for");
+ const ip = forwarded ? forwarded.split(",")[0] : req.headers.get("x-real-ip") ||"unknown";
 
-    // structured log (helps UI parsing + rollback)
-    const logData = {
-      action: "add_user",
-      target_user_id: newUser?.id ?? null,
-      target_user_nickname: nickname,
-      performed_by_id: currentUser.id,
-      performed_by_nickname: currentUser.nickname,
-      details: JSON.stringify({ nickname, username, role: normalizedRole }),
-      ip_address: ip,
-    };
-    
-    console.log("[AddUser API] Попытка записи лога:", logData);
-    
-    const { data: insertedLog, error: logError } = await supabase
-      .from("user_logs")
-      .insert([logData])
-      .select();
+ // structured log (helps UI parsing + rollback)
+ const logData = {
+ action:"add_user",
+ target_user_id: newUser?.id ?? null,
+ target_user_nickname: nickname,
+ performed_by_id: currentUser.id,
+ performed_by_nickname: currentUser.nickname,
+ details: JSON.stringify({ nickname, username, role: normalizedRole }),
+ ip_address: ip,
+ };
+ 
+ console.log("[AddUser API] Попытка записи лога:", logData);
+ 
+ const { data: insertedLog, error: logError } = await supabase
+ .from("user_logs")
+ .insert([logData])
+ .select();
 
-    if (logError) {
-      console.error("[AddUser API] ❌ Ошибка записи лога:", logError);
-      console.error("[AddUser API] Log error details:", JSON.stringify(logError, null, 2));
-      console.error("[AddUser API] Log error code:", logError.code);
-      console.error("[AddUser API] Log error message:", logError.message);
-    } else {
-      console.log("[AddUser API] ✅ Лог успешно записан для пользователя:", nickname);
-      console.log("[AddUser API] Вставленная запись:", insertedLog);
-      console.log("[AddUser API] ID вставленного лога:", insertedLog?.[0]?.id);
-      
-      // Дополнительная проверка - читаем запись обратно
-      if (insertedLog?.[0]?.id) {
-        const { data: verifyLog, error: verifyError } = await supabase
-          .from("user_logs")
-          .select("*")
-          .eq("id", insertedLog[0].id)
-          .single();
-        
-        if (verifyError) {
-          console.error("[AddUser API] ⚠️ Не удалось прочитать вставленный лог:", verifyError);
-        } else {
-          console.log("[AddUser API] ✅ Проверка: лог найден в БД:", verifyLog);
-        }
-      }
-    }
+ if (logError) {
+ console.error("[AddUser API] ❌ Ошибка записи лога:", logError);
+ console.error("[AddUser API] Log error details:", JSON.stringify(logError, null, 2));
+ console.error("[AddUser API] Log error code:", logError.code);
+ console.error("[AddUser API] Log error message:", logError.message);
+ } else {
+ console.log("[AddUser API] ✅ Лог успешно записан для пользователя:", nickname);
+ console.log("[AddUser API] Вставленная запись:", insertedLog);
+ console.log("[AddUser API] ID вставленного лога:", insertedLog?.[0]?.id);
+ 
+ // Дополнительная проверка - читаем запись обратно
+ if (insertedLog?.[0]?.id) {
+ const { data: verifyLog, error: verifyError } = await supabase
+ .from("user_logs")
+ .select("*")
+ .eq("id", insertedLog[0].id)
+ .single();
+ 
+ if (verifyError) {
+ console.error("[AddUser API] ⚠️ Не удалось прочитать вставленный лог:", verifyError);
+ } else {
+ console.log("[AddUser API] ✅ Проверка: лог найден в БД:", verifyLog);
+ }
+ }
+ }
 
-    return NextResponse.json({ success: true, user: newUser });
-  } catch (err: any) {
-    console.error("[AddUser API] Исключение:", err);
-  }
+ return NextResponse.json({ success: true, user: newUser });
+ } catch (err: any) {
+ console.error("[AddUser API] Исключение:", err);
+ }
 }

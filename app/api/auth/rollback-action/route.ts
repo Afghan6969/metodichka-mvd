@@ -1,298 +1,298 @@
-import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import { NextRequest, NextResponse } from"next/server";
+import jwt from"jsonwebtoken";
+import bcrypt from"bcryptjs";
 import { createClient as createServerClient } from '@supabase/supabase-js';
 
 const canManageUsersRole = (role: string) =>
-  ["super-admin", "root", "gs-gibdd", "pgs-gibdd", "leader-gibdd", "gs-guvd", "pgs-guvd", "leader-guvd"].includes(role);
+ ["super-admin","root","gs-gibdd","pgs-gibdd","leader-gibdd","gs-guvd","pgs-guvd","leader-guvd"].includes(role);
 
 // Русские названия ролей
 const roleDisplayNames: Record<string, string> = {
-  root: "Владелец",
-  "gs-gibdd": "ГС ГИБДД",
-  "pgs-gibdd": "ПГС ГИБДД",
-  "leader-gibdd": "Лидер ГИБДД",
-  "gs-guvd": "ГС ГУВД",
-  "pgs-guvd": "ПГС ГУВД",
-  "leader-guvd": "Лидер ГУВД",
-  "ss-gibdd": "СС ГИБДД",
-  "ss-guvd": "СС ГУВД",
-  gibdd: "ГИБДД",
-  guvd: "ГУВД",
-  none: "Нет роли",
+ root:"Владелец",
+"gs-gibdd":"ГС ГИБДД",
+"pgs-gibdd":"ПГС ГИБДД",
+"leader-gibdd":"Лидер ГИБДД",
+"gs-guvd":"ГС ГУВД",
+"pgs-guvd":"ПГС ГУВД",
+"leader-guvd":"Лидер ГУВД",
+"ss-gibdd":"СС ГИБДД",
+"ss-guvd":"СС ГУВД",
+ gibdd:"ГИБДД",
+ guvd:"ГУВД",
+ none:"Нет роли",
 };
 
 export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json().catch(() => null);
-    if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+ try {
+ const body = await req.json().catch(() => null);
+ if (!body) return NextResponse.json({ error:"Invalid body" }, { status: 400 });
 
-    const { logId } = body;
-    if (!logId) return NextResponse.json({ error: "Missing logId" }, { status: 400 });
+ const { logId } = body;
+ if (!logId) return NextResponse.json({ error:"Missing logId" }, { status: 400 });
 
-    const token = req.headers.get("cookie")?.match(/auth_token=([^;]+)/)?.[1];
-    if (!token) return NextResponse.json({ error: "No token" }, { status: 401 });
+ const token = req.headers.get("cookie")?.match(/auth_token=([^;]+)/)?.[1];
+ if (!token) return NextResponse.json({ error:"No token" }, { status: 401 });
 
-    let decoded: any;
-    try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string; role?: string };
-    } catch (e) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-    }
+ let decoded: any;
+ try {
+ decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string; role?: string };
+ } catch (e) {
+ return NextResponse.json({ error:"Invalid token" }, { status: 401 });
+ }
 
-    // Используем service role для обхода RLS
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-    );
+ // Используем service role для обхода RLS
+ const supabase = createServerClient(
+ process.env.NEXT_PUBLIC_SUPABASE_URL!,
+ process.env.SUPABASE_SERVICE_ROLE_KEY!,
+ {
+ auth: {
+ autoRefreshToken: false,
+ persistSession: false
+ }
+ }
+ );
 
-    const { data: currentUsers, error: userErr } = await supabase
-      .from("users")
-      .select("id, nickname, role")
-      .eq("id", decoded.id);
+ const { data: currentUsers, error: userErr } = await supabase
+ .from("users")
+ .select("id, nickname, role")
+ .eq("id", decoded.id);
 
-    if (userErr || !currentUsers || currentUsers.length === 0) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-    }
+ if (userErr || !currentUsers || currentUsers.length === 0) {
+ return NextResponse.json({ error:"Unauthorized" }, { status: 403 });
+ }
 
-    const currentUser = currentUsers[0];
-    if (!canManageUsersRole(String(currentUser.role))) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+ const currentUser = currentUsers[0];
+ if (!canManageUsersRole(String(currentUser.role))) {
+ return NextResponse.json({ error:"Forbidden" }, { status: 403 });
+ }
 
-    // Получаем лог для отката
-    const { data: logData, error: logError } = await supabase
-      .from("user_logs")
-      .select("*")
-      .eq("id", logId)
-      .single();
+ // Получаем лог для отката
+ const { data: logData, error: logError } = await supabase
+ .from("user_logs")
+ .select("*")
+ .eq("id", logId)
+ .single();
 
-    if (logError || !logData) {
-      return NextResponse.json({ error: "Log not found" }, { status: 404 });
-    }
+ if (logError || !logData) {
+ return NextResponse.json({ error:"Log not found" }, { status: 404 });
+ }
 
-    // Нельзя откатить откат
-    if (logData.action === "rollback") {
-      return NextResponse.json({ error: "Cannot rollback a rollback" }, { status: 400 });
-    }
+ // Нельзя откатить откат
+ if (logData.action ==="rollback") {
+ return NextResponse.json({ error:"Cannot rollback a rollback" }, { status: 400 });
+ }
 
-    // Получаем роль того, кто выполнил действие
-    const { data: performedByUserData } = await supabase
-      .from("users")
-      .select("role")
-      .eq("id", logData.performed_by_id)
-      .single();
+ // Получаем роль того, кто выполнил действие
+ const { data: performedByUserData } = await supabase
+ .from("users")
+ .select("role")
+ .eq("id", logData.performed_by_id)
+ .single();
 
-    if (!performedByUserData) {
-      return NextResponse.json({ error: "Performed by user not found" }, { status: 404 });
-    }
+ if (!performedByUserData) {
+ return NextResponse.json({ error:"Performed by user not found" }, { status: 404 });
+ }
 
-    // Проверка иерархии: кто может откатывать чьи действия
-    const canRollback = (currentUserId: string, currentRole: string, performedById: string, performedByRole: string): boolean => {
-      // Root может откатывать всё
-      if (currentRole === "root") return true;
-      
-      // ГС ГИБДД может откатывать: свои действия + действия ПГС ГИБДД и лидера ГИБДД
-      if (currentRole === "gs-gibdd") {
-        if (currentUserId === performedById) return true; // свои действия
-        return ["pgs-gibdd", "leader-gibdd", "ss-gibdd", "gibdd"].includes(performedByRole);
-      }
-      
-      // ПГС ГИБДД может откатывать: свои действия + действия лидера ГИБДД
-      if (currentRole === "pgs-gibdd") {
-        if (currentUserId === performedById) return true; // свои действия
-        return ["leader-gibdd", "ss-gibdd", "gibdd"].includes(performedByRole);
-      }
-      
-      // Лидер ГИБДД может откатывать только свои действия
-      if (currentRole === "leader-gibdd") {
-        return currentUserId === performedById; // только свои действия
-      }
-      
-      // ГС ГУВД может откатывать: свои действия + действия ПГС ГУВД и лидера ГУВД
-      if (currentRole === "gs-guvd") {
-        if (currentUserId === performedById) return true; // свои действия
-        return ["pgs-guvd", "leader-guvd", "ss-guvd", "guvd"].includes(performedByRole);
-      }
-      
-      // ПГС ГУВД может откатывать: свои действия + действия лидера ГУВД
-      if (currentRole === "pgs-guvd") {
-        if (currentUserId === performedById) return true; // свои действия
-        return ["leader-guvd", "ss-guvd", "guvd"].includes(performedByRole);
-      }
-      
-      // Лидер ГУВД может откатывать только свои действия
-      if (currentRole === "leader-guvd") {
-        return currentUserId === performedById; // только свои действия
-      }
-      
-      return false;
-    };
+ // Проверка иерархии: кто может откатывать чьи действия
+ const canRollback = (currentUserId: string, currentRole: string, performedById: string, performedByRole: string): boolean => {
+ // Root может откатывать всё
+ if (currentRole ==="root") return true;
+ 
+ // ГС ГИБДД может откатывать: свои действия + действия ПГС ГИБДД и лидера ГИБДД
+ if (currentRole ==="gs-gibdd") {
+ if (currentUserId === performedById) return true; // свои действия
+ return ["pgs-gibdd","leader-gibdd","ss-gibdd","gibdd"].includes(performedByRole);
+ }
+ 
+ // ПГС ГИБДД может откатывать: свои действия + действия лидера ГИБДД
+ if (currentRole ==="pgs-gibdd") {
+ if (currentUserId === performedById) return true; // свои действия
+ return ["leader-gibdd","ss-gibdd","gibdd"].includes(performedByRole);
+ }
+ 
+ // Лидер ГИБДД может откатывать только свои действия
+ if (currentRole ==="leader-gibdd") {
+ return currentUserId === performedById; // только свои действия
+ }
+ 
+ // ГС ГУВД может откатывать: свои действия + действия ПГС ГУВД и лидера ГУВД
+ if (currentRole ==="gs-guvd") {
+ if (currentUserId === performedById) return true; // свои действия
+ return ["pgs-guvd","leader-guvd","ss-guvd","guvd"].includes(performedByRole);
+ }
+ 
+ // ПГС ГУВД может откатывать: свои действия + действия лидера ГУВД
+ if (currentRole ==="pgs-guvd") {
+ if (currentUserId === performedById) return true; // свои действия
+ return ["leader-guvd","ss-guvd","guvd"].includes(performedByRole);
+ }
+ 
+ // Лидер ГУВД может откатывать только свои действия
+ if (currentRole ==="leader-guvd") {
+ return currentUserId === performedById; // только свои действия
+ }
+ 
+ return false;
+ };
 
-    // Проверяем права на откат
-    if (!canRollback(currentUser.id, String(currentUser.role), logData.performed_by_id, String(performedByUserData.role))) {
-      return NextResponse.json({ 
-        error: "Недостаточно прав для отката этого действия." 
-      }, { status: 403 });
-    }
+ // Проверяем права на откат
+ if (!canRollback(currentUser.id, String(currentUser.role), logData.performed_by_id, String(performedByUserData.role))) {
+ return NextResponse.json({ 
+ error:"Недостаточно прав для отката этого действия." 
+ }, { status: 403 });
+ }
 
-    // Получаем IP адрес
-    const forwarded = req.headers.get("x-forwarded-for");
-    const ip = forwarded ? forwarded.split(",")[0] : req.headers.get("x-real-ip") || "unknown";
+ // Получаем IP адрес
+ const forwarded = req.headers.get("x-forwarded-for");
+ const ip = forwarded ? forwarded.split(",")[0] : req.headers.get("x-real-ip") ||"unknown";
 
-    let rollbackDetails = "";
-    let rollbackSuccess = false;
+ let rollbackDetails ="";
+ let rollbackSuccess = false;
 
-    // Откатываем действие в зависимости от типа
-    switch (logData.action) {
-      case "add_user": {
-        // Откат добавления = деактивация пользователя
-        const { error: deactivateError } = await supabase
-          .from("users")
-          .update({
-            status: "deactivated",
-            deactivated_by: currentUser.id,
-            deactivated_at: new Date().toISOString()
-          })
-          .eq("id", logData.target_user_id);
+ // Откатываем действие в зависимости от типа
+ switch (logData.action) {
+ case"add_user": {
+ // Откат добавления = деактивация пользователя
+ const { error: deactivateError } = await supabase
+ .from("users")
+ .update({
+ status:"deactivated",
+ deactivated_by: currentUser.id,
+ deactivated_at: new Date().toISOString()
+ })
+ .eq("id", logData.target_user_id);
 
-        if (!deactivateError) {
-          rollbackDetails = `Откат добавления: деактивирован пользователь ${logData.target_user_nickname}`;
-          rollbackSuccess = true;
-        }
-        break;
-      }
+ if (!deactivateError) {
+ rollbackDetails = `Откат добавления: деактивирован пользователь ${logData.target_user_nickname}`;
+ rollbackSuccess = true;
+ }
+ break;
+ }
 
-      case "deactivate": {
-        // Откат деактивации = активация
-        const { error: activateError } = await supabase
-          .from("users")
-          .update({
-            status: "active",
-            deactivated_by: null,
-            deactivated_at: null
-          })
-          .eq("id", logData.target_user_id);
+ case"deactivate": {
+ // Откат деактивации = активация
+ const { error: activateError } = await supabase
+ .from("users")
+ .update({
+ status:"active",
+ deactivated_by: null,
+ deactivated_at: null
+ })
+ .eq("id", logData.target_user_id);
 
-        if (!activateError) {
-          rollbackDetails = `Откат деактивации: активирован пользователь ${logData.target_user_nickname}`;
-          rollbackSuccess = true;
-        }
-        break;
-      }
+ if (!activateError) {
+ rollbackDetails = `Откат деактивации: активирован пользователь ${logData.target_user_nickname}`;
+ rollbackSuccess = true;
+ }
+ break;
+ }
 
-      case "activate": {
-        // Откат активации = деактивация
-        const { error: deactivateError } = await supabase
-          .from("users")
-          .update({
-            status: "deactivated",
-            deactivated_by: currentUser.id,
-            deactivated_at: new Date().toISOString()
-          })
-          .eq("id", logData.target_user_id);
+ case"activate": {
+ // Откат активации = деактивация
+ const { error: deactivateError } = await supabase
+ .from("users")
+ .update({
+ status:"deactivated",
+ deactivated_by: currentUser.id,
+ deactivated_at: new Date().toISOString()
+ })
+ .eq("id", logData.target_user_id);
 
-        if (!deactivateError) {
-          rollbackDetails = `Откат активации: деактивирован пользователь ${logData.target_user_nickname}`;
-          rollbackSuccess = true;
-        }
-        break;
-      }
+ if (!deactivateError) {
+ rollbackDetails = `Откат активации: деактивирован пользователь ${logData.target_user_nickname}`;
+ rollbackSuccess = true;
+ }
+ break;
+ }
 
-      case "update_user": {
-        // Откат изменения = восстановление предыдущих значений
-        try {
-          const details = JSON.parse(logData.details);
-          const updates: any = {};
-          const changes: string[] = [];
+ case"update_user": {
+ // Откат изменения = восстановление предыдущих значений
+ try {
+ const details = JSON.parse(logData.details);
+ const updates: any = {};
+ const changes: string[] = [];
 
-          if (details.previous) {
-            // Никнейм
-            if (details.previous.nickname !== undefined && details.next && details.previous.nickname !== details.next.nickname) {
-              updates.nickname = details.previous.nickname;
-              changes.push(`Никнейм: ${details.next.nickname} → ${details.previous.nickname}`);
-            }
-            // Логин
-            if (details.previous.username !== undefined && details.next && details.previous.username !== details.next.username) {
-              updates.username = details.previous.username;
-              changes.push(`Логин: ${details.next.username} → ${details.previous.username}`);
-            }
-            // Роль
-            if (details.previous.role !== undefined && details.next && details.previous.role !== details.next.role) {
-              updates.role = details.previous.role;
-              const oldRoleName = roleDisplayNames[details.next.role] || details.next.role;
-              const newRoleName = roleDisplayNames[details.previous.role] || details.previous.role;
-              changes.push(`Роль: ${oldRoleName} → ${newRoleName}`);
-            }
-          }
+ if (details.previous) {
+ // Никнейм
+ if (details.previous.nickname !== undefined && details.next && details.previous.nickname !== details.next.nickname) {
+ updates.nickname = details.previous.nickname;
+ changes.push(`Никнейм: ${details.next.nickname} → ${details.previous.nickname}`);
+ }
+ // Логин
+ if (details.previous.username !== undefined && details.next && details.previous.username !== details.next.username) {
+ updates.username = details.previous.username;
+ changes.push(`Логин: ${details.next.username} → ${details.previous.username}`);
+ }
+ // Роль
+ if (details.previous.role !== undefined && details.next && details.previous.role !== details.next.role) {
+ updates.role = details.previous.role;
+ const oldRoleName = roleDisplayNames[details.next.role] || details.next.role;
+ const newRoleName = roleDisplayNames[details.previous.role] || details.previous.role;
+ changes.push(`Роль: ${oldRoleName} → ${newRoleName}`);
+ }
+ }
 
-          // Пароль нельзя откатить (он хешируется и не сохраняется в логах)
-          if (details.changes && Array.isArray(details.changes)) {
-            const hasPasswordChange = details.changes.some((c: string) => c.includes("password"));
-            if (hasPasswordChange) {
-              changes.push("Пароль: изменён (откат невозможен)");
-            }
-          }
+ // Пароль нельзя откатить (он хешируется и не сохраняется в логах)
+ if (details.changes && Array.isArray(details.changes)) {
+ const hasPasswordChange = details.changes.some((c: string) => c.includes("password"));
+ if (hasPasswordChange) {
+ changes.push("Пароль: изменён (откат невозможен)");
+ }
+ }
 
-          if (Object.keys(updates).length > 0 || changes.length > 0) {
-            if (Object.keys(updates).length > 0) {
-              const { error: updateError } = await supabase
-                .from("users")
-                .update(updates)
-                .eq("id", logData.target_user_id);
+ if (Object.keys(updates).length > 0 || changes.length > 0) {
+ if (Object.keys(updates).length > 0) {
+ const { error: updateError } = await supabase
+ .from("users")
+ .update(updates)
+ .eq("id", logData.target_user_id);
 
-              if (updateError) {
-                console.error("[Rollback] Update error:", updateError);
-                break;
-              }
-            }
+ if (updateError) {
+ console.error("[Rollback] Update error:", updateError);
+ break;
+ }
+ }
 
-            rollbackDetails = `Откат изменения для ${logData.target_user_nickname}: ${changes.join(", ")}`;
-            rollbackSuccess = true;
-          } else {
-            rollbackDetails = `Нет изменений для отката у ${logData.target_user_nickname}`;
-            rollbackSuccess = false;
-          }
-        } catch (e) {
-          console.error("[Rollback] Failed to parse update_user details:", e);
-        }
-        break;
-      }
+ rollbackDetails = `Откат изменения для ${logData.target_user_nickname}: ${changes.join(",")}`;
+ rollbackSuccess = true;
+ } else {
+ rollbackDetails = `Нет изменений для отката у ${logData.target_user_nickname}`;
+ rollbackSuccess = false;
+ }
+ } catch (e) {
+ console.error("[Rollback] Failed to parse update_user details:", e);
+ }
+ break;
+ }
 
-      default:
-        return NextResponse.json({ error: "Данное действие нельзя откатить" }, { status: 400 });
-    }
+ default:
+ return NextResponse.json({ error:"Данное действие нельзя откатить" }, { status: 400 });
+ }
 
-    if (!rollbackSuccess) {
-      return NextResponse.json({ error: "Rollback failed" }, { status: 500 });
-    }
+ if (!rollbackSuccess) {
+ return NextResponse.json({ error:"Rollback failed" }, { status: 500 });
+ }
 
-    // Логируем откат
-    await supabase.from("user_logs").insert([
-      {
-        action: "rollback",
-        target_user_id: logData.target_user_id,
-        target_user_nickname: logData.target_user_nickname,
-        performed_by_id: currentUser.id,
-        performed_by_nickname: currentUser.nickname,
-        details: JSON.stringify({
-          original_log_id: logId,
-          original_action: logData.action,
-          rollback_description: rollbackDetails
-        }),
-        ip_address: ip,
-      },
-    ]);
+ // Логируем откат
+ await supabase.from("user_logs").insert([
+ {
+ action:"rollback",
+ target_user_id: logData.target_user_id,
+ target_user_nickname: logData.target_user_nickname,
+ performed_by_id: currentUser.id,
+ performed_by_nickname: currentUser.nickname,
+ details: JSON.stringify({
+ original_log_id: logId,
+ original_action: logData.action,
+ rollback_description: rollbackDetails
+ }),
+ ip_address: ip,
+ },
+ ]);
 
-    return NextResponse.json({ success: true, message: rollbackDetails });
-  } catch (err: any) {
-    console.error("[Rollback API] Exception:", err);
-    return NextResponse.json({ error: err?.message || "Internal server error" }, { status: 500 });
-  }
+ return NextResponse.json({ success: true, message: rollbackDetails });
+ } catch (err: any) {
+ console.error("[Rollback API] Exception:", err);
+ return NextResponse.json({ error: err?.message ||"Internal server error" }, { status: 500 });
+ }
 }
