@@ -23,13 +23,19 @@ export async function POST(request: Request) {
  const supabase = await createClient();
 
  // Проверяем роль пользователя
- const { data: user } = await supabase
+ const { data: user, error: userError } = await supabase
  .from("users")
  .select("id, nickname, role, status")
  .eq("id", decoded.id)
  .maybeSingle();
 
+ if (userError) {
+ console.error("Error fetching user:", userError);
+ return NextResponse.json({ error:"Error fetching user data", details: userError.message }, { status: 500 });
+ }
+
  if (!user || user.status !=="active") {
+ console.error("User not found or inactive. Decoded ID:", decoded.id);
  return NextResponse.json({ error:"User not found or inactive" }, { status: 403 });
  }
 
@@ -128,8 +134,11 @@ export async function POST(request: Request) {
 
  if (updateError) {
  console.error("Ошибка обновления запроса аккаунта:", updateError);
+ console.error("User ID:", user.id);
+ console.error("Request ID:", requestId);
+ console.error("Full error details:", JSON.stringify(updateError, null, 2));
  return NextResponse.json(
- { error:"Failed to update request", details: updateError.message },
+ { error:"Failed to update request", details: updateError.message, code: updateError.code },
  { status: 500 }
  );
  }

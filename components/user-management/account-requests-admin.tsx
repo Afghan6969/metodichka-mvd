@@ -132,7 +132,10 @@ export function AccountRequestsAdmin({ onCountChange }: AccountRequestsAdminProp
  const data = await response.json();
 
  if (!response.ok) {
- throw new Error(data.error ||"Не удалось обработать запрос");
+ const errorMsg = data.details 
+ ? `${data.error}: ${data.details}${data.code ? ` (код: ${data.code})` : ''}`
+ : data.error ||"Не удалось обработать запрос";
+ throw new Error(errorMsg);
  }
 
  // Обновляем список запросов
