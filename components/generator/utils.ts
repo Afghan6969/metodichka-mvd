@@ -20,17 +20,17 @@ const departmentDeclension = {
 
 const declinePosition = (position: string, isVrio: boolean, caseType:"genitive" |"instrumental") => {
  if (!position) return""
- const prefix = isVrio ?"ВрИО" :""
+ const prefix = isVrio ?"ВрИО " :""
  const title = isVrio ? position.replace(/^ВрИО /,"") : position
  const words = title.trim().split(/\s+/)
  let modifier =""
  let mainNoun = words[0]
- let department = words.slice(1).join("")
+ let department = words.slice(1).join(" ")
 
  if (["Первый","Заместитель"].includes(words[0])) {
  modifier = words[0]
  mainNoun = words[1] ||""
- department = words.slice(2).join("")
+ department = words.slice(2).join(" ")
  }
 
  const nounDeclension = declensionRules[mainNoun] || {
@@ -143,7 +143,7 @@ const declineRussianMiddleName = (middleName: string, targetCase:"dative" |"geni
 
 export const declineLeaderName = (name: string, targetCase:"dative" |"genitive") => {
  if (!name) return""
- const parts = name.split("")
+ const parts = name.split(" ")
  if (parts.length < 2) return name
 
  const lastName = parts[0]
@@ -154,7 +154,7 @@ export const declineLeaderName = (name: string, targetCase:"dative" |"genitive")
  const declinedFirstName = declineRussianFirstName(firstName, targetCase)
  const declinedMiddleName = middleName ? declineRussianMiddleName(middleName, targetCase) :""
 
- return `${declinedLastName} ${declinedFirstName}${declinedMiddleName ?"" + declinedMiddleName :""}`.trim()
+ return `${declinedLastName} ${declinedFirstName}${declinedMiddleName ?" " + declinedMiddleName :""}`.trim()
 }
 
 export const parseRanks = (rankString: string): string[] => {

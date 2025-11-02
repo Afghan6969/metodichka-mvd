@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { CopyButton } from "./copy-button"
 import { DatePicker } from "@/components/ui/date-picker"
-import { FileText, Shield, User, Briefcase, Search, Edit, X, Plus, Trash2 } from "lucide-react"
+import { FileText, Shield, User, Briefcase, Search, Edit, X, Plus, Trash2, Star } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 import { useAuth } from "@/lib/auth-context"
 import { format } from "date-fns"
@@ -37,20 +37,62 @@ export function OrdersPage() {
   const [disciplineV, setDisciplineV] = useState<number>(0)
   const [vacationStartDate, setVacationStartDate] = useState<Date | undefined>(undefined)
   const [vacationEndDate, setVacationEndDate] = useState<Date | undefined>(undefined)
+  const [recruitPosition, setRecruitPosition] = useState<string>("")
+  const [complaintLinkType, setComplaintLinkType] = useState<"common" | "individual">("common")
+  const [favoriteOrders, setFavoriteOrders] = useState<Set<string>>(new Set())
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState<boolean>(false)
+  
+  // Структура для дисциплинарных взысканий
+  interface DisciplinaryEmployee {
+    nickname: string
+    violation: string
+    reason: string
+    punishment: string
+    complaintLink?: string
+    disciplineUp: number
+    disciplineP: number
+    disciplineV: number
+  }
+  const [disciplinaryEmployees, setDisciplinaryEmployees] = useState<DisciplinaryEmployee[]>([
+    { nickname: "", violation: "", reason: "", punishment: "", complaintLink: "", disciplineUp: 0, disciplineP: 0, disciplineV: 0 }
+  ])
+  const [complaintLink, setComplaintLink] = useState<string>("")
 
   // Загружаем сохраненные данные из localStorage
   useEffect(() => {
     const savedPosition = localStorage.getItem("orders-position")
     const savedNickname = localStorage.getItem("orders-nickname")
+    const savedFavorites = localStorage.getItem("orders-favorites")
     if (savedPosition) setPosition(savedPosition)
     if (savedNickname) setNickname(savedNickname)
+    if (savedFavorites) {
+      try {
+        setFavoriteOrders(new Set(JSON.parse(savedFavorites)))
+      } catch (e) {
+        console.error("Error loading favorites", e)
+      }
+    }
   }, [])
 
   // Сохраняем данные в localStorage при изменении
   useEffect(() => {
     if (position) localStorage.setItem("orders-position", position)
     if (nickname) localStorage.setItem("orders-nickname", nickname)
-  }, [position, nickname])
+    localStorage.setItem("orders-favorites", JSON.stringify(Array.from(favoriteOrders)))
+  }, [position, nickname, favoriteOrders])
+  
+  // Функция для переключения избранного
+  const toggleFavorite = (orderId: string) => {
+    setFavoriteOrders(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(orderId)) {
+        newSet.delete(orderId)
+      } else {
+        newSet.add(orderId)
+      }
+      return newSet
+    })
+  }
 
   // Проверка авторизации
   if (!currentUser) {
@@ -129,7 +171,7 @@ export function OrdersPage() {
 Приказ о приёме сотрудника по результатам открытого собеседования
 
 Принят сотрудник: [Ник]
-Присвоено звание рядового, назначена должность курсанта учебного батальона.
+Присвоено звание рядового, назначена должность [Должность].
 Желаем успешной службы и профессионального роста.
 
 Текущее дисциплинарное состояние: УП — 0/5 | П — 0/5 | В — 0/3.`
@@ -166,8 +208,7 @@ export function OrdersPage() {
       content: `[ Ваша должность | Ваш никнейм ]
 Приказ о внесении в Общий Чёрный Список
 
-В связи с нарушением пункта [Пункт ОЧС] — [Краткая причина ОЧСа], сотрудник [Ник] уволен с последующим внесением в Чёрный Список сроком на [количество дней] дней.
-Текущее дисциплинарное состояние: УП — 0/5 | П — 0/5 | В — 0/3.`
+{{DISCIPLINARY_EMPLOYEES_OCS}}`
     },
     {
       id: "7",
@@ -176,12 +217,7 @@ export function OrdersPage() {
       content: `[ Ваша должность | Ваш никнейм ]
 Приказ о наложении дисциплинарного взыскания по жалобе
 
-По результатам рассмотрения жалобы: [ссылка]
-На сотрудника [Ник] налагаются дисциплинарные взыскания за:
-[Пункт который нарушил] — [Краткая причина].
-
-Взыскание: [Тип взыскания]
-Текущее дисциплинарное состояние: УП — 0/5 | П — 0/5 | В — 0/3.`
+{{DISCIPLINARY_EMPLOYEES_COMPLAINT}}`
     },
     {
       id: "8",
@@ -191,11 +227,7 @@ export function OrdersPage() {
 Приказ о наложении внутреннего дисциплинарного взыскания
 
 По результатам служебного расследования:
-На сотрудника [Ник] наложено дисциплинарное взыскание за нарушение пункта:
-[Пункт который нарушил] — [Краткая причина].
-
-Взыскание: [Тип взыскания]
-Текущее дисциплинарное состояние: УП — 0/5 | П — 0/5 | В — 0/3.`
+{{DISCIPLINARY_EMPLOYEES}}`
     },
     {
       id: "9",
@@ -349,6 +381,20 @@ export function OrdersPage() {
 
   const categories = ["all", "Кадровые изменения", "Дисциплинарные взыскания", "Построения", "Другое"]
   
+  // Список должностей для новичков
+  const recruitPositions = [
+    "Курсант учебного батальона",
+    "Курсант полицейской академии",
+    "Инспектор МБ",
+    "Инспектор СБ",
+    "Инспектор ОБ",
+    "Инспектор ППС",
+    "Младший инспектор ППС",
+    "Боец ОМОН",
+    "Боец СОБРа",
+    "Сотрудник ОВП"
+  ]
+  
   // Извлечение всех плейсхолдеров из текста
   const extractPlaceholders = (content: string): string[] => {
     const placeholders: string[] = []
@@ -385,6 +431,12 @@ export function OrdersPage() {
     setDisciplineV(0)
     setVacationStartDate(undefined)
     setVacationEndDate(undefined)
+    setRecruitPosition("")
+    setComplaintLinkType("common")
+    setDisciplinaryEmployees([
+      { nickname: "", violation: "", reason: "", punishment: "", complaintLink: "", disciplineUp: 0, disciplineP: 0, disciplineV: 0 }
+    ])
+    setComplaintLink("")
   }
 
   // Закрытие редактора
@@ -400,6 +452,8 @@ export function OrdersPage() {
     setDisciplineV(0)
     setVacationStartDate(undefined)
     setVacationEndDate(undefined)
+    setRecruitPosition("")
+    setComplaintLinkType("common")
   }
 
   // Применение замен
@@ -431,11 +485,67 @@ export function OrdersPage() {
       }
     }
     
+    // Специальная обработка для приказа о приёме (открытое собеседование) (id: 3)
+    if (editingOrder?.id === "3") {
+      const positionValue = recruitPosition || "[Должность]"
+      result = result.replace("[Должность]", positionValue)
+    }
+    
     // Специальная обработка для приказа о медкартах (id: 13)
     if (editingOrder?.id === "13") {
       const nicknamesList = multiNicknames.filter(n => n.trim()).map(n => `• ${n}`).join('\n')
       result = result.replace(/• \[Никнейм\]\n• \[Никнейм\]/, nicknamesList || '• [Никнейм]\n• [Никнейм]')
     }
+    
+    // Специальная обработка для приказа о внесении в ОЧС (id: 6)
+    if (editingOrder?.id === "6") {
+      const employeesList = disciplinaryEmployees
+        .filter(emp => emp.nickname.trim())
+        .map(emp => {
+          return `В связи с нарушением пункта ${emp.violation} — ${emp.reason}, сотрудник ${emp.nickname} уволен с последующим внесением в Чёрный Список сроком на ${emp.punishment} дней.
+Текущее дисциплинарное состояние: УП — ${emp.disciplineUp}/5 | П — ${emp.disciplineP}/5 | В — ${emp.disciplineV}/3.`
+        })
+        .join('\n\n')
+      
+      result = result.replace('{{DISCIPLINARY_EMPLOYEES_OCS}}', employeesList || 'Нет данных о сотрудниках')
+    }
+    
+    // Специальная обработка для приказа о взыскании по жалобе (id: 7)
+    if (editingOrder?.id === "7") {
+      const employeesList = disciplinaryEmployees
+        .filter(emp => emp.nickname.trim())
+        .map(emp => {
+          const link = complaintLinkType === "common" 
+            ? (complaintLink || "[ссылка]")
+            : (emp.complaintLink || "[ссылка]")
+          return `По результатам рассмотрения жалобы: ${link}
+На сотрудника ${emp.nickname} налагаются дисциплинарные взыскания за:
+${emp.violation} — ${emp.reason}.
+
+Взыскание: ${emp.punishment}
+Текущее дисциплинарное состояние: УП — ${emp.disciplineUp}/5 | П — ${emp.disciplineP}/5 | В — ${emp.disciplineV}/3.`
+        })
+        .join('\n\n')
+      
+      result = result.replace('{{DISCIPLINARY_EMPLOYEES_COMPLAINT}}', employeesList || 'Нет данных о сотрудниках')
+    }
+    
+    // Специальная обработка для приказа о внутреннем взыскании (id: 8)
+    if (editingOrder?.id === "8") {
+      const employeesList = disciplinaryEmployees
+        .filter(emp => emp.nickname.trim())
+        .map(emp => {
+          return `На сотрудника ${emp.nickname} наложено дисциплинарное взыскание за нарушение пункта:
+${emp.violation} — ${emp.reason}.
+
+Взыскание: ${emp.punishment}
+Текущее дисциплинарное состояние: УП — ${emp.disciplineUp}/5 | П — ${emp.disciplineP}/5 | В — ${emp.disciplineV}/3.`
+        })
+        .join('\n\n')
+      
+      result = result.replace('{{DISCIPLINARY_EMPLOYEES}}', employeesList || 'Нет данных о сотрудниках')
+    }
+    
     
     // Специальная обработка для приказа о премировании (id: 19)
     if (editingOrder?.id === "19") {
@@ -485,13 +595,15 @@ export function OrdersPage() {
       )
     }
     
-    // Замена дисциплинарного состояния для всех приказов, где оно есть
-    const hasDiscipline = result.includes("Текущее дисциплинарное состояние:")
-    if (hasDiscipline) {
-      result = result.replace(
-        /Текущее дисциплинарное состояние: УП — \d+\/5 \| П — \d+\/5 \| В — \d+\/3\./,
-        `Текущее дисциплинарное состояние: УП — ${disciplineUp}/5 | П — ${disciplineP}/5 | В — ${disciplineV}/3.`
-      )
+    // Замена дисциплинарного состояния для всех приказов, где оно есть (кроме 6, 7, 8)
+    if (editingOrder?.id !== "6" && editingOrder?.id !== "7" && editingOrder?.id !== "8") {
+      const hasDiscipline = result.includes("Текущее дисциплинарное состояние:")
+      if (hasDiscipline) {
+        result = result.replace(
+          /Текущее дисциплинарное состояние: УП — \d+\/5 \| П — \d+\/5 \| В — \d+\/3\./,
+          `Текущее дисциплинарное состояние: УП — ${disciplineUp}/5 | П — ${disciplineP}/5 | В — ${disciplineV}/3.`
+        )
+      }
     }
     
     // Обычные замены
@@ -511,13 +623,27 @@ export function OrdersPage() {
   }
 
   // Функция замены плейсхолдеров на реальные данные (для обычного просмотра)
-  const replaceOrderContent = (content: string): string => {
-    // Возвращаем контент как есть, без замены должности и никнейма
-    return content
+  const replaceOrderContent = (content: string, orderId?: string): string => {
+    let result = content
+    
+    // Заменяем специальные плейсхолдеры на понятный текст для просмотра
+    if (orderId === "6") {
+      result = result.replace("{{DISCIPLINARY_EMPLOYEES_OCS}}", "[Заполните форму для просмотра списка сотрудников]")
+    } else if (orderId === "7") {
+      result = result.replace("{{DISCIPLINARY_EMPLOYEES_COMPLAINT}}", "[Заполните форму для просмотра списка сотрудников]")
+    } else if (orderId === "8") {
+      result = result.replace("{{DISCIPLINARY_EMPLOYEES}}", "[Заполните форму для просмотра списка сотрудников]")
+    }
+    
+    return result
   }
   
-  // Фильтрация по категории и поиску
+  // Фильтрация по категории, поиску и избранному
   const filteredOrders = orders
+    .filter(order => {
+      if (showFavoritesOnly && !favoriteOrders.has(order.id)) return false
+      return true
+    })
     .filter(order => selectedCategory === "all" || order.category === selectedCategory)
     .filter(order => {
       if (!searchQuery) return true
@@ -582,22 +708,37 @@ export function OrdersPage() {
           </div>
 
           {/* Фильтры */}
-          <div>
-            <Label className="text-sm text-blue-200/90 mb-3 font-semibold">Категория</Label>
-            <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2.5 rounded-xl font-medium transition-all duration-200 text-sm ${
-                    selectedCategory === category
-                      ? "bg-blue-500/30 text-white border-2 border-blue-400/60 shadow-lg shadow-blue-500/20"
-                      : "bg-white/5 text-blue-200/70 border border-white/10 hover:bg-white/10 hover:border-white/20"
-                  }`}
-                >
-                  {category === "all" ? "Все" : category}
-                </button>
-              ))}
+          <div className="space-y-4">
+            <div>
+              <Label className="text-sm text-blue-200/90 mb-3 font-semibold">Категория</Label>
+              <div className="flex flex-wrap gap-2">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-4 py-2.5 rounded-xl font-medium transition-all duration-200 text-sm ${
+                      selectedCategory === category
+                        ? "bg-blue-500/30 text-white border-2 border-blue-400/60 shadow-lg shadow-blue-500/20"
+                        : "bg-white/5 text-blue-200/70 border border-white/10 hover:bg-white/10 hover:border-white/20"
+                    }`}
+                  >
+                    {category === "all" ? "Все" : category}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <button
+                onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                className={`px-4 py-2.5 rounded-xl font-medium transition-all duration-200 text-sm flex items-center gap-2 ${
+                  showFavoritesOnly
+                    ? "bg-yellow-500/30 text-white border-2 border-yellow-400/60 shadow-lg shadow-yellow-500/20"
+                    : "bg-white/5 text-blue-200/70 border border-white/10 hover:bg-white/10 hover:border-white/20"
+                }`}
+              >
+                <Star className={`h-4 w-4 ${showFavoritesOnly ? "fill-yellow-400 text-yellow-400" : ""}`} />
+                {showFavoritesOnly ? "Все приказы" : "Только избранные"}
+              </button>
             </div>
           </div>
         </div>
@@ -624,6 +765,20 @@ export function OrdersPage() {
                   </Badge>
                 </div>
                 <div className="flex items-center gap-3">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      toggleFavorite(order.id)
+                    }}
+                    className={`p-2 rounded-xl transition-all ${
+                      favoriteOrders.has(order.id)
+                        ? "bg-yellow-500/20 text-yellow-400 border-2 border-yellow-400/40 hover:bg-yellow-500/30"
+                        : "bg-white/5 text-blue-200/50 border border-white/10 hover:bg-white/10 hover:text-blue-300"
+                    }`}
+                    title={favoriteOrders.has(order.id) ? "Убрать из избранного" : "Добавить в избранное"}
+                  >
+                    <Star className={`h-5 w-5 ${favoriteOrders.has(order.id) ? "fill-yellow-400" : ""}`} />
+                  </button>
                   <Button
                     onClick={() => openEditor(order)}
                     className="bg-gradient-to-r from-blue-500/30 to-blue-500/20 hover:from-blue-500/40 hover:to-blue-500/30 text-white border border-blue-400/50 h-10 px-5 rounded-xl shadow-lg hover:shadow-blue-500/20 transition-all"
@@ -632,7 +787,7 @@ export function OrdersPage() {
                     Заполнить
                   </Button>
                   <CopyButton 
-                    text={replaceOrderContent(order.content)} 
+                    text={replaceOrderContent(order.content, order.id)} 
                     className="shrink-0 h-10 px-4 rounded-xl"
                   />
                 </div>
@@ -640,7 +795,7 @@ export function OrdersPage() {
             </div>
             <div className="p-6 bg-black/20">
               <pre className="font-mono text-sm text-blue-50/95 leading-relaxed whitespace-pre-wrap">
-                {replaceOrderContent(order.content)}
+                {replaceOrderContent(order.content, order.id)}
               </pre>
             </div>
           </div>
@@ -720,6 +875,33 @@ export function OrdersPage() {
                   </div>
                 </div>
 
+                {/* Специальная обработка для приказа о приёме (открытое собеседование) */}
+                {editingOrder?.id === "3" && (
+                  <div className="bg-red-950/20 backdrop-blur-sm border border-red-900/30 rounded-2xl p-5">
+                    <Label className="text-base font-semibold text-white mb-4 block flex items-center gap-2">
+                      <Briefcase className="h-5 w-5" />
+                      Должность новичка
+                    </Label>
+                    <div className="relative">
+                      <select
+                        value={recruitPosition}
+                        onChange={(e) => setRecruitPosition(e.target.value)}
+                        className="w-full appearance-none bg-gradient-to-br from-black/50 to-black/30 border border-red-900/40 text-white rounded-xl px-4 py-3 pr-10 focus:border-red-700 focus:ring-2 focus:ring-red-900/30 outline-none cursor-pointer hover:border-red-800/50 hover:bg-black/40 transition-all font-medium"
+                      >
+                        <option value="" className="bg-[#1a0000] text-white">Выберите должность</option>
+                        {recruitPositions.map(pos => (
+                          <option key={pos} value={pos} className="bg-[#1a0000] text-white">{pos}</option>
+                        ))}
+                      </select>
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-red-400">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Специальная обработка для приказа о повышении */}
                 {editingOrder?.id === "11" && (
                   <div className="bg-red-950/20 backdrop-blur-sm border border-red-900/30 rounded-2xl p-5">
@@ -785,6 +967,220 @@ export function OrdersPage() {
                       ))}
                       <Button
                         onClick={() => setMultiNicknames([...multiNicknames, ""])}
+                        variant="outline"
+                        className="w-full border-dashed border-red-900/40 text-red-300 hover:bg-red-950/30 hover:border-red-800/60 rounded-xl"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Добавить сотрудника
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Специальная обработка для дисциплинарных взысканий (id: 6, 7, 8) */}
+                {(editingOrder?.id === "6" || editingOrder?.id === "7" || editingOrder?.id === "8") && (
+                  <div className="bg-red-950/20 backdrop-blur-sm border border-red-900/30 rounded-2xl p-5">
+                    <Label className="text-base font-semibold text-white mb-4 block flex items-center gap-2">
+                      <User className="h-5 w-5" />
+                      Сотрудники для взыскания
+                    </Label>
+                    
+                    {editingOrder?.id === "7" && (
+                      <div className="mb-4 pb-4 border-b border-red-900/30 space-y-4">
+                        <div>
+                          <Label className="text-sm text-red-100/80 mb-3 block font-semibold">Тип ссылки на жалобу</Label>
+                          <div className="grid grid-cols-2 gap-3">
+                            <button
+                              onClick={() => setComplaintLinkType("common")}
+                              className={`p-3 rounded-xl border-2 transition-all text-sm font-medium ${
+                                complaintLinkType === "common"
+                                  ? "bg-red-900/40 border-red-700/60 text-white shadow-lg shadow-red-900/20"
+                                  : "bg-black/30 border-red-900/30 text-red-100/70 hover:bg-red-950/30 hover:border-red-800/40"
+                              }`}
+                            >
+                              Общая для всех
+                            </button>
+                            <button
+                              onClick={() => setComplaintLinkType("individual")}
+                              className={`p-3 rounded-xl border-2 transition-all text-sm font-medium ${
+                                complaintLinkType === "individual"
+                                  ? "bg-red-900/40 border-red-700/60 text-white shadow-lg shadow-red-900/20"
+                                  : "bg-black/30 border-red-900/30 text-red-100/70 hover:bg-red-950/30 hover:border-red-800/40"
+                              }`}
+                            >
+                              Индивидуальная
+                            </button>
+                          </div>
+                        </div>
+                        {complaintLinkType === "common" && (
+                          <div>
+                            <Label className="text-sm text-red-100/80 mb-2 block">Ссылка на жалобу (общая для всех)</Label>
+                            <Input
+                              placeholder="Например: https://example.com/complaint"
+                              value={complaintLink}
+                              onChange={(e) => setComplaintLink(e.target.value)}
+                              className="bg-black/40 border-red-900/40 text-white placeholder:text-red-100/40 focus:border-red-700 focus:ring-2 focus:ring-red-900/30 rounded-lg"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    <div className="space-y-6">
+                      {disciplinaryEmployees.map((emp, index) => (
+                        <div key={index} className="bg-black/30 border border-red-900/20 rounded-xl p-4 space-y-3">
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="text-sm font-semibold text-red-300">Сотрудник #{index + 1}</span>
+                            {disciplinaryEmployees.length > 1 && (
+                              <Button
+                                onClick={() => setDisciplinaryEmployees(disciplinaryEmployees.filter((_, i) => i !== index))}
+                                variant="ghost"
+                                size="sm"
+                                className="text-red-400 hover:bg-red-500/20 hover:text-red-300 h-8 px-2"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+                          
+                          <div>
+                            <Label className="text-xs text-red-100/80 mb-1.5 block">Никнейм</Label>
+                            <Input
+                              placeholder="Например: Nick_Name"
+                              value={emp.nickname}
+                              onChange={(e) => {
+                                const newEmps = [...disciplinaryEmployees]
+                                newEmps[index].nickname = e.target.value
+                                setDisciplinaryEmployees(newEmps)
+                              }}
+                              className="bg-black/40 border-red-900/40 text-white placeholder:text-red-100/40 focus:border-red-700 focus:ring-2 focus:ring-red-900/30 rounded-lg h-9"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-xs text-red-100/80 mb-1.5 block">Пункт нарушения</Label>
+                            <Input
+                              placeholder="Например: 2.8 ПСГО"
+                              value={emp.violation}
+                              onChange={(e) => {
+                                const newEmps = [...disciplinaryEmployees]
+                                newEmps[index].violation = e.target.value
+                                setDisciplinaryEmployees(newEmps)
+                              }}
+                              className="bg-black/40 border-red-900/40 text-white placeholder:text-red-100/40 focus:border-red-700 focus:ring-2 focus:ring-red-900/30 rounded-lg h-9"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-xs text-red-100/80 mb-1.5 block">Краткая причина</Label>
+                            <Input
+                              placeholder="Например: Получение наказания за нарушение ВПС"
+                              value={emp.reason}
+                              onChange={(e) => {
+                                const newEmps = [...disciplinaryEmployees]
+                                newEmps[index].reason = e.target.value
+                                setDisciplinaryEmployees(newEmps)
+                              }}
+                              className="bg-black/40 border-red-900/40 text-white placeholder:text-red-100/40 focus:border-red-700 focus:ring-2 focus:ring-red-900/30 rounded-lg h-9"
+                            />
+                          </div>
+
+                          {editingOrder?.id === "7" && complaintLinkType === "individual" && (
+                            <div>
+                              <Label className="text-xs text-red-100/80 mb-1.5 block">Ссылка на жалобу (индивидуальная)</Label>
+                              <Input
+                                placeholder="Например: https://example.com/complaint"
+                                value={emp.complaintLink || ""}
+                                onChange={(e) => {
+                                  const newEmps = [...disciplinaryEmployees]
+                                  newEmps[index].complaintLink = e.target.value
+                                  setDisciplinaryEmployees(newEmps)
+                                }}
+                                className="bg-black/40 border-red-900/40 text-white placeholder:text-red-100/40 focus:border-red-700 focus:ring-2 focus:ring-red-900/30 rounded-lg h-9"
+                              />
+                            </div>
+                          )}
+
+                          <div>
+                            <Label className="text-xs text-red-100/80 mb-1.5 block">
+                              {editingOrder?.id === "6" ? "Количество дней в ЧС" : editingOrder?.id === "14" ? "Статус неустойки" : "Тип взыскания"}
+                            </Label>
+                            <Input
+                              placeholder={
+                                editingOrder?.id === "6" 
+                                  ? "Например: 30" 
+                                  : editingOrder?.id === "14" 
+                                  ? "Например: оплачена в полном объёме" 
+                                  : "Например: выговор"
+                              }
+                              value={emp.punishment}
+                              onChange={(e) => {
+                                const newEmps = [...disciplinaryEmployees]
+                                newEmps[index].punishment = e.target.value
+                                setDisciplinaryEmployees(newEmps)
+                              }}
+                              className="bg-black/40 border-red-900/40 text-white placeholder:text-red-100/40 focus:border-red-700 focus:ring-2 focus:ring-red-900/30 rounded-lg h-9"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-xs text-red-100/80 mb-2 block">Дисциплинарное состояние</Label>
+                            <div className="grid grid-cols-3 gap-2">
+                              <div>
+                                <Label className="text-xs text-red-100/60 mb-1 block">УП (0-5)</Label>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  max="5"
+                                  value={emp.disciplineUp}
+                                  onChange={(e) => {
+                                    const newEmps = [...disciplinaryEmployees]
+                                    newEmps[index].disciplineUp = Math.min(5, Math.max(0, parseInt(e.target.value) || 0))
+                                    setDisciplinaryEmployees(newEmps)
+                                  }}
+                                  className="bg-black/40 border-red-900/40 text-white focus:border-red-700 focus:ring-2 focus:ring-red-900/30 rounded-lg h-9 text-center"
+                                />
+                              </div>
+                              <div>
+                                <Label className="text-xs text-red-100/60 mb-1 block">П (0-5)</Label>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  max="5"
+                                  value={emp.disciplineP}
+                                  onChange={(e) => {
+                                    const newEmps = [...disciplinaryEmployees]
+                                    newEmps[index].disciplineP = Math.min(5, Math.max(0, parseInt(e.target.value) || 0))
+                                    setDisciplinaryEmployees(newEmps)
+                                  }}
+                                  className="bg-black/40 border-red-900/40 text-white focus:border-red-700 focus:ring-2 focus:ring-red-900/30 rounded-lg h-9 text-center"
+                                />
+                              </div>
+                              <div>
+                                <Label className="text-xs text-red-100/60 mb-1 block">В (0-3)</Label>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  max="3"
+                                  value={emp.disciplineV}
+                                  onChange={(e) => {
+                                    const newEmps = [...disciplinaryEmployees]
+                                    newEmps[index].disciplineV = Math.min(3, Math.max(0, parseInt(e.target.value) || 0))
+                                    setDisciplinaryEmployees(newEmps)
+                                  }}
+                                  className="bg-black/40 border-red-900/40 text-white focus:border-red-700 focus:ring-2 focus:ring-red-900/30 rounded-lg h-9 text-center"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      
+                      <Button
+                        onClick={() => setDisciplinaryEmployees([
+                          ...disciplinaryEmployees, 
+                          { nickname: "", violation: "", reason: "", punishment: "", disciplineUp: 0, disciplineP: 0, disciplineV: 0 }
+                        ])}
                         variant="outline"
                         className="w-full border-dashed border-red-900/40 text-red-300 hover:bg-red-950/30 hover:border-red-800/60 rounded-xl"
                       >
@@ -913,7 +1309,8 @@ export function OrdersPage() {
                 )}
 
                 {/* Дисциплинарное состояние для всех приказов где оно есть */}
-                {editingOrder && editingOrder.content.includes("Текущее дисциплинарное состояние:") && (
+                {editingOrder && editingOrder.content.includes("Текущее дисциплинарное состояние:") && 
+                 editingOrder?.id !== "6" && editingOrder?.id !== "7" && editingOrder?.id !== "8" && (
                   <div className="bg-red-950/20 backdrop-blur-sm border border-red-900/30 rounded-2xl p-5">
                     <Label className="text-base font-semibold text-white mb-4 block">Дисциплинарное состояние</Label>
                     <div className="grid grid-cols-3 gap-4">
@@ -981,6 +1378,7 @@ export function OrdersPage() {
                 {/* Обычные поля */}
                 {Object.keys(formData).filter(placeholder => {
                   // Фильтруем специальные поля
+                  if (editingOrder?.id === "6" || editingOrder?.id === "7" || editingOrder?.id === "8") return false
                   if (editingOrder?.id === "11" && (
                     placeholder === "[Текущая должность]" && promotionType === "new" ||
                     (placeholder === "[Новая должность]" || placeholder === "[Название батальона]") && promotionType === "same"
@@ -995,6 +1393,8 @@ export function OrdersPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {Object.keys(formData).filter(placeholder => {
                         // Фильтруем специальные поля
+                        if (editingOrder?.id === "6" || editingOrder?.id === "7" || editingOrder?.id === "8") return false
+                        if (editingOrder?.id === "3" && placeholder === "[Должность]") return false
                         if (editingOrder?.id === "11" && (
                           placeholder === "[Текущая должность]" && promotionType === "new" ||
                           (placeholder === "[Новая должность]" || placeholder === "[Название батальона]") && promotionType === "same"
