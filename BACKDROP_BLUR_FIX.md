@@ -42,7 +42,27 @@ className={cn(
 )}
 ```
 
-### 4. Глобальное правило для прозрачных фонов
+### 4. Добавлено размытие в Popover
+В `components/ui/popover.tsx` добавлен `backdrop-blur-md` к `PopoverContent`:
+
+```typescript
+className={cn(
+  'bg-popover text-popover-foreground backdrop-blur-md ...',  // ← ДОБАВЛЕНО backdrop-blur-md
+  className,
+)}
+```
+
+### 5. Добавлено размытие в Calendar
+В `components/ui/calendar.tsx` добавлен `backdrop-blur-md` к `DayPicker`:
+
+```typescript
+className={cn(
+  'bg-white/10 backdrop-blur-md group/calendar ...',  // ← ДОБАВЛЕНО backdrop-blur-md
+  className,
+)}
+```
+
+### 6. Глобальное правило для прозрачных фонов
 В `app/globals.css` добавлено принудительное размытие:
 
 ```css
@@ -64,19 +84,25 @@ className={cn(
 
 ### Автоматически применяется к:
 1. **Все элементы с `bg-white/8`** - логин меню, карточки пользователей, статистика
-2. **Все элементы с `bg-white/10`** - гос волна, управление пользователями, выпадающие списки
+2. **Все элементы с `bg-white/10`** - гос волна, управление пользователями, выпадающие списки, календари
 3. **Все элементы с `bg-white/5`** - различные прозрачные контейнеры
 4. **Все Dialog компоненты** - модальные окна (логин, редактирование)
 5. **Все Select компоненты** - выпадающие списки (выбор времени, города, примеров)
-6. **Карточки в темах МВД** - полицейские темы с анимациями
+6. **Все Popover компоненты** - всплывающие окна (календари, подсказки)
+7. **Все Calendar компоненты** - календари (генератор отчётов, приказы в ДО)
+8. **Карточки в темах МВД** - полицейские темы с анимациями
 
 ### Затронутые компоненты:
 - `components/ui/dialog.tsx` - все модальные окна
 - `components/ui/select.tsx` - все выпадающие списки
+- `components/ui/popover.tsx` - все всплывающие окна
+- `components/ui/calendar.tsx` - все календари
 - `components/user-management/login-modal.tsx` - меню входа
 - `components/gibdd/gov-wave-page.tsx` - гос волна ГИБДД (выбор времени/города)
 - `components/guvd/gov-wave-page.tsx` - гос волна ГУВД (выбор времени/города)
 - `components/test.tsx` - примеры ситуаций (выбор наказания/примера)
+- `components/generator-page.tsx` - генератор отчётов (календари)
+- `components/orders-page.tsx` - приказы в ДО (календари)
 - `components/user-management/user-management-page.tsx` - управление пользователями
 - `components/user-management/user-stats.tsx` - статистика
 - `components/user-management/user-card.tsx` - карточки пользователей
@@ -86,8 +112,8 @@ className={cn(
 ## Следующие шаги
 1. Закоммитить изменения:
    ```bash
-   git add postcss.config.mjs app/globals.css components/ui/dialog.tsx components/ui/select.tsx BACKDROP_BLUR_FIX.md
-   git commit -m "fix: добавлено размытие фона для всех прозрачных элементов и выпадающих списков"
+   git add postcss.config.mjs app/globals.css components/ui/dialog.tsx components/ui/select.tsx components/ui/popover.tsx components/ui/calendar.tsx BACKDROP_BLUR_FIX.md
+   git commit -m "fix: полное исправление backdrop-blur (включая календари)"
    git push
    ```
 
@@ -96,8 +122,10 @@ className={cn(
 3. Проверить на продакшене:
    - ✅ Логин меню должно иметь размытый фон
    - ✅ Гос волна должна иметь размытые карточки
-   - ✅ **Выпадающие списки (выбор времени/города) должны быть размытыми**
-   - ✅ **Примеры ситуаций - выпадающие списки должны быть размытыми**
+   - ✅ Выпадающие списки (выбор времени/города) должны быть размытыми
+   - ✅ Примеры ситуаций - выпадающие списки должны быть размытыми
+   - ✅ **Календари в генераторе отчётов должны быть размытыми**
+   - ✅ **Календари в приказах в ДО должны быть размытыми**
    - ✅ Управление пользователями должно иметь размытые элементы
    - ✅ Все модальные окна должны быть размытыми
 
