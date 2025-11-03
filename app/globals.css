@@ -904,4 +904,12 @@
       transition: none !important;
     }
   }
+
+  /* КРИТИЧНО: Принудительное размытие для всех прозрачных фонов */
+  .bg-white\/8,
+  .bg-white\/10,
+  .bg-white\/5 {
+    backdrop-filter: blur(12px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(150%) !important;
+  }
 }
