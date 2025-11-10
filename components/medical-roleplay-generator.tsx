@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Sparkles, Copy, Settings, Eye, EyeOff, Loader2, Check, AlertCircle } from "lucide-react"
 import { generateMedicalRoleplay, validateApiKey, saveApiKey, loadApiKey, clearApiKey, type MedicalScenario } from "@/lib/gemini-api"
 import { useToast } from "@/hooks/use-toast"
+import { InteractiveRoleplayDisplay } from "./interactive-roleplay-display"
 
 const SCENARIO_TYPES = [
   { value: "gunshot", label: "🔫 Огнестрельное ранение" },
@@ -46,6 +47,7 @@ export function MedicalRoleplayGenerator() {
   const [generatedRoleplay, setGeneratedRoleplay] = useState<string[]>([])
   const [scenarioDescription, setScenarioDescription] = useState("")
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
+  const [useInteractiveMode, setUseInteractiveMode] = useState(true) // Интерактивный режим по умолчанию для полной версии
   
   // Загрузка API ключа при монтировании
   useEffect(() => {
@@ -120,8 +122,11 @@ export function MedicalRoleplayGenerator() {
       console.error("Ошибка генерации:", error)
       toast({
         title: "❌ Ошибка генерации",
-        description: error instanceof Error ? error.message : "Неизвестная ошибка",
-        variant: "destructive"
+        description: error instanceof Error 
+          ? `${error.message}\n\nПопробуйте ещё раз или подождите несколько минут.`
+          : "Неизвестная ошибка. Попробуйте ещё раз или подождите несколько минут.",
+        variant: "destructive",
+        duration: 5000
       })
     } finally {
       setIsGenerating(false)
@@ -353,8 +358,37 @@ export function MedicalRoleplayGenerator() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              {generatedRoleplay.map((command, index) => {
+            {/* Переключатель режима отображения для полной версии */}
+            {!shortVersion && (
+              <div className="mb-4 flex items-center justify-center gap-2">
+                <Button
+                  variant={useInteractiveMode ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setUseInteractiveMode(true)}
+                >
+                  🎮 Интерактивный режим
+                </Button>
+                <Button
+                  variant={!useInteractiveMode ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setUseInteractiveMode(false)}
+                >
+                  📄 Полный список
+                </Button>
+              </div>
+            )}
+
+            {/* Интерактивный режим для полной версии */}
+            {!shortVersion && useInteractiveMode ? (
+              <InteractiveRoleplayDisplay
+                steps={generatedRoleplay}
+                onCopyCommand={copyCommand}
+                copiedIndex={copiedIndex}
+              />
+            ) : (
+              /* Обычное отображение */
+              <div className="space-y-2">
+                {generatedRoleplay.map((command, index) => {
                 const isStage = command.includes('ЭТАП')
                 const isVariant = command.includes('Вариант') || command.startsWith('—') || command.startsWith('Если') || command.includes('Для сотрудников') || command.includes('Для Капитанов')
                 const isOOC = command.startsWith('/b')
@@ -462,7 +496,8 @@ export function MedicalRoleplayGenerator() {
                   </div>
                 )
               })}
-            </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
