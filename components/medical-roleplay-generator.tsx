@@ -305,7 +305,8 @@ export function MedicalRoleplayGenerator() {
           <CardContent>
             <div className="space-y-2">
               {generatedRoleplay.map((command, index) => {
-                const isVariant = command.includes('Вариант') || command.startsWith('Если')
+                const isVariant = command.includes('Вариант') || command.includes('—') || command.startsWith('Если')
+                const isOOC = command.startsWith('/b')
                 
                 if (isVariant) {
                   return (
@@ -315,6 +316,31 @@ export function MedicalRoleplayGenerator() {
                           {command}
                         </span>
                       </div>
+                    </div>
+                  )
+                }
+                
+                if (isOOC) {
+                  return (
+                    <div
+                      key={index}
+                      className="group flex items-center gap-2 p-3 rounded-lg bg-gray-500/10 border border-gray-400/30 hover:bg-gray-500/15 transition-colors"
+                    >
+                      <code className="flex-1 font-mono text-sm text-gray-300 italic">
+                        {command}
+                      </code>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => copyCommand(command, index)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        {copiedIndex === index ? (
+                          <Check className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
                     </div>
                   )
                 }
