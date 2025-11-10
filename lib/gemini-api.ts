@@ -17,16 +17,18 @@ export interface GeneratedRoleplay {
 // Используем локальный прокси-сервер для обхода региональных ограничений
 const PROXY_ENDPOINT = '/api/gemini-proxy'
 
+// Общий API ключ для всех пользователей (fallback)
+const DEFAULT_API_KEY = 'AIzaSyBb6hKrJH6k2NsGaFd6cxSHD88OAkmIAHc'
+
 /**
  * Генерирует отыгровку ПМП с помощью Gemini API через прокси
  */
 export async function generateMedicalRoleplay(
   scenario: MedicalScenario,
-  apiKey: string
+  apiKey?: string
 ): Promise<GeneratedRoleplay> {
-  if (!apiKey || apiKey.trim() === '') {
-    throw new Error('API ключ не указан')
-  }
+  // Используем общий ключ, если пользователь не предоставил свой
+  const effectiveApiKey = apiKey && apiKey.trim() !== '' ? apiKey : DEFAULT_API_KEY
 
   const prompt = buildPrompt(scenario)
 
@@ -39,7 +41,7 @@ export async function generateMedicalRoleplay(
       },
       body: JSON.stringify({
         prompt: prompt,
-        apiKey: apiKey
+        apiKey: effectiveApiKey
       })
     })
 

@@ -86,15 +86,6 @@ export function MedicalRoleplayGenerator() {
   }
   
   const handleGenerate = async () => {
-    if (!isApiKeyValid) {
-      toast({
-        title: "❌ Ошибка",
-        description: "Введите корректный API ключ",
-        variant: "destructive"
-      })
-      return
-    }
-    
     if (!scenarioType) {
       toast({
         title: "❌ Ошибка",
@@ -166,8 +157,8 @@ export function MedicalRoleplayGenerator() {
               <Settings className="h-5 w-5 text-white" />
             </div>
             <div>
-              <CardTitle>Настройки API</CardTitle>
-              <CardDescription>Google Gemini API ключ для генерации</CardDescription>
+              <CardTitle>Настройки API (необязательно)</CardTitle>
+              <CardDescription>Используется общий ключ. Можете указать свой для приоритета.</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -211,7 +202,9 @@ export function MedicalRoleplayGenerator() {
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription className="text-sm">
-              Получите бесплатный API ключ на{" "}
+              <strong>Можно использовать без своего ключа!</strong> Используется общий API ключ для всех.
+              <br />
+              Если хотите свой лимит запросов, получите ключ на{" "}
               <a 
                 href="https://ai.google.dev" 
                 target="_blank" 
@@ -220,7 +213,7 @@ export function MedicalRoleplayGenerator() {
               >
                 ai.google.dev
               </a>
-              {" "}(без карты, 15 запросов/мин)
+              {" "}(бесплатно, без карты, 15 запросов/мин)
             </AlertDescription>
           </Alert>
         </CardContent>
@@ -292,7 +285,7 @@ export function MedicalRoleplayGenerator() {
           
           <Button 
             onClick={handleGenerate} 
-            disabled={!isApiKeyValid || !scenarioType || hasCar === null || isGenerating}
+            disabled={!scenarioType || hasCar === null || isGenerating}
             className="w-full"
           >
             {isGenerating ? (
