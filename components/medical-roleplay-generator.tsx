@@ -120,14 +120,32 @@ export function MedicalRoleplayGenerator() {
       
     } catch (error) {
       console.error("Ошибка генерации:", error)
-      toast({
-        title: "❌ Ошибка генерации",
-        description: error instanceof Error 
-          ? `${error.message}\n\nПопробуйте ещё раз или подождите несколько минут.`
-          : "Неизвестная ошибка. Попробуйте ещё раз или подождите несколько минут.",
-        variant: "destructive",
-        duration: 5000
-      })
+      
+      const errorMessage = error instanceof Error ? error.message : "Неизвестная ошибка"
+      
+      // Проверяем, является ли это ошибкой лимита (429)
+      const isRateLimitError = errorMessage.includes("429") || 
+                               errorMessage.includes("Resource exhausted") ||
+                               errorMessage.includes("quota")
+      
+      if (isRateLimitError) {
+        toast({
+          title: "⏱️ Превышен лимит запросов",
+          description: "Общий API ключ исчерпал лимит запросов (15 запросов/минуту).\n\n" +
+                      "Что делать:\n" +
+                      "1. Подождите 1-2 минуты и попробуйте снова\n" +
+                      "2. Или введите свой API ключ (бесплатно на ai.google.dev)",
+          variant: "destructive",
+          duration: 8000
+        })
+      } else {
+        toast({
+          title: "❌ Ошибка генерации",
+          description: `${errorMessage}\n\nПопробуйте ещё раз или подождите несколько минут.`,
+          variant: "destructive",
+          duration: 5000
+        })
+      }
     } finally {
       setIsGenerating(false)
     }
@@ -336,7 +354,12 @@ export function MedicalRoleplayGenerator() {
               <AlertCircle className="h-4 w-4 text-yellow-500" />
               <AlertDescription className="text-sm text-yellow-200">
                 <strong>Важно:</strong> Сгенерированные отыгровки могут содержать неточности. 
-                Всегда проверяйте их перед использованием. Если API не работает, попробуйте зайти через VPN.
+                Всегда проверяйте их перед использованием.
+                <br /><br />
+                <strong>⏱️ Лимиты общего ключа:</strong> 15 запросов в минуту для всех пользователей.
+                Если видите ошибку "Превышен лимит" - подождите 1-2 минуты или введите свой ключ.
+                <br />
+                Если API не работает, попробуйте зайти через VPN.
               </AlertDescription>
             </Alert>
         </CardContent>
