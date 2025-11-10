@@ -284,6 +284,14 @@ export function MedicalRoleplayGenerator() {
               </>
             )}
           </Button>
+
+            <Alert className="mt-4 bg-yellow-500/10 border-yellow-500/30">
+              <AlertCircle className="h-4 w-4 text-yellow-500" />
+              <AlertDescription className="text-sm text-yellow-200">
+                <strong>Важно:</strong> Сгенерированные отыгровки могут содержать неточности. 
+                Всегда проверяйте их перед использованием. Если API не работает, попробуйте зайти через VPN.
+              </AlertDescription>
+            </Alert>
         </CardContent>
       </Card>
       
@@ -305,14 +313,17 @@ export function MedicalRoleplayGenerator() {
           <CardContent>
             <div className="space-y-2">
               {generatedRoleplay.map((command, index) => {
-                const isVariant = command.includes('Вариант') || command.includes('—') || command.startsWith('Если')
+                const isStage = command.includes('ЭТАП')
+                const isVariant = command.includes('Вариант') || command.startsWith('—') || command.startsWith('Если') || command.includes('Для сотрудников') || command.includes('Для Капитанов')
                 const isOOC = command.startsWith('/b')
+                const isRadio = command.startsWith('/d')
                 
-                if (isVariant) {
+                // Заголовки этапов (зеленые)
+                if (isStage) {
                   return (
-                    <div key={index} className="mt-4 first:mt-0">
-                      <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-400/30">
-                        <span className="font-bold text-blue-300 text-sm uppercase tracking-wide">
+                    <div key={index} className="mt-6 first:mt-2">
+                      <div className="p-3 rounded-lg bg-green-500/10 border border-green-400/30">
+                        <span className="font-bold text-green-300 text-base uppercase tracking-wide">
                           {command}
                         </span>
                       </div>
@@ -320,6 +331,20 @@ export function MedicalRoleplayGenerator() {
                   )
                 }
                 
+                // Варианты (синие)
+                if (isVariant) {
+                  return (
+                    <div key={index} className="mt-3 first:mt-0">
+                      <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-400/30">
+                        <span className="font-bold text-blue-300 text-sm tracking-wide">
+                          {command}
+                        </span>
+                      </div>
+                    </div>
+                  )
+                }
+                
+                // OOC чат (серые)
                 if (isOOC) {
                   return (
                     <div
@@ -345,6 +370,33 @@ export function MedicalRoleplayGenerator() {
                   )
                 }
                 
+                // Рация (желтые)
+                if (isRadio) {
+                  return (
+                    <div
+                      key={index}
+                      className="group flex items-center gap-2 p-3 rounded-lg bg-yellow-500/10 border border-yellow-400/30 hover:bg-yellow-500/15 transition-colors"
+                    >
+                      <code className="flex-1 font-mono text-sm text-yellow-200">
+                        {command}
+                      </code>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => copyCommand(command, index)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        {copiedIndex === index ? (
+                          <Check className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  )
+                }
+                
+                // Обычные команды (белые)
                 return (
                   <div
                     key={index}
