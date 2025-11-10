@@ -18,7 +18,7 @@ const SCENARIO_TYPES = [
   { value: "fracture", label: "🦴 Перелом конечности" },
   { value: "car_accident", label: "🚗 ДТП" },
   { value: "fall", label: "⬇️ Падение с высоты" },
-  { value: "unconscious", label: "💀 Потеря сознания" },
+  { value: "unconscious", label: "💤 Потеря сознания" },
   { value: "heart_attack", label: "❤️ Сердечный приступ" },
   { value: "bleeding", label: "🩸 Кровотечение" },
   { value: "burn", label: "🔥 Ожог" },
@@ -44,10 +44,11 @@ export function MedicalRoleplayGenerator() {
   
   // Состояние генерации
   const [isGenerating, setIsGenerating] = useState(false)
+  const [generationStatus, setGenerationStatus] = useState("") // НОВОЕ: статус генерации
   const [generatedRoleplay, setGeneratedRoleplay] = useState<string[]>([])
   const [scenarioDescription, setScenarioDescription] = useState("")
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
-  const [useInteractiveMode, setUseInteractiveMode] = useState(true) // Интерактивный режим по умолчанию для полной версии
+  const [useInteractiveMode, setUseInteractiveMode] = useState(true)
   
   // Загрузка API ключа при монтировании
   useEffect(() => {
@@ -100,6 +101,7 @@ export function MedicalRoleplayGenerator() {
     
     setIsGenerating(true)
     setGeneratedRoleplay([])
+    setGenerationStatus("🚀 Начинаем генерацию...")
     
     try {
       const scenario: MedicalScenario = {
@@ -108,10 +110,18 @@ export function MedicalRoleplayGenerator() {
         shortVersion: shortVersion
       }
       
-      const result = await generateMedicalRoleplay(scenario, apiKey)
+      // НОВОЕ: передаём callback для обновления статуса
+      const result = await generateMedicalRoleplay(
+        scenario, 
+        apiKey,
+        (status: string) => {
+          setGenerationStatus(status)
+        }
+      )
       
       setScenarioDescription(result.scenario)
       setGeneratedRoleplay(result.steps)
+      setGenerationStatus("") // Очищаем статус после успеха
       
       toast({
         title: "✨ Отыгровка сгенерирована!",
@@ -130,8 +140,8 @@ export function MedicalRoleplayGenerator() {
       
       if (isRateLimitError) {
         toast({
-          title: "⏱️ Превышен лимит запросов",
-          description: "Общий API ключ исчерпал лимит запросов (15 запросов/минуту).\n\n" +
+          title: "⏱️ Все ключи временно заняты",
+          description: "Система автоматически переключала между ключами, но все достигли лимита.\n\n" +
                       "Что делать:\n" +
                       "1. Подождите 1-2 минуты и попробуйте снова\n" +
                       "2. Или введите свой API ключ (бесплатно на ai.google.dev)",
@@ -146,6 +156,8 @@ export function MedicalRoleplayGenerator() {
           duration: 5000
         })
       }
+      
+      setGenerationStatus("") // Очищаем статус после ошибки
     } finally {
       setIsGenerating(false)
     }
@@ -227,7 +239,7 @@ export function MedicalRoleplayGenerator() {
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription className="text-sm">
-              <strong>Можно использовать без своего ключа!</strong> Используется общий API ключ для всех.
+              <strong>Можно использовать без своего ключа!</strong> Используется 2 общих API ключа с автоматическим переключением (30 запросов/минуту суммарно).
               <br />
               Если хотите свой лимит запросов, получите ключ на{" "}
               <a 
@@ -332,6 +344,16 @@ export function MedicalRoleplayGenerator() {
             </div>
           </div>
           
+          {/* НОВОЕ: Статус генерации */}
+          {isGenerating && generationStatus && (
+            <Alert className="bg-blue-500/10 border-blue-500/30">
+              <Loader2 className="h-4 w-4 animate-spin text-blue-400" />
+              <AlertDescription className="text-sm text-blue-200">
+                {generationStatus}
+              </AlertDescription>
+            </Alert>
+          )}
+          
           <Button 
             onClick={handleGenerate} 
             disabled={!scenarioType || hasCar === null || isGenerating}
@@ -356,8 +378,7 @@ export function MedicalRoleplayGenerator() {
                 <strong>Важно:</strong> Сгенерированные отыгровки могут содержать неточности. 
                 Всегда проверяйте их перед использованием.
                 <br /><br />
-                <strong>⏱️ Лимиты общего ключа:</strong> 15 запросов в минуту для всех пользователей.
-                Если видите ошибку "Превышен лимит" - подождите 1-2 минуты или введите свой ключ.
+                <strong>🔄 Автоматическое переключение:</strong> Система использует 2 API ключа и автоматически переключается при достижении лимита. Вы увидите прогресс выше.
                 <br />
                 Если API не работает, попробуйте зайти через VPN.
               </AlertDescription>
@@ -389,7 +410,7 @@ export function MedicalRoleplayGenerator() {
                   size="sm"
                   onClick={() => setUseInteractiveMode(true)}
                 >
-                  🎮 Интерактивный режим
+                  🎮 Интерактивный режим (В разработке)
                 </Button>
                 <Button
                   variant={!useInteractiveMode ? "default" : "outline"}
@@ -417,7 +438,7 @@ export function MedicalRoleplayGenerator() {
                 const isOOC = command.startsWith('/b')
                 const isRadio = command.startsWith('/d')
                 
-                // Заголовки этапов (зеленые)
+                // Заголовки этапов (зелёные)
                 if (isStage) {
                   return (
                     <div key={index} className="mt-6 first:mt-2">
@@ -469,7 +490,7 @@ export function MedicalRoleplayGenerator() {
                   )
                 }
                 
-                // Рация (желтые)
+                // Рация (жёлтые)
                 if (isRadio) {
                   return (
                     <div
