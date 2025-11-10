@@ -2,12 +2,15 @@
 
 import { useState } from"react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from"@/components/ui/card"
-import { Heart, Zap, ChevronDown } from"lucide-react"
+import { Heart, Zap, ChevronDown, Sparkles, BookOpen } from"lucide-react"
 import { PageHeader } from"@/components/page-header"
 import { Badge } from"@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from"@/components/ui/tabs"
+import { MedicalRoleplayGenerator } from"@/components/medical-roleplay-generator"
 
 export function MedicalAidPage() {
  const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set())
+ const [activeTab, setActiveTab] = useState("manual")
 
  const toggleSection = (index: number) => {
  const newExpanded = new Set(expandedSections)
@@ -159,6 +162,19 @@ export function MedicalAidPage() {
  badge={`${firstAidSteps.length} этапов`}
  />
 
+ <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+ <TabsList className="grid w-full grid-cols-2 mb-6">
+ <TabsTrigger value="manual" className="flex items-center gap-2">
+ <BookOpen className="h-4 w-4" />
+ Ручные инструкции
+ </TabsTrigger>
+ <TabsTrigger value="ai" className="flex items-center gap-2">
+ <Sparkles className="h-4 w-4" />
+ AI Генератор
+ </TabsTrigger>
+ </TabsList>
+
+ <TabsContent value="manual" className="space-y-6">
  {/* Важное примечание */}
  <div className="bg-white/8 border border-white/15 rounded-3xl p-6 hover:bg-white/12 hover:border-white/25 transition-colors duration-200">
  <div className="flex items-start gap-4">
@@ -179,10 +195,10 @@ export function MedicalAidPage() {
  <div>
  <h4 className="font-semibold text-white mb-2">Для Капитанов и выше:</h4>
  <div className="bg-white/10 p-3 rounded-lg border border-white/20">
- <code className="font-mono text-sm text-white/90 block">/d [Фракция] - [Фракция] - Запрашиваю АСМП к"Место где находитесь", причина: причина вызова</code>
+ <code className="font-mono text-sm text-white/90 block">/d [Фракция] - [Фракция] - Запрашиваю АСМП к "Место где находитесь", причина: причина вызова</code>
  </div>
  <div className="mt-2 text-sm text-white/70">
- <strong>Пример:</strong> /d [ГУВД-П][ЦГБ-П] Запрашиваю АСМП к"Зданию полиции г. Приволжск", причина: гражданин без сознания
+ <strong>Пример:</strong> /d [ГУВД-П][ЦГБ-П] Запрашиваю АСМП к "Зданию полиции г. Приволжск", причина: гражданин без сознания
  </div>
  </div>
 
@@ -307,6 +323,12 @@ export function MedicalAidPage() {
  )
  })}
  </div>
+ </TabsContent>
+
+ <TabsContent value="ai" className="space-y-6">
+ <MedicalRoleplayGenerator />
+ </TabsContent>
+ </Tabs>
  </div>
  )
 }

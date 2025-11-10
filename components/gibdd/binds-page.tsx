@@ -78,7 +78,7 @@ export function GibddBindsPage() {
  const bindSections = [
  {
  title:"Представление",
- binds: [{ bind: 'bind [клавиша] say Звание, ГИБДД по городу"Город","Фамилия Имя.' }],
+ binds: [{ bind: 'bind [клавиша] say Звание, ГИБДД по городу"Город","Фамилия Имя".' }],
  },
  {
  title:"Требование предоставить документы",

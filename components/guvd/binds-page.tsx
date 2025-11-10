@@ -78,7 +78,7 @@ export function GuvdBindsPage() {
  const bindSections = [
  {
  title:"Представление",
- binds: [{ bind: 'bind [клавиша] say Звание, ГУВД по городу"Город","Фамилия Имя.' }],
+ binds: [{ bind: 'bind [клавиша] say Звание, ГУВД по городу"Город","Фамилия Имя".' }],
  },
  {
  title:"Требование предоставить документы",

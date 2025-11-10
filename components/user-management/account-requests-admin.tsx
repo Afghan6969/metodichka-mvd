@@ -339,7 +339,7 @@ export function AccountRequestsAdmin({ onCountChange }: AccountRequestsAdminProp
 
  {/* Review Dialog */}
  <Dialog open={!!reviewDialog} onOpenChange={(open) => !open && closeReviewDialog()}>
- <DialogContent className="bg-white/95 dark:bg-gray-900/95 border-2">
+ <DialogContent className="bg-white/10 border border-white/20">
  <DialogHeader>
  <DialogTitle>
  {reviewDialog?.action ==="approve" ?"Одобрить запрос" :"Отклонить запрос"}

@@ -113,21 +113,21 @@ export function EnhancedSidebar({ currentPage, onPageChange, onGlobalSearchOpen,
  const isActive = currentPage === item.id
  const isHovered = hoveredItem === item.id
 
- // Проверка доступа к защищенным страницам
- const protectedPages = ["generator-page","gibdd-gov-wave","guvd-gov-wave","orders"]
+  // Проверка доступа к защищенным страницам
+  const protectedPages = ["generator-page","gibdd-gov-wave","guvd-gov-wave","orders"]
 
  if (protectedPages.includes(item.id)) {
  if (item.id ==="generator-page") {
  if (!hasAccess("generator-page")) {
  return null
  }
- } else if (item.id ==="orders") {
- // Приказы доступны только старшему составу и выше
- const allowedRoles = ["ss-gibdd","ss-guvd","leader-gibdd","leader-guvd","pgs-gibdd","pgs-guvd","gs-gibdd","gs-guvd","root","super-admin"]
- if (!currentUser || !currentUser.role || !allowedRoles.includes(currentUser.role)) {
- return null
- }
- } else if (!hasAccess(item.id)) {
+   } else if (item.id ==="orders") {
+    // Приказы доступны только старшему составу и выше
+    const allowedRoles = ["ss-gibdd","ss-guvd","leader-gibdd","leader-guvd","pgs-gibdd","pgs-guvd","gs-gibdd","gs-guvd","root","super-admin"]
+    if (!currentUser || !currentUser.role || !allowedRoles.includes(currentUser.role)) {
+     return null
+    }
+   } else if (!hasAccess(item.id)) {
  return null
  }
  }
