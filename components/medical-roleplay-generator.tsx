@@ -110,18 +110,22 @@ export function MedicalRoleplayGenerator() {
         shortVersion: shortVersion
       }
       
-      // НОВОЕ: передаём callback для обновления статуса
+      // Передаём callback для обновления статуса на сайте
       const result = await generateMedicalRoleplay(
         scenario, 
         apiKey,
         (status: string) => {
-          setGenerationStatus(status)
+          console.log("Статус генерации:", status)
+          setGenerationStatus(status) // Обновляем статус на сайте
         }
       )
       
       setScenarioDescription(result.scenario)
       setGeneratedRoleplay(result.steps)
-      setGenerationStatus("") // Очищаем статус после успеха
+      setGenerationStatus("✅ Генерация завершена!") // Показываем успех
+      
+      // Очищаем статус через 2 секунды
+      setTimeout(() => setGenerationStatus(""), 2000)
       
       toast({
         title: "✨ Отыгровка сгенерирована!",
@@ -139,6 +143,8 @@ export function MedicalRoleplayGenerator() {
                                errorMessage.includes("quota")
       
       if (isRateLimitError) {
+        setGenerationStatus("❌ Все ключи заняты. Подождите 1-2 минуты...")
+        
         toast({
           title: "⏱️ Все ключи временно заняты",
           description: "Система автоматически переключала между ключами, но все достигли лимита.\n\n" +
@@ -149,6 +155,8 @@ export function MedicalRoleplayGenerator() {
           duration: 8000
         })
       } else {
+        setGenerationStatus(`❌ Ошибка: ${errorMessage}`)
+        
         toast({
           title: "❌ Ошибка генерации",
           description: `${errorMessage}\n\nПопробуйте ещё раз или подождите несколько минут.`,
@@ -157,7 +165,8 @@ export function MedicalRoleplayGenerator() {
         })
       }
       
-      setGenerationStatus("") // Очищаем статус после ошибки
+      // Очищаем статус ошибки через 5 секунд
+      setTimeout(() => setGenerationStatus(""), 5000)
     } finally {
       setIsGenerating(false)
     }
@@ -206,11 +215,15 @@ export function MedicalRoleplayGenerator() {
               <div className="relative flex-1">
                 <Input
                   id="apiKey"
+                  name="gemini-api-key"
                   type={showApiKey ? "text" : "password"}
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                   placeholder="AIzaSy..."
                   className={isApiKeyValid ? "border-green-500" : ""}
+                  autoComplete="off"
+                  data-form-type="other"
+                  data-lpignore="true"
                 />
                 <Button
                   type="button"
@@ -410,7 +423,7 @@ export function MedicalRoleplayGenerator() {
                   size="sm"
                   onClick={() => setUseInteractiveMode(true)}
                 >
-                  🎮 Интерактивный режим (В разработке)
+                  🎮 Интерактивный режим
                 </Button>
                 <Button
                   variant={!useInteractiveMode ? "default" : "outline"}
