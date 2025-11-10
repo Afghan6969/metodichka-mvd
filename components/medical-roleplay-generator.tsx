@@ -39,6 +39,7 @@ export function MedicalRoleplayGenerator() {
   const [scenarioType, setScenarioType] = useState("")
   const [customScenario, setCustomScenario] = useState("")
   const [hasCar, setHasCar] = useState<boolean | null>(null)
+  const [shortVersion, setShortVersion] = useState(false)
   
   // Состояние генерации
   const [isGenerating, setIsGenerating] = useState(false)
@@ -101,7 +102,8 @@ export function MedicalRoleplayGenerator() {
     try {
       const scenario: MedicalScenario = {
         type: scenarioType === "custom" ? customScenario : SCENARIO_TYPES.find(t => t.value === scenarioType)?.label || scenarioType,
-        hasCar: hasCar ?? undefined
+        hasCar: hasCar ?? undefined,
+        shortVersion: shortVersion
       }
       
       const result = await generateMedicalRoleplay(scenario, apiKey)
@@ -279,6 +281,30 @@ export function MedicalRoleplayGenerator() {
                 className="w-full"
               >
                 🚶 Нет машины
+              </Button>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Версия отыгровки *</Label>
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                type="button"
+                variant={!shortVersion ? "default" : "outline"}
+                onClick={() => setShortVersion(false)}
+                className="w-full"
+              >
+                📋 Полная
+                <span className="block text-xs opacity-70 mt-1">С вопросами и вариациями</span>
+              </Button>
+              <Button
+                type="button"
+                variant={shortVersion ? "default" : "outline"}
+                onClick={() => setShortVersion(true)}
+                className="w-full"
+              >
+                ⚡ Короткая
+                <span className="block text-xs opacity-70 mt-1">Без вопросов пострадавшему</span>
               </Button>
             </div>
           </div>
