@@ -147,12 +147,12 @@ export function MedicalRoleplayGenerator() {
         
         toast({
           title: "⏱️ Все ключи временно заняты",
-          description: "Система автоматически переключала между ключами, но все достигли лимита.\n\n" +
+          description: "Система автоматически переключала между 2 ключами, но все достигли лимита (15 запросов/мин каждый).\n\n" +
                       "Что делать:\n" +
-                      "1. Подождите 1-2 минуты и попробуйте снова\n" +
-                      "2. Или введите свой API ключ (бесплатно на ai.google.dev)",
+                      "1. ⏰ Подождите 1-2 минуты и попробуйте снова\n" +
+                      "2. 🔑 Или введите свой API ключ выше (бесплатно на ai.google.dev)",
           variant: "destructive",
-          duration: 8000
+          duration: 10000
         })
       } else {
         setGenerationStatus(`❌ Ошибка: ${errorMessage}`)
@@ -165,8 +165,8 @@ export function MedicalRoleplayGenerator() {
         })
       }
       
-      // Очищаем статус ошибки через 5 секунд
-      setTimeout(() => setGenerationStatus(""), 5000)
+      // НЕ очищаем статус ошибки автоматически - пусть пользователь видит
+      // setTimeout(() => setGenerationStatus(""), 5000)
     } finally {
       setIsGenerating(false)
     }
@@ -357,11 +357,29 @@ export function MedicalRoleplayGenerator() {
             </div>
           </div>
           
-          {/* НОВОЕ: Статус генерации */}
-          {isGenerating && generationStatus && (
-            <Alert className="bg-blue-500/10 border-blue-500/30">
-              <Loader2 className="h-4 w-4 animate-spin text-blue-400" />
-              <AlertDescription className="text-sm text-blue-200">
+          {/* Статус генерации - показываем всегда когда есть */}
+          {generationStatus && (
+            <Alert className={
+              generationStatus.includes('❌') 
+                ? "bg-red-500/10 border-red-500/30" 
+                : generationStatus.includes('✅')
+                ? "bg-green-500/10 border-green-500/30"
+                : "bg-blue-500/10 border-blue-500/30"
+            }>
+              {isGenerating ? (
+                <Loader2 className="h-4 w-4 animate-spin text-blue-400" />
+              ) : generationStatus.includes('❌') ? (
+                <AlertCircle className="h-4 w-4 text-red-400" />
+              ) : generationStatus.includes('✅') ? (
+                <Check className="h-4 w-4 text-green-400" />
+              ) : null}
+              <AlertDescription className={
+                generationStatus.includes('❌')
+                  ? "text-sm text-red-200"
+                  : generationStatus.includes('✅')
+                  ? "text-sm text-green-200"
+                  : "text-sm text-blue-200"
+              }>
                 {generationStatus}
               </AlertDescription>
             </Alert>
