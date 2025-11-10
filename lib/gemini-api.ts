@@ -1,9 +1,9 @@
-// Утилита для работы с Google Gemini API
+// Утилита для работы с Google Gemini API с поддержкой множественных ключей
 
 export interface MedicalScenario {
   type: string
   hasCar?: boolean
-  shortVersion?: boolean // Короткая версия без вопросов пострадавшему
+  shortVersion?: boolean
   severity?: string
   location?: string
   victimName?: string
@@ -18,47 +18,270 @@ export interface GeneratedRoleplay {
 // Используем локальный прокси-сервер для обхода региональных ограничений
 const PROXY_ENDPOINT = '/api/gemini-proxy'
 
-// Общий API ключ для всех пользователей (fallback)
-const DEFAULT_API_KEY = 'AIzaSyBb6hKrJH6k2NsGaFd6cxSHD88OAkmIAHc'
+// Несколько общих API ключей для балансировки нагрузки
+const DEFAULT_API_KEYS = [
+  'AIzaSyBb6hKrJH6k2NsGaFd6cxSHD88OAkmIAHc',
+  'AIzaSyBOOcQgu1jfEKSqvRhnyooRXotzItsXNi8'
+]
+
+// Менеджер API ключей
+class MultiAPIManager {
+  private apiKeys: Array<{
+    key: string
+    requests: number[]
+    cooldownUntil: number | null
+    failCount: number
+  }>
+  private currentIndex: number
+  private requestsPerMinute: number
+  private cooldownTime: number
+
+  constructor(apiKeys: string[], requestsPerMinute = 15) {
+    this.apiKeys = apiKeys.map(key => ({
+      key,
+      requests: [],
+      cooldownUntil: null,
+      failCount: 0
+    }))
+    this.currentIndex = 0
+    this.requestsPerMinute = requestsPerMinute
+    this.cooldownTime = 60000 // 1 минута
+  }
+
+  // Проверяет доступен ли API ключ
+  private isKeyAvailable(keyData: typeof this.apiKeys[0]): boolean {
+    const now = Date.now()
+    
+    // Проверяем cooldown после ошибки 429
+    if (keyData.cooldownUntil && now < keyData.cooldownUntil) {
+      return false
+    }
+    
+    // Очищаем старые запросы (старше 1 минуты)
+    keyData.requests = keyData.requests.filter(time => now - time < 60000)
+    
+    // Проверяем лимит запросов
+    return keyData.requests.length < this.requestsPerMinute
+  }
+
+  // Находит следующий доступный API ключ
+  private getNextAvailableKey(): typeof this.apiKeys[0] | null {
+    const startIndex = this.currentIndex
+    
+    do {
+      const keyData = this.apiKeys[this.currentIndex]
+      
+      if (this.isKeyAvailable(keyData)) {
+        return keyData
+      }
+      
+      // Переключаемся на следующий ключ
+      this.currentIndex = (this.currentIndex + 1) % this.apiKeys.length
+      
+    } while (this.currentIndex !== startIndex)
+    
+    return null // Все ключи недоступны
+  }
+
+  // Отмечает использование ключа
+  private markKeyUsed(keyData: typeof this.apiKeys[0]): void {
+    keyData.requests.push(Date.now())
+    keyData.failCount = 0
+    // Переключаемся на следующий ключ для балансировки нагрузки
+    this.currentIndex = (this.currentIndex + 1) % this.apiKeys.length
+  }
+
+  // Отмечает ключ как недоступный после ошибки 429
+  private markKeyExhausted(keyData: typeof this.apiKeys[0]): void {
+    keyData.cooldownUntil = Date.now() + this.cooldownTime
+    keyData.failCount++
+    console.log(`🔴 API ключ ...${keyData.key.slice(-8)} в cooldown на ${this.cooldownTime / 1000}с`)
+  }
+
+  // Получает минимальное время ожидания среди всех ключей
+  private getMinCooldownTime(): number {
+    const now = Date.now()
+    let minWait = this.cooldownTime
+    
+    for (const keyData of this.apiKeys) {
+      if (keyData.cooldownUntil && keyData.cooldownUntil > now) {
+        const wait = keyData.cooldownUntil - now
+        if (wait < minWait) {
+          minWait = wait
+        }
+      }
+    }
+    
+    return minWait
+  }
+
+  // Основной метод для выполнения запроса с автоматическим переключением ключей
+  async executeRequest(
+    apiCallFactory: (apiKey: string) => Promise<any>,
+    onProgress?: (status: string) => void,
+    maxRetries = 5
+  ): Promise<any> {
+    let lastError: Error | null = null
+    let attemptsWithoutKey = 0
+    
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      const keyData = this.getNextAvailableKey()
+      
+      if (!keyData) {
+        attemptsWithoutKey++
+        
+        // Если все ключи недоступны несколько раз подряд
+        if (attemptsWithoutKey >= 2) {
+          const waitTime = this.getMinCooldownTime()
+          const waitSeconds = Math.ceil(waitTime / 1000)
+          console.log(`⏳ Все API ключи недоступны. Ожидание ${waitSeconds}с...`)
+          
+          if (onProgress) {
+            onProgress(`⏳ Все ключи заняты. Ожидание ${waitSeconds} сек...`)
+          }
+          
+          await new Promise(resolve => setTimeout(resolve, waitTime))
+          attemptsWithoutKey = 0
+          continue
+        }
+        
+        // Небольшая задержка перед следующей попыткой
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        continue
+      }
+      
+      try {
+        console.log(`🔑 Используем API ключ ...${keyData.key.slice(-8)} (попытка ${attempt + 1}/${maxRetries})`)
+        
+        if (onProgress) {
+          onProgress(`🔑 Попытка ${attempt + 1}/${maxRetries}...`)
+        }
+        
+        // Выполняем запрос с текущим ключом
+        const result = await apiCallFactory(keyData.key)
+        
+        // Успех - отмечаем использование
+        this.markKeyUsed(keyData)
+        console.log(`✅ Запрос выполнен успешно`)
+        
+        if (onProgress) {
+          onProgress(`✅ Генерация завершена!`)
+        }
+        
+        return result
+        
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error))
+        
+        // Если ошибка 429 - переключаем ключ
+        if (lastError.message.includes('429') || lastError.message.includes('Resource exhausted')) {
+          console.log(`⚠️ Ошибка 429 с ключом ...${keyData.key.slice(-8)}`)
+          this.markKeyExhausted(keyData)
+          
+          if (onProgress) {
+            onProgress(`⚠️ Ключ занят, переключаюсь на другой...`)
+          }
+          
+          // Небольшая задержка перед следующей попыткой
+          await new Promise(resolve => setTimeout(resolve, 500))
+          continue
+        }
+        
+        // Для других ошибок - повторяем с задержкой
+        console.log(`❌ Ошибка: ${lastError.message}`)
+        const delay = Math.min(1000 * Math.pow(2, attempt), 8000)
+        
+        if (onProgress) {
+          onProgress(`⚠️ Ошибка, повтор через ${Math.ceil(delay / 1000)} сек...`)
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, delay))
+      }
+    }
+    
+    // Если все попытки исчерпаны
+    throw lastError || new Error('Превышено максимальное количество попыток')
+  }
+}
+
+// Создаём глобальный экземпляр менеджера
+const apiManager = new MultiAPIManager(DEFAULT_API_KEYS)
 
 /**
  * Генерирует отыгровку ПМП с помощью Gemini API через прокси
  */
 export async function generateMedicalRoleplay(
   scenario: MedicalScenario,
-  apiKey?: string
+  userApiKey?: string
 ): Promise<GeneratedRoleplay> {
-  // Используем общий ключ, если пользователь не предоставил свой
-  const effectiveApiKey = apiKey && apiKey.trim() !== '' ? apiKey : DEFAULT_API_KEY
-
   const prompt = buildPrompt(scenario)
 
-  try {
-    // Отправляем запрос через наш прокси-сервер
-    const response = await fetch(PROXY_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        prompt: prompt,
-        apiKey: effectiveApiKey
+  // Если пользователь предоставил свой ключ, используем только его
+  if (userApiKey && userApiKey.trim() !== '' && validateApiKey(userApiKey)) {
+    console.log('🔑 Используем пользовательский API ключ')
+    try {
+      const response = await fetch(PROXY_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: prompt,
+          apiKey: userApiKey
+        })
       })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(`Ошибка API: ${response.status} - ${errorData.details || errorData.error || 'Неизвестная ошибка'}`)
+      }
+
+      const data = await response.json()
+      
+      if (!data.success || !data.text) {
+        throw new Error('API не вернул результатов')
+      }
+
+      return parseGeneratedText(data.text, scenario)
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Ошибка генерации: ${error.message}`)
+      }
+      throw new Error('Неизвестная ошибка при генерации')
+    }
+  }
+
+  // Используем менеджер для автоматического переключения общих ключей
+  console.log('🔄 Используем систему с множественными API ключами')
+  
+  try {
+    const result = await apiManager.executeRequest(async (apiKey: string) => {
+      const response = await fetch(PROXY_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: prompt,
+          apiKey: apiKey
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(`Ошибка API: ${response.status} - ${errorData.details || errorData.error || 'Неизвестная ошибка'}`)
+      }
+
+      const data = await response.json()
+      
+      if (!data.success || !data.text) {
+        throw new Error('API не вернул результатов')
+      }
+
+      return data.text
     })
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(`Ошибка API: ${response.status} - ${errorData.details || errorData.error || 'Неизвестная ошибка'}`)
-    }
-
-    const data = await response.json()
-    
-    if (!data.success || !data.text) {
-      throw new Error('API не вернул результатов')
-    }
-
-    const generatedText = data.text
-    return parseGeneratedText(generatedText, scenario)
+    return parseGeneratedText(result, scenario)
 
   } catch (error) {
     if (error instanceof Error) {
@@ -229,103 +452,6 @@ function buildPrompt(scenario: MedicalScenario): string {
    - Действия должны быть логичными и последовательными
    - Учитывай время выполнения действий
    - Используй вопросительные /do для уточнений
-
-ПРАВИЛЬНЫЕ ПРИМЕРЫ:
-
-ЭТАП 1 - ПОДГОТОВКА:
-
-Вариант 1 — если есть автомобиль:
-/me открыл багажник служебного автомобиля и достал медицинскую сумку
-/do Медицинская сумка в руках.
-
-Вариант 2 — если машины нет:
-/do На поясе закреплена медицинская аптечка.
-/me снял медицинскую аптечку с пояса
-/do Аптечка в руках.
-
-ЭТАП 2 - ВЫЗОВ СКОРОЙ:
-
-Для сотрудников ниже Капитана:
-/me достал телефон и вызвал скорую помощь
-
-Для Капитанов и выше:
-/d [ГУВД-П][ЦГБ-П] Запрашиваю АСМП к "Центральной площади г. Приволжск", причина: огнестрельное ранение
-
-ЭТАП 3 - ОКАЗАНИЕ ПМП:
-
-/me открыл медицинскую сумку и достал одноразовые перчатки
-/me надел перчатки на руки
-/do Что случилось с пострадавшим?
-/b Напишите через /do, что с вами произошло
-   
-   /me приложил два пальца к сонной артерии пострадавшего
-   /do Пульс присутствует?
-   /b Ответ в /do Да. (Или /do Нет.)
-   
-   — Если пульс есть:
-   /b Пострадавший: /do Да.
-   /me продолжил осмотр пострадавшего
-   
-   — Если пульса нет:
-   /b Пострадавший: /do Нет.
-   /me начал проводить сердечно-легочную реанимацию
-
-/me достал стерильную салфетку и прижал к ране
-/do Кровотечение уменьшается?
-/b Ответ в /do Да. (Или /do Нет.)
-
-— Если кровотечение уменьшается:
-/b Пострадавший: /do Да.
-/me продолжил прижимать салфетку к ране
-
-— Если кровотечение не уменьшается:
-/b Пострадавший: /do Нет.
-/me наложил жгут выше места ранения
-
-/me проверил состояние пострадавшего
-/do Пострадавший в сознании?
-/b Ответ в /do Да. (Или /do Нет.)
-
-— Если пострадавший в сознании:
-/b Пострадавший: /do Да.
-/me успокоил пострадавшего и продолжил осмотр
-
-— Если пострадавший без сознания:
-/b Пострадавший: /do Нет.
-/me достал нашатырный спирт и поднес к носу
-
-НЕПРАВИЛЬНЫЕ ПРИМЕРЫ (НЕ ДЕЛАЙ ТАК):
-
-❌ САМАЯ ЧАСТАЯ ОШИБКА - вопрос без вариаций:
-/me прижал салфетку к ране
-/do Кровотечение уменьшается?
-/b Пострадавший: /do Да. ← ЗАПРЕЩЕНО! Нужны ДВА варианта!
-/me продолжил прижимать салфетку
-
-❌ Правильно должно быть:
-/me прижал салфетку к ране
-/do Кровотечение уменьшается?
-
-— Если кровотечение уменьшается:
-/b Пострадавший: /do Да.
-/me продолжил прижимать салфетку
-
-— Если кровотечение не уменьшается:
-/b Пострадавший: /do Нет.
-/me наложил жгут
-
-❌ Другие ошибки:
-/me направился к служебному транспорту ← видимое действие (ходьба)
-/me закрыл дверь автомобиля ← видимое действие (есть анимация)
-/me опустился на колено рядом с пострадавшим ← видимое действие (есть анимация приседа)
-/me проверил наличие опасности вокруг ← бессмысленная отыгровка
-/do Место происшествия безопасно? ← бессмысленная отыгровка
-/me достал аптечку ← нет /do о наличии аптечки перед этим
-/do Аптечка в руках. ← отыгровка-паразит, и так понятно из /me
-/do Передача аптечки. ← отыгровка-паразит
-/do Улыбка на лице. ← отыгровка-паразит
-/do Пострадавший без сознания. ← отыгровка за другого персонажа
-/try проверил пульс и увидел, что пострадавший жив ← нельзя /try для состояния других
 
 ФОРМАТ ОТВЕТА:
 Напиши только команды для отыгровки, каждая с новой строки. Без дополнительных пояснений и комментариев.
