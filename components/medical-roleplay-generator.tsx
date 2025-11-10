@@ -38,6 +38,7 @@ export function MedicalRoleplayGenerator() {
   // Параметры сценария
   const [scenarioType, setScenarioType] = useState("")
   const [customScenario, setCustomScenario] = useState("")
+  const [hasCar, setHasCar] = useState<boolean | null>(null)
   
   // Состояние генерации
   const [isGenerating, setIsGenerating] = useState(false)
@@ -108,7 +109,8 @@ export function MedicalRoleplayGenerator() {
     
     try {
       const scenario: MedicalScenario = {
-        type: scenarioType === "custom" ? customScenario : SCENARIO_TYPES.find(t => t.value === scenarioType)?.label || scenarioType
+        type: scenarioType === "custom" ? customScenario : SCENARIO_TYPES.find(t => t.value === scenarioType)?.label || scenarioType,
+        hasCar: hasCar ?? undefined
       }
       
       const result = await generateMedicalRoleplay(scenario, apiKey)
@@ -266,10 +268,31 @@ export function MedicalRoleplayGenerator() {
             </div>
           )}
           
+          <div className="space-y-2">
+            <Label>Наличие служебного автомобиля *</Label>
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                type="button"
+                variant={hasCar === true ? "default" : "outline"}
+                onClick={() => setHasCar(true)}
+                className="w-full"
+              >
+                🚗 Есть машина
+              </Button>
+              <Button
+                type="button"
+                variant={hasCar === false ? "default" : "outline"}
+                onClick={() => setHasCar(false)}
+                className="w-full"
+              >
+                🚶 Нет машины
+              </Button>
+            </div>
+          </div>
           
           <Button 
             onClick={handleGenerate} 
-            disabled={!isApiKeyValid || !scenarioType || isGenerating}
+            disabled={!isApiKeyValid || !scenarioType || hasCar === null || isGenerating}
             className="w-full"
           >
             {isGenerating ? (
