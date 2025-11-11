@@ -10,7 +10,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Sparkles, Copy, Settings, Eye, EyeOff, Loader2, Check, AlertCircle } from "lucide-react"
 import { generateMedicalRoleplay, validateApiKey, saveApiKey, loadApiKey, clearApiKey, type MedicalScenario } from "@/lib/gemini-api"
 import { useToast } from "@/hooks/use-toast"
-import { InteractiveRoleplayDisplay } from "./interactive-roleplay-display"
 
 const SCENARIO_TYPES = [
   { value: "gunshot", label: "🔫 Огнестрельное ранение" },
@@ -35,6 +34,7 @@ export function MedicalRoleplayGenerator() {
   const [apiKey, setApiKey] = useState("")
   const [showApiKey, setShowApiKey] = useState(false)
   const [isApiKeyValid, setIsApiKeyValid] = useState(false)
+  const [showApiSettings, setShowApiSettings] = useState(false) // Показывать ли настройки API
   
   // Параметры сценария
   const [scenarioType, setScenarioType] = useState("")
@@ -48,7 +48,6 @@ export function MedicalRoleplayGenerator() {
   const [generatedRoleplay, setGeneratedRoleplay] = useState<string[]>([])
   const [scenarioDescription, setScenarioDescription] = useState("")
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
-  const [useInteractiveMode, setUseInteractiveMode] = useState(true)
   
   // Загрузка API ключа при монтировании
   useEffect(() => {
@@ -56,6 +55,7 @@ export function MedicalRoleplayGenerator() {
     if (savedKey) {
       setApiKey(savedKey)
       setIsApiKeyValid(validateApiKey(savedKey))
+      setShowApiSettings(true) // Показываем настройки если ключ уже сохранён
     }
   }, [])
   
@@ -83,6 +83,7 @@ export function MedicalRoleplayGenerator() {
   const handleClearApiKey = () => {
     clearApiKey()
     setApiKey("")
+    setShowApiSettings(false) // Скрываем настройки после очистки
     toast({
       title: "🗑️ API ключ удалён",
       description: "Ключ удалён из браузера"
@@ -143,14 +144,14 @@ export function MedicalRoleplayGenerator() {
                                errorMessage.includes("quota")
       
       if (isRateLimitError) {
-        setGenerationStatus("❌ Все ключи заняты. Подождите 1-2 минуты...")
+        setGenerationStatus("❌ Все ключи заняты. Попробуйте через 1-3 минуты...")
         
         toast({
           title: "⏱️ Все ключи временно заняты",
           description: "Система автоматически переключала между 2 ключами, но все достигли лимита (15 запросов/мин каждый).\n\n" +
-                      "Что делать:\n" +
-                      "1. ⏰ Подождите 1-2 минуты и попробуйте снова\n" +
-                      "2. 🔑 Или введите свой API ключ выше (бесплатно на ai.google.dev)",
+                      "💡 Рекомендация:\n" +
+                      "• ⏰ Попробуйте через 1-3 минуты\n" +
+                      "• 🔑 Или вставьте свой бесплатный API ключ (кнопка выше)",
           variant: "destructive",
           duration: 10000
         })
@@ -159,7 +160,7 @@ export function MedicalRoleplayGenerator() {
         
         toast({
           title: "❌ Ошибка генерации",
-          description: `${errorMessage}\n\nПопробуйте ещё раз или подождите несколько минут.`,
+          description: `${errorMessage}\n\n⏰ Попробуйте ещё раз через 1-3 минуты.`,
           variant: "destructive",
           duration: 5000
         })
@@ -195,20 +196,54 @@ export function MedicalRoleplayGenerator() {
   
   return (
     <div className="space-y-6">
-      {/* Настройки API ключа */}
-      <Card className="border-2 border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-pink-500/5">
-        <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-              <Settings className="h-5 w-5 text-white" />
+      {/* Кнопка для показа/скрытия настроек API */}
+      {!showApiSettings && (
+        <Card className="border-2 border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-pink-500/5">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <h3 className="font-semibold text-lg mb-1">Используются общие API ключи</h3>
+                <p className="text-sm text-muted-foreground">
+                  Лимит: 30 запросов/минуту для всех пользователей. Если не работает - попробуйте через 1-3 минуты.
+                </p>
+              </div>
+              <Button 
+                onClick={() => setShowApiSettings(true)}
+                variant="outline"
+                className="ml-4"
+              >
+                <Settings className="mr-2 h-4 w-4" />
+                Вставить свой API
+              </Button>
             </div>
-            <div>
-              <CardTitle>Настройки API (необязательно)</CardTitle>
-              <CardDescription>Используется общий ключ. Можете указать свой для приоритета.</CardDescription>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Настройки API ключа (показываются по кнопке) */}
+      {showApiSettings && (
+        <Card className="border-2 border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-pink-500/5">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                  <Settings className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <CardTitle>Настройки API (необязательно)</CardTitle>
+                  <CardDescription>Используется общий ключ. Можете указать свой для приоритета.</CardDescription>
+                </div>
+              </div>
+              <Button 
+                onClick={() => setShowApiSettings(false)}
+                variant="ghost"
+                size="sm"
+              >
+                Скрыть
+              </Button>
             </div>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
+          </CardHeader>
+          <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="apiKey">API Ключ Gemini</Label>
             <div className="flex gap-2">
@@ -252,9 +287,9 @@ export function MedicalRoleplayGenerator() {
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription className="text-sm">
-              <strong>Можно использовать без своего ключа!</strong> Используется 2 общих API ключа с автоматическим переключением (30 запросов/минуту суммарно).
+              <strong>Получите свой бесплатный ключ:</strong>
               <br />
-              Если хотите свой лимит запросов, получите ключ на{" "}
+              1. Перейдите на{" "}
               <a 
                 href="https://ai.google.dev" 
                 target="_blank" 
@@ -263,11 +298,17 @@ export function MedicalRoleplayGenerator() {
               >
                 ai.google.dev
               </a>
-              {" "}(бесплатно, без карты, 15 запросов/мин)
+              <br />
+              2. Нажмите "Get API key" → "Create API key"
+              <br />
+              3. Скопируйте ключ и вставьте выше
+              <br />
+              <span className="text-xs opacity-80">Бесплатно, без карты, 15 запросов/минуту</span>
             </AlertDescription>
           </Alert>
         </CardContent>
       </Card>
+      )}
       
       {/* Параметры сценария */}
       <Card className="border-2 border-blue-500/20">
@@ -403,15 +444,28 @@ export function MedicalRoleplayGenerator() {
             )}
           </Button>
 
+            <Alert className="mt-4 bg-blue-500/10 border-blue-500/30">
+              <AlertCircle className="h-4 w-4 text-blue-500" />
+              <AlertDescription className="text-sm text-blue-200">
+                <strong>ℹ️ Как использовать отыгровку:</strong>
+                <br />
+                • В полной версии вы увидите вопросы в /do с двумя вариантами ответа
+                <br />
+                • Пострадавший отвечает через /do, а вы действуете согласно выбранному варианту
+                <br />
+                • Копируйте команды по одной или все сразу кнопкой "Копировать всё"
+              </AlertDescription>
+            </Alert>
+
             <Alert className="mt-4 bg-yellow-500/10 border-yellow-500/30">
               <AlertCircle className="h-4 w-4 text-yellow-500" />
               <AlertDescription className="text-sm text-yellow-200">
-                <strong>Важно:</strong> Сгенерированные отыгровки могут содержать неточности. 
-                Всегда проверяйте их перед использованием.
+                <strong>⚠️ Важно:</strong> Сгенерированные отыгровки могут содержать неточности. 
+                Всегда проверяйте их перед использованием в игре.
                 <br /><br />
-                <strong>🔄 Автоматическое переключение:</strong> Система использует 2 API ключа и автоматически переключается при достижении лимита. Вы увидите прогресс выше.
+                <strong>🔄 Система с 2 API ключами:</strong> Автоматическое переключение при достижении лимита (30 запросов/мин суммарно).
                 <br />
-                Если API не работает, попробуйте зайти через VPN.
+                <strong>⏱️ Если не работает:</strong> Подождите 1-3 минуты - возможно достигнут общий лимит. Или используйте свой API ключ.
               </AlertDescription>
             </Alert>
         </CardContent>
@@ -433,36 +487,8 @@ export function MedicalRoleplayGenerator() {
             </div>
           </CardHeader>
           <CardContent>
-            {/* Переключатель режима отображения для полной версии */}
-            {!shortVersion && (
-              <div className="mb-4 flex items-center justify-center gap-2">
-                <Button
-                  variant={useInteractiveMode ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setUseInteractiveMode(true)}
-                >
-                  🎮 Интерактивный режим
-                </Button>
-                <Button
-                  variant={!useInteractiveMode ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setUseInteractiveMode(false)}
-                >
-                  📄 Полный список
-                </Button>
-              </div>
-            )}
-
-            {/* Интерактивный режим для полной версии */}
-            {!shortVersion && useInteractiveMode ? (
-              <InteractiveRoleplayDisplay
-                steps={generatedRoleplay}
-                onCopyCommand={copyCommand}
-                copiedIndex={copiedIndex}
-              />
-            ) : (
-              /* Обычное отображение */
-              <div className="space-y-2">
+            {/* Обычное отображение */}
+            <div className="space-y-2">
                 {generatedRoleplay.map((command, index) => {
                 const isStage = command.includes('ЭТАП')
                 const isVariant = command.includes('Вариант') || command.startsWith('—') || command.startsWith('Если') || command.includes('Для сотрудников') || command.includes('Для Капитанов')
@@ -571,8 +597,7 @@ export function MedicalRoleplayGenerator() {
                   </div>
                 )
               })}
-              </div>
-            )}
+            </div>
           </CardContent>
         </Card>
       )}
