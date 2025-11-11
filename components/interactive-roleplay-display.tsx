@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Copy, Check, ChevronRight } from "lucide-react"
+import { Copy, Check } from "lucide-react"
 
 interface InteractiveRoleplayDisplayProps {
   steps: string[]
@@ -27,9 +27,7 @@ export function InteractiveRoleplayDisplay({
   onCopyCommand, 
   copiedIndex 
 }: InteractiveRoleplayDisplayProps) {
-  const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, 'yes' | 'no'>>({})
-  const [activeSteps, setActiveSteps] = useState<Step[]>([])
 
   // Парсим шаги и определяем их типы
   const parseSteps = (): Step[] => {
@@ -63,43 +61,23 @@ export function InteractiveRoleplayDisplay({
   const getActiveSteps = (): Step[] => {
     const allSteps = parseSteps()
     const active: Step[] = []
-    let skipUntilNextQuestion = false
-    let currentVariantType: 'yes' | 'no' | null = null
-    let questionIndex = -1
+    let currentQuestionIndex = -1
+    let insideVariant = false
+    let variantType: 'yes' | 'no' | null = null
 
     for (let i = 0; i < allSteps.length; i++) {
       const step = allSteps[i]
 
-      // Всегда показываем этапы, вопросы, инструкции и обычные команды
-      if (step.isStage || (!step.isVariant && !step.isInstruction)) {
+      // Всегда показываем этапы
+      if (step.isStage) {
         active.push(step)
-        skipUntilNextQuestion = false
-        currentVariantType = null
+        insideVariant = false
+        variantType = null
         continue
       }
 
-      // Если это инструкция после вопроса
-      if (step.isInstruction) {
-        const prevStep = allSteps[i - 1]
-        if (prevStep && prevStep.isQuestion) {
-          questionIndex++
-          active.push(step)
-          
-          // Проверяем, есть ли выбранный ответ
-          const answer = selectedAnswers[questionIndex]
-          if (!answer) {
-            // Останавливаемся здесь - нужен выбор
-            break
-          }
-        }
-        continue
-      }
-
-      // Обрабатываем варианты
+      // Если это вариант (заголовок варианта)
       if (step.isVariant) {
-        const answer = selectedAnswers[questionIndex]
-        
-        // Определяем тип варианта
         const isYesVariant = step.command.toLowerCase().includes('если') && 
           (step.command.toLowerCase().includes('есть') || 
            step.command.toLowerCase().includes('да') ||
@@ -110,24 +88,80 @@ export function InteractiveRoleplayDisplay({
         const isNoVariant = step.command.toLowerCase().includes('если') && 
           (step.command.toLowerCase().includes('нет') || 
            step.command.toLowerCase().includes('без сознания') ||
-           step.command.toLowerCase().includes('не уменьшается'))
+           step.command.toLowerCase().includes('не уменьшается') ||
+           step.command.toLowerCase().includes('отсутствует'))
 
+        // Определяем тип варианта
         if (isYesVariant) {
-          currentVariantType = 'yes'
-          skipUntilNextQuestion = answer !== 'yes'
+          variantType = 'yes'
+          const answer = selectedAnswers[currentQuestionIndex]
+          insideVariant = true
+          
+          // Показываем заголовок варианта только если он выбран
           if (answer === 'yes') {
             active.push(step)
           }
         } else if (isNoVariant) {
-          currentVariantType = 'no'
-          skipUntilNextQuestion = answer !== 'no'
+          variantType = 'no'
+          const answer = selectedAnswers[currentQuestionIndex]
+          insideVariant = true
+          
+          // Показываем заголовок варианта только если он выбран
           if (answer === 'no') {
             active.push(step)
           }
-        } else if (!skipUntilNextQuestion && currentVariantType === answer) {
-          // Команды внутри выбранного варианта
-          active.push(step)
+        } else {
+          // Обычные варианты (не заголовки) - показываем только если внутри выбранного варианта
+          if (insideVariant && variantType === selectedAnswers[currentQuestionIndex]) {
+            active.push(step)
+          }
         }
+        continue
+      }
+
+      // Если внутри варианта - показываем только если это выбранный вариант
+      if (insideVariant) {
+        const answer = selectedAnswers[currentQuestionIndex]
+        if (variantType === answer) {
+          // Обычные команды внутри выбранного варианта
+          if (!step.isQuestion && !step.isInstruction) {
+            active.push(step)
+          }
+        }
+        
+        // Если встретили следующий вопрос - выходим из режима варианта
+        if (step.isQuestion) {
+          insideVariant = false
+          variantType = null
+        }
+      }
+
+      // Вопрос - показываем всегда
+      if (step.isQuestion) {
+        active.push(step)
+        continue
+      }
+
+      // Инструкция после вопроса
+      if (step.isInstruction) {
+        const prevStep = allSteps[i - 1]
+        if (prevStep && prevStep.isQuestion) {
+          currentQuestionIndex++
+          active.push(step)
+          
+          // Проверяем, есть ли ответ
+          const answer = selectedAnswers[currentQuestionIndex]
+          if (!answer) {
+            // Останавливаемся здесь - нужен выбор
+            break
+          }
+        }
+        continue
+      }
+
+      // Обычные команды (не внутри варианта)
+      if (!step.isVariant && !step.isInstruction && !insideVariant) {
+        active.push(step)
       }
     }
 
@@ -173,7 +207,7 @@ export function InteractiveRoleplayDisplay({
   }
 
   const renderStep = (step: Step) => {
-    const { command, index, isStage, isVariant, isOOC, isRadio, isQuestion, isInstruction } = step
+    const { command, index, isStage, isVariant, isOOC, isRadio } = step
 
     // Заголовки этапов (зелёные)
     if (isStage) {
