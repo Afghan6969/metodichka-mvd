@@ -110,7 +110,7 @@ export function GuvdBindsPage() {
  title:"Протокол задержания",
  binds: [
  { bind:"bind [клавиша] do В руке сотрудника папка с протоколами и ручкой.", description:"" },
- { bind:"bind [клавиша] me вытащил из папки бланк с рулеткой и оформил протокол задержания", description:"" },
+ { bind:"bind [клавиша] me вытащил из папки бланк с ручкой и оформил протокол задержания", description:"" },
  { bind:"bind [клавиша] me протянул протокол и ручку задержанному", description:"" },
  { bind:"bind [клавиша] say подпись поставьте", description:"" },
  { bind:"bind [клавиша] n /me поставил подпись", description:"" },
